@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: ara-trebuchet-animator-override
+  m_Controller: {fileID: 9100000, guid: f30ea1a7c03d3204289bcde4b34e02fb, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 9201541290328045389, guid: 055479db00b49924e84f6779e1e9aaa2, type: 3}
+    m_OverrideClip: {fileID: -822328469191157628, guid: 8f9ff593825f66a449aa70251b545a88, type: 3}
+  - m_OriginalClip: {fileID: -6373823249821088082, guid: 055479db00b49924e84f6779e1e9aaa2, type: 3}
+    m_OverrideClip: {fileID: -4020149757811767626, guid: 8f9ff593825f66a449aa70251b545a88, type: 3}
+  - m_OriginalClip: {fileID: 9046561035649696519, guid: 055479db00b49924e84f6779e1e9aaa2, type: 3}
+    m_OverrideClip: {fileID: -822328469191157628, guid: 8f9ff593825f66a449aa70251b545a88, type: 3}

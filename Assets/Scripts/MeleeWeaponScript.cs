@@ -1,0 +1,62 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class MeleeWeaponScript : MonoBehaviour
+{
+    private float damage = 100;
+    private RTSUnit _BaseUnit;
+
+    [System.Serializable]
+    public class AnimationClipRange
+    {
+        public float start = 0;
+        public float end = 1.0f;
+    }
+
+    public AnimationClipRange animationClipRange;
+
+    public void SetLinkage(RTSUnit baseUnit, float d)
+    {
+        _BaseUnit = baseUnit;
+        damage = d;
+    }
+
+    private void OnTriggerEnter(Collider col)
+    {
+        // Only send damage when the collider makes contact while the unit is in attack mode
+        if (_BaseUnit.IsAttacking() && _BaseUnit.animStateTime > animationClipRange.start && _BaseUnit.animStateTime < animationClipRange.end)
+        {    
+            string compareTag = gameObject.tag == "Enemy" ? "Friendly" : "Enemy";
+            if (col.gameObject.tag == compareTag && !col.isTrigger)
+            {
+                // Debug.Log("_BaseUnit.animStateTime " + _BaseUnit.animStateTime);
+
+                // Play one shot sound
+                if (_BaseUnit.hitSounds.Length > 0)
+                {
+                    _BaseUnit.GetAudioSource().PlayOneShot(_BaseUnit.hitSounds[Random.Range(0, _BaseUnit.hitSounds.Length)], 0.4f);
+                }
+
+                // @TODO: friendly fire
+                if (col.gameObject.GetComponent<RTSUnit>())
+                {
+                    Debug.Log("I, " + _BaseUnit.unitName + ", meleed " + col.gameObject.name);
+                    col.gameObject.GetComponent<RTSUnit>().ReceiveDamage(damage);
+                }
+                else
+                {
+                    Debug.Log("problem sending damage");
+                }
+            }
+        }
+    }
+
+    /* private void OnTriggerExit(Collider col)
+    {
+        if (gameObject.tag == "Friendly")
+        {
+            Debug.Log("weapon collider exit");
+        }
+    } */
+}

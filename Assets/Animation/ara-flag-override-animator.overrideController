@@ -1,0 +1,13 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: ara-flag-override-animator
+  m_Controller: {fileID: 9100000, guid: 8575c45246f44134ebd8aca9a6a17a58, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7438109453362365451, guid: 269f5e4d8ee086c42b21121147d010e2, type: 3}
+    m_OverrideClip: {fileID: 6563835011666319302, guid: e5f09f064ab83bb459028e0ea324d719, type: 3}

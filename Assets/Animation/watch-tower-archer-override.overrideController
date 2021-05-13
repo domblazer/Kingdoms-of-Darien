@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: watch-tower-archer-override
+  m_Controller: {fileID: 9100000, guid: 70a96d84c6e79d240b1ea158bd79c03e, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 297581478455914248, guid: e9ef3520237c940468a8f40368609a62, type: 3}
+    m_OverrideClip: {fileID: -4181334330854455961, guid: 42e0133d3c981544b8df81b8732a140e, type: 3}
+  - m_OriginalClip: {fileID: -341010069335778699, guid: e9ef3520237c940468a8f40368609a62, type: 3}
+    m_OverrideClip: {fileID: -3319968421862904795, guid: 42e0133d3c981544b8df81b8732a140e, type: 3}

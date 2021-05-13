@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: transport-ship-override
+  m_Controller: {fileID: 9100000, guid: e95f0fceb911f6a4e886485dbe0daa5f, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 4359643750652702763, guid: d7df95a878a37dd4dbddfa566f8f9f1d, type: 3}
+    m_OverrideClip: {fileID: -2046869156524957871, guid: a3a8249f4f906214fa967d087d95ecfe, type: 3}
+  - m_OriginalClip: {fileID: 3201323293988980717, guid: d7df95a878a37dd4dbddfa566f8f9f1d, type: 3}
+    m_OverrideClip: {fileID: 4480381637890295159, guid: a3a8249f4f906214fa967d087d95ecfe, type: 3}
+  - m_OriginalClip: {fileID: 952479550896919212, guid: a3a8249f4f906214fa967d087d95ecfe, type: 3}
+    m_OverrideClip: {fileID: 952479550896919212, guid: a3a8249f4f906214fa967d087d95ecfe, type: 3}
