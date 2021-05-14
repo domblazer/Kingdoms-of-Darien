@@ -196,26 +196,16 @@ public class BaseUnitScript : RTSUnit
     private void OnMouseOver()
     {
         // First check if I am already selected
-        if (!IsSelected())
+        if (!selected)
         {
             // Only update the UI while mouseover if not is already selected, to avoid conflicts
             UIManager.Instance.unitInfoInstance.Set(super, null);
         }
     }
 
-    public bool IsSelected()
-    {
-        return selected;
-    }
-
     public void SetFacingDir(GhostUnitScript.Directions dir)
     {
         facingDir = dir;
         transform.rotation = Quaternion.Euler(transform.rotation.x, (float)facingDir, transform.rotation.z);
-    }
-
-    private void OnDestroy()
-    {
-        _UnitSelection.RefreshAllUnits();
     }
 }

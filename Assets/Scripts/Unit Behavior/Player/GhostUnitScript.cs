@@ -200,18 +200,18 @@ public class GhostUnitScript : MonoBehaviour
         Destroy(gameObject);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider col)
     {
-        if (!isSet)
+        if (!col.isTrigger && !isSet)
         {
             placementValid = false;
             invalidIcon.SetActive(true);
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    private void OnTriggerExit(Collider col)
     {
-        if (!isSet)
+        if (!col.isTrigger && !isSet)
         {
             placementValid = true;
             invalidIcon.SetActive(false);

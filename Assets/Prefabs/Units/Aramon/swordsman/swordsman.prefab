@@ -5321,13 +5321,22 @@ MonoBehaviour:
   bloodSystem: {fileID: 1418828522}
   _UnitBuilderScript: {fileID: 0}
   attackSounds:
-  - {fileID: 8300000, guid: 4bae287c4a5e2f74a8ce7ccb1cb299c1, type: 3}
-  - {fileID: 8300000, guid: 421abe8da604bc7428f41cf177a392d3, type: 3}
-  - {fileID: 8300000, guid: e73c1b7ff96ead7439cbf26955b2c540, type: 3}
+  - {fileID: 8300000, guid: da357314128edd04ebc918e772fe6516, type: 3}
+  - {fileID: 8300000, guid: 857699d36a58ca14eb97a468e720d1cc, type: 3}
+  - {fileID: 8300000, guid: ddc5497ae789de34584ba54942567c1b, type: 3}
+  - {fileID: 8300000, guid: 4190d627689759f42bf9a3cb44dca8f1, type: 3}
+  - {fileID: 8300000, guid: 40c8e24037e0128459253ba7dbffd0c9, type: 3}
   hitSounds:
-  - {fileID: 8300000, guid: 25b16fb6919a2ae4b994bb26b592dc24, type: 3}
-  - {fileID: 8300000, guid: 675f50ca074ba8f49a8fecd039494a2a, type: 3}
-  - {fileID: 8300000, guid: 83cec8c3c4f1ff14083773547d973311, type: 3}
+  - {fileID: 8300000, guid: ebfaaf95c97c3714c944f1fca038f7c9, type: 3}
+  - {fileID: 8300000, guid: 70218cda93611864e93f6b6a9d73e0ad, type: 3}
+  - {fileID: 8300000, guid: bd87b39ffe95b84488e3ed28573ca1fa, type: 3}
+  - {fileID: 8300000, guid: b81243acdb71f2b41b7ac16917cc0cd7, type: 3}
+  - {fileID: 8300000, guid: 9d7811d68ebac274eacfc4c9e9278cb6, type: 3}
+  - {fileID: 8300000, guid: af4a03e9ed6718944836c3034715d341, type: 3}
+  - {fileID: 8300000, guid: 528b8f57deb0a0249a457e7788660947, type: 3}
+  - {fileID: 8300000, guid: 1fae832e53072af40b146b554a1a58c0, type: 3}
+  - {fileID: 8300000, guid: cc506bc7b1391ff438f171b320ca42cf, type: 3}
+  - {fileID: 8300000, guid: 811e2c7452967b14d9f79bb0d2e33e9c, type: 3}
   playAttackSounds: 1
   selectable: 1
   selectRing: {fileID: 1770128794485609735}

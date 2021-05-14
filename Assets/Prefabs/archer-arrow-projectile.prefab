@@ -130,6 +130,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   removeTime: 10
   hitSounds:
-  - {fileID: 8300000, guid: 09832b452ef85cf4b806dbcbef117c4a, type: 3}
-  - {fileID: 8300000, guid: 02335af3165ace04ea33581ba880a5be, type: 3}
-  groundHitSounds: []
+  - {fileID: 8300000, guid: f96432f0723567c4a8f94bfe171dd270, type: 3}
+  - {fileID: 8300000, guid: c800c224231344246a6faaf5cd8b502b, type: 3}
+  - {fileID: 8300000, guid: a766fd8c648248748a467b7cefceff75, type: 3}
+  - {fileID: 8300000, guid: facee03cbac6fb04f9b5cc095bca7f06, type: 3}
+  - {fileID: 8300000, guid: 117eb64479151f140b7a04c8bb2ae70b, type: 3}
+  - {fileID: 8300000, guid: 8bfc25e1fd73cc34480f518b7c326118, type: 3}
+  - {fileID: 8300000, guid: e526e6f8216b13c448831e3bec0678b9, type: 3}
+  - {fileID: 8300000, guid: 356e46be231f0bb4d8f6b9910c7a6015, type: 3}
+  - {fileID: 8300000, guid: 8ef19c57103367244a513681941dc284, type: 3}
+  - {fileID: 8300000, guid: 21be50b0dcdb1414ca24d4fe14db7361, type: 3}
+  groundHitSounds:
+  - {fileID: 8300000, guid: b1983c4ee3e63da45ba5faa8c69d9526, type: 3}

@@ -224,8 +224,14 @@ MonoBehaviour:
   fogOfWarMask: {fileID: 0}
   bloodSystem: {fileID: 738280606498455322}
   _UnitBuilderScript: {fileID: 0}
-  attackSounds: []
-  hitSounds: []
+  attackSounds:
+  - {fileID: 8300000, guid: 40c8e24037e0128459253ba7dbffd0c9, type: 3}
+  hitSounds:
+  - {fileID: 8300000, guid: 2ea6ae50cd3e1c644adc95d6b8c9c060, type: 3}
+  - {fileID: 8300000, guid: ec94102be5053364da6d23120508740e, type: 3}
+  - {fileID: 8300000, guid: 57b349fef94751a4e971737476ea4e69, type: 3}
+  - {fileID: 8300000, guid: 5a8b1776395032b43b04b6a9662d0506, type: 3}
+  - {fileID: 8300000, guid: 0dd02402e9e42724d931f27683de0cb3, type: 3}
   playAttackSounds: 1
   patrolRange: 25
   patrolPointsCount: 3

@@ -430,7 +430,7 @@ public class RTSUnit : MonoBehaviour
         // Layer 9 is "Unit" layer
         else if (col.gameObject.tag == compareTag && col.gameObject.layer == 9 && !col.isTrigger)
         {
-            // Debug.Log("Enemy has entered my range: " + col.gameObject.name);
+            Debug.Log("Enemy has entered my range: " + col.gameObject.name);
             enemiesInSight.Add(col.gameObject);
         }
         // Layer 15 is "Fog of War" mask layer

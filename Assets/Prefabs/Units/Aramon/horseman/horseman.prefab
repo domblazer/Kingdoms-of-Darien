@@ -269,8 +269,19 @@ MonoBehaviour:
   fogOfWarMask: {fileID: 4589014739474092530}
   bloodSystem: {fileID: 930185126259309868}
   _UnitBuilderScript: {fileID: 0}
-  attackSounds: []
-  hitSounds: []
+  attackSounds:
+  - {fileID: 8300000, guid: 5ad20231f1572e34e83d64fcd65cbabd, type: 3}
+  hitSounds:
+  - {fileID: 8300000, guid: ffd62a35e9c0f1f4eb74d1e5ad718222, type: 3}
+  - {fileID: 8300000, guid: 2ea6ae50cd3e1c644adc95d6b8c9c060, type: 3}
+  - {fileID: 8300000, guid: ec94102be5053364da6d23120508740e, type: 3}
+  - {fileID: 8300000, guid: 57b349fef94751a4e971737476ea4e69, type: 3}
+  - {fileID: 8300000, guid: 5a8b1776395032b43b04b6a9662d0506, type: 3}
+  - {fileID: 8300000, guid: 0dd02402e9e42724d931f27683de0cb3, type: 3}
+  - {fileID: 8300000, guid: 3875c0daa344d224e9f0c7814f098077, type: 3}
+  - {fileID: 8300000, guid: dcf24423c8e058d47a55863ad64d70a5, type: 3}
+  - {fileID: 8300000, guid: 55bf79e161b9be941bcd85dc6bfa6a00, type: 3}
+  - {fileID: 8300000, guid: 873ef524b6b72c94da1d08167b51212e, type: 3}
   playAttackSounds: 1
   selectable: 1
   selectRing: {fileID: 930185125958572863}

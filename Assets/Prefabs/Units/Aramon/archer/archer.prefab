@@ -7755,9 +7755,7 @@ MonoBehaviour:
   fogOfWarMask: {fileID: 6997183358627103113}
   bloodSystem: {fileID: 8276149309757412236}
   _UnitBuilderScript: {fileID: 0}
-  attackSounds:
-  - {fileID: 8300000, guid: bb2c97a064874844594af7c986247dca, type: 3}
-  - {fileID: 8300000, guid: 301122c87df293544ac21f7fbd0e9991, type: 3}
+  attackSounds: []
   hitSounds: []
   playAttackSounds: 0
   selectable: 1

@@ -6674,15 +6674,21 @@ MonoBehaviour:
   - {fileID: 7162712932485172817}
   isAttacking: 0
   attackTarget: {fileID: 0}
-  facing: 0
+  fogOfWarMask: {fileID: 0}
   bloodSystem: {fileID: 7162712931574828126}
   _UnitBuilderScript: {fileID: 0}
   attackSounds:
-  - {fileID: 8300000, guid: d4d6364902dba4445a2470fe565ba060, type: 3}
+  - {fileID: 8300000, guid: c4f4add1b5698ab40ad42daae0750d88, type: 3}
   hitSounds:
-  - {fileID: 8300000, guid: 88520f88c4d274e4996e024951359774, type: 3}
+  - {fileID: 8300000, guid: ebfaaf95c97c3714c944f1fca038f7c9, type: 3}
+  - {fileID: 8300000, guid: cbfc415ec7ed18a49b45eecaaa701235, type: 3}
+  - {fileID: 8300000, guid: 6068160216531eb409aed77e0019443b, type: 3}
+  - {fileID: 8300000, guid: 70218cda93611864e93f6b6a9d73e0ad, type: 3}
+  - {fileID: 8300000, guid: 9d7811d68ebac274eacfc4c9e9278cb6, type: 3}
   playAttackSounds: 1
-  roamRange: 12
+  patrolRange: 25
+  patrolPointsCount: 3
+  startState: 0
 --- !u!114 &7162712932485172821
 MonoBehaviour:
   m_ObjectHideFlags: 0
