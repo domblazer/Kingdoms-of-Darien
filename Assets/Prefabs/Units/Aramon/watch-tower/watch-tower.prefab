@@ -284,7 +284,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e526e6f8216b13c448831e3bec0678b9, type: 3}
   - {fileID: 8300000, guid: 356e46be231f0bb4d8f6b9910c7a6015, type: 3}
   - {fileID: 8300000, guid: 4743a9c316676774fb1ac18928878f67, type: 3}
-  playAttackSounds: 1
+  playAttackSounds: 0
   selectable: 1
   selectRing: {fileID: 6407128823468580700}
 --- !u!114 &6407128823540615193
@@ -325,11 +325,11 @@ AudioSource:
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
+  DopplerLevel: 0
+  MinDistance: 2
+  MaxDistance: 100
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -362,7 +362,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0

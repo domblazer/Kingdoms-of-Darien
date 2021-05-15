@@ -109,15 +109,15 @@ public class RTSUnit : MonoBehaviour
     protected AudioSource _AudioSource;
     protected Animator _Animator;
 
+    public UIManager.ActionMenuSettings.SpecialAttackItem[] specialAttacks;
+    protected List<GameObject> whoCanSeeMe = new List<GameObject>();
+
     // Sounds
     public AudioClip[] attackSounds;
     public AudioClip[] hitSounds;
+    public AudioClip dieSound;
     // Specifically to set whether this scipt will play the attack sounds (e.g. Archer plays through ProjectileLauncher)
     public bool playAttackSounds = true;
-
-    public UIManager.ActionMenuSettings.SpecialAttackItem[] specialAttacks;
-
-    protected List<GameObject> whoCanSeeMe = new List<GameObject>();
 
     protected void Init()
     {
@@ -217,7 +217,6 @@ public class RTSUnit : MonoBehaviour
                 {
                     // If unit has reached the position, dequeue it
                     moveToPositionQueue.Dequeue();
-                    // isParking = false;
                 }
 
                 if (isParking)
@@ -430,12 +429,13 @@ public class RTSUnit : MonoBehaviour
         // Layer 9 is "Unit" layer
         else if (col.gameObject.tag == compareTag && col.gameObject.layer == 9 && !col.isTrigger)
         {
-            Debug.Log("Enemy has entered my range: " + col.gameObject.name);
+            // Debug.Log("Enemy has entered my range: " + col.gameObject.name);
             enemiesInSight.Add(col.gameObject);
         }
         // Layer 15 is "Fog of War" mask layer
-        else if (col.gameObject.tag == compareTag && col.gameObject.layer == 15 && col.isTrigger)
+        else if (col.gameObject.tag == compareTag && col.gameObject.layer == 15)
         {
+            // @Note: this condition is a bit different; Fog-of-War mask interacts with inner-trigger
             // Debug.Log("The fog of war has been lifted around me, " + gameObject.name + ", by " + col.transform.parent.name);
             whoCanSeeMe.Add(col.transform.parent.gameObject);
         }
@@ -450,7 +450,7 @@ public class RTSUnit : MonoBehaviour
             enemiesInSight.Remove(col.gameObject);
         }
         // Layer 15 is "Fog of War" mask layer
-        else if (col.gameObject.tag == compareTag && col.gameObject.layer == 15 && col.isTrigger)
+        else if (col.gameObject.tag == compareTag && col.gameObject.layer == 15)
         {
             Debug.Log(col.transform.parent.name + " can no longer see me through the fog.");
             whoCanSeeMe.Remove(col.transform.parent.gameObject);
@@ -591,6 +591,12 @@ public class RTSUnit : MonoBehaviour
         if (_Obstacle)
             _Obstacle.enabled = false;
 
+        // Play the die sound 50% of the time
+        if (Random.Range(0.0f, 1.0f) > 0.5f && dieSound != null)
+        {
+            _AudioSource.PlayOneShot(dieSound, 0.5f);
+        }
+
         // @TODO: play animation, play the dust particle system, destroy this object, and finally instantiate corpse object
         _Animator.SetTrigger("die");
 
@@ -640,7 +646,7 @@ public class RTSUnit : MonoBehaviour
 
     public bool IsMoving()
     {
-        return isKinematic && _Agent.enabled && (_Agent.velocity - Vector3.zero).sqrMagnitude > 0.25f;
+        return isKinematic && _Agent.enabled && (_Agent.velocity - Vector3.zero).sqrMagnitude > 0.15f;
     }
 
     public bool IsAttacking()

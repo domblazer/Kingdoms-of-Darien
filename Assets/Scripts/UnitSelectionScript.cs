@@ -78,7 +78,7 @@ public class UnitSelectionScript : MonoBehaviour
                 UIManager.Instance.actionMenuInstance.Toggle(false);
             }
             CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Normal);
-            UIManager.Instance.unitInfoInstance.Toggle(false);            
+            UIManager.Instance.unitInfoInstance.Toggle(false);
         }
     }
 
@@ -120,12 +120,9 @@ public class UnitSelectionScript : MonoBehaviour
         if (Input.GetMouseButtonDown(0) && !IsMouseOverUI())
         {
             clickTime = Time.time;
-
             // We dont yet know if we are drawing a square, but we need the first coordinate in case we do draw a square
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit))
-            {
                 squareStartPos = hit.point; // The corner position of the square
-            }
         }
 
         // @TODO: double click on a unit will select all units of same type within camera view
@@ -134,9 +131,7 @@ public class UnitSelectionScript : MonoBehaviour
         if (Input.GetMouseButtonUp(0))
         {
             if (Time.time - clickTime <= clickHoldDelay)
-            {
                 isClicking = true;
-            }
 
             // Select all units within the square if we have created a square
             if (hasCreatedSquare)
@@ -147,24 +142,10 @@ public class UnitSelectionScript : MonoBehaviour
                 // If holding shift, don't clear so current selection will add to selected
                 // @TODO: need to subtract already selected units within the current square
                 if (!HoldingShift())
-                {
                     selectedUnits.Clear(); // Clear the list with selected unit
-                }
 
                 // Select the units
-                foreach (GameObject currentUnit in allUnits)
-                {
-                    // Is this unit within the square
-                    if (IsWithinPolygon(currentUnit.transform.position) && currentUnit.GetComponent<BaseUnitScript>().selectable)
-                    {
-                        currentUnit.GetComponent<BaseUnitScript>().Select();
-                        selectedUnits.Add(currentUnit);
-                    }
-                    else if (!HoldingShift())
-                    {
-                        currentUnit.GetComponent<BaseUnitScript>().DeSelect(); // Otherwise deselect the unit if it's not in the square
-                    }
-                }
+                HandleUnitsUnderSquare();
             }
             else if (!IsMouseOverUI() && Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit))
             {
@@ -179,36 +160,30 @@ public class UnitSelectionScript : MonoBehaviour
                     // @TODO: at this click point, need to instantiate sprite object that will show/hide depending on who is selected and holding shift
                     // so, need to queue the sprite object with the transform as well
 
+                    // Handle group movement
                     if (selectedUnits.Count > 1)
                     {
-                        // Handle group movement
                         MoveGroup(hit.point, addToMoveQueue, doAttackMove);
                     }
                     else if (selectedUnits.Count == 1)
                     {
                         // Just move the single selected unit directly to click point
-                        GameObject unit = selectedUnits[0];
-                        unit.GetComponent<BaseUnitScript>().SetMove(hit.point, addToMoveQueue, doAttackMove);
+                        BaseUnitScript unit = selectedUnits[0].GetComponent<BaseUnitScript>();
+                        unit.SetMove(hit.point, addToMoveQueue, doAttackMove);
+                        unit.PlayMoveSound();
                     }
                     GetComponent<AudioSource>().PlayOneShot(clickSound);
                 }
             }
             if (selectedUnits.Count == 0 && !IsMouseOverUI())
-            {
-                Debug.Log("UnitSelectionScript Set cursor back to normal");
                 CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Normal);
-            }
-            GroupSelectedByName();
+            // GroupSelectedByName();
         }
 
         // Holding down the mouse button
         if (Input.GetMouseButton(0) && !IsMouseOverUI())
-        {
             if (Time.time - clickTime > clickHoldDelay)
-            {
                 isHoldingDown = true;
-            }
-        }
 
         // Select one unit with left mouse and deselect all units with left mouse by clicking on what's not a unit
         if (isClicking)
@@ -224,20 +199,18 @@ public class UnitSelectionScript : MonoBehaviour
                     if (!HoldingShift())
                     {
                         foreach (GameObject unit in selectedUnits)
-                        {
                             unit.GetComponent<BaseUnitScript>().DeSelect();
-                        }
+
                         selectedUnits.Clear();
                     }
 
                     GameObject activeUnit = hit.collider.gameObject;
                     if (activeUnit.GetComponent<BaseUnitScript>().selectable)
                     {
+                        // Play click sound
                         if (!HoldingShift())
-                        {
-                            // Play click sound
                             GetComponent<AudioSource>().PlayOneShot(clickSound);
-                        }
+
                         activeUnit.GetComponent<BaseUnitScript>().Select(true); // Set this unit to selected with param alone=true
                         selectedUnits.Add(activeUnit); // Add it to the list of selected units, which is now just 1 unit
                     }
@@ -246,9 +219,7 @@ public class UnitSelectionScript : MonoBehaviour
                 {
                     // If we clicked an Enemy unit while at least one canAttack unit is selected, tell those/that unit to attack
                     foreach (GameObject unit in selectedUnits)
-                    {
                         unit.GetComponent<BaseUnitScript>().TryAttack(hit.collider.gameObject);
-                    }
                 }
             }
         }
@@ -257,30 +228,28 @@ public class UnitSelectionScript : MonoBehaviour
         Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit movedPosition);
         if (isHoldingDown && squareStartPos != movedPosition.point)
         {
-            // Activate the square selection image
-            if (!selectionSquareTrans.gameObject.activeInHierarchy)
-            {
-                selectionSquareTrans.gameObject.SetActive(true);
-            }
-            squareEndPos = Input.mousePosition; // Get the latest coordinate of the square
-            DisplaySquare(); // Display the selection with a GUI image
-
+            // Display the selection UI image
+            DisplaySquare();
             // Highlight the units within the selection square, but don't select the units
             if (hasCreatedSquare)
+                HandleUnitsUnderSquare(true);
+        }
+    }
+
+    public void HandleUnitsUnderSquare(bool highlightOnly = false)
+    {
+        foreach (GameObject currentUnit in allUnits)
+        {
+            // Is this unit within the square
+            if (IsWithinPolygon(currentUnit.transform.position) && currentUnit.GetComponent<BaseUnitScript>().selectable)
             {
-                foreach (GameObject currentUnit in allUnits)
-                {
-                    // Is this unit within the square
-                    if (IsWithinPolygon(currentUnit.transform.position) && currentUnit.GetComponent<BaseUnitScript>().selectable)
-                    {
-                        currentUnit.GetComponent<BaseUnitScript>().Select();
-                    }
-                    else if (!HoldingShift())
-                    {
-                        currentUnit.GetComponent<BaseUnitScript>().DeSelect(); // Otherwise deactivate
-                    }
-                }
+                currentUnit.GetComponent<BaseUnitScript>().Select();
+                // Add to the selection if not just highlighting
+                if (!highlightOnly)
+                    selectedUnits.Add(currentUnit);
             }
+            else if (!HoldingShift())
+                currentUnit.GetComponent<BaseUnitScript>().DeSelect();
         }
     }
 
@@ -291,24 +260,7 @@ public class UnitSelectionScript : MonoBehaviour
 
     private void MoveGroup(Vector3 hitPoint, bool addToMoveQueue = false, bool attackMove = false)
     {
-        // Based on size of formation, first need to determine just upper-left corner position of the rectangle
-        // To do that, somehow need to estimate size of the formation, then center it around hit.point
-
-        // @TODO: if selectedUnits.len > 1, move each unit with an offset based on the click point
-        // like, selectedUnits.len / 6 === 0 ? (group in rows of 6). basically find a good common denominator for rows/cols count
-        // which will also eventually be editable in the tactics panel, so you can set like, form-up in rows of 10 by 5 or whatever
-
-        //   (back)
-        // x x x x x x 
-        // x x x x x x
-        // x x x x x x
-        // x x x x x x < -- rows
-        // x x x x x x
-        //   ^  (front)
-        //   |  
-        //  cols
-
-        /* UnitClusterMoveInfo clusterMoveInfo = CalculateSmartCenter(selectedUnits);
+        UnitClusterMoveInfo clusterMoveInfo = CalculateSmartCenter(selectedUnits);
         foreach (GameObject unit in selectedUnits)
         {
             Vector3 offset = (unit.transform.position - clusterMoveInfo.smartCenter);
@@ -317,99 +269,17 @@ public class UnitSelectionScript : MonoBehaviour
             // If unit is outside the normal distribution, consider it outside primary cluster and must adjust move to collapse in
             if (offset.sqrMagnitude > clusterMoveInfo.standardDeviation)
             {
+                // @TODO: need to use offset direction with stdDev magnitude
                 moveTo = hitPoint + (offset.normalized * 2); // new Vector3(hitPoint.x + clusterMoveInfo.standardDeviation, hitPoint.y, hitPoint.z + clusterMoveInfo.standardDeviation);
                 Debug.Log("I " + unit.name + " am outside the primary cluster, moving to " + moveTo);
             }
-
-            // @TODO
-            // if (noPrimaryCluster)
-            //  // everyone collapse in around click point naively?
+            // @TODO: also need to make sure moveTo points don't overlap or get too close to eachother
+            // @TODO // if (noPrimaryCluster) // everyone collapse in around click point naively?
 
             BaseUnitScript unitScript = unit.GetComponent<BaseUnitScript>();
             if (unitScript && unitScript.isKinematic)
-            {
                 unitScript.SetMove(moveTo, addToMoveQueue, attackMove);
-            }
-        } */
-
-        int cols = 0;
-        int rows = 0;
-        Vector3 offset;
-        Vector3 newPoint = hitPoint;
-
-        // Iterate selected units grouped by name and ordered by formation order, so each unit class gets its own group in the proper order
-        foreach (UnitGroup group in unitGroups)
-        {
-            Vector3 lastUnitOffset = new Vector3();
-            foreach (GameObject unit in group.units)
-            {
-                BaseUnitScript unitScript = unit.GetComponent<BaseUnitScript>();
-                // Ignore move for non-kinematic units
-                if (unitScript && unitScript.isKinematic)
-                {
-                    // @TODO: these units need to be ordered in such a way as they retain relative formation shape as they move, 
-                    // so like the units end up in the same formation position as they start in
-                    // @TODO: all units need to end up facing the same direction in the end
-                    // @TODO: need to flip cols/rows if moving left/right
-                    unitScript.SetMove(newPoint, addToMoveQueue, attackMove);
-                    offset = unitScript.offset;
-                    lastUnitOffset = offset;
-                    // Debug.Log("unitName: " + unitScript.unitName + " offset: " + offset);
-                    // Add offset to x value to increment col
-                    newPoint.x += offset.x;
-                    cols++;
-                    if (cols > 5)
-                    {
-                        cols = 0;
-                        // Reset col
-                        newPoint.x = hitPoint.x;
-                        // Increment row
-                        newPoint.z += offset.z;
-                        rows++;
-                    }
-                }
-            }
-            newPoint.x = hitPoint.x;
-            // @TODO: this needs to be first unit in next group offset
-            newPoint.z += lastUnitOffset.z; // Add a little extra space between unit groups
         }
-    }
-
-    private void GroupSelectedByName()
-    {
-        unitGroups.Clear();
-        foreach (GameObject unit in selectedUnits)
-        {
-            BaseUnitScript unitScript = unit.GetComponent<BaseUnitScript>();
-
-            // Groupings only need to consider kinematic units
-            if (unitScript.isKinematic)
-            {
-                string unitName = unitScript.unitName;
-
-                // First, check if unitGroup struct exists by name
-                if (!unitGroups.Exists(x => x.name == unitName))
-                {
-                    // Get the unit's formation priority if possible, then create new unit group
-                    int orderIndex = unitOrdersByName.ContainsKey(unitName) ? unitOrdersByName[unitName] : 0;
-                    unitGroups.Add(new UnitGroup(orderIndex, unitName));
-                }
-
-                // Find the appropriate unitGroup struct and add the unit
-                unitGroups[unitGroups.FindIndex(x => x.name == unitName)].units.Add(unit);
-            }
-        }
-
-        // Order the unitGroups list by appropriate order
-        unitGroups = unitGroups.OrderBy(x => x.order).ToList();
-
-        string statisticsText = "";
-        foreach (UnitGroup group in unitGroups)
-        {
-            statisticsText += group.name + "(s): " + group.units.Count + ". Order: " + group.order + "\n";
-            Debug.Log(group);
-        }
-        // Debug.Log("Statistics text: " + statisticsText);
     }
 
     public UnitClusterMoveInfo CalculateSmartCenter(List<GameObject> group)
@@ -539,6 +409,13 @@ public class UnitSelectionScript : MonoBehaviour
     // Display the selection with a GUI square
     void DisplaySquare()
     {
+        // Activate the square selection image
+        if (!selectionSquareTrans.gameObject.activeInHierarchy)
+        {
+            selectionSquareTrans.gameObject.SetActive(true);
+        }
+        squareEndPos = Input.mousePosition; // Get the latest coordinate of the square
+
         // The start position of the square is in 3d space, or the first coordinate will move as we move the camera which is not what we want
         Vector3 squareStartScreen = Camera.main.WorldToScreenPoint(squareStartPos);
         squareStartScreen.z = 0f;
@@ -586,7 +463,6 @@ public class UnitSelectionScript : MonoBehaviour
 
     public int SelectedUnitsCount()
     {
-        Debug.Log("selected units count: " + selectedUnits.Count);
         return selectedUnits.Count;
     }
 
@@ -616,10 +492,5 @@ public class UnitSelectionScript : MonoBehaviour
     public void RemoveUnitFromTotal(GameObject go)
     {
         allUnits.Remove(go);
-    }
-
-    public bool HasCreatedSquare()
-    {
-        return hasCreatedSquare;
     }
 }

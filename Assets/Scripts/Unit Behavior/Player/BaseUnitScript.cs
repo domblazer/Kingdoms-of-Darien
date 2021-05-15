@@ -10,6 +10,9 @@ public class BaseUnitScript : RTSUnit
     public bool selectable = true;
     public GameObject selectRing;
 
+    public AudioClip moveSound;
+    public AudioClip selectSound;
+
     private GameObject _Units;
     private GhostUnitScript.Directions facingDir = GhostUnitScript.Directions.Forward;
     private bool hasAlreadyDied = false;
@@ -147,6 +150,12 @@ public class BaseUnitScript : RTSUnit
             if (alone)
             {
                 UIManager.Instance.actionMenuInstance.Set(isKinematic, canAttack, isBuilder, specialAttacks);
+
+                // Play the select sound 50% of the time
+                if (Random.Range(0.0f, 1.0f) > 0.5f && selectSound != null)
+                {
+                    _AudioSource.PlayOneShot(selectSound, 1);
+                }
             }
         }
     }
@@ -207,5 +216,14 @@ public class BaseUnitScript : RTSUnit
     {
         facingDir = dir;
         transform.rotation = Quaternion.Euler(transform.rotation.x, (float)facingDir, transform.rotation.z);
+    }
+
+    public void PlayMoveSound()
+    {
+        // Play the move sound 50% of the time and only when unit is alone
+        if (Random.Range(0.0f, 1.0f) > 0.5f && moveSound != null)
+        {
+            _AudioSource.PlayOneShot(moveSound, 1);
+        }
     }
 }

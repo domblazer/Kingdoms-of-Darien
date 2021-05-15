@@ -59,6 +59,7 @@ public class WatchTowerScript : MonoBehaviour
     {
         yield return new WaitForSeconds(animDelay);
 
+        // @TODO: if target is null, should clear attack so this doesn't get called
         // Adjust aiming target since all models have position.y = 1, which is ground level; we want to aim for their center
         Vector3 adjustedTargetPos = new Vector3(target.transform.position.x, target.transform.position.y + 2, target.transform.position.z);
 
@@ -68,9 +69,7 @@ public class WatchTowerScript : MonoBehaviour
 
         // If sounds should be played on launch, not at start of attack
         if (_BaseUnit.attackSounds.Length > 0 && !_BaseUnit.playAttackSounds)
-        {
             _BaseUnit.GetAudioSource().PlayOneShot(_BaseUnit.attackSounds[Random.Range(0, _BaseUnit.attackSounds.Length)], 0.4f);
-        }
 
         // ignore collisions between the projectile and parent object
         Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), projectile.GetComponent<Collider>(), true);

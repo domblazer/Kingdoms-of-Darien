@@ -2186,12 +2186,17 @@ MonoBehaviour:
   - {fileID: 4183819656204189026}
   isAttacking: 0
   attackTarget: {fileID: 0}
-  facing: 0
   fogOfWarMask: {fileID: 7884527103549889147}
   bloodSystem: {fileID: 4183819655874345685}
   _UnitBuilderScript: {fileID: 0}
-  attackSounds: []
-  hitSounds: []
+  attackSounds:
+  - {fileID: 8300000, guid: ddc5497ae789de34584ba54942567c1b, type: 3}
+  hitSounds:
+  - {fileID: 8300000, guid: ebfaaf95c97c3714c944f1fca038f7c9, type: 3}
+  - {fileID: 8300000, guid: 5716690d8abb90b46be54af47f89e860, type: 3}
+  - {fileID: 8300000, guid: 70218cda93611864e93f6b6a9d73e0ad, type: 3}
+  - {fileID: 8300000, guid: cbfc415ec7ed18a49b45eecaaa701235, type: 3}
+  - {fileID: 8300000, guid: dc44f7d37fa6bea4b9d04db9f68e79c6, type: 3}
   playAttackSounds: 1
   selectable: 1
   selectRing: {fileID: 4183819654780574878}

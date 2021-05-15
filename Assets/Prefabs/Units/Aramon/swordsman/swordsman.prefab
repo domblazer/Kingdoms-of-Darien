@@ -5337,6 +5337,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 1fae832e53072af40b146b554a1a58c0, type: 3}
   - {fileID: 8300000, guid: cc506bc7b1391ff438f171b320ca42cf, type: 3}
   - {fileID: 8300000, guid: 811e2c7452967b14d9f79bb0d2e33e9c, type: 3}
+  moveSound: {fileID: 8300000, guid: eac221f1f7a6ef0478bcb04b708e00c7, type: 3}
+  selectSound: {fileID: 8300000, guid: 710464a83b84aef4189f50cdce274099, type: 3}
+  dieSound: {fileID: 8300000, guid: 95f2e852bb5f0cc45857967c9ffec542, type: 3}
   playAttackSounds: 1
   selectable: 1
   selectRing: {fileID: 1770128794485609735}
