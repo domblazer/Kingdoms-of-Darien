@@ -414,6 +414,7 @@ public class UnitSelectionScript : MonoBehaviour
         {
             selectionSquareTrans.gameObject.SetActive(true);
         }
+        // @TODO: for some reason this isn't allowing the square to shrink
         squareEndPos = Input.mousePosition; // Get the latest coordinate of the square
 
         // The start position of the square is in 3d space, or the first coordinate will move as we move the camera which is not what we want

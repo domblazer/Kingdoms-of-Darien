@@ -101,13 +101,11 @@ public class BaseUnitScript : RTSUnit
                 state = States.Standby;
             }
 
-            // @TODO If this unit is selected and no other unit has focus
-            if (selectable && selected && !GameManagerScript.Instance.IsHovering()) // (selected && _GameManager.GetFocusUnit() == null)
+            // If this unit is selected and no other unit has focus
+            if (selectable && selected && !GameManagerScript.Instance.IsHovering())
             {
                 // Color select-ring based on health value
                 selectRing.GetComponent<SpriteRenderer>().color = Color.Lerp(Color.red, Color.green, (health / 100));
-
-                // selectRing.transform.Rotate(new Vector3(0, 0, 17 * Time.deltaTime)); // Spin the selection ring
 
                 // @TODO: secondary could be a "Conjuring" secondary
                 RTSUnit secondary = attackTarget ? attackTarget.GetComponent<RTSUnit>() : null;

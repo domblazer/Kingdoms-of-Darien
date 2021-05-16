@@ -24,11 +24,10 @@ public class BaseUnitScriptAI : RTSUnit
 
     public enum StartStates
     {
-        Standby, Patrol
+        Standby, Patrolling
     }
-    // @TODO: eventually this should evolve into a "scenario" driven framework, 
-    // i.e. when some event occurs (possibly trigger enter on some objective trigger object), change state
-    public StartStates startState = StartStates.Standby;
+    public StartStates startState;
+    private States defaultState;
 
     private void Awake()
     {
@@ -60,41 +59,33 @@ public class BaseUnitScriptAI : RTSUnit
             randomPoint.y = transform.position.y;
             patrolPoints.Add(randomPoint);
         }
+
+        // Initialize the starting state
+        if (startState == StartStates.Patrolling)
+            state = defaultState = States.Patrolling;
+        else if (startState == StartStates.Standby)
+            state = defaultState = States.Standby;
     }
 
     private void Update()
     {
-        // Show/hide based on Fog of War
-        if (whoCanSeeMe.Count == 0)
-        {
-            TriggerHide();
-        }
-        else
-        {
-            // Periodically clear dead or destroyed units from whoCanSeeMe
-            if (Time.time > nextSightCheck)
-            {
-                nextSightCheck = Time.time + sightCheckRate;
-                whoCanSeeMe = whoCanSeeMe.Where(item => item != null && !item.GetComponent<RTSUnit>().isDead).ToList();
-            }
-            TriggerShow();
-        }
-
+        // Update health
         UpdateHealth();
+
+        // Show/hide based on Fog of War
+        UpdateFogOfWar();
 
         if (!isDead)
         {
+            if (!IsAttacking() && !engagingTarget)
+                state = defaultState;
+
             if (isKinematic)
             {
-                // @TODO: start states obviously need to be able to change after start
-                if (startState == StartStates.Patrol)
-                {
+                if (state.Value == States.Patrolling.Value)
                     Patrol();
-                }
-                else if (startState == StartStates.Standby)
-                {
+                else
                     HandleMovement();
-                }
             }
 
             // Handle attack states if can attack
@@ -106,28 +97,38 @@ public class BaseUnitScriptAI : RTSUnit
         }
     }
 
+    void UpdateFogOfWar()
+    {
+        if (whoCanSeeMe.Count == 0)
+            TriggerHide();
+        else
+        {
+            // Periodically clear dead or destroyed units from whoCanSeeMe
+            if (Time.time > nextSightCheck)
+            {
+                nextSightCheck = Time.time + sightCheckRate;
+                whoCanSeeMe = whoCanSeeMe.Where(item => item != null && !item.GetComponent<RTSUnit>().isDead).ToList();
+            }
+            TriggerShow();
+        }
+    }
+
     void Patrol()
     {
         // Add extra steering while moving
         if (IsMoving())
-        {
             HandleFacing(_Agent.steeringTarget, 0.25f);
-        }
+        // Cycle random patrol points
         if (!IsInRangeOf(patrolPoints[patrolIndex], 2))
-        {
             _Agent.SetDestination(patrolPoints[patrolIndex]);
-        }
         else if (IsInRangeOf(patrolPoints[patrolIndex], 2))
-        {
             patrolIndex = Random.Range(0, patrolPoints.Count);
-        }
     }
 
     void TriggerHide()
     {
         if (!alreadyHidden)
         {
-            Debug.Log("hide triggered");
             foreach (Renderer r in renderers)
             {
                 r.enabled = false;
@@ -141,7 +142,6 @@ public class BaseUnitScriptAI : RTSUnit
     {
         if (!alreadyShown)
         {
-            Debug.Log("show triggered");
             foreach (Renderer r in renderers)
             {
                 r.enabled = true;

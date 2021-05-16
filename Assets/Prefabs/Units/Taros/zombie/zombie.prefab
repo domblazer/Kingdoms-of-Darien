@@ -232,10 +232,11 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 57b349fef94751a4e971737476ea4e69, type: 3}
   - {fileID: 8300000, guid: 5a8b1776395032b43b04b6a9662d0506, type: 3}
   - {fileID: 8300000, guid: 0dd02402e9e42724d931f27683de0cb3, type: 3}
+  dieSound: {fileID: 8300000, guid: 35b1821f150b1cc4f92afad0a97fe5fa, type: 3}
   playAttackSounds: 1
   patrolRange: 25
   patrolPointsCount: 3
-  startState: 0
+  startState: 1
 --- !u!114 &738280607077118044
 MonoBehaviour:
   m_ObjectHideFlags: 0
