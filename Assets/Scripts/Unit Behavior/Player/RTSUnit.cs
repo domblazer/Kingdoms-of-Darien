@@ -162,19 +162,13 @@ public class RTSUnit : MonoBehaviour
         {
             _UnitBuilderScript = GetComponent<UnitBuilder>();
             if (!_UnitBuilderScript)
-            {
                 throw new System.Exception("Cannot have a builder without UnitBuilder script. Attach to this object in inspector.");
-            }
         }
 
         // Set up linkage with melee weapon(s) if unit is a melee attacker
         if (isMeleeAttacker && meleeWeapons.Length > 0)
-        {
             foreach (MeleeWeaponScript mw in meleeWeapons)
-            {
                 mw.SetLinkage(this, weaponDamage);
-            }
-        }
     }
 
     protected void UpdateHealth()
@@ -183,9 +177,7 @@ public class RTSUnit : MonoBehaviour
         {
             // Die if health is 0 or lower
             if (health <= 0)
-            {
                 StartCoroutine(Die());
-            }
             // Slowly regenerate health automatically
             else if (Time.time > nextHealthRecharge && health < 100)
             {
@@ -208,21 +200,14 @@ public class RTSUnit : MonoBehaviour
                 if (!IsInRangeOf(moveToPosition))
                 {
                     if (IsMoving())
-                    {
-                        // Add extra steering while moving
-                        HandleFacing(_Agent.steeringTarget, 0.25f);
-                    }
+                        HandleFacing(_Agent.steeringTarget, 0.25f); // Add extra steering while moving
                 }
                 else
-                {
-                    // If unit has reached the position, dequeue it
-                    moveToPositionQueue.Dequeue();
-                }
+                    moveToPositionQueue.Dequeue(); // If unit has reached the position, dequeue it
 
                 if (isParking)
-                {
                     isParking = !IsInRangeOf(moveToPosition);
-                }
+
                 // BounceAvoidanceRadius();
             }
             /* else
@@ -264,15 +249,12 @@ public class RTSUnit : MonoBehaviour
 
         // State isAttacking when engagingTarget and not still orienting to attack position
         if (engagingTarget && (isKinematic ? !isMovingToAttack : !facing))
-        {
             isAttacking = true;
-        }
 
         float rangeOffset = attackRange;
+        // Melee attackers use a 3/4ths portion of the attackTarget's collider (offset) size
         if (attackTarget)
-        {
-            rangeOffset = isMeleeAttacker ? attackTarget.GetComponent<RTSUnit>().offset.x : attackRange;
-        }
+            rangeOffset = isMeleeAttacker ? attackTarget.GetComponent<RTSUnit>().offset.x * 0.75f : attackRange;
 
         // While locked on target but not in range, keep moving to attack position
         if (attackTarget && !IsInRangeOf(attackTarget.transform.position, rangeOffset))
@@ -283,36 +265,20 @@ public class RTSUnit : MonoBehaviour
             isAttacking = false;
 
             // Follow the target by continuing to set the moveToPosition
-            // @TODO: moveToPositionQueue
             if (moveToPositionQueue.Count > 0)
             {
-                moveToPositionQueue.Peek().Set(attackTarget.transform.position.x, attackTarget.transform.position.y, attackTarget.transform.position.z);
-            }
-            else
-            {
+                moveToPositionQueue.Dequeue();
                 moveToPositionQueue.Enqueue(attackTarget.transform.position);
             }
-            // moveToPosition = attackTarget.transform.position;
+            else
+                moveToPositionQueue.Enqueue(attackTarget.transform.position);
+
         }
         // Once unit is in range, can stop moving
         else if (isMovingToAttack && attackTarget && IsInRangeOf(attackTarget.transform.position, rangeOffset))
         {
             Debug.Log("Arrived at target");
             TryToggleToObstacle();
-
-            // Stop at this position 
-
-            // @TODO: implement moveToPositionQueue
-            if (moveToPositionQueue.Count > 0)
-            {
-                moveToPositionQueue.Peek().Set(transform.position.x, transform.position.y, transform.position.z);
-            }
-            else
-            {
-                moveToPositionQueue.Enqueue(transform.position);
-            }
-            // moveToPosition = transform.position;
-
             isMovingToAttack = false;
         }
 
@@ -325,26 +291,21 @@ public class RTSUnit : MonoBehaviour
         {
             // Kinematic units do facing; @Note: stationary attack units do their own facing routine (e.g. Stronghold)
             if (isKinematic && !IsMoving())
-            {
-                // Continue facing attackTarget while isAttacking
-                facing = HandleFacing(attackTarget.transform.position, 0.5f);
-            }
+                facing = HandleFacing(attackTarget.transform.position, 0.5f); // Continue facing attackTarget while isAttacking
+
             // Attack interval
             if (Time.time > nextAttack)
             {
                 nextAttack = Time.time + attackRate;
                 nextAttackReady = true;
+
                 // @TODO: vary when to play a sound, to limit the amount of one shots playing at a time when lots of units
+                // @TODO: some sounds need a delay to account for animation
                 if (playAttackSounds && attackSounds.Length > 0)
-                {
-                    // @TODO: some sounds need a delay to account for animation
                     _AudioSource.PlayOneShot(attackSounds[Random.Range(0, attackSounds.Length)], 0.4f);
-                }
             }
             else
-            {
                 nextAttackReady = false;
-            }
         }
     }
 
@@ -354,9 +315,7 @@ public class RTSUnit : MonoBehaviour
         faceDirection.y = 0; // This makes rotation only apply to y axis
         targetRotation = Quaternion.LookRotation(faceDirection);
         if (Quaternion.Angle(transform.rotation, targetRotation) <= threshold)
-        {
             return false;
-        }
         transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, 10.0f * Time.deltaTime);
         return true;
     }
@@ -402,14 +361,10 @@ public class RTSUnit : MonoBehaviour
         // Find closest target
         GameObject target = null;
         target = FindClosestEnemy();
-        // Debug.Log("attackTarget " + attackTarget);
         RTSUnit targetUnitScript = target ? target.GetComponent<RTSUnit>() : null;
         // If a valid target exists but attackTarget has not yet been assigned, lock on to this target
         if (target && targetUnitScript && !attackTarget)
-        {
-            // Debug.Log("Enemy for me to attack " + target.name);
             TryAttack(target);
-        }
 
         // @TODO: if attackTarget becomes null, move back to original location unless there's another unit around to attack
         // @TODO: if isAttacking/taking damage and health is low, AI start a retreat, player units can be set to have an auto retreat or retreat button
@@ -422,39 +377,24 @@ public class RTSUnit : MonoBehaviour
         string compareTag = gameObject.tag == "Enemy" ? "Friendly" : "Enemy";
         // Layer 11 is "Inner Trigger" layer, by its nature, a child of "Unit" layer
         if (col.isTrigger && col.gameObject.layer == 11 && col.gameObject.GetComponentInParent<RTSUnit>())
-        {
             // If collided object is in the "Inner Trigger" layer, we can pretty safely assume it's parent must be an RTSUnit
             HandleBumping(col.gameObject.GetComponentInParent<RTSUnit>());
-        }
         // Layer 9 is "Unit" layer
         else if (col.gameObject.tag == compareTag && col.gameObject.layer == 9 && !col.isTrigger)
-        {
-            // Debug.Log("Enemy has entered my range: " + col.gameObject.name);
             enemiesInSight.Add(col.gameObject);
-        }
         // Layer 15 is "Fog of War" mask layer
         else if (col.gameObject.tag == compareTag && col.gameObject.layer == 15)
-        {
-            // @Note: this condition is a bit different; Fog-of-War mask interacts with inner-trigger
-            // Debug.Log("The fog of war has been lifted around me, " + gameObject.name + ", by " + col.transform.parent.name);
             whoCanSeeMe.Add(col.transform.parent.gameObject);
-        }
     }
 
     private void OnTriggerExit(Collider col)
     {
         string compareTag = gameObject.tag == "Enemy" ? "Friendly" : "Enemy";
         if (col.gameObject.tag == compareTag && col.gameObject.layer == 9 && !col.isTrigger)
-        {
-            // Debug.Log("Enemy has left my range: " + col.gameObject.name);
             enemiesInSight.Remove(col.gameObject);
-        }
         // Layer 15 is "Fog of War" mask layer
         else if (col.gameObject.tag == compareTag && col.gameObject.layer == 15)
-        {
-            Debug.Log(col.transform.parent.name + " can no longer see me through the fog.");
             whoCanSeeMe.Remove(col.transform.parent.gameObject);
-        }
     }
 
     protected GameObject FindClosestEnemy()
@@ -463,9 +403,7 @@ public class RTSUnit : MonoBehaviour
         float distance = Mathf.Infinity;
         Vector3 position = transform.position;
         if (enemiesInSight.Count > 0)
-        {
             enemiesInSight = enemiesInSight.Where(item => item != null && !item.GetComponent<RTSUnit>().isDead).ToList();
-        }
         foreach (GameObject go in enemiesInSight)
         {
             Vector3 diff = go.transform.position - position;
@@ -492,14 +430,8 @@ public class RTSUnit : MonoBehaviour
     {
         // If not holding shift on this move, clear the moveto queue and make this position first in queue
         if (!addToMoveQueue)
-        {
             moveToPositionQueue.Clear();
-        }
-
         moveToPositionQueue.Enqueue(position);
-
-        // moveToPosition = position;
-        Debug.Log("attack move? " + doAttackMove);
         attackMove = doAttackMove;
         isParking = false;
         ClearAttack();
@@ -509,20 +441,16 @@ public class RTSUnit : MonoBehaviour
 
     public void SetParking(Vector3 position)
     {
-        // TryToggleToAgent();
         isParking = true;
         state = States.Parking;
-        // moveToPosition = position;
         moveToPositionQueue.Clear();
         moveToPositionQueue.Enqueue(position);
     }
 
     public void SetParking(Vector3 position, bool parkingDirectionToggle)
     {
-        // TryToggleToAgent();
         isParking = true;
         state = States.Parking;
-        // moveToPosition = position;
         moveToPositionQueue.Clear();
         moveToPositionQueue.Enqueue(position);
         tryParkingDirection = parkingDirectionToggle;
@@ -545,8 +473,6 @@ public class RTSUnit : MonoBehaviour
 
             moveToPositionQueue.Clear();
             moveToPositionQueue.Enqueue(target.transform.position);
-            // moveToPosition = target.transform.position;
-
             attackTarget = target;
             state = States.Attacking;
         }
@@ -593,24 +519,18 @@ public class RTSUnit : MonoBehaviour
 
         // Play the die sound 50% of the time
         if (Random.Range(0.0f, 1.0f) > 0.5f && dieSound != null)
-        {
             _AudioSource.PlayOneShot(dieSound, 0.5f);
-        }
 
         // @TODO: play animation, play the dust particle system, destroy this object, and finally instantiate corpse object
         _Animator.SetTrigger("die");
 
         // Units loose line-of-sight when dead
         if (fogOfWarMask != null)
-        {
             fogOfWarMask.SetActive(false);
-        }
 
+        // @TODO: need to figure out how to do the white ghost die thing
         if (phaseDie)
-        {
-            // @TODO: need to figure out how to do the white ghost die thing
             Destroy(gameObject);
-        }
 
         yield return new WaitForSeconds(30);
         Destroy(gameObject);

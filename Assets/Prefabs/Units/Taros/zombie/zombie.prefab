@@ -236,7 +236,7 @@ MonoBehaviour:
   playAttackSounds: 1
   patrolRange: 25
   patrolPointsCount: 3
-  startState: 1
+  startState: 0
 --- !u!114 &738280607077118044
 MonoBehaviour:
   m_ObjectHideFlags: 0
