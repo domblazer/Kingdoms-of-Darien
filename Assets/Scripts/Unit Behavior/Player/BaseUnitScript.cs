@@ -96,6 +96,7 @@ public class BaseUnitScript : RTSUnit
 
             }
 
+            // @TODO: and !isBuilding
             if (!isParking && !IsAttacking() && !engagingTarget && !IsMoving())
             {
                 state = States.Standby;
@@ -173,6 +174,14 @@ public class BaseUnitScript : RTSUnit
                 // Remove this instance's button listeners for the next selected builder
                 _UnitBuilderScript.ReleaseButtonListeners();
             }
+
+            // @TODO: shouldn't have to call this for every unit getting Deselected, but doesn't ssem to work properly in UnitSelectionScript
+            if (UIManager.Instance.actionMenuInstance.actionMenuActive)
+            {
+                UIManager.Instance.actionMenuInstance.Toggle(false);
+            }
+            CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Normal);
+            UIManager.Instance.unitInfoInstance.Toggle(false);
         }
     }
 

@@ -252,9 +252,9 @@ public class RTSUnit : MonoBehaviour
             isAttacking = true;
 
         float rangeOffset = attackRange;
-        // Melee attackers use a 3/4ths portion of the attackTarget's collider (offset) size
+        // Melee attackers use a portion of the attackTarget's collider (offset) size
         if (attackTarget)
-            rangeOffset = isMeleeAttacker ? attackTarget.GetComponent<RTSUnit>().offset.x * 0.75f : attackRange;
+            rangeOffset = isMeleeAttacker ? attackTarget.GetComponent<RTSUnit>().offset.x * 0.85f : attackRange;
 
         // While locked on target but not in range, keep moving to attack position
         if (attackTarget && !IsInRangeOf(attackTarget.transform.position, rangeOffset))
@@ -377,8 +377,7 @@ public class RTSUnit : MonoBehaviour
         string compareTag = gameObject.tag == "Enemy" ? "Friendly" : "Enemy";
         // Layer 11 is "Inner Trigger" layer, by its nature, a child of "Unit" layer
         if (col.isTrigger && col.gameObject.layer == 11 && col.gameObject.GetComponentInParent<RTSUnit>())
-            // If collided object is in the "Inner Trigger" layer, we can pretty safely assume it's parent must be an RTSUnit
-            HandleBumping(col.gameObject.GetComponentInParent<RTSUnit>());
+            HandleBumping(col.gameObject.GetComponentInParent<RTSUnit>()); // If collided object is in the "Inner Trigger" layer, we can pretty safely assume it's parent must be an RTSUnit
         // Layer 9 is "Unit" layer
         else if (col.gameObject.tag == compareTag && col.gameObject.layer == 9 && !col.isTrigger)
             enemiesInSight.Add(col.gameObject);
@@ -392,7 +391,6 @@ public class RTSUnit : MonoBehaviour
         string compareTag = gameObject.tag == "Enemy" ? "Friendly" : "Enemy";
         if (col.gameObject.tag == compareTag && col.gameObject.layer == 9 && !col.isTrigger)
             enemiesInSight.Remove(col.gameObject);
-        // Layer 15 is "Fog of War" mask layer
         else if (col.gameObject.tag == compareTag && col.gameObject.layer == 15)
             whoCanSeeMe.Remove(col.transform.parent.gameObject);
     }
@@ -497,8 +495,10 @@ public class RTSUnit : MonoBehaviour
         {
             currentHealth -= amount;
             health = currentHealth * (100 / maxHealth);
-            // Play the blood particle system
-            bloodSystem.Play();
+
+            // Play the blood particle system for units with blood
+            if (bloodSystem)
+                bloodSystem.Play();
         }
         // Delay the health recharge after receiving damage
         nextHealthRecharge = Time.time + lastHitRechargeDelay;

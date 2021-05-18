@@ -295,7 +295,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &635304566
 RectTransform:
   m_ObjectHideFlags: 0
@@ -609,8 +609,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -59.7, y: -50}
-  m_SizeDelta: {x: 360.3, y: 200}
+  m_AnchoredPosition: {x: 0, y: -50}
+  m_SizeDelta: {x: 550, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2021923575
 CanvasRenderer:
@@ -652,9 +652,13 @@ MonoBehaviour:
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 1
-  m_Text: "\u2022\tExit the garrison with Joreth and his enterouge\n\u2022\tHead
-    north along the path\n\u2022\tReclaim the path \n\u2022\tSail northeast\n"
+    m_LineSpacing: 1.2
+  m_Text: "\u2022\tA Tarosian shock force has overwhelmed the coastal town of New
+    Ryolith. \n\u2022\tSecure the garrison from the Zombie hoard roaming around you.
+    Careful, Executioners are also lurking.\n\u2022\tSecure the garrison then use
+    your mage builder to summon a force. \n\u2022\tReclaim the path to your north,
+    that leads to New Ryolith port.\n\u2022\tStorm the town and cast out the invaders.\n\u2022\tSail
+    northeast\n"
 --- !u!1 &2080093222
 GameObject:
   m_ObjectHideFlags: 0
@@ -1366,7 +1370,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2394160140568635162
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4264,7 +4268,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f7bc2ff89a2a7be4c89cd5e948439acb, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c7fdc63dd8f27ce4cb79cfe98dc9eec2, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

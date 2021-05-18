@@ -72,13 +72,6 @@ public class UnitSelectionScript : MonoBehaviour
         if (Input.GetMouseButtonDown(1))
         {
             ClearSelectedUnits();
-
-            if (UIManager.Instance.actionMenuInstance.actionMenuActive)
-            {
-                UIManager.Instance.actionMenuInstance.Toggle(false);
-            }
-            CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Normal);
-            UIManager.Instance.unitInfoInstance.Toggle(false);
         }
     }
 
@@ -193,6 +186,7 @@ public class UnitSelectionScript : MonoBehaviour
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
             {
                 // Did we hit a friendly unit?
+                // @TODO: intangibles are also on unit layer with friendly tag, but should not be clickable like this
                 if (hit.collider.CompareTag("Friendly"))
                 {
                     // Deselect all units when clicking single other unit, unless holding shift

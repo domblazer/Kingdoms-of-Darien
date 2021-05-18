@@ -137,28 +137,26 @@ public class UnitBuilder : MonoBehaviour
             if (masterBuildQueue.Count > 0 && nextQueueReady)
             {
                 BuildMapping next = masterBuildQueue.Peek();
-
                 b = "Peek ghost name: " + next.ghost.name;
-
                 // _BaseUnit.GetUIManager().SetDebugText(a + b);
 
+                // @TODO: take an average of x and y for boxcollider sizes? 
+                Vector3 offsetRange = next.ghost.GetComponent<GhostUnitScript>().sizeOffset;
                 // Move to next ghost in the queue
-                if (next.ghost.GetComponent<GhostUnitScript>().IsSet() && !_BaseUnit.IsInRangeOf(next.ghost.transform.position, 0.7f))
+                if (next.ghost.GetComponent<GhostUnitScript>().IsSet() && !_BaseUnit.IsInRangeOf(next.ghost.transform.position, offsetRange.x))
                 {
                     _BaseUnit.SetMove(next.ghost.transform.position);
                     Debug.Log("Builder moving to ghost");
                 }
-
                 // When arrived at ghost, start building intangible
-                // @TODO: _BaseUnit.IsInRangeOf(next.ghost.transform.position, offsetRange)
-                if (next.ghost.GetComponent<GhostUnitScript>().IsSet() && _BaseUnit.IsInRangeOf(next.ghost.transform.position, 0.7f))
+                else 
                 {
                     Debug.Log("Arrived at ghost");
+                    _BaseUnit.SetMove(transform.position);
                     _BaseUnit.state = RTSUnit.States.Conjuring;
                     nextQueueReady = false;
                     isBuilding = true;
                     masterBuildQueue.Dequeue();
-
                     next.ghost.GetComponent<GhostUnitScript>().StartBuild();
                 }
             }

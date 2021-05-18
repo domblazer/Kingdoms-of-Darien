@@ -7,6 +7,7 @@ public class GhostUnitScript : MonoBehaviour
 {
     public GameObject intangibleUnit;
     public Vector3 offset = Vector3.zero;
+    public Vector3 sizeOffset;
     public GameObject invalidIcon;
     private bool isSet = false;
     private Vector3 hitPos;
@@ -45,6 +46,17 @@ public class GhostUnitScript : MonoBehaviour
         foreach (Material mat in materials)
         {
             SetMaterialTransparency(mat);
+        }
+
+        // Get object offset values based on collider
+        if (gameObject.GetComponent<BoxCollider>())
+        {
+            sizeOffset = gameObject.GetComponent<BoxCollider>().size;
+        }
+        else if (gameObject.GetComponent<CapsuleCollider>())
+        {
+            float r = gameObject.GetComponent<CapsuleCollider>().radius;
+            sizeOffset = new Vector3(r, r, r);
         }
     }
 
