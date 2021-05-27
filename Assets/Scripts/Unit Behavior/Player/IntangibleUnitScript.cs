@@ -8,14 +8,14 @@ public class IntangibleUnitScript : MonoBehaviour
     public Color manaColor; // Material fade starts with a basic mana color
     public GameObject finalUnitPrefab;
 
-    private float manaCost = 1000; // Cost in mana
+    public float buildCost { get; set; } = 1000; // Cost in mana
+    public float buildTime { get; set; } = 10; // duration in seconds
 
     private List<Material> materials = new List<Material>();
     private List<MatMapping> mapping = new List<MatMapping>();
 
     [Range(0.1f, 1.0f)]
     private float rate = 1.0f; // multiplier to slow down build time based on mana
-    private float duration = 10; // duration in seconds
     private float t = 0; // lerp control variable
 
     private UnitBuilder referrer; // This is the UnitBuilder (base unit) instance that instantiated this IntangibleUnitScript instance
@@ -24,9 +24,6 @@ public class IntangibleUnitScript : MonoBehaviour
     private bool parkToggle;
 
     private GhostUnitScript.Directions facingDir = GhostUnitScript.Directions.Forward;
-
-    private GameManagerScript _GameManager;
-
     private InventoryScript inventory;
 
     private float nextManaDrain = 0;
@@ -69,13 +66,18 @@ public class IntangibleUnitScript : MonoBehaviour
 
     void Start()
     {
-        GameObject GameManagerObject = GameObject.FindGameObjectWithTag("GameController");
-        _GameManager = GameManagerObject.GetComponent<GameManagerScript>();
+        buildCost = finalUnitPrefab.GetComponent<BaseUnitScript>().buildCost;
+        buildTime = finalUnitPrefab.GetComponent<BaseUnitScript>().buildTime;
 
         // @TODO: get appropriate team inventory
-        if (_GameManager.Inventories.TryGetValue("Player", out InventoryScript inv))
+        if (GameManagerScript.Instance.Inventories.TryGetValue("Player", out InventoryScript inv))
         {
             inventory = inv;
+            inventory.AddIntangible(this);
+        }
+        else
+        {
+            throw new System.Exception("Intangible could not find inventory.");
         }
 
         // Check if finalUnit is assigned
@@ -83,8 +85,6 @@ public class IntangibleUnitScript : MonoBehaviour
         {
             throw new System.Exception("Intangible mass needs a final prefab to instantiate on completion.");
         }
-        manaCost = finalUnitPrefab.GetComponent<BaseUnitScript>().buildCost;
-        duration = finalUnitPrefab.GetComponent<BaseUnitScript>().buildTime / 10;
 
         foreach (Transform child in transform)
         {
@@ -104,8 +104,6 @@ public class IntangibleUnitScript : MonoBehaviour
             t.CreateGradient(manaColor);
             mapping.Add(t);
         }
-
-        // @TODO: should this be set to child of referrer builder? 
     }
 
     void Update()
@@ -115,23 +113,25 @@ public class IntangibleUnitScript : MonoBehaviour
             // Conjuring
             // decrement currentMana every 1/10th of a second
             // @TODO: mana recharge and drain rates should be set as global vars somewhere, maybe GameManager
-            if (Time.time > nextManaDrain)
+            /* if (Time.time > nextManaDrain)
             {
                 nextManaDrain = Time.time + manaDrainRate;
                 int dec = (int)((manaCost / duration) * manaDrainRate);
                 Debug.Log("dec " + dec);
                 inventory.MinusCurrentMana(dec);
-            }
+            } */
 
             foreach (MatMapping map in mapping)
             {
                 map.material.color = map.gradient.Evaluate(t);
             }
-            t += (Time.deltaTime / duration) * rate;
+            t += (Time.deltaTime / (buildTime / 10)) * rate;
         }
         else
         {
             // Done
+            inventory.RemoveIntangible(this);
+
             if (referrer._BaseUnit.isKinematic)
             {
                 // @NOTE: dequeue for kinematic builder handled in UnitBuilder script

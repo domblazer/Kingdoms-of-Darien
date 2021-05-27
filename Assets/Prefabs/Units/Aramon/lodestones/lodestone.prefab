@@ -797,9 +797,12 @@ MonoBehaviour:
   _UnitBuilderScript: {fileID: 0}
   attackSounds: []
   hitSounds: []
-  playAttackSounds: 1
+  dieSound: {fileID: 0}
+  playAttackSounds: 0
   selectable: 1
   selectRing: {fileID: 6922480116085956299}
+  moveSound: {fileID: 0}
+  selectSound: {fileID: 0}
 --- !u!208 &663056460
 NavMeshObstacle:
   m_ObjectHideFlags: 0

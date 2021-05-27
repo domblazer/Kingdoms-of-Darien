@@ -11,7 +11,7 @@ public class GameManagerScript : MonoBehaviour
     public Dictionary<string, InventoryScript> Inventories = new Dictionary<string, InventoryScript>();
     private InventoryScript playerInventory;
 
-    private float manaRechargeRate = 0.05f;
+    private float manaRechargeRate = 0.1f;
     private float nextManaRecharge = 0;
 
     private GameObject currentHovering = null;
@@ -23,9 +23,7 @@ public class GameManagerScript : MonoBehaviour
         // (note "Team_1" and "Player" are synonomous, but "Player" is used)
         Inventories.Add("Player", new InventoryScript());
         if (Inventories.TryGetValue("Player", out InventoryScript inv))
-        {
             playerInventory = inv;
-        }
 
         // @TODO: foreach(team in teamsFromStartScreen) Add(team,...)
     }
@@ -36,17 +34,18 @@ public class GameManagerScript : MonoBehaviour
         // @TODO: manage all teams mana
         // @TODO: if mana is taking any amount of drain, need to noramalize that into the rate change with some formula I need to figure out,
         // like if drainRate surpasses rechargeRate, just drain at a slower pace, else recharge at a slower pace, type thing
-        if (playerInventory.lodestones.Count > 0 && playerInventory.currentMana <= playerInventory.totalMana)
+        if (playerInventory.lodestones.Count > 0 && playerInventory.currentMana <= playerInventory.totalManaStorage && playerInventory.currentMana >= 0)
         {
             // Every 1/10th of a second, add the totalManaIncome to currentMana
             if (Time.time > nextManaRecharge)
             {
-                // playerInventory.currentMana += playerInventory.totalManaIncome / 10;
-                playerInventory.currentMana += playerInventory.totalManaIncome;
-                if (playerInventory.currentMana > playerInventory.totalMana)
-                {
-                    playerInventory.currentMana = playerInventory.totalMana;
-                }
+                playerInventory.currentMana += playerInventory.GetManaChangeRate();
+
+                if (playerInventory.currentMana > playerInventory.totalManaStorage)
+                    playerInventory.currentMana = playerInventory.totalManaStorage;
+                else if (playerInventory.currentMana < 0)
+                    playerInventory.currentMana = 0;
+
                 nextManaRecharge = Time.time + manaRechargeRate;
             }
         }

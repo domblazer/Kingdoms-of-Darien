@@ -85,6 +85,9 @@ public class UIManager : MonoBehaviour
     [HideInInspector]
     public UnitInfoPanel unitInfoInstance;
 
+    public Image chrystalBallTexture;
+    public Sprite[] chrystalBallTextureArray;
+
     private void Awake()
     {
         Instance = this;
@@ -310,17 +313,6 @@ public class UIManager : MonoBehaviour
         totalUnitsCountText.text = count.ToString();
     }
 
-    public void SetHealthBar(float val)
-    {
-        unitInfo.primaryUnit.healthBar.value = val;
-    }
-
-    public void ToggleUnitIcon(Sprite sprite, bool val = true)
-    {
-        unitInfo.primaryUnit.unitIcon.gameObject.SetActive(val);
-        unitInfo.primaryUnit.unitIcon.sprite = sprite;
-    }
-
     public void SetStatisticsText(string text)
     {
         statisticsText.text = text;
@@ -333,7 +325,18 @@ public class UIManager : MonoBehaviour
 
     public void SetManaUI(InventoryScript inventory)
     {
-        manaProportionText.text = inventory.currentMana + "/" + inventory.totalMana;
+        manaProportionText.text = inventory.currentMana + "/" + inventory.totalManaStorage;
+
+        manaRechargeRateText.text = "+" + inventory.totalManaIncome;
+        manaUsageRateText.text = "-" + inventory.manaDrainRate;
+
+        // Get index of chrystal ball texture by mana proportion 
+        float prct = ((float)inventory.currentMana / (float)inventory.totalManaStorage) * 100;
+        int textureIndex = Mathf.RoundToInt(prct / (100 / chrystalBallTextureArray.Length));
+        if (textureIndex > chrystalBallTextureArray.Length - 1)
+            textureIndex = chrystalBallTextureArray.Length - 1;
+        // Debug.Log("Chrystal ball (corrected) texture indx " + textureIndex);
+        chrystalBallTexture.sprite = chrystalBallTextureArray[textureIndex];
     }
 
     public void SetSecondaryUnitUI(string secondaryName, float secondaryHealth)

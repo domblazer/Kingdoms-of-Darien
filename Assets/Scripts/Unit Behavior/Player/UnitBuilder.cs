@@ -160,12 +160,6 @@ public class UnitBuilder : MonoBehaviour
                     next.ghost.GetComponent<GhostUnitScript>().StartBuild();
                 }
             }
-            else
-            {
-                // Debug.Log("Builder waiting");
-            }
-
-            // _BaseUnit.GetUIManager().SetDebugText(a + b);
         }
     }
 

@@ -90,6 +90,34 @@ MonoBehaviour:
     defensiveBtn: {fileID: 0}
     passiveBtn: {fileID: 0}
   f4Menu: {fileID: 0}
+  f2Menu: {fileID: 0}
+  pauseOnStart: 0
+  chrystalBallTexture: {fileID: 0}
+  chrystalBallTextureArray:
+  - {fileID: 21300000, guid: c7fdc63dd8f27ce4cb79cfe98dc9eec2, type: 3}
+  - {fileID: 21300000, guid: 95faaedf6a75b744cb0e4ad0e06c9803, type: 3}
+  - {fileID: 21300000, guid: f06c1ae62e9e8414eb9554dd536e688f, type: 3}
+  - {fileID: 21300000, guid: f27630158c715d745ab5b919f90cd881, type: 3}
+  - {fileID: 21300000, guid: cf80b9d53c203d34db5fc6154554c760, type: 3}
+  - {fileID: 21300000, guid: 01f1e5aea7fa3404d8ebc8b7d2c4828e, type: 3}
+  - {fileID: 21300000, guid: 3bb67d2439782244ca21b0dc9c3939de, type: 3}
+  - {fileID: 21300000, guid: 0a6732d586a58814aa99825c65043dc2, type: 3}
+  - {fileID: 21300000, guid: f273e141a47e60b4f93091996c45c906, type: 3}
+  - {fileID: 21300000, guid: bc75b44c592a5934aa2102c47c6ee08c, type: 3}
+  - {fileID: 21300000, guid: 586cda9eeb504844fafbd1af7791f38d, type: 3}
+  - {fileID: 21300000, guid: a27c35e5c4905c94b962c3fbdcb68f77, type: 3}
+  - {fileID: 21300000, guid: 4f4e2500cbd68ad458def0cdb67bbaa1, type: 3}
+  - {fileID: 21300000, guid: 3ddcd002fb00a6c46aca2f02273e6e07, type: 3}
+  - {fileID: 21300000, guid: 6b8339b45af20f747ad1f40bcced986d, type: 3}
+  - {fileID: 21300000, guid: 4f66d10c949e8d446ac59e15f7d643ca, type: 3}
+  - {fileID: 21300000, guid: 9c22c68908fdfe248879579adba2a9d5, type: 3}
+  - {fileID: 21300000, guid: ca23b81dcf17d054f8aabc2b48a6d91b, type: 3}
+  - {fileID: 21300000, guid: af5dd2aaca087d847baecc3d1cde4890, type: 3}
+  - {fileID: 21300000, guid: 37b217acdb06bb54f8ae9d9f242c3c9a, type: 3}
+  - {fileID: 21300000, guid: 9cc808b2f01ef14409c01c17ad1f6379, type: 3}
+  - {fileID: 21300000, guid: 0e2a75513686f404c8ad32a6557172e7, type: 3}
+  - {fileID: 21300000, guid: cda686666314f1a4590653ada7f2e301, type: 3}
+  - {fileID: 21300000, guid: afb162f8d5e856342aedf461ed39bfb6, type: 3}
 --- !u!114 &2598857554717851820
 MonoBehaviour:
   m_ObjectHideFlags: 0

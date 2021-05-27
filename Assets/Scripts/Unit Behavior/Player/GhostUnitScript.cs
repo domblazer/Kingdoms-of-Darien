@@ -206,7 +206,7 @@ public class GhostUnitScript : MonoBehaviour
     public void StartBuild()
     {
         // Instantiate the intangible unit and destroy this ghost
-        GameObject intangible = Instantiate(intangibleUnit, transform.position + offset, intangibleUnit.transform.localRotation);
+        GameObject intangible = Instantiate(intangibleUnit, transform.position, intangibleUnit.transform.localRotation);
         intangible.GetComponent<IntangibleUnitScript>().SetReferences(referrer, buildEvent);
         intangible.GetComponent<IntangibleUnitScript>().SetFacingDir(facingDir);
         Destroy(gameObject);

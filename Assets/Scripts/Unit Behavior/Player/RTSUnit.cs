@@ -522,7 +522,10 @@ public class RTSUnit : MonoBehaviour
             _AudioSource.PlayOneShot(dieSound, 0.5f);
 
         // @TODO: play animation, play the dust particle system, destroy this object, and finally instantiate corpse object
-        _Animator.SetTrigger("die");
+        // @TODO: some units don't have a die animation, e.g. Factory units like Barracks
+        // also walls don't even have an animator component
+        if (_Animator)
+            _Animator.SetTrigger("die");
 
         // Units loose line-of-sight when dead
         if (fogOfWarMask != null)
