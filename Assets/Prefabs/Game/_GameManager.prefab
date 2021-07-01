@@ -91,7 +91,7 @@ MonoBehaviour:
     passiveBtn: {fileID: 0}
   f4Menu: {fileID: 0}
   f2Menu: {fileID: 0}
-  pauseOnStart: 0
+  pauseOnStart: 1
   chrystalBallTexture: {fileID: 0}
   chrystalBallTextureArray:
   - {fileID: 21300000, guid: c7fdc63dd8f27ce4cb79cfe98dc9eec2, type: 3}
