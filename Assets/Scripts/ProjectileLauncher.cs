@@ -33,29 +33,21 @@ public class ProjectileLauncher : MonoBehaviour
     {
         yield return new WaitForSeconds(animDelay);
 
-        // GetComponent<AudioSource>().PlayOneShot(launchSound);
-
         // Adjust aiming target since all models have position.y = 1, which is ground level; we want to aim for their center
-        // @TODO: should adjust y by an offset value based on the target's (collider?) height
-        Vector3 adjustedTargetPos = new Vector3(target.transform.position.x, target.transform.position.y + 2, target.transform.position.z);
-        /* Vector3 direction = target.transform.position - transform.position;
-        direction.y = 0;
-        Quaternion targetRotation = Quaternion.LookRotation(direction); */
+        // @TODO: may not be efficient to get RTSUnit component every shoot
+        RTSUnit targetUnit = target.GetComponent<RTSUnit>();
+        float yAdjust = targetUnit.offset.y;
+
+        Vector3 adjustedTargetPos = new Vector3(
+            target.transform.position.x,
+            target.transform.position.y + yAdjust,
+            target.transform.position.z
+        );
 
         Rigidbody projectile = Instantiate(projectilePrefab, launchPoint.position, launchPoint.rotation) as Rigidbody;
         projectile.GetComponent<ProjectileScript>().SetDamage(_BaseUnit.weaponDamage);
-
-        // projectile.velocity = transform.forward * projectileVelocity;
-        if (_BaseUnit.isKinematic)
-        {
-            // E.g. archer arrow doesn't track towards enemy, just point and shoot
-            projectile.AddForce(transform.forward * projectileVelocity, ForceMode.Impulse);
-        }
-        else
-        {
-            // E.g. trebuchet needs to target exact enemy position in order to hit
-            projectile.velocity = (adjustedTargetPos - launchPoint.position).normalized * projectileVelocity;
-        }
+        projectile.velocity = (adjustedTargetPos - launchPoint.position).normalized * projectileVelocity;
+        // @DEP: point-and-shoot way: // projectile.AddForce(transform.forward * projectileVelocity, ForceMode.Impulse);
 
         // If sounds should be played on launch, not at start of attack
         if (_BaseUnit.attackSounds.Length > 0 && !_BaseUnit.playAttackSounds)

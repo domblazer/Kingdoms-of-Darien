@@ -30,7 +30,7 @@ public class RTSUnit : MonoBehaviour
 
     public enum Categories
     {
-        Human, Factory, Lodestone, Fort, Siege, Naval, Monster, Dragon, Scout
+        Monarch, Vanguard, Factory, Lodestone, Fort, Siege, Naval, Monster, Dragon, Scout, Stalwart, Tier1
     }
 
     public Categories unitType;

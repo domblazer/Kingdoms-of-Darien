@@ -4030,13 +4030,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8274941175165335778}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.12, y: 6.1, z: 3.12}
+  m_LocalRotation: {x: 0.7372774, y: 0, z: 0, w: 0.67559016}
+  m_LocalPosition: {x: 0.96, y: 5.66, z: 2.71}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8456852270258179033}
   m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 95, y: 0, z: 0}
 --- !u!1 &8274941175514829512
 GameObject:
   m_ObjectHideFlags: 0
@@ -9518,7 +9518,7 @@ MonoBehaviour:
   isBuilder: 0
   canAttack: 1
   attackRate: 2
-  attackRange: 20
+  attackRange: 10
   weaponDamage: 301
   phaseDie: 0
   isMeleeAttacker: 0
@@ -9530,12 +9530,12 @@ MonoBehaviour:
   _UnitBuilderScript: {fileID: 0}
   attackSounds: []
   hitSounds: []
-  dieSound: {fileID: 0}
+  dieSound: {fileID: 8300000, guid: 43635e3c76b567d42bc895a165e1ea6d, type: 3}
   playAttackSounds: 1
   selectable: 1
   selectRing: {fileID: 8274941177128802694}
-  moveSound: {fileID: 0}
-  selectSound: {fileID: 0}
+  moveSound: {fileID: 8300000, guid: 9f7c427272bcd9a4e95d0d8a6b11063b, type: 3}
+  selectSound: {fileID: 8300000, guid: 291a39177d1420848b33be4bcf50be70, type: 3}
 --- !u!114 &8274941175652985911
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9696,8 +9696,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   launchPoint: {fileID: 8274941175165335779}
   projectilePrefab: {fileID: 963733164422937508, guid: 098dd7fb306b1e54bab113717028091c, type: 3}
-  projectileVelocity: 30
-  animDelay: 1.5
+  projectileVelocity: 15
+  animDelay: 0.5
 --- !u!1 &9154603903196170853
 GameObject:
   m_ObjectHideFlags: 0

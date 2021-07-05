@@ -1916,15 +1916,17 @@ MonoBehaviour:
   meleeWeapons: []
   isAttacking: 0
   attackTarget: {fileID: 0}
-  facing: 0
   fogOfWarMask: {fileID: 0}
   bloodSystem: {fileID: 7672112254575380417}
   _UnitBuilderScript: {fileID: 0}
   attackSounds: []
   hitSounds: []
+  dieSound: {fileID: 0}
   playAttackSounds: 1
   selectable: 1
   selectRing: {fileID: 7672112254513394519}
+  moveSound: {fileID: 0}
+  selectSound: {fileID: 0}
 --- !u!114 &7672112253590628148
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1939,7 +1941,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   launchPoint: {fileID: 7672112253776701581}
   projectilePrefab: {fileID: 3465070647124285113, guid: 19d906da7782a0e4e95db691adf484ba, type: 3}
-  projectileVelocity: 0.65
+  projectileVelocity: 8
   animDelay: 0.5
 --- !u!1 &7467070316275484216
 GameObject:

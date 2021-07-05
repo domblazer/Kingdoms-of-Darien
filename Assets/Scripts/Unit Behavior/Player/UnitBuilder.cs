@@ -202,7 +202,7 @@ public class UnitBuilder : MonoBehaviour
         }
     }
 
-    void QueueBuild(BuildMapping map, Vector2 clickPoint)
+    public void QueueBuild(BuildMapping map, Vector2 clickPoint)
     {
         // First, protect double clicks with click delay
         if (lastClickTime + clickDelay > Time.unscaledTime)
