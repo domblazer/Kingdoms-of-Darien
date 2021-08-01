@@ -166,7 +166,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6529f6a288da29f458b340ec3e746e38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitType: 2
+  playerNumber: 1
+  unitType: 5
   unitIcon: {fileID: 21300000, guid: 52771bcd91a8c4f4b8953f7692b14aca, type: 3}
   unitName: Divine Lodestone
   maxHealth: 17092
@@ -187,15 +188,17 @@ MonoBehaviour:
   meleeWeapons: []
   isAttacking: 0
   attackTarget: {fileID: 0}
-  facing: 0
   fogOfWarMask: {fileID: 0}
   bloodSystem: {fileID: 0}
   _UnitBuilderScript: {fileID: 0}
   attackSounds: []
   hitSounds: []
+  dieSound: {fileID: 0}
   playAttackSounds: 1
   selectable: 1
   selectRing: {fileID: 2915295437388960715}
+  moveSound: {fileID: 0}
+  selectSound: {fileID: 0}
 --- !u!208 &1202558880136334690
 NavMeshObstacle:
   m_ObjectHideFlags: 0

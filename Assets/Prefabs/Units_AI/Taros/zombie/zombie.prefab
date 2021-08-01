@@ -198,6 +198,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fe4f67068f9b6c4d8244f5807a36993, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerNumber: 2
   unitType: 0
   unitIcon: {fileID: 21300000, guid: 94e09cbd081bba54887f98296357903b, type: 3}
   unitName: Zombie
@@ -236,6 +237,7 @@ MonoBehaviour:
   playAttackSounds: 1
   patrolRange: 25
   patrolPointsCount: 3
+  enableFogOfWar: 1
   startState: 0
 --- !u!114 &738280607077118044
 MonoBehaviour:

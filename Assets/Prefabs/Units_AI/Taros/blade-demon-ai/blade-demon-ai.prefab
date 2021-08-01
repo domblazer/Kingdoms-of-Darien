@@ -6584,7 +6584,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fe4f67068f9b6c4d8244f5807a36993, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitType: 6
+  playerNumber: 2
+  unitType: 9
   unitIcon: {fileID: 21300000, guid: 8d15ea19650bf8940b62800985c88147, type: 3}
   unitName: Blade Demon
   maxHealth: 7500
@@ -6599,17 +6600,23 @@ MonoBehaviour:
   canAttack: 1
   attackRate: 1.75
   attackRange: 1
-  sightDistance: 25
   weaponDamage: 570
   phaseDie: 1
   isMeleeAttacker: 1
-  meleeWeapon: {fileID: 6752502113967452470}
-  lookSpeed: 8
+  meleeWeapons: []
   isAttacking: 0
   attackTarget: {fileID: 0}
-  facing: 0
+  fogOfWarMask: {fileID: 0}
   bloodSystem: {fileID: 301983218}
   _UnitBuilderScript: {fileID: 0}
+  attackSounds: []
+  hitSounds: []
+  dieSound: {fileID: 0}
+  playAttackSounds: 1
+  patrolRange: 25
+  patrolPointsCount: 3
+  enableFogOfWar: 1
+  startState: 0
 --- !u!114 &8205676199906370117
 MonoBehaviour:
   m_ObjectHideFlags: 0

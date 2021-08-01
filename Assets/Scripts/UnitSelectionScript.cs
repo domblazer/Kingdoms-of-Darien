@@ -58,7 +58,8 @@ public class UnitSelectionScript : MonoBehaviour
     {
         CursorManager.Instance.OnCursorChanged += Instance_OnCursorChanged;
 
-        _Units = GameObject.Find("_Units"); // This needs to remain in Start() since _Units is created on Awake() in BaseUnitScript
+        // @Note: player in skirmish is always Player1
+        _Units = GameObject.Find("_Units_1"); // This needs to remain in Start() since _Units_1 is created on Awake() in BaseUnitScript
         RefreshAllUnits();
     }
 

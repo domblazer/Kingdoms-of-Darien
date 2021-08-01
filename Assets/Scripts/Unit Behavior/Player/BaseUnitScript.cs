@@ -20,10 +20,10 @@ public class BaseUnitScript : RTSUnit
     private void Awake()
     {
         // @TODO: units parent needs to be by team number, e.g. _Units_Player, _Units_02, etc.
-        _Units = GameObject.Find("_Units");
+        _Units = GameObject.Find("_Units_" + playerNumber);
         if (!_Units)
         {
-            _Units = new GameObject("_Units"); // If master unit holder doesn't exist yet, create it
+            _Units = new GameObject("_Units_" + playerNumber); // If master unit holder doesn't exist yet, create it
         }
         transform.parent = _Units.transform; // child this game object to master unit holder        
 

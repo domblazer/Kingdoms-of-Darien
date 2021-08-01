@@ -16,6 +16,8 @@ public class BaseUnitScriptAI : RTSUnit
     private List<Vector3> patrolPoints = new List<Vector3>();
     private int patrolIndex = 0;
 
+    public bool enableFogOfWar = true;
+
     private List<Renderer> renderers = new List<Renderer>();
     private bool alreadyHidden = false;
     private bool alreadyShown = false;
@@ -33,6 +35,11 @@ public class BaseUnitScriptAI : RTSUnit
     {
         // @TODO: implement moveToPositionQueue
         moveToPosition = transform.position;
+
+        GameObject _Units = GameObject.Find("_Units_" + playerNumber);
+        if (!_Units)
+            _Units = new GameObject("_Units_" + playerNumber);
+        transform.parent = _Units.transform;
     }
 
     private void Start()
@@ -51,20 +58,15 @@ public class BaseUnitScriptAI : RTSUnit
         // @TODO: if AI is on the same team as player, assign "Friendly-AI" tag
         gameObject.tag = "Enemy";
 
-        for (int i = 0; i < patrolPointsCount; i++)
-        {
-            // @TODO: obviously need to check if these points are on the navmesh and not in restricted areas like water
-            Vector3 radius = Random.insideUnitSphere;
-            Vector3 randomPoint = (transform.position + (radius * patrolRange));
-            randomPoint.y = transform.position.y;
-            patrolPoints.Add(randomPoint);
-        }
+        SetPatrolPoints(transform.position);
 
         // Initialize the starting state
         if (startState == StartStates.Patrolling)
             state = defaultState = States.Patrolling;
         else if (startState == StartStates.Standby)
             state = defaultState = States.Standby;
+
+        // @TODO: handle parking when built by a unitBuilderAI then switch to patrolling around park point
     }
 
     private void Update()
@@ -73,7 +75,8 @@ public class BaseUnitScriptAI : RTSUnit
         UpdateHealth();
 
         // Show/hide based on Fog of War
-        UpdateFogOfWar();
+        if (enableFogOfWar)
+            UpdateFogOfWar();
 
         if (!isDead)
         {
@@ -94,6 +97,19 @@ public class BaseUnitScriptAI : RTSUnit
                 HandleAttackRoutine();
                 AutoPickAttackTarget();
             }
+        }
+    }
+
+    void SetPatrolPoints(Vector3 origin)
+    {
+        patrolPoints.Clear();
+        for (int i = 0; i < patrolPointsCount; i++)
+        {
+            // @TODO: obviously need to check if these points are on the navmesh and not in restricted areas like water
+            Vector3 radius = Random.insideUnitSphere;
+            Vector3 randomPoint = (origin + (radius * patrolRange));
+            randomPoint.y = origin.y;
+            patrolPoints.Add(randomPoint);
         }
     }
 

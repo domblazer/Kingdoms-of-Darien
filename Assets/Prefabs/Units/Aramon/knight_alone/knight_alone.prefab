@@ -6231,6 +6231,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6529f6a288da29f458b340ec3e746e38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerNumber: 1
   unitType: 0
   unitIcon: {fileID: 21300000, guid: ee82dac27e7eea247adb9457c6d21fce, type: 3}
   unitName: Honor Guardsman
@@ -6262,9 +6263,12 @@ MonoBehaviour:
   hitSounds:
   - {fileID: 8300000, guid: 618ec65445a9ef24bab7ec9558c9ede0, type: 3}
   - {fileID: 8300000, guid: 5716690d8abb90b46be54af47f89e860, type: 3}
+  dieSound: {fileID: 0}
   playAttackSounds: 1
   selectable: 1
   selectRing: {fileID: 2817996517042091620}
+  moveSound: {fileID: 0}
+  selectSound: {fileID: 0}
 --- !u!114 &2817996516760001469
 MonoBehaviour:
   m_ObjectHideFlags: 0

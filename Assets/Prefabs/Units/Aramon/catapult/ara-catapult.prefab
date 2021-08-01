@@ -6800,7 +6800,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6529f6a288da29f458b340ec3e746e38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitType: 4
+  playerNumber: 1
+  unitType: 7
   unitIcon: {fileID: 21300000, guid: 49a299c823c6461478469906a6f38c5e, type: 3}
   unitName: Catapult
   maxHealth: 1400
@@ -6818,18 +6819,20 @@ MonoBehaviour:
   weaponDamage: 1250
   phaseDie: 0
   isMeleeAttacker: 0
-  meleeWeapon: {fileID: 0}
-  lookSpeed: 3.5
+  meleeWeapons: []
   isAttacking: 0
   attackTarget: {fileID: 0}
-  facing: 0
+  fogOfWarMask: {fileID: 0}
   bloodSystem: {fileID: 1929240976}
   _UnitBuilderScript: {fileID: 0}
   attackSounds: []
   hitSounds: []
+  dieSound: {fileID: 0}
+  playAttackSounds: 1
   selectable: 1
   selectRing: {fileID: 7791215134918155073}
-  clickSounds: []
+  moveSound: {fileID: 0}
+  selectSound: {fileID: 0}
 --- !u!114 &7791215135668130406
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6879,6 +6882,7 @@ MonoBehaviour:
   launchPoint: {fileID: 9037377379096856169}
   projectilePrefab: {fileID: 6181418969240445538, guid: 3b689e47857f7174eb535dd2785c2620, type: 3}
   projectileVelocity: 30
+  animDelay: 1.5
 --- !u!82 &3135591003282245507
 AudioSource:
   m_ObjectHideFlags: 0

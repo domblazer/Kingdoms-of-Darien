@@ -30,9 +30,35 @@ public class RTSUnit : MonoBehaviour
 
     public enum Categories
     {
-        Monarch, Vanguard, Factory, Lodestone, Fort, Siege, Naval, Monster, Dragon, Scout, Stalwart, Tier1
+        Monarch,
+        Vanguard,
+        FactoryTier1,
+        FactoryTier2,
+        LodestoneTier1,
+        LodestoneTier2,
+        Fort,
+        Siege,
+        Naval,
+        Monster,
+        Dragon,
+        Scout,
+        StalwartTier1,
+        InfantryTier1,
+        InfantryTier2
+    }
+    public enum PlayerNumbers
+    {
+        Player1 = 1, 
+        Player2 = 2, 
+        Player3 = 3, 
+        Player4 = 4, 
+        Player5 = 5, 
+        Player6 = 6, 
+        Player7 = 7, 
+        Player8 = 8
     }
 
+    public PlayerNumbers playerNumber = PlayerNumbers.Player1;
     public Categories unitType;
     public Sprite unitIcon;
     public string unitName;

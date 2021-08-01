@@ -2164,6 +2164,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6529f6a288da29f458b340ec3e746e38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerNumber: 1
   unitType: 0
   unitIcon: {fileID: 21300000, guid: cef4839e3006f364c84583606fcefb2c, type: 3}
   unitName: Knight
@@ -2197,9 +2198,12 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 70218cda93611864e93f6b6a9d73e0ad, type: 3}
   - {fileID: 8300000, guid: cbfc415ec7ed18a49b45eecaaa701235, type: 3}
   - {fileID: 8300000, guid: dc44f7d37fa6bea4b9d04db9f68e79c6, type: 3}
+  dieSound: {fileID: 0}
   playAttackSounds: 1
   selectable: 1
   selectRing: {fileID: 4183819654780574878}
+  moveSound: {fileID: 0}
+  selectSound: {fileID: 0}
 --- !u!114 &4183819656204189052
 MonoBehaviour:
   m_ObjectHideFlags: 0

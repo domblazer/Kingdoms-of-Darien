@@ -2405,7 +2405,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6529f6a288da29f458b340ec3e746e38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitType: 5
+  playerNumber: 1
+  unitType: 8
   unitIcon: {fileID: 21300000, guid: 1ef9974c96988f049bdae4b9f0d7f281, type: 3}
   unitName: Man of War
   maxHealth: 0
@@ -2426,15 +2427,17 @@ MonoBehaviour:
   meleeWeapons: []
   isAttacking: 0
   attackTarget: {fileID: 0}
-  facing: 0
   fogOfWarMask: {fileID: 0}
   bloodSystem: {fileID: 0}
   _UnitBuilderScript: {fileID: 0}
   attackSounds: []
   hitSounds: []
+  dieSound: {fileID: 0}
   playAttackSounds: 1
   selectable: 1
   selectRing: {fileID: 4697859399917495052}
+  moveSound: {fileID: 0}
+  selectSound: {fileID: 0}
 --- !u!114 &4697859398735673664
 MonoBehaviour:
   m_ObjectHideFlags: 0

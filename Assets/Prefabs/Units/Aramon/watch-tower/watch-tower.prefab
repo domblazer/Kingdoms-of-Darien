@@ -247,6 +247,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6529f6a288da29f458b340ec3e746e38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerNumber: 1
   unitType: 0
   unitIcon: {fileID: 21300000, guid: 54e61ee412572fc46824fa6acc58d253, type: 3}
   unitName: Watch Tower
@@ -284,9 +285,12 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e526e6f8216b13c448831e3bec0678b9, type: 3}
   - {fileID: 8300000, guid: 356e46be231f0bb4d8f6b9910c7a6015, type: 3}
   - {fileID: 8300000, guid: 4743a9c316676774fb1ac18928878f67, type: 3}
+  dieSound: {fileID: 0}
   playAttackSounds: 0
   selectable: 1
   selectRing: {fileID: 6407128823468580700}
+  moveSound: {fileID: 0}
+  selectSound: {fileID: 0}
 --- !u!114 &6407128823540615193
 MonoBehaviour:
   m_ObjectHideFlags: 0

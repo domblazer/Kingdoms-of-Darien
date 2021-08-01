@@ -5295,7 +5295,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6529f6a288da29f458b340ec3e746e38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitType: 0
+  playerNumber: 1
+  unitType: 13
   unitIcon: {fileID: 21300000, guid: 8fd357a08b7b9ea4db6914acef008da7, type: 3}
   unitName: Swordsman
   maxHealth: 3000
@@ -5337,12 +5338,12 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 1fae832e53072af40b146b554a1a58c0, type: 3}
   - {fileID: 8300000, guid: cc506bc7b1391ff438f171b320ca42cf, type: 3}
   - {fileID: 8300000, guid: 811e2c7452967b14d9f79bb0d2e33e9c, type: 3}
-  moveSound: {fileID: 8300000, guid: eac221f1f7a6ef0478bcb04b708e00c7, type: 3}
-  selectSound: {fileID: 8300000, guid: 710464a83b84aef4189f50cdce274099, type: 3}
   dieSound: {fileID: 8300000, guid: 95f2e852bb5f0cc45857967c9ffec542, type: 3}
   playAttackSounds: 1
   selectable: 1
   selectRing: {fileID: 1770128794485609735}
+  moveSound: {fileID: 8300000, guid: eac221f1f7a6ef0478bcb04b708e00c7, type: 3}
+  selectSound: {fileID: 8300000, guid: 710464a83b84aef4189f50cdce274099, type: 3}
 --- !u!195 &919132147622893407
 NavMeshAgent:
   m_ObjectHideFlags: 0

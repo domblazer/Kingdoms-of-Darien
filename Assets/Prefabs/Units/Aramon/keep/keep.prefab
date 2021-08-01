@@ -386,7 +386,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6529f6a288da29f458b340ec3e746e38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitType: 0
+  playerNumber: 1
+  unitType: 3
   unitIcon: {fileID: 21300000, guid: 1127fbe556c73484190397ce3c4c9ebf, type: 3}
   unitName: Keep
   maxHealth: 25116
@@ -407,15 +408,17 @@ MonoBehaviour:
   meleeWeapons: []
   isAttacking: 0
   attackTarget: {fileID: 0}
-  facing: 0
   fogOfWarMask: {fileID: 0}
   bloodSystem: {fileID: 0}
   _UnitBuilderScript: {fileID: 0}
   attackSounds: []
   hitSounds: []
+  dieSound: {fileID: 0}
   playAttackSounds: 1
   selectable: 1
   selectRing: {fileID: 2011250675025538027}
+  moveSound: {fileID: 0}
+  selectSound: {fileID: 0}
 --- !u!114 &919132148019758411
 MonoBehaviour:
   m_ObjectHideFlags: 0
