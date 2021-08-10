@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class FactoryUnitAnimator : MonoBehaviour
 {
-    private Animator m_Animator;
-    private UnitBuilder unitBuilder;
+    private Animator _Animator;
+    private RTSUnit _Unit;
 
     void Start()
     {
-        m_Animator = GetComponent<Animator>();
-        unitBuilder = GetComponent<UnitBuilder>();
+        _Animator = GetComponent<Animator>();
+        _Unit = GetComponent<RTSUnit>();
     }
 
     void Update()
     {
-        m_Animator.SetBool("building", unitBuilder.IsBuilding());
+        _Animator.SetBool("building", _Unit.state == RTSUnit.States.Conjuring);
     }
 }

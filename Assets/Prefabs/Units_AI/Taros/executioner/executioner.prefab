@@ -6653,7 +6653,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerNumber: 2
-  unitType: 6
+  unitType: 17
   unitIcon: {fileID: 21300000, guid: 356939765b11dd24d8506ec4faddc57a, type: 3}
   unitName: Executioner
   maxHealth: 2611

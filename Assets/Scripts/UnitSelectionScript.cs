@@ -59,7 +59,7 @@ public class UnitSelectionScript : MonoBehaviour
         CursorManager.Instance.OnCursorChanged += Instance_OnCursorChanged;
 
         // @Note: player in skirmish is always Player1
-        _Units = GameObject.Find("_Units_1"); // This needs to remain in Start() since _Units_1 is created on Awake() in BaseUnitScript
+        _Units = GameObject.Find("_Units_Player1"); // This needs to remain in Start() since _Units_1 is created on Awake() in BaseUnitScript
         RefreshAllUnits();
     }
 
@@ -87,11 +87,6 @@ public class UnitSelectionScript : MonoBehaviour
         }
     }
 
-    public bool IsMouseOverUI()
-    {
-        return EventSystem.current.IsPointerOverGameObject();
-    }
-
     public void RefreshAllUnits()
     {
         if (_Units)
@@ -111,7 +106,7 @@ public class UnitSelectionScript : MonoBehaviour
         isHoldingDown = false;
 
         // Click the mouse button
-        if (Input.GetMouseButtonDown(0) && !IsMouseOverUI())
+        if (Input.GetMouseButtonDown(0) && !InputManager.IsMouseOverUI())
         {
             clickTime = Time.time;
             // We dont yet know if we are drawing a square, but we need the first coordinate in case we do draw a square
@@ -135,22 +130,22 @@ public class UnitSelectionScript : MonoBehaviour
 
                 // If holding shift, don't clear so current selection will add to selected
                 // @TODO: need to subtract already selected units within the current square
-                if (!HoldingShift())
+                if (!InputManager.HoldingShift())
                     selectedUnits.Clear(); // Clear the list with selected unit
 
                 // Select the units
                 HandleUnitsUnderSquare();
             }
-            else if (!IsMouseOverUI() && Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit))
+            else if (!InputManager.IsMouseOverUI() && Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit))
             {
                 // Here is where units should be told to move
                 // @TODO: should compare against Unit layer
                 if (!hit.collider.CompareTag("Friendly") && !hit.collider.CompareTag("Enemy"))
                 {
-                    bool doAttackMove = (Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftControl));
-                    bool addToMoveQueue = HoldingShift();
+                    bool doAttackMove = InputManager.HoldingCtrl();
+                    bool addToMoveQueue = InputManager.HoldingShift();
 
-                    // @TODO: if HoldingShift() need to add this point to an array of positions for the unit to travel to sequentially
+                    // @TODO: if InputManager.HoldingShift() need to add this point to an array of positions for the unit to travel to sequentially
                     // @TODO: at this click point, need to instantiate sprite object that will show/hide depending on who is selected and holding shift
                     // so, need to queue the sprite object with the transform as well
 
@@ -169,13 +164,13 @@ public class UnitSelectionScript : MonoBehaviour
                     GetComponent<AudioSource>().PlayOneShot(clickSound);
                 }
             }
-            if (selectedUnits.Count == 0 && !IsMouseOverUI())
+            if (selectedUnits.Count == 0 && !InputManager.IsMouseOverUI())
                 CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Normal);
             // GroupSelectedByName();
         }
 
         // Holding down the mouse button
-        if (Input.GetMouseButton(0) && !IsMouseOverUI())
+        if (Input.GetMouseButton(0) && !InputManager.IsMouseOverUI())
             if (Time.time - clickTime > clickHoldDelay)
                 isHoldingDown = true;
 
@@ -191,7 +186,7 @@ public class UnitSelectionScript : MonoBehaviour
                 if (hit.collider.CompareTag("Friendly"))
                 {
                     // Deselect all units when clicking single other unit, unless holding shift
-                    if (!HoldingShift())
+                    if (!InputManager.HoldingShift())
                     {
                         foreach (GameObject unit in selectedUnits)
                             unit.GetComponent<BaseUnitScript>().DeSelect();
@@ -203,7 +198,7 @@ public class UnitSelectionScript : MonoBehaviour
                     if (activeUnit.GetComponent<BaseUnitScript>().selectable)
                     {
                         // Play click sound
-                        if (!HoldingShift())
+                        if (!InputManager.HoldingShift())
                             GetComponent<AudioSource>().PlayOneShot(clickSound);
 
                         activeUnit.GetComponent<BaseUnitScript>().Select(true); // Set this unit to selected with param alone=true
@@ -243,14 +238,9 @@ public class UnitSelectionScript : MonoBehaviour
                 if (!highlightOnly)
                     selectedUnits.Add(currentUnit);
             }
-            else if (!HoldingShift())
+            else if (!InputManager.HoldingShift())
                 currentUnit.GetComponent<BaseUnitScript>().DeSelect();
         }
-    }
-
-    private bool HoldingShift()
-    {
-        return Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
     }
 
     private void MoveGroup(Vector3 hitPoint, bool addToMoveQueue = false, bool attackMove = false)

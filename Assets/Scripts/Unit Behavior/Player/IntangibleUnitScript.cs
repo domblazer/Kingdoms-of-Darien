@@ -7,6 +7,7 @@ public class IntangibleUnitScript : MonoBehaviour
 {
     public Color manaColor; // Material fade starts with a basic mana color
     public GameObject finalUnitPrefab;
+    public RTSUnit finalUnit { get { return finalUnitPrefab.GetComponent<RTSUnit>(); } }
 
     public float buildCost { get; set; } = 1000; // Cost in mana
     public float buildTime { get; set; } = 10; // duration in seconds
@@ -66,8 +67,8 @@ public class IntangibleUnitScript : MonoBehaviour
 
     void Start()
     {
-        buildCost = finalUnitPrefab.GetComponent<BaseUnitScript>().buildCost;
-        buildTime = finalUnitPrefab.GetComponent<BaseUnitScript>().buildTime;
+        buildCost = finalUnitPrefab.GetComponent<RTSUnit>().buildCost;
+        buildTime = finalUnitPrefab.GetComponent<RTSUnit>().buildTime;
 
         // @TODO: get appropriate team inventory
         if (GameManagerScript.Instance.Inventories.TryGetValue("Player", out InventoryScript inv))
@@ -134,7 +135,7 @@ public class IntangibleUnitScript : MonoBehaviour
 
             if (referrer._BaseUnit.isKinematic)
             {
-                // @NOTE: dequeue for kinematic builder handled in UnitBuilder script
+                // @NOTE: dequeue for kinematic builder handled in UnitBuilder script b/c unit builder tracks ghosts, not intangibles
 
                 // Instantiate final new unit
                 GameObject newUnit = Instantiate(finalUnitPrefab, transform.position, transform.rotation);

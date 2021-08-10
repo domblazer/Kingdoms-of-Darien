@@ -19,7 +19,7 @@ public class BaseUnitScript : RTSUnit
 
     private void Awake()
     {
-        // @TODO: units parent needs to be by team number, e.g. _Units_Player, _Units_02, etc.
+        // @TODO: units parent needs to be by team number, e.g. _Units_Player1
         _Units = GameObject.Find("_Units_" + playerNumber);
         if (!_Units)
         {
@@ -47,6 +47,15 @@ public class BaseUnitScript : RTSUnit
         gameObject.tag = "Friendly"; // @TODO: assign tags for different teams
 
         // @TODO: set the minimap icon sprite color to faction-color
+
+        // Get unit builder manager which handles btn listeners, build queues, etc
+        if (isBuilder)
+        {
+            // @TODO: UnitBuilder should separate logic as much as possible. Also consider UnitBuilderAI
+            _UnitBuilderScript = GetComponent<UnitBuilder>();
+            if (!_UnitBuilderScript)
+                throw new System.Exception("Cannot have a builder without UnitBuilder script. Attach to this object in inspector.");
+        }
 
         // Need to tell unit selection script to refresh allUnits. I think this needs to be in Start()
         _UnitSelection.RefreshAllUnits();
@@ -183,6 +192,11 @@ public class BaseUnitScript : RTSUnit
             CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Normal);
             UIManager.Instance.unitInfoInstance.Toggle(false);
         }
+    }
+
+    public bool IsSelected()
+    {
+        return selected;
     }
 
     void OnMouseEnter()

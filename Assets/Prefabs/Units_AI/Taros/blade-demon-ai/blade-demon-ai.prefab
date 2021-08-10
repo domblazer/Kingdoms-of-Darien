@@ -6585,7 +6585,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerNumber: 2
-  unitType: 9
+  unitType: 16
   unitIcon: {fileID: 21300000, guid: 8d15ea19650bf8940b62800985c88147, type: 3}
   unitName: Blade Demon
   maxHealth: 7500

@@ -18,13 +18,10 @@ public class GhostUnitScript : MonoBehaviour
     private List<Material> materials = new List<Material>();
     private List<Renderer> renderers = new List<Renderer>();
 
-    private bool shiftReleased;
-
     public enum Directions : int
     {
         Forward = 180, Right = 90, Backwards = 0, Left = -90
     }
-
     private Directions facingDir = Directions.Forward;
 
     private bool placementValid = true;
@@ -82,7 +79,7 @@ public class GhostUnitScript : MonoBehaviour
         // @TODO: when there's an active ghost, the build menu goes transparent and is disabled
 
         // If click to set while holding shift
-        if (Input.GetMouseButtonDown(0) && HoldingShift() && !isSet && placementValid)
+        if (Input.GetMouseButtonDown(0) && InputManager.HoldingShift() && !isSet && placementValid)
         {
             // Place this ghost and make a copy
             Debug.Log("placed and copied");
@@ -90,13 +87,17 @@ public class GhostUnitScript : MonoBehaviour
             invalidIcon.SetActive(false);
             // Increase the count of ghosts placed during this shift period
             referrer.PlusPlaced();
+            // @TODO: referrer.placedSinceLastShift++;
+
             // Add this newly placed ghost to the build queue
             referrer.masterBuildQueue.Enqueue(buildEvent);
 
             // Instantiate a copy of this self ghost, which will now become the "active" (!isSet) ghost
             GameObject ghost = Instantiate(gameObject, hitPos + offset, gameObject.transform.localRotation);
-            // IMPORTANT: this new active ghost needs to set it's buildEvent.ghost to itself so UnitBuilder will know to travel to it next
+            // @IMPORTANT: this new active ghost needs to set it's buildEvent.ghost to itself so UnitBuilder will know to travel to it next
             buildEvent.ghost = ghost;
+            // @TODO: referrer.activeFloatingGhost = ghost;
+
             ghost.GetComponent<GhostUnitScript>().SetReferences(referrer, buildEvent);
             // Make sure the copy maintains this ghost's rotation
             ghost.GetComponent<GhostUnitScript>().SetFacingDir(facingDir);
@@ -104,7 +105,7 @@ public class GhostUnitScript : MonoBehaviour
             // Tell the builder this ghost has been placed and is ready to be reached and built
             referrer.SetNextQueueReady(true);
         }
-        else if (Input.GetMouseButtonDown(0) && !HoldingShift() && !isSet && placementValid)
+        else if (Input.GetMouseButtonDown(0) && !InputManager.HoldingShift() && !isSet && placementValid)
         {
             // Place single
             Debug.Log("placed single");
@@ -112,6 +113,8 @@ public class GhostUnitScript : MonoBehaviour
             invalidIcon.SetActive(false);
             // Reset count of ghosts placed this shift period
             referrer.ResetPlaced();
+            // @TODO: referrer.placedSinceLastShift = 0;
+
             // Queue this self on single place
             referrer.masterBuildQueue.Enqueue(buildEvent);
             referrer.SetNextQueueReady(true);
@@ -123,40 +126,35 @@ public class GhostUnitScript : MonoBehaviour
         if (Input.GetMouseButtonDown(2) && !isSet)
         {
             if (facingDir == Directions.Forward)
-            {
                 facingDir = Directions.Right;
-            }
             else if (facingDir == Directions.Right)
-            {
                 facingDir = Directions.Backwards;
-            }
             else if (facingDir == Directions.Backwards)
-            {
                 facingDir = Directions.Left;
-            }
             else if (facingDir == Directions.Left)
-            {
                 facingDir = Directions.Forward;
-            }
-            transform.rotation = Quaternion.Euler(transform.rotation.x, (float)facingDir, transform.rotation.z);
+            SetFacingDir(facingDir);
+            // transform.rotation = Quaternion.Euler(transform.rotation.x, (float)facingDir, transform.rotation.z);
             // Debug.Log("facing dir: " + facingDir);
         }
 
         // @TODO: if ghost isSet, at least one friendly builder is selected, and shift key was pressed, show the ghost
-        if (isSet && ShiftPressed())
+        if (isSet && InputManager.ShiftPressed())
         {
             Toggle(true);
         }
 
         // Hide again when shift is released
-        if (isSet && ShiftReleased())
+        if (isSet && InputManager.ShiftReleased())
         {
             Toggle(false);
         }
         // If not set (active ghost) and shift released, only remove when placed count since last shift release greater than 0
-        else if (!isSet && ShiftReleased() && referrer.GetPlaced() > 0)
+        // referrer.placedSinceLastShift > 0
+        else if (!isSet && InputManager.ShiftReleased() && referrer.GetPlaced() > 0)
         {
             referrer.ResetPlaced();
+            // referrer.placedSinceLastShift = 0;
             Destroy(gameObject);
         }
 
@@ -192,14 +190,13 @@ public class GhostUnitScript : MonoBehaviour
     public void SetFacingDir(Directions dir)
     {
         facingDir = dir;
+        transform.rotation = Quaternion.Euler(transform.rotation.x, (float)facingDir, transform.rotation.z);
     }
 
     private void Toggle(bool val)
     {
         foreach (Renderer r in renderers)
-        {
             r.enabled = val;
-        }
         // invalidIcon.SetActive(false);
     }
 
@@ -228,21 +225,6 @@ public class GhostUnitScript : MonoBehaviour
             placementValid = true;
             invalidIcon.SetActive(false);
         }
-    }
-
-    private bool HoldingShift()
-    {
-        return Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
-    }
-
-    private bool ShiftPressed()
-    {
-        return Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift);
-    }
-
-    private bool ShiftReleased()
-    {
-        return Input.GetKeyUp(KeyCode.LeftShift) || Input.GetKeyUp(KeyCode.RightShift);
     }
 
     public bool IsSet()

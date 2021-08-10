@@ -31,11 +31,14 @@ public class BaseUnitScriptAI : RTSUnit
     public StartStates startState;
     private States defaultState;
 
+    private AIPlayer _AIPlayer;
+
     private void Awake()
     {
         // @TODO: implement moveToPositionQueue
         moveToPosition = transform.position;
 
+        // Group unit under team holder
         GameObject _Units = GameObject.Find("_Units_" + playerNumber);
         if (!_Units)
             _Units = new GameObject("_Units_" + playerNumber);
@@ -44,16 +47,13 @@ public class BaseUnitScriptAI : RTSUnit
 
     private void Start()
     {
+        // General set-up in RTSUnit
+        Init();
+
         // Grab all of this unit's mesh renderers
         foreach (Transform child in transform)
-        {
             if (child.GetComponent<Renderer>())
-            {
                 renderers.Add(child.GetComponent<Renderer>());
-            }
-        }
-
-        Init();
 
         // @TODO: if AI is on the same team as player, assign "Friendly-AI" tag
         gameObject.tag = "Enemy";
@@ -67,6 +67,11 @@ public class BaseUnitScriptAI : RTSUnit
             state = defaultState = States.Standby;
 
         // @TODO: handle parking when built by a unitBuilderAI then switch to patrolling around park point
+        GameObject playerHolder = GameObject.Find("_" + playerNumber);
+        if (!playerHolder)
+            throw new System.Exception("Error: Cannot find an AI Player to assign this AI unit to. Exiting.");
+        _AIPlayer = playerHolder.GetComponent<AIPlayer>();
+        _AIPlayer.AddToTotal(this);
     }
 
     private void Update()

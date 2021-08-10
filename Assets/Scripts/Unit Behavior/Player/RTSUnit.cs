@@ -31,18 +31,22 @@ public class RTSUnit : MonoBehaviour
     public enum Categories
     {
         Monarch,
-        Vanguard,
-        FactoryTier1,
-        FactoryTier2,
         LodestoneTier1,
         LodestoneTier2,
-        Fort,
-        Siege,
-        Naval,
-        Monster,
+        FactoryTier1,
+        FactoryTier2,
+        BuilderTier1,
+        BuilderTier2,
+        FortTier1,
+        FortTier2,
+        SiegeTier1,
+        SiegeTier2,
+        NavalTier1,
+        NavalTier2,
         Dragon,
         Scout,
         StalwartTier1,
+        StalwartTier2,
         InfantryTier1,
         InfantryTier2
     }
@@ -183,14 +187,6 @@ public class RTSUnit : MonoBehaviour
         _AudioSource = GetComponent<AudioSource>();
         _Animator = GetComponent<Animator>();
 
-        // Get unit builder manager which handles btn listeners, build queues, etc
-        if (isBuilder)
-        {
-            _UnitBuilderScript = GetComponent<UnitBuilder>();
-            if (!_UnitBuilderScript)
-                throw new System.Exception("Cannot have a builder without UnitBuilder script. Attach to this object in inspector.");
-        }
-
         // Set up linkage with melee weapon(s) if unit is a melee attacker
         if (isMeleeAttacker && meleeWeapons.Length > 0)
             foreach (MeleeWeaponScript mw in meleeWeapons)
@@ -234,7 +230,7 @@ public class RTSUnit : MonoBehaviour
                 if (isParking)
                     isParking = !IsInRangeOf(moveToPosition);
 
-                // BounceAvoidanceRadius();
+                // InflateAvoidanceRadius();
             }
             /* else
             {
@@ -243,7 +239,7 @@ public class RTSUnit : MonoBehaviour
         }
     }
 
-    protected void BounceAvoidanceRadius()
+    protected void InflateAvoidanceRadius()
     {
         if (!IsInRangeOf(moveToPosition, 4))
         {
