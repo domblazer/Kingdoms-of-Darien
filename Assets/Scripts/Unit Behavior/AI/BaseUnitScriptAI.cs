@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using System.Linq;
+using Constants;
 
 /* 
     This class inherits RTSUnit to derive common behavior for all units, AI or otherwise, (e.g. pathfinding, attack routine, etc).
@@ -31,18 +32,10 @@ public class BaseUnitScriptAI : RTSUnit
     public StartStates startState;
     private States defaultState;
 
-    private AIPlayer _AIPlayer;
-
     private void Awake()
     {
         // @TODO: implement moveToPositionQueue
-        moveToPosition = transform.position;
-
-        // Group unit under team holder
-        GameObject _Units = GameObject.Find("_Units_" + playerNumber);
-        if (!_Units)
-            _Units = new GameObject("_Units_" + playerNumber);
-        transform.parent = _Units.transform;
+        // moveToPosition = transform.position;
     }
 
     private void Start()
@@ -65,13 +58,6 @@ public class BaseUnitScriptAI : RTSUnit
             state = defaultState = States.Patrolling;
         else if (startState == StartStates.Standby)
             state = defaultState = States.Standby;
-
-        // @TODO: handle parking when built by a unitBuilderAI then switch to patrolling around park point
-        GameObject playerHolder = GameObject.Find("_" + playerNumber);
-        if (!playerHolder)
-            throw new System.Exception("Error: Cannot find an AI Player to assign this AI unit to. Exiting.");
-        _AIPlayer = playerHolder.GetComponent<AIPlayer>();
-        _AIPlayer.AddToTotal(this);
     }
 
     private void Update()
@@ -149,12 +135,8 @@ public class BaseUnitScriptAI : RTSUnit
     void TriggerHide()
     {
         if (!alreadyHidden)
-        {
             foreach (Renderer r in renderers)
-            {
                 r.enabled = false;
-            }
-        }
         alreadyShown = false;
         alreadyHidden = true;
     }
@@ -162,12 +144,8 @@ public class BaseUnitScriptAI : RTSUnit
     void TriggerShow()
     {
         if (!alreadyShown)
-        {
             foreach (Renderer r in renderers)
-            {
                 r.enabled = true;
-            }
-        }
         alreadyHidden = false;
         alreadyShown = true;
     }

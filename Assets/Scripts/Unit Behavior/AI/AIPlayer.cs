@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Constants;
 
 public class AIPlayer : MonoBehaviour
 {
     private int unitLimit = 500;
-    private RTSUnit.Categories currentNeedType;
+    private UnitCategories currentNeedType;
 
     // @TODO: AI player needs certain quotas to try to reach:
     // e.g. base starting player main quota is like 7 mage builders, 100 infrantry, etc.
@@ -23,7 +24,7 @@ public class AIPlayer : MonoBehaviour
             public int priority;
             public int count { get { return units.Count; } }
             public int limit;
-            public RTSUnit.Categories label;
+            public UnitCategories label;
             public float ratio { get { return count / limit; } }
             public bool quotaFull { get { return count == limit; } }
             public override string ToString()
@@ -88,12 +89,12 @@ public class AIPlayer : MonoBehaviour
                 Debug.LogWarning("Unit limit for type " + unit.unitType + " has been reached, last unit (" + unit.name + ") should not have been created and was not added to the AI player context.");
         }
 
-        public List<BaseUnitScriptAI> GetUnitsByType(RTSUnit.Categories type)
+        public List<BaseUnitScriptAI> GetUnitsByType(UnitCategories type)
         {
             return quotaItemList.Find(x => x.label == type).units;
         }
 
-        public List<BaseUnitScriptAI> GetUnitsByTypes(params RTSUnit.Categories[] types)
+        public List<BaseUnitScriptAI> GetUnitsByTypes(params UnitCategories[] types)
         {
             return quotaItemList.Find(x => types.Contains(x.label)).units;
         }
@@ -141,7 +142,13 @@ public class AIPlayer : MonoBehaviour
         Balanced, Turtle
     }
     public ProfileTypes profileType;
-    public RTSUnit.PlayerNumbers playerNumber;
+    public PlayerNumbers playerNumber;
+
+    public void Init(BaseUnitScriptAI[] initialTotalUnits)
+    {
+        foreach (BaseUnitScriptAI unit in initialTotalUnits)
+            profile.AddUnit(unit);
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -160,9 +167,12 @@ public class AIPlayer : MonoBehaviour
         // @TODO: need to be able to start with any unit configuration, e.g. 3 cabals, 1 temple, 10 executioners
         // So, need to compile all units for this team player and group by type, e.g. builders, infantry, fort units, etc.
         // Init units at start
-        GameObject _Units = GameObject.Find("_Units_" + playerNumber);
-        foreach (Transform child in _Units.transform)
-            profile.AddUnit(child.gameObject.GetComponent<BaseUnitScriptAI>());
+        /* if (GameManagerScript.Instance.TryGetVirtualPlayer(playerNumber, out GameManagerScript.VirtualPlayer vp))
+        {
+            foreach (Transform child in vp.holder.transform)
+                profile.AddUnit(child.gameObject.GetComponent<BaseUnitScriptAI>());
+        } */
+
     }
 
     // Update is called once per frame
@@ -172,19 +182,19 @@ public class AIPlayer : MonoBehaviour
         {
             DetermineNeedState();
 
-            List<BaseUnitScriptAI> factories = profile.GetUnitsByTypes(RTSUnit.Categories.FactoryTier1, RTSUnit.Categories.FactoryTier2);
+            List<BaseUnitScriptAI> factories = profile.GetUnitsByTypes(UnitCategories.FactoryTier1, UnitCategories.FactoryTier2);
             // @TODO: if no builders?
             // @TODO: mobile builders vs factories
 
             // Tell builders to start building some units
             foreach (BaseUnitScriptAI factory in factories)
             {
-                UnitBuilderAI<FactoryAI> builderAI = factory.gameObject.GetComponent<UnitBuilderAI<FactoryAI>>();
+                FactoryAI builderAI = factory.gameObject.GetComponent<FactoryAI>();
                 if (!builderAI.isBuilding)
                 {
                     // If this builder is not already conjuring something, pick a unit that meets the current need
-                    UnitBuilderAI<FactoryAI>.BuildUnit[] opts = builderAI.buildUnitPrefabs.Where(x => x.unitCategory == currentNeedType).ToArray();
-                    Debug.Log("opts: " + string.Join<UnitBuilderAI<FactoryAI>.BuildUnit>(", ", opts.ToArray()));
+                    BuildUnit[] opts = builderAI.buildUnitPrefabs.Where(x => x.unitCategory == currentNeedType).ToArray();
+                    Debug.Log("opts: " + string.Join<BuildUnit>(", ", opts.ToArray()));
                     if (opts.Length > 0)
                     {
                         // Choose an individual unit by type at random to build next
@@ -194,7 +204,7 @@ public class AIPlayer : MonoBehaviour
                 }
             }
 
-            // @TODO: AIs should avoid gates and walls, which belong to FortTier1, also possibly scouts altogether
+            // @TODO: AIs should avoid building gates and walls, which belong to FortTier1, also possibly scouts altogether
 
             // Cases:
             // if (builderUnits.Count < builderUnitCountLimit) => tell mobile builders to queue up some Factories
@@ -205,7 +215,7 @@ public class AIPlayer : MonoBehaviour
         // and launch an attack at the average position represented by a snapshot of an opposing army 
     }
 
-    private RTSUnit.Categories DetermineNeedState()
+    private UnitCategories DetermineNeedState()
     {
         // Compile all needs in list
         List<MasterQuota.Item> needs = new List<MasterQuota.Item>();
@@ -299,116 +309,116 @@ public class AIPlayer : MonoBehaviour
             {
                 priority = 2,
                 limit = 8,
-                label = RTSUnit.Categories.LodestoneTier1
+                label = UnitCategories.LodestoneTier1
             },
             lodestonesTier2 = new MasterQuota.Item
             {
                 priority = 5,
                 limit = 4,
-                label = RTSUnit.Categories.LodestoneTier2
+                label = UnitCategories.LodestoneTier2
             },
             factoriesTier1 = new MasterQuota.Item
             {
                 priority = 1,
                 limit = 5,
-                label = RTSUnit.Categories.FactoryTier1
+                label = UnitCategories.FactoryTier1
             },
             factoriesTier2 = new MasterQuota.Item
             {
                 priority = 1,
                 limit = 8,
-                label = RTSUnit.Categories.FactoryTier2
+                label = UnitCategories.FactoryTier2
             },
             buildersTier1 = new MasterQuota.Item
             {
                 priority = 3,
                 limit = 10,
-                label = RTSUnit.Categories.BuilderTier1
+                label = UnitCategories.BuilderTier1
             },
             buildersTier2 = new MasterQuota.Item
             {
                 priority = 20,
                 limit = 10,
-                label = RTSUnit.Categories.BuilderTier2
+                label = UnitCategories.BuilderTier2
             },
             fortTier1 = new MasterQuota.Item
             {
                 priority = 20,
                 limit = 10,
-                label = RTSUnit.Categories.FortTier1
+                label = UnitCategories.FortTier1
             },
             fortTier2 = new MasterQuota.Item
             {
                 priority = 20,
                 limit = 10,
-                label = RTSUnit.Categories.FortTier2
+                label = UnitCategories.FortTier2
             },
             navalTier1 = new MasterQuota.Item
             {
                 priority = 20,
                 limit = 10,
-                label = RTSUnit.Categories.NavalTier1
+                label = UnitCategories.NavalTier1
             },
             navalTier2 = new MasterQuota.Item
             {
                 priority = 20,
                 limit = 10,
-                label = RTSUnit.Categories.NavalTier2
+                label = UnitCategories.NavalTier2
             },
             scout = new MasterQuota.Item
             {
                 priority = 20,
                 limit = 5,
-                label = RTSUnit.Categories.Scout
+                label = UnitCategories.Scout
             },
             infantryTier1 = new MasterQuota.Item
             {
                 priority = 19,
                 limit = 300,
-                label = RTSUnit.Categories.InfantryTier1
+                label = UnitCategories.InfantryTier1
             },
             infantryTier2 = new MasterQuota.Item
             {
                 priority = 20,
                 limit = 70,
-                label = RTSUnit.Categories.InfantryTier2
+                label = UnitCategories.InfantryTier2
             },
             stalwartTier1 = new MasterQuota.Item
             {
                 priority = 20,
                 limit = 35,
-                label = RTSUnit.Categories.StalwartTier1
+                label = UnitCategories.StalwartTier1
             },
             stalwartTier2 = new MasterQuota.Item
             {
                 priority = 20,
                 limit = 25,
-                label = RTSUnit.Categories.StalwartTier2
+                label = UnitCategories.StalwartTier2
             },
             // specialInfantry?
             siegeTier1 = new MasterQuota.Item
             {
                 priority = 21,
                 limit = 15,
-                label = RTSUnit.Categories.SiegeTier1
+                label = UnitCategories.SiegeTier1
             },
             siegeTier2 = new MasterQuota.Item
             {
                 priority = 21,
                 limit = 10,
-                label = RTSUnit.Categories.SiegeTier2
+                label = UnitCategories.SiegeTier2
             },
             monarch = new MasterQuota.Item
             {
                 priority = 29,
                 limit = 1,
-                label = RTSUnit.Categories.Monarch
+                label = UnitCategories.Monarch
             },
             dragon = new MasterQuota.Item
             {
                 priority = 3,
                 limit = 1,
-                label = RTSUnit.Categories.Dragon
+                label = UnitCategories.Dragon
             }
         };
         masterQuota.RefreshQuotaList();

@@ -1,16 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-//
-// Summary
-//     Builder is distinct from Factory in that: 
-//      - Builders are kinematic (mobile)
-//      - Builders instantiate ghosts from menu click event
-public class Builder : UnitBuilderPlayer<Builder>
+// Builder is defined as canMove && canBuild && !isAI
+public class Builder : BuilderBase<MenuItem>, IUnitBuilderPlayer
 {
+    // @Note: cannot include menuRoot in interface since it must be a public var visible in inspector
+    public RectTransform menuRoot;
+    public List<MenuItem> virtualMenu { get; set; } = new List<MenuItem>();
     public int placedSinceLastShift { get; set; } = 0;
     public GameObject activeFloatingGhost;
+
+    public float lastClickTime { get; set; }
+    public float clickDelay { get; set; } = 0.25f;
 
     void Update()
     {
@@ -18,7 +21,7 @@ public class Builder : UnitBuilderPlayer<Builder>
         if (masterBuildQueue.Count > 0 && nextQueueReady)
         {
             // Builders always keep a queue of GhostUnits
-            GameObject nextGhost = masterBuildQueue.Peek();
+            GameObject nextGhost = masterBuildQueue.Peek().prefab;
             GhostUnitScript nextGhostScript = nextGhost.GetComponent<GhostUnitScript>();
 
             // @TODO: offset depends on direction, e.g. if walking along x, use x, y, y, and diagonal use mix
@@ -58,13 +61,36 @@ public class Builder : UnitBuilderPlayer<Builder>
         GameObject ghost = InstantiateGhost(item, clickPoint);
     }
 
+    // Instantiate new ghost and set bindings with this builder and the menu item clicked
     private GameObject InstantiateGhost(MenuItem item, Vector2 clickPoint)
     {
-        // Instantiate new ghost and set bindings with this builder and the menu item clicked
         GameObject ghost = Instantiate(item.prefab, new Vector3(clickPoint.x, 1, clickPoint.y), item.prefab.transform.localRotation);
-        ghost.GetComponent<GhostUnit<Builder>>().Bind(this);
+        ghost.GetComponent<GhostUnit<Builder>>().Bind(this, item);
         // The ghost instantiated by any menu click will always become the activeFloatingGhost
         activeFloatingGhost = ghost;
         return ghost;
+    }
+
+    // Construct a "virtual" menu to represent behavior of menu
+    public void InitVirtualMenu(GameObject[] prefabs)
+    {
+        Button[] menuChildren = menuRoot.GetComponentsInChildren<Button>();
+        foreach (var (button, index) in menuChildren.WithIndex())
+            virtualMenu.Add(new MenuItem { menuButton = button, prefab = prefabs[index] });
+    }
+
+    // Handle small click delay to prevent double clicks on menu
+    public void ProtectDoubleClick()
+    {
+        if (lastClickTime + clickDelay > Time.unscaledTime)
+            return;
+        lastClickTime = Time.unscaledTime;
+    }
+
+    // Clear listeners for next selected builder
+    public void ReleaseButtonListeners()
+    {
+        foreach (MenuItem virtualMenuItem in virtualMenu)
+            virtualMenuItem.menuButton.onClick.RemoveAllListeners();
     }
 }

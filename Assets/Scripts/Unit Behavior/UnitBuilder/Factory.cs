@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Factory : UnitBuilderPlayer<Factory>
+public class Factory : FactoryBase<MenuItem>, IUnitBuilderPlayer
 {
-    public Transform spawnPoint;
-    public Transform rallyPoint;
+    public RectTransform menuRoot;
+    public List<MenuItem> virtualMenu { get; set; } = new List<MenuItem>();
+
     public GameObject[] intangibleUnits;
-    private bool parkingDirectionToggle = false;
+
+    public float lastClickTime { get; set; }
+    public float clickDelay { get; set; } = 0.25f;
 
     void Start()
     {
@@ -34,9 +37,8 @@ public class Factory : UnitBuilderPlayer<Factory>
         {
             // @TODO: also need to check that the spawn point is clear before moving on to next unit
             baseUnit.state = RTSUnit.States.Conjuring;
-            // @TODO
-            // MenuItem next = masterBuildQueue.Peek();
-            // InstantiateNextIntangible(next);
+            MenuItem next = masterBuildQueue.Peek();
+            InstantiateNextIntangible(next);
             // Toggle whether new unit parks towards the right or left
             parkingDirectionToggle = !parkingDirectionToggle;
             nextQueueReady = false;
@@ -82,18 +84,40 @@ public class Factory : UnitBuilderPlayer<Factory>
         // Increment individual unit queue count
         item.buildQueueCount++;
         // Enqueue master queue to keep track of build order and total queue
-        masterBuildQueue.Enqueue(item.prefab);
-        // @TODO: iff (this builder is the only one selected) UpdateButtonText(map);
+        masterBuildQueue.Enqueue(item);
     }
 
     private void InstantiateNextIntangible(MenuItem item)
     {
         GameObject intangible = Instantiate(item.prefab, spawnPoint.position, spawnPoint.rotation);
-        // @TODO: intangible.GetComponent<IntangibleUnit<Factory>>().Bind(this, item, parkingDirectionToggle);
+        intangible.GetComponent<IntangibleUnit<MenuItem>>().Bind(this, item, rallyPoint, parkingDirectionToggle);
     }
 
     public void ToggleRallyPoint(bool value)
     {
         rallyPoint.gameObject.SetActive(value);
+    }
+
+    // Construct a "virtual" menu to represent behavior of menu
+    public void InitVirtualMenu(GameObject[] prefabs)
+    {
+        Button[] menuChildren = menuRoot.GetComponentsInChildren<Button>();
+        foreach (var (button, index) in menuChildren.WithIndex())
+            virtualMenu.Add(new MenuItem { menuButton = button, prefab = prefabs[index] });
+    }
+
+    // Handle small click delay to prevent double clicks on menu
+    public void ProtectDoubleClick()
+    {
+        if (lastClickTime + clickDelay > Time.unscaledTime)
+            return;
+        lastClickTime = Time.unscaledTime;
+    }
+
+    // Clear listeners for next selected builder
+    public void ReleaseButtonListeners()
+    {
+        foreach (MenuItem virtualMenuItem in virtualMenu)
+            virtualMenuItem.menuButton.onClick.RemoveAllListeners();
     }
 }

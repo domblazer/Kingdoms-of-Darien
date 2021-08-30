@@ -97,7 +97,7 @@ public class RTSCamera : MonoBehaviour
                     transform.Translate(-Vector3.forward * Time.deltaTime * ScrollSpeed, Space.World);
                 }
             }
-            // TODO: add movements to WASD and Arrow keys
+            // TODO: add movements to WASD keys
         }
 
         // Lerp camera to new position and rotation

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
+using Constants;
 
 public class BaseUnitScript : RTSUnit
 {
@@ -18,17 +19,8 @@ public class BaseUnitScript : RTSUnit
     private bool hasAlreadyDied = false;
 
     private void Awake()
-    {
-        // @TODO: units parent needs to be by team number, e.g. _Units_Player1
-        _Units = GameObject.Find("_Units_" + playerNumber);
-        if (!_Units)
-        {
-            _Units = new GameObject("_Units_" + playerNumber); // If master unit holder doesn't exist yet, create it
-        }
-        transform.parent = _Units.transform; // child this game object to master unit holder        
-
+    {  
         // Default move position, for units not instantiated with a parking location
-        // moveToPosition = transform.position;
         moveToPositionQueue.Enqueue(transform.position);
     }
 
@@ -69,18 +61,13 @@ public class BaseUnitScript : RTSUnit
 
         if (!isDead)
         {
-            // De-select on right click
+            // De-select (all) on right click
             if (Input.GetMouseButtonDown(1))
-            {
-                // @Note: this de-selects ALL instances of BaseUnitScript
                 DeSelect();
-            }
 
             // Handle movement and the various states of movement possible, e.g. "Parking"
             if (isKinematic)
-            {
                 HandleMovement();
-            }
 
             // Handle attack states if can attack
             if (canAttack)
@@ -107,9 +94,7 @@ public class BaseUnitScript : RTSUnit
 
             // @TODO: and !isBuilding
             if (!isParking && !IsAttacking() && !engagingTarget && !IsMoving())
-            {
                 state = States.Standby;
-            }
 
             // If this unit is selected and no other unit has focus
             if (selectable && selected && !GameManagerScript.Instance.IsHovering())

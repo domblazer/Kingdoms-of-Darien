@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InventoryScript
+public class InventoryScript : MonoBehaviour
 {
     public int totalManaIncome = 0;
     public int totalManaStorage = 10;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Constants;
 
 public class GhostUnit<T> : MonoBehaviour
 {
@@ -14,14 +15,12 @@ public class GhostUnit<T> : MonoBehaviour
 
     // This is the Builder that queued this ghost
     private Builder builder;
+    // Just a reference to the virtualMenu item that instantiated this ghost
+    protected MenuItem menuItemEvent;
 
     private List<Material> materials = new List<Material>();
     private List<Renderer> renderers = new List<Renderer>();
 
-    public enum Directions : int
-    {
-        Forward = 180, Right = 90, Backwards = 0, Left = -90
-    }
     private Directions facingDir = Directions.Forward;
     private bool placementValid = true;
 
@@ -76,7 +75,7 @@ public class GhostUnit<T> : MonoBehaviour
     public void StartBuild()
     {
         GameObject intangible = Instantiate(intangibleUnit, transform.position, intangibleUnit.transform.localRotation);
-        // @TODO: intangible.GetComponent<IntangibleUnit<T>().Bind()
+        // @TODO: intangible.GetComponent<IntangibleUnit<Factory>>().Bind(this, item);
         Destroy(gameObject);
     }
 
@@ -89,15 +88,15 @@ public class GhostUnit<T> : MonoBehaviour
         builder.placedSinceLastShift++;
 
         // Add this newly placed self to the build queue
-        builder.masterBuildQueue.Enqueue(gameObject);
+        builder.masterBuildQueue.Enqueue(menuItemEvent);
 
         // Instantiate a copy of this self, which will now become the "active" (!isSet) ghost
         GameObject ghost = Instantiate(gameObject, hitPos + offset, gameObject.transform.localRotation);
         builder.activeFloatingGhost = ghost;
-        ghost.GetComponent<GhostUnit<T>>().Bind(builder, facingDir);
+        ghost.GetComponent<GhostUnit<T>>().Bind(builder, menuItemEvent, facingDir);
 
-        // @TODO: Tell the builder this ghost has been placed and is ready to be reached and built?
-        // builder.SetNextQueueReady(true);
+        // Tell the builder this ghost has been placed and is ready to be reached and built
+        builder.SetNextQueueReady(true);
     }
 
     // Place self and done
@@ -109,8 +108,8 @@ public class GhostUnit<T> : MonoBehaviour
         builder.placedSinceLastShift = 0;
 
         // Queue this self on single place
-        builder.masterBuildQueue.Enqueue(gameObject);
-        // @TODO: builder.SetNextQueueReady(true);
+        builder.masterBuildQueue.Enqueue(menuItemEvent);
+        builder.SetNextQueueReady(true);
 
         // Hide immediately
         Toggle(false);
@@ -172,9 +171,10 @@ public class GhostUnit<T> : MonoBehaviour
             Destroy(gameObject);
     }
 
-    public void Bind(Builder bld, Directions dir = Directions.Forward)
+    public void Bind(Builder bld, MenuItem menuItem, Directions dir = Directions.Forward)
     {
         builder = bld;
+        menuItemEvent = menuItem;
         SetFacingDir(dir);
     }
 

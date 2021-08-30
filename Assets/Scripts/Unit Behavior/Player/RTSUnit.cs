@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using System.Linq;
+using Constants;
 
 /*
-    This class represents core functionality for all units in this game; it must implement only the behavior that is common between
+    This class represents core functionality for all units in the game; it must implement only the behavior that is common between
     the playable units (BaseUnitScript) and the NP-units (BaseUnitScriptAI), i.e. movement/pathfinding, attack routine, etc.
 */
 // [RequireComponent(typeof(AudioSource))]
@@ -28,42 +29,8 @@ public class RTSUnit : MonoBehaviour
     }
     public States state { get; set; } = States.Standby;
 
-    public enum Categories
-    {
-        Monarch,
-        LodestoneTier1,
-        LodestoneTier2,
-        FactoryTier1,
-        FactoryTier2,
-        BuilderTier1,
-        BuilderTier2,
-        FortTier1,
-        FortTier2,
-        SiegeTier1,
-        SiegeTier2,
-        NavalTier1,
-        NavalTier2,
-        Dragon,
-        Scout,
-        StalwartTier1,
-        StalwartTier2,
-        InfantryTier1,
-        InfantryTier2
-    }
-    public enum PlayerNumbers
-    {
-        Player1 = 1, 
-        Player2 = 2, 
-        Player3 = 3, 
-        Player4 = 4, 
-        Player5 = 5, 
-        Player6 = 6, 
-        Player7 = 7, 
-        Player8 = 8
-    }
-
     public PlayerNumbers playerNumber = PlayerNumbers.Player1;
-    public Categories unitType;
+    public UnitCategories unitType;
     public Sprite unitIcon;
     public string unitName;
 
@@ -474,6 +441,14 @@ public class RTSUnit : MonoBehaviour
         moveToPositionQueue.Clear();
         moveToPositionQueue.Enqueue(position);
         tryParkingDirection = parkingDirectionToggle;
+    }
+
+    public void Begin(Constants.Directions facingDir, Vector3 parkPosition, bool parkToggle, States nextState)
+    {
+        // SetFacingDir(facingDir);
+        // @TODO: if no parking/start is not parking
+        SetParking(parkPosition, parkToggle);
+        // @TODO next state after parking
     }
 
     public void TryAttack(GameObject target, bool addToQueue = false)

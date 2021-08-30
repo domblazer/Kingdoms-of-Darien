@@ -6,11 +6,15 @@ public class HumanoidUnitAnimator : MonoBehaviour
 {
     private Animator _Animator;
     private RTSUnit _Unit;
+    private UnitBuilderBase<MenuItem> _UnitBuilderScript;
 
     void Start()
     {
         _Animator = GetComponent<Animator>();
         _Unit = GetComponent<RTSUnit>();
+
+        if (_Unit.isBuilder)
+            _UnitBuilderScript = GetComponent<UnitBuilderBase<MenuItem>>();
     }
 
     void Update()
@@ -38,7 +42,7 @@ public class HumanoidUnitAnimator : MonoBehaviour
 
             if (_Unit.isBuilder)
             {
-                _Animator.SetBool("conjuring", _Unit._UnitBuilderScript.IsBuilding());
+                _Animator.SetBool("conjuring", _UnitBuilderScript.isBuilding);
             }
 
             if (_Unit.IsAttacking())

@@ -2,14 +2,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Constants;
 
 public class GameManagerScript : MonoBehaviour
 {
     public static GameManagerScript Instance { get; private set; }
+
+    public class VirtualPlayer
+    {
+        public GameObject holder;
+        // @TODO: refactor UnitSelectionScript to Player, then PlayerBase->Player,PlayerAI 
+        public AIPlayer playerScript;
+        public InventoryScript inventory;
+    }
+
     // e.g. "Team_1": Inventory
     [HideInInspector]
     public Dictionary<string, InventoryScript> Inventories = new Dictionary<string, InventoryScript>();
     private InventoryScript playerInventory;
+
+    public Dictionary<int, VirtualPlayer> PlayerRoots = new Dictionary<int, VirtualPlayer>();
 
     private float manaRechargeRate = 0.1f;
     private float nextManaRecharge = 0;
@@ -19,13 +31,67 @@ public class GameManagerScript : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        // @TODO: team management. "Player", "Team_2", "Team_3"
-        // (note "Team_1" and "Player" are synonomous, but "Player" is used)
-        Inventories.Add("Player", new InventoryScript());
-        if (Inventories.TryGetValue("Player", out InventoryScript inv))
-            playerInventory = inv;
 
-        // @TODO: foreach(team in teamsFromStartScreen) Add(team,...)
+        RTSUnit[] existingUnits = GameObject.FindObjectsOfType<RTSUnit>();
+        if (existingUnits.Length > 0)
+        {
+            foreach (RTSUnit unit in existingUnits)
+                GroupUnitUnderPlayer(unit);
+        }
+        else
+        {
+            // Create player holders based on config set in skirmesh menu, then init the monarchs
+        }
+
+    }
+
+    private void GroupUnitUnderPlayer(RTSUnit unit)
+    {
+        GameObject _Holder;
+        PlayerNumbers playerNumber = unit.playerNumber;
+        // First see if we've stored this holder yet, get from dictionary
+        if (TryGetVirtualPlayer(playerNumber, out VirtualPlayer virtualPlayer))
+            _Holder = virtualPlayer.holder;
+        // If we don't have the holder stored yet, find it
+        else
+        {
+            _Holder = Functions.GetPlayerHolder(playerNumber);
+            // If master unit holder doesn't exist yet, create it
+            if (!_Holder)
+                _Holder = InitNewPlayer(playerNumber);
+        }
+        // Child the unit to the holder object
+        unit.transform.parent = _Holder.transform;
+    }
+
+    private GameObject InitNewPlayer(PlayerNumbers playerNumber)
+    {
+        GameObject _Holder = Functions.CreatePlayerHolder(playerNumber);
+        // Add the holder to our dictionary for quick access later
+        InventoryScript newInventory = _Holder.AddComponent<InventoryScript>();
+        // @TODO: add the PlayerBase (share player and AIplayer) component
+        AIPlayer player = _Holder.AddComponent<AIPlayer>();
+        // @TODO: set player values, e.g. playerNumber
+        // player.playerNumber = playerNumber;
+        // player.Init(startingUnits);
+        PlayerRoots.Add((int)playerNumber, new VirtualPlayer
+        {
+            holder = _Holder,
+            playerScript = player,
+            inventory = newInventory
+        });
+        return _Holder;
+    }
+
+    public bool TryGetVirtualPlayer(PlayerNumbers playerNumber, out VirtualPlayer virtualPlayer)
+    {
+        if (PlayerRoots.TryGetValue((int)playerNumber, out VirtualPlayer vp))
+        {
+            virtualPlayer = vp;
+            return true;
+        }
+        virtualPlayer = null;
+        return false;
     }
 
     private void Update()

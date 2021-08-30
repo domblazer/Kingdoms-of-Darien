@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class FactoryAI : UnitBuilderAI<FactoryAI>
+public class FactoryAI : FactoryBase<GameObject>, IUnitBuilderAI
 {
-    public Transform spawnPoint;
-    public Transform rallyPoint;
+    public BuildUnit[] buildUnitPrefabs;
 
     private void Update()
     {
@@ -19,7 +18,7 @@ public class FactoryAI : UnitBuilderAI<FactoryAI>
             // @TODO: also need to check that the spawn point is clear before moving on to next unit
             baseUnit.state = RTSUnit.States.Conjuring;
             GameObject nextItg = masterBuildQueue.Peek();
-            // InstantiateNextIntangible(next);
+            InstantiateNextIntangible(nextItg);
             nextQueueReady = false;
         }
 
@@ -29,6 +28,15 @@ public class FactoryAI : UnitBuilderAI<FactoryAI>
     {
         GameObject intangible = Instantiate(itg, spawnPoint.position, new Quaternion(0, 180, 0, 1));
         // @TODO: this itg needs to tell it's final prefab to park then just start roaming around the park point
-        // intangible.GetComponent<IntangibleUnitScript>().SetReferences(this, map, tryRightOrLeft);
+        intangible.GetComponent<IntangibleUnit<GameObject>>().Bind(this, rallyPoint, parkingDirectionToggle);
+    }
+
+    public void QueueBuild(GameObject intangiblePrefab)
+    {
+        Debug.Log("UnitBuilderAI queued: " + intangiblePrefab.GetComponent<IntangibleUnitScript>().finalUnit.unitName);
+        if (masterBuildQueue.Count == 0)
+            nextQueueReady = true;
+        // Enqueue master queue to keep track of build order and total queue
+        masterBuildQueue.Enqueue(intangiblePrefab);
     }
 }

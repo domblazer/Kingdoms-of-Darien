@@ -5,7 +5,7 @@ using UnityEngine;
 public class LodestoneScript : MonoBehaviour
 {
     public Light pulseLight;
-    public float glowSpeedDamp = 0.8f;
+    public float glowSpeedDamp = 1.4f;
     public MeshRenderer outerStoneRenderer;
     public int outerStoneMaterialIndex = 0;
     private float alpha = 0.5f;
@@ -23,9 +23,9 @@ public class LodestoneScript : MonoBehaviour
         manaIncome = _Unit.manaIncome;
         manaStorage = _Unit.manaStorage;
         // @TODO: get appropriate team inventory
-        if (GameManagerScript.Instance.Inventories.TryGetValue("Player", out InventoryScript inv))
+        if (GameManagerScript.Instance.PlayerRoots.TryGetValue((int)_Unit.playerNumber, out GameManagerScript.VirtualPlayer vp))
         {
-            inventory = inv;
+            inventory = vp.inventory;
         }
         inventory.AddLodestone(this);
 
