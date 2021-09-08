@@ -1,20 +1,28 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Constants;
 
-[System.Serializable]
-public class BuildUnit
+namespace DarienEngine
 {
-    public UnitCategories unitCategory;
-    public GameObject intangiblePrefab;
-    public override string ToString()
+    [System.Serializable]
+    public class BuildUnit
     {
-        return intangiblePrefab.GetComponent<IntangibleUnitScript>().finalUnit.unitName;
+        public UnitCategories unitCategory;
+        public GameObject intangiblePrefab;
+        public override string ToString()
+        {
+            return intangiblePrefab.GetComponent<IntangibleUnitAI>().finalUnit.unitName;
+        }
     }
-}
 
-public interface IUnitBuilderAI
-{
-    void QueueBuild(GameObject intangiblePrefab);
+    [System.Serializable]
+    public class AIConjurerArgs
+    {
+        public GameObject nextIntangible;
+    }
+
+    public interface IUnitBuilderAI
+    {
+        void QueueBuild(GameObject intangiblePrefab);
+    }
 }

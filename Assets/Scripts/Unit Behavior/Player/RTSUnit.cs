@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using System.Linq;
-using Constants;
+using DarienEngine;
 
 /*
     This class represents core functionality for all units in the game; it must implement only the behavior that is common between
@@ -100,7 +100,6 @@ public class RTSUnit : MonoBehaviour
 
     // Components
     protected UnitSelectionScript _UnitSelection;
-    [HideInInspector] public UnitBuilder _UnitBuilderScript;
     protected NavMeshAgent _Agent;
     protected NavMeshObstacle _Obstacle;
     protected AudioSource _AudioSource;
@@ -150,6 +149,7 @@ public class RTSUnit : MonoBehaviour
         }
 
         // Unit selection behavior is attached to MainCamera
+        // @TODO: _UnitSelection on player1 holder
         _UnitSelection = Camera.main.gameObject.GetComponent<UnitSelectionScript>();
         _AudioSource = GetComponent<AudioSource>();
         _Animator = GetComponent<Animator>();
@@ -158,6 +158,9 @@ public class RTSUnit : MonoBehaviour
         if (isMeleeAttacker && meleeWeapons.Length > 0)
             foreach (MeleeWeaponScript mw in meleeWeapons)
                 mw.SetLinkage(this, weaponDamage);
+
+        // Each unit on Start must group under appropriate player holder and add itself to virtual context
+        Functions.AddUnitToPlayerContext(this);
     }
 
     protected void UpdateHealth()
@@ -443,7 +446,7 @@ public class RTSUnit : MonoBehaviour
         tryParkingDirection = parkingDirectionToggle;
     }
 
-    public void Begin(Constants.Directions facingDir, Vector3 parkPosition, bool parkToggle, States nextState)
+    public void Begin(DarienEngine.Directions facingDir, Vector3 parkPosition, bool parkToggle, States nextState)
     {
         // SetFacingDir(facingDir);
         // @TODO: if no parking/start is not parking
@@ -582,5 +585,10 @@ public class RTSUnit : MonoBehaviour
     public bool IsInRangeOf(Vector3 pos, float rng)
     {
         return (transform.position - pos).sqrMagnitude < Mathf.Pow(rng, 2);
+    }
+
+    private void OnDestroy()
+    {
+        Functions.RemoveUnitFromPlayerContext(this);
     }
 }

@@ -8477,6 +8477,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   profileType: 0
   playerNumber: 2
+  teamNumber: 0
 --- !u!4 &1322012909
 Transform:
   m_ObjectHideFlags: 0

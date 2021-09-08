@@ -1,20 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DarienEngine;
 
-public class BuilderAI : BuilderBase<GameObject>
+public class BuilderAI : BuilderBase<AIConjurerArgs>, IUnitBuilderAI
 {
     public BuildUnit[] buildUnitPrefabs;
-    
-    // Start is called before the first frame update
-    void Start()
+
+    public void QueueBuild(GameObject intangiblePrefab)
     {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        Debug.Log("BuilderAI queued: " + intangiblePrefab.GetComponent<IntangibleUnitAI>().finalUnit.unitName);
+        if (masterBuildQueue.Count == 0)
+            nextQueueReady = true;
+        // Enqueue master queue to keep track of build order and total queue
+        masterBuildQueue.Enqueue(new AIConjurerArgs { nextIntangible = intangiblePrefab });
     }
 }

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Factory : FactoryBase<MenuItem>, IUnitBuilderPlayer
+public class Factory : FactoryBase<PlayerConjurerArgs>, IUnitBuilderPlayer
 {
     public RectTransform menuRoot;
-    public List<MenuItem> virtualMenu { get; set; } = new List<MenuItem>();
+    public List<PlayerConjurerArgs> virtualMenu { get; set; } = new List<PlayerConjurerArgs>();
 
     public GameObject[] intangibleUnits;
 
@@ -37,7 +37,7 @@ public class Factory : FactoryBase<MenuItem>, IUnitBuilderPlayer
         {
             // @TODO: also need to check that the spawn point is clear before moving on to next unit
             baseUnit.state = RTSUnit.States.Conjuring;
-            MenuItem next = masterBuildQueue.Peek();
+            PlayerConjurerArgs next = masterBuildQueue.Peek();
             InstantiateNextIntangible(next);
             // Toggle whether new unit parks towards the right or left
             parkingDirectionToggle = !parkingDirectionToggle;
@@ -50,7 +50,7 @@ public class Factory : FactoryBase<MenuItem>, IUnitBuilderPlayer
         }
     }
 
-    public void QueueBuild(MenuItem item, Vector2 clickPoint)
+    public void QueueBuild(PlayerConjurerArgs item, Vector2 clickPoint)
     {
         // First, protect double clicks with click delay
         ProtectDoubleClick();
@@ -76,7 +76,7 @@ public class Factory : FactoryBase<MenuItem>, IUnitBuilderPlayer
         }
     }
 
-    private void QueueUnit(MenuItem item)
+    private void QueueUnit(PlayerConjurerArgs item)
     {
         // Instantiate first immediately
         if (masterBuildQueue.Count == 0)
@@ -87,10 +87,10 @@ public class Factory : FactoryBase<MenuItem>, IUnitBuilderPlayer
         masterBuildQueue.Enqueue(item);
     }
 
-    private void InstantiateNextIntangible(MenuItem item)
+    private void InstantiateNextIntangible(PlayerConjurerArgs item)
     {
         GameObject intangible = Instantiate(item.prefab, spawnPoint.position, spawnPoint.rotation);
-        intangible.GetComponent<IntangibleUnit<MenuItem>>().Bind(this, item, rallyPoint, parkingDirectionToggle);
+        intangible.GetComponent<IntangibleUnit>().Bind(this, item, rallyPoint, parkingDirectionToggle);
     }
 
     public void ToggleRallyPoint(bool value)
@@ -98,12 +98,17 @@ public class Factory : FactoryBase<MenuItem>, IUnitBuilderPlayer
         rallyPoint.gameObject.SetActive(value);
     }
 
+    public void ToggleBuildMenu(bool value)
+    {
+        menuRoot.gameObject.SetActive(value);
+    }
+
     // Construct a "virtual" menu to represent behavior of menu
     public void InitVirtualMenu(GameObject[] prefabs)
     {
         Button[] menuChildren = menuRoot.GetComponentsInChildren<Button>();
         foreach (var (button, index) in menuChildren.WithIndex())
-            virtualMenu.Add(new MenuItem { menuButton = button, prefab = prefabs[index] });
+            virtualMenu.Add(new PlayerConjurerArgs { menuButton = button, prefab = prefabs[index] });
     }
 
     // Handle small click delay to prevent double clicks on menu
@@ -114,10 +119,17 @@ public class Factory : FactoryBase<MenuItem>, IUnitBuilderPlayer
         lastClickTime = Time.unscaledTime;
     }
 
+    // Selected Builder gets the menu button click events
+    public void TakeOverButtonListeners()
+    {
+        foreach (PlayerConjurerArgs item in virtualMenu)
+            item.menuButton.onClick.AddListener(delegate { QueueBuild(item, Input.mousePosition); });
+    }
+
     // Clear listeners for next selected builder
     public void ReleaseButtonListeners()
     {
-        foreach (MenuItem virtualMenuItem in virtualMenu)
+        foreach (PlayerConjurerArgs virtualMenuItem in virtualMenu)
             virtualMenuItem.menuButton.onClick.RemoveAllListeners();
     }
 }

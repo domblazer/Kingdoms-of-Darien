@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using Constants;
+using DarienEngine;
+using DarienEngine.AI;
 
 public class AIPlayer : MonoBehaviour
 {
@@ -16,136 +17,15 @@ public class AIPlayer : MonoBehaviour
     // Sub-quotas also have to exist for like armies, like a suitable size force to send when <20% builders/mana whatever
     // is 5-7 infrantry, 1-2 siege or something, so when game is still in an early stage, the quota needed to constitute an
     // army is smaller and increases as mana/builders/other armies increase in count
-    public class MasterQuota
-    {
-        public class Item
-        {
-            public List<BaseUnitScriptAI> units = new List<BaseUnitScriptAI>();
-            public int priority;
-            public int count { get { return units.Count; } }
-            public int limit;
-            public UnitCategories label;
-            public float ratio { get { return count / limit; } }
-            public bool quotaFull { get { return count == limit; } }
-            public override string ToString()
-            {
-                return label.ToString();
-            }
-        }
-        public Item lodestonesTier1;
-        public Item lodestonesTier2;
-        public Item factoriesTier1;
-        public Item factoriesTier2;
-        public Item buildersTier1;
-        public Item buildersTier2;
-        public Item fortTier1;
-        public Item fortTier2;
-        public Item navalTier1;
-        public Item navalTier2;
-        public Item scout;
-        public Item infantryTier1;
-        public Item infantryTier2;
-        public Item stalwartTier1;
-        public Item stalwartTier2;
-        public Item specialInfantry; // like assasin, grenadier, etc.
-        public Item siegeTier1;
-        public Item siegeTier2;
-        public Item dragon;
-        public Item monarch;
-        public List<Item> quotaItemList = new List<Item>();
-        public int totalUnitsCount { get { return quotaItemList[0] != null ? quotaItemList.Sum(x => x != null ? x.count : 0) : 0; } }
-
-        public void RefreshQuotaList()
-        {
-            quotaItemList.Clear();
-            quotaItemList.Add(lodestonesTier1);
-            quotaItemList.Add(lodestonesTier2);
-            quotaItemList.Add(factoriesTier1);
-            quotaItemList.Add(factoriesTier2);
-            quotaItemList.Add(buildersTier1);
-            quotaItemList.Add(buildersTier2);
-            quotaItemList.Add(fortTier1);
-            quotaItemList.Add(fortTier2);
-            quotaItemList.Add(navalTier1);
-            quotaItemList.Add(navalTier2);
-            quotaItemList.Add(scout);
-            quotaItemList.Add(infantryTier1);
-            quotaItemList.Add(infantryTier2);
-            quotaItemList.Add(stalwartTier1);
-            quotaItemList.Add(stalwartTier2);
-            quotaItemList.Add(specialInfantry);
-            quotaItemList.Add(siegeTier1);
-            quotaItemList.Add(siegeTier2);
-            quotaItemList.Add(dragon);
-            quotaItemList.Add(monarch);
-        }
-
-        public void AddUnit(BaseUnitScriptAI unit)
-        {
-            Item item = quotaItemList.Find(x => x.label == unit.unitType);
-            if (item != null && !item.quotaFull)
-                item.units.Add(unit);
-            else
-                Debug.LogWarning("Unit limit for type " + unit.unitType + " has been reached, last unit (" + unit.name + ") should not have been created and was not added to the AI player context.");
-        }
-
-        public List<BaseUnitScriptAI> GetUnitsByType(UnitCategories type)
-        {
-            return quotaItemList.Find(x => x.label == type).units;
-        }
-
-        public List<BaseUnitScriptAI> GetUnitsByTypes(params UnitCategories[] types)
-        {
-            return quotaItemList.Find(x => types.Contains(x.label)).units;
-        }
-
-        public List<BaseUnitScriptAI> GetTotalUnits()
-        {
-            List<BaseUnitScriptAI> total = new List<BaseUnitScriptAI>();
-            quotaItemList.ForEach(x => total.Concat(x.units));
-            return total;
-        }
-
-        public List<Item> ToList()
-        {
-            return quotaItemList;
-        }
-    }
     public MasterQuota profile;
-
-    // @TODO: need to have some kind of two-way binding between ArmyQuota and MasterQuota
-    public class ArmyQuota
-    {
-        public class Item
-        {
-            public int count;
-            public int limit;
-            public bool quotaFull { get { return count == limit; } }
-        }
-        public Item infantryTier1;
-        public Item infantryTier2;
-        public Item stalwartTier1;
-        public Item stalwartTier2;
-        public Item specialInfantry;
-        public Item siegeTier1;
-        public Item siegeTier2;
-
-        public bool Ready()
-        {
-            return infantryTier1.quotaFull && infantryTier2.quotaFull && stalwartTier1.quotaFull &&
-                stalwartTier2.quotaFull && specialInfantry.quotaFull && siegeTier1.quotaFull && siegeTier2.quotaFull;
-        }
-    }
-
-    public enum ProfileTypes
-    {
-        Balanced, Turtle
-    }
-    public ProfileTypes profileType;
+    public AIProfileTypes profileType;
     public PlayerNumbers playerNumber;
+    public TeamNumbers teamNumber;
 
     public void Init(BaseUnitScriptAI[] initialTotalUnits)
     {
+        // @TODO: need to be able to start with any unit configuration, e.g. 3 cabals, 1 temple, 10 executioners
+        // So, need to compile all units for this team player and group by type, e.g. builders, infantry, fort units, etc.
         foreach (BaseUnitScriptAI unit in initialTotalUnits)
             profile.AddUnit(unit);
     }
@@ -154,25 +34,7 @@ public class AIPlayer : MonoBehaviour
     void Start()
     {
         // Init profile
-        switch (profileType)
-        {
-            case ProfileTypes.Balanced:
-                profile = NewBalancedProfile();
-                break;
-            default:
-                profile = NewBalancedProfile();
-                break;
-        }
-
-        // @TODO: need to be able to start with any unit configuration, e.g. 3 cabals, 1 temple, 10 executioners
-        // So, need to compile all units for this team player and group by type, e.g. builders, infantry, fort units, etc.
-        // Init units at start
-        /* if (GameManagerScript.Instance.TryGetVirtualPlayer(playerNumber, out GameManagerScript.VirtualPlayer vp))
-        {
-            foreach (Transform child in vp.holder.transform)
-                profile.AddUnit(child.gameObject.GetComponent<BaseUnitScriptAI>());
-        } */
-
+        profile = AIProfiles.NewProfile(profileType);
     }
 
     // Update is called once per frame
@@ -299,130 +161,6 @@ public class AIPlayer : MonoBehaviour
         currentNeedType = needs[0].label;
         Debug.Log(playerNumber + " current need: " + currentNeedType);
         return needs[0].label;
-    }
-
-    private MasterQuota NewBalancedProfile()
-    {
-        MasterQuota masterQuota = new MasterQuota
-        {
-            lodestonesTier1 = new MasterQuota.Item
-            {
-                priority = 2,
-                limit = 8,
-                label = UnitCategories.LodestoneTier1
-            },
-            lodestonesTier2 = new MasterQuota.Item
-            {
-                priority = 5,
-                limit = 4,
-                label = UnitCategories.LodestoneTier2
-            },
-            factoriesTier1 = new MasterQuota.Item
-            {
-                priority = 1,
-                limit = 5,
-                label = UnitCategories.FactoryTier1
-            },
-            factoriesTier2 = new MasterQuota.Item
-            {
-                priority = 1,
-                limit = 8,
-                label = UnitCategories.FactoryTier2
-            },
-            buildersTier1 = new MasterQuota.Item
-            {
-                priority = 3,
-                limit = 10,
-                label = UnitCategories.BuilderTier1
-            },
-            buildersTier2 = new MasterQuota.Item
-            {
-                priority = 20,
-                limit = 10,
-                label = UnitCategories.BuilderTier2
-            },
-            fortTier1 = new MasterQuota.Item
-            {
-                priority = 20,
-                limit = 10,
-                label = UnitCategories.FortTier1
-            },
-            fortTier2 = new MasterQuota.Item
-            {
-                priority = 20,
-                limit = 10,
-                label = UnitCategories.FortTier2
-            },
-            navalTier1 = new MasterQuota.Item
-            {
-                priority = 20,
-                limit = 10,
-                label = UnitCategories.NavalTier1
-            },
-            navalTier2 = new MasterQuota.Item
-            {
-                priority = 20,
-                limit = 10,
-                label = UnitCategories.NavalTier2
-            },
-            scout = new MasterQuota.Item
-            {
-                priority = 20,
-                limit = 5,
-                label = UnitCategories.Scout
-            },
-            infantryTier1 = new MasterQuota.Item
-            {
-                priority = 19,
-                limit = 300,
-                label = UnitCategories.InfantryTier1
-            },
-            infantryTier2 = new MasterQuota.Item
-            {
-                priority = 20,
-                limit = 70,
-                label = UnitCategories.InfantryTier2
-            },
-            stalwartTier1 = new MasterQuota.Item
-            {
-                priority = 20,
-                limit = 35,
-                label = UnitCategories.StalwartTier1
-            },
-            stalwartTier2 = new MasterQuota.Item
-            {
-                priority = 20,
-                limit = 25,
-                label = UnitCategories.StalwartTier2
-            },
-            // specialInfantry?
-            siegeTier1 = new MasterQuota.Item
-            {
-                priority = 21,
-                limit = 15,
-                label = UnitCategories.SiegeTier1
-            },
-            siegeTier2 = new MasterQuota.Item
-            {
-                priority = 21,
-                limit = 10,
-                label = UnitCategories.SiegeTier2
-            },
-            monarch = new MasterQuota.Item
-            {
-                priority = 29,
-                limit = 1,
-                label = UnitCategories.Monarch
-            },
-            dragon = new MasterQuota.Item
-            {
-                priority = 3,
-                limit = 1,
-                label = UnitCategories.Dragon
-            }
-        };
-        masterQuota.RefreshQuotaList();
-        return masterQuota;
     }
 
     public void AddToTotal(BaseUnitScriptAI unitAI)

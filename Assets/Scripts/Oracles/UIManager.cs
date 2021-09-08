@@ -323,7 +323,7 @@ public class UIManager : MonoBehaviour
         debugText.text = text;
     }
 
-    public void SetManaUI(InventoryScript inventory)
+    public void SetManaUI(Inventory inventory)
     {
         manaProportionText.text = inventory.currentMana + "/" + inventory.totalManaStorage;
 

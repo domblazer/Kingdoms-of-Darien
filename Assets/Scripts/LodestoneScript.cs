@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DarienEngine;
 
 public class LodestoneScript : MonoBehaviour
 {
@@ -12,7 +13,6 @@ public class LodestoneScript : MonoBehaviour
 
     private RTSUnit _Unit;
 
-    private InventoryScript inventory;
     private float manaIncome;
     private float manaStorage;
 
@@ -22,12 +22,6 @@ public class LodestoneScript : MonoBehaviour
         _Unit = GetComponent<RTSUnit>();
         manaIncome = _Unit.manaIncome;
         manaStorage = _Unit.manaStorage;
-        // @TODO: get appropriate team inventory
-        if (GameManagerScript.Instance.PlayerRoots.TryGetValue((int)_Unit.playerNumber, out GameManagerScript.VirtualPlayer vp))
-        {
-            inventory = vp.inventory;
-        }
-        inventory.AddLodestone(this);
 
         pulseLight.intensity = 1.0f;
         pulseLight.range = 1.0f;

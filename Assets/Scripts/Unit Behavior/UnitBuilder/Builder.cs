@@ -4,11 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 
 // Builder is defined as canMove && canBuild && !isAI
-public class Builder : BuilderBase<MenuItem>, IUnitBuilderPlayer
+public class Builder : BuilderBase<PlayerConjurerArgs>, IUnitBuilderPlayer
 {
     // @Note: cannot include menuRoot in interface since it must be a public var visible in inspector
     public RectTransform menuRoot;
-    public List<MenuItem> virtualMenu { get; set; } = new List<MenuItem>();
+    public List<PlayerConjurerArgs> virtualMenu { get; set; } = new List<PlayerConjurerArgs>();
     public int placedSinceLastShift { get; set; } = 0;
     public GameObject activeFloatingGhost;
 
@@ -22,10 +22,10 @@ public class Builder : BuilderBase<MenuItem>, IUnitBuilderPlayer
         {
             // Builders always keep a queue of GhostUnits
             GameObject nextGhost = masterBuildQueue.Peek().prefab;
-            GhostUnitScript nextGhostScript = nextGhost.GetComponent<GhostUnitScript>();
+            GhostUnit nextGhostScript = nextGhost.GetComponent<GhostUnit>();
 
             // @TODO: offset depends on direction, e.g. if walking along x, use x, y, y, and diagonal use mix
-            Vector3 offsetRange = nextGhostScript.sizeOffset;
+            Vector3 offsetRange = nextGhostScript.offset;
             // Move to next ghost in the queue
             if (nextGhostScript.IsSet() && !baseUnit.IsInRangeOf(nextGhost.transform.position, offsetRange.x))
             {
@@ -46,14 +46,12 @@ public class Builder : BuilderBase<MenuItem>, IUnitBuilderPlayer
         }
     }
 
-    // Selected Builder gets the menu button click events
-    public void TakeOverButtonListeners()
+    public void ToggleBuildMenu(bool value)
     {
-        foreach (MenuItem item in virtualMenu)
-            item.menuButton.onClick.AddListener(delegate { QueueBuild(item, Input.mousePosition); });
+        menuRoot.gameObject.SetActive(value);
     }
 
-    public void QueueBuild(MenuItem item, Vector2 clickPoint)
+    public void QueueBuild(PlayerConjurerArgs item, Vector2 clickPoint)
     {
         // First, protect double clicks with click delay
         ProtectDoubleClick();
@@ -62,10 +60,10 @@ public class Builder : BuilderBase<MenuItem>, IUnitBuilderPlayer
     }
 
     // Instantiate new ghost and set bindings with this builder and the menu item clicked
-    private GameObject InstantiateGhost(MenuItem item, Vector2 clickPoint)
+    private GameObject InstantiateGhost(PlayerConjurerArgs item, Vector2 clickPoint)
     {
         GameObject ghost = Instantiate(item.prefab, new Vector3(clickPoint.x, 1, clickPoint.y), item.prefab.transform.localRotation);
-        ghost.GetComponent<GhostUnit<Builder>>().Bind(this, item);
+        ghost.GetComponent<GhostUnit>().Bind(this, item);
         // The ghost instantiated by any menu click will always become the activeFloatingGhost
         activeFloatingGhost = ghost;
         return ghost;
@@ -76,7 +74,7 @@ public class Builder : BuilderBase<MenuItem>, IUnitBuilderPlayer
     {
         Button[] menuChildren = menuRoot.GetComponentsInChildren<Button>();
         foreach (var (button, index) in menuChildren.WithIndex())
-            virtualMenu.Add(new MenuItem { menuButton = button, prefab = prefabs[index] });
+            virtualMenu.Add(new PlayerConjurerArgs { menuButton = button, prefab = prefabs[index] });
     }
 
     // Handle small click delay to prevent double clicks on menu
@@ -87,10 +85,17 @@ public class Builder : BuilderBase<MenuItem>, IUnitBuilderPlayer
         lastClickTime = Time.unscaledTime;
     }
 
+    // Selected Builder gets the menu button click events
+    public void TakeOverButtonListeners()
+    {
+        foreach (PlayerConjurerArgs item in virtualMenu)
+            item.menuButton.onClick.AddListener(delegate { QueueBuild(item, Input.mousePosition); });
+    }
+
     // Clear listeners for next selected builder
     public void ReleaseButtonListeners()
     {
-        foreach (MenuItem virtualMenuItem in virtualMenu)
+        foreach (PlayerConjurerArgs virtualMenuItem in virtualMenu)
             virtualMenuItem.menuButton.onClick.RemoveAllListeners();
     }
 }

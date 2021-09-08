@@ -2,29 +2,39 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Constants;
+using DarienEngine;
 
 public class GameManagerScript : MonoBehaviour
 {
     public static GameManagerScript Instance { get; private set; }
 
-    public class VirtualPlayer
+    public class AIPlayerContext
     {
         public GameObject holder;
-        // @TODO: refactor UnitSelectionScript to Player, then PlayerBase->Player,PlayerAI 
         public AIPlayer playerScript;
-        public InventoryScript inventory;
+        public InventoryAI inventory;
+        public TeamNumbers team;
     }
 
-    // e.g. "Team_1": Inventory
-    [HideInInspector]
-    public Dictionary<string, InventoryScript> Inventories = new Dictionary<string, InventoryScript>();
-    private InventoryScript playerInventory;
+    public class MainPlayerContext
+    {
+        public GameObject holder;
+        public UnitSelectionScript unitSelectionScript;
+        public Inventory inventory;
+        public TeamNumbers team;
+    }
 
-    public Dictionary<int, VirtualPlayer> PlayerRoots = new Dictionary<int, VirtualPlayer>();
+    [System.Serializable]
+    public class PlayerConfig
+    {
+        public PlayerNumbers playerNumber;
+        public TeamNumbers team;
+    }
 
-    private float manaRechargeRate = 0.1f;
-    private float nextManaRecharge = 0;
+    public Dictionary<PlayerNumbers, AIPlayerContext> AIPlayers = new Dictionary<PlayerNumbers, AIPlayerContext>();
+    public MainPlayerContext PlayerMain;
+
+    public PlayerConfig[] playerConfigs;
 
     private GameObject currentHovering = null;
 
@@ -32,91 +42,55 @@ public class GameManagerScript : MonoBehaviour
     {
         Instance = this;
 
-        RTSUnit[] existingUnits = GameObject.FindObjectsOfType<RTSUnit>();
-        if (existingUnits.Length > 0)
-        {
-            foreach (RTSUnit unit in existingUnits)
-                GroupUnitUnderPlayer(unit);
-        }
-        else
-        {
-            // Create player holders based on config set in skirmesh menu, then init the monarchs
-        }
-
+        // @TODO: playerConfigs should be set from skirmish menu. For now, set in inspector
+        InitAllPlayers(playerConfigs);
     }
 
-    private void GroupUnitUnderPlayer(RTSUnit unit)
+    private void InitAllPlayers(PlayerConfig[] playerConfigs)
     {
-        GameObject _Holder;
-        PlayerNumbers playerNumber = unit.playerNumber;
-        // First see if we've stored this holder yet, get from dictionary
-        if (TryGetVirtualPlayer(playerNumber, out VirtualPlayer virtualPlayer))
-            _Holder = virtualPlayer.holder;
-        // If we don't have the holder stored yet, find it
-        else
+        foreach (PlayerConfig playerConf in playerConfigs)
         {
-            _Holder = Functions.GetPlayerHolder(playerNumber);
-            // If master unit holder doesn't exist yet, create it
-            if (!_Holder)
-                _Holder = InitNewPlayer(playerNumber);
+            if (playerConf.playerNumber == PlayerNumbers.Player1)
+                InitMainPlayer();
+            else
+                InitAIPlayer(playerConf);
         }
-        // Child the unit to the holder object
-        unit.transform.parent = _Holder.transform;
     }
 
-    private GameObject InitNewPlayer(PlayerNumbers playerNumber)
+    private GameObject InitAIPlayer(PlayerConfig playerConf)
     {
-        GameObject _Holder = Functions.CreatePlayerHolder(playerNumber);
-        // Add the holder to our dictionary for quick access later
-        InventoryScript newInventory = _Holder.AddComponent<InventoryScript>();
-        // @TODO: add the PlayerBase (share player and AIplayer) component
+        GameObject _Holder = Functions.GetOrCreatePlayerHolder(playerConf.playerNumber);
+        // Add AIPlayer and Inventory scripts to holder object
         AIPlayer player = _Holder.AddComponent<AIPlayer>();
-        // @TODO: set player values, e.g. playerNumber
-        // player.playerNumber = playerNumber;
-        // player.Init(startingUnits);
-        PlayerRoots.Add((int)playerNumber, new VirtualPlayer
+        // @TODO: can't add generic classes as components, need to split 
+        InventoryAI newInventory = _Holder.AddComponent<InventoryAI>();
+        // Set initial player vars
+        player.playerNumber = playerConf.playerNumber;
+        player.teamNumber = playerConf.team;
+        // Instantiate new AI player context and add it to AIPlayers dictionary
+        AIPlayerContext newAI = new AIPlayerContext
         {
             holder = _Holder,
             playerScript = player,
             inventory = newInventory
-        });
+        };
+        AIPlayers.Add(playerConf.playerNumber, newAI);
         return _Holder;
     }
 
-    public bool TryGetVirtualPlayer(PlayerNumbers playerNumber, out VirtualPlayer virtualPlayer)
+    private MainPlayerContext InitMainPlayer()
     {
-        if (PlayerRoots.TryGetValue((int)playerNumber, out VirtualPlayer vp))
+        GameObject _Holder = Functions.GetOrCreatePlayerHolder(PlayerNumbers.Player1);
+        // Add Inventory and UnitSelection scripts to Main Player
+        Inventory newInventory = _Holder.AddComponent<Inventory>();
+        UnitSelectionScript unitSelection = _Holder.AddComponent<UnitSelectionScript>();
+        PlayerMain = new MainPlayerContext
         {
-            virtualPlayer = vp;
-            return true;
-        }
-        virtualPlayer = null;
-        return false;
-    }
-
-    private void Update()
-    {
-
-        // @TODO: manage all teams mana
-        // @TODO: if mana is taking any amount of drain, need to noramalize that into the rate change with some formula I need to figure out,
-        // like if drainRate surpasses rechargeRate, just drain at a slower pace, else recharge at a slower pace, type thing
-        if (playerInventory.lodestones.Count > 0 && playerInventory.currentMana <= playerInventory.totalManaStorage && playerInventory.currentMana >= 0)
-        {
-            // Every 1/10th of a second, add the totalManaIncome to currentMana
-            if (Time.time > nextManaRecharge)
-            {
-                playerInventory.currentMana += playerInventory.GetManaChangeRate();
-
-                if (playerInventory.currentMana > playerInventory.totalManaStorage)
-                    playerInventory.currentMana = playerInventory.totalManaStorage;
-                else if (playerInventory.currentMana < 0)
-                    playerInventory.currentMana = 0;
-
-                nextManaRecharge = Time.time + manaRechargeRate;
-            }
-        }
-
-        UIManager.Instance.SetManaUI(playerInventory);
+            holder = _Holder,
+            unitSelectionScript = unitSelection,
+            inventory = newInventory
+        };
+        return PlayerMain;
     }
 
     public void SetHovering(GameObject obj)

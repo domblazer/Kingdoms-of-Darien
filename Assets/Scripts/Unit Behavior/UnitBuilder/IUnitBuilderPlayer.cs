@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MenuItem
+public class PlayerConjurerArgs
 {
     public Button menuButton;
     public GameObject prefab;
@@ -14,10 +14,12 @@ public interface IUnitBuilderPlayer
 {
     float lastClickTime { get; set; }
     float clickDelay { get; set; }
-    List<MenuItem> virtualMenu { get; set; }
+    List<PlayerConjurerArgs> virtualMenu { get; set; }
 
-    void QueueBuild(MenuItem item, Vector2 clickPoint);
+    void QueueBuild(PlayerConjurerArgs item, Vector2 clickPoint);
     void InitVirtualMenu(GameObject[] prefabs);
     void ProtectDoubleClick();
+    void ToggleBuildMenu(bool value);
+    void TakeOverButtonListeners();
     void ReleaseButtonListeners();
 }

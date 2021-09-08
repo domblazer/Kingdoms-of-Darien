@@ -5275,9 +5275,9 @@ GameObject:
   - component: {fileID: 40627531992651540}
   - component: {fileID: 6228612781184650606}
   - component: {fileID: 511985369281507559}
-  - component: {fileID: -8726795615724209747}
   - component: {fileID: 6160186843277758084}
   - component: {fileID: -7253495389055695837}
+  - component: {fileID: 3065676088350460888}
   m_Layer: 9
   m_Name: archer-intangible-v2
   m_TagString: Friendly
@@ -5294,7 +5294,7 @@ Transform:
   m_GameObject: {fileID: 854424073394294190}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 548.01, y: 1.007154, z: 261.47}
-  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
+  m_LocalScale: {x: 0.33, y: 0.33, z: 0.33}
   m_Children:
   - {fileID: 5708563044369477565}
   - {fileID: 7999013087902020018}
@@ -5341,20 +5341,6 @@ CapsuleCollider:
   m_Height: 5.6
   m_Direction: 1
   m_Center: {x: 0, y: 2.55, z: 0.31}
---- !u!114 &-8726795615724209747
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 854424073394294190}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c29b60a965dd9fc4dbbc061d873fad82, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  manaColor: {r: 1, g: 0.9275652, b: 0, a: 1}
-  finalUnitPrefab: {fileID: 9087032747262033320, guid: 13f7278faf13be343b0e46fc2bb9943b, type: 3}
 --- !u!199 &6160186843277758084
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -5611,7 +5597,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 0.9275652, b: 0, a: 1}
+      maxColor: {r: 1, g: 1, b: 0, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -10135,6 +10121,20 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!114 &3065676088350460888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 854424073394294190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66f4410b0779ebc4b9f3e3a8f21c2ba4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  manaColor: {r: 255, g: 255, b: 0, a: 1}
+  finalUnitPrefab: {fileID: 9087032747262033320, guid: 13f7278faf13be343b0e46fc2bb9943b, type: 3}
 --- !u!1 &1097202851723486459
 GameObject:
   m_ObjectHideFlags: 0

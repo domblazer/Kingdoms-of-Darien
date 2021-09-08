@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
-using Constants;
+using DarienEngine;
 
 public class BaseUnitScript : RTSUnit
 {
@@ -15,11 +15,13 @@ public class BaseUnitScript : RTSUnit
     public AudioClip selectSound;
 
     private GameObject _Units;
-    private GhostUnitScript.Directions facingDir = GhostUnitScript.Directions.Forward;
+    private Directions facingDir = Directions.Forward;
     private bool hasAlreadyDied = false;
 
+    private UnitBuilderBase<PlayerConjurerArgs> _Builder;
+
     private void Awake()
-    {  
+    {
         // Default move position, for units not instantiated with a parking location
         moveToPositionQueue.Enqueue(transform.position);
     }
@@ -43,10 +45,10 @@ public class BaseUnitScript : RTSUnit
         // Get unit builder manager which handles btn listeners, build queues, etc
         if (isBuilder)
         {
-            // @TODO: UnitBuilder should separate logic as much as possible. Also consider UnitBuilderAI
-            _UnitBuilderScript = GetComponent<UnitBuilder>();
-            if (!_UnitBuilderScript)
-                throw new System.Exception("Cannot have a builder without UnitBuilder script. Attach to this object in inspector.");
+            if (isKinematic)
+                _Builder = GetComponent<Builder>();
+            else
+                _Builder = GetComponent<Factory>();
         }
 
         // Need to tell unit selection script to refresh allUnits. I think this needs to be in Start()
@@ -133,12 +135,17 @@ public class BaseUnitScript : RTSUnit
             // If the unit is a builder, show the build menu when selected
             if (isBuilder && alone)
             {
-                _UnitBuilderScript.ToggleBuildMenu(true); // Show build menu
-                _UnitBuilderScript.ToggleRallyPoint(true);
-
-                // This instance must now seize the UI button listeners, since the UI is shared
-                _UnitBuilderScript.TakeOverButtonListeners();
-
+                if (!isKinematic)
+                {
+                    (_Builder as Factory).ToggleRallyPoint(true);
+                    (_Builder as Factory).ToggleBuildMenu(true); // Show build menu
+                    (_Builder as Factory).TakeOverButtonListeners();
+                }
+                else
+                {
+                    (_Builder as Builder).ToggleBuildMenu(true); // Show build menu
+                    (_Builder as Builder).TakeOverButtonListeners();
+                }
             }
             if (alone)
             {
@@ -162,11 +169,18 @@ public class BaseUnitScript : RTSUnit
 
             if (isBuilder)
             {
-                _UnitBuilderScript.ToggleBuildMenu(false); // Hide build menu
-                _UnitBuilderScript.ToggleRallyPoint(false);
-
-                // Remove this instance's button listeners for the next selected builder
-                _UnitBuilderScript.ReleaseButtonListeners();
+                // @TODO: this should only be applied to the current active builder
+                if (!isKinematic)
+                {
+                    (_Builder as Factory).ToggleRallyPoint(false);
+                    (_Builder as Factory).ToggleBuildMenu(false); // Hide build menu
+                    (_Builder as Factory).ReleaseButtonListeners();
+                }
+                else
+                {
+                    (_Builder as Builder).ToggleBuildMenu(false); // Hide build menu
+                    (_Builder as Builder).ReleaseButtonListeners();
+                }
             }
 
             // @TODO: shouldn't have to call this for every unit getting Deselected, but doesn't ssem to work properly in UnitSelectionScript
@@ -218,7 +232,7 @@ public class BaseUnitScript : RTSUnit
         }
     }
 
-    public void SetFacingDir(GhostUnitScript.Directions dir)
+    public void SetFacingDir(Directions dir)
     {
         facingDir = dir;
         transform.rotation = Quaternion.Euler(transform.rotation.x, (float)facingDir, transform.rotation.z);

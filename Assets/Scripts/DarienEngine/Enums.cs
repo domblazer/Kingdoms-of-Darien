@@ -1,25 +1,5 @@
-﻿using UnityEngine;
-
-namespace Constants
+namespace DarienEngine
 {
-    public static class Functions
-    {
-        public static GameObject GetPlayerHolder(PlayerNumbers playerNumber)
-        {
-            return GameObject.Find(GetPlayerHolderSelector(playerNumber));
-        }
-
-        public static string GetPlayerHolderSelector(PlayerNumbers playerNumber)
-        {
-            return "_Player" + (int)playerNumber;
-        }
-
-        public static GameObject CreatePlayerHolder(PlayerNumbers playerNumber)
-        {
-            return new GameObject(GetPlayerHolderSelector(playerNumber));
-        }
-    }
-
     public enum Directions : int
     {
         Forward = 180, Right = 90, Backwards = 0, Left = -90
@@ -58,5 +38,17 @@ namespace Constants
         Player6 = 6,
         Player7 = 7,
         Player8 = 8
+    }
+
+    public enum TeamNumbers
+    {
+        Team1 = 1,
+        Team2 = 2,
+        Team3 = 3,
+        Team4 = 4,
+        Team5 = 5,
+        Team6 = 6,
+        Team7 = 7,
+        Team8 = 8
     }
 }

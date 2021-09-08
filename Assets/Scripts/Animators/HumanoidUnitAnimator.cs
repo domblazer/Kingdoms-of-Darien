@@ -6,7 +6,7 @@ public class HumanoidUnitAnimator : MonoBehaviour
 {
     private Animator _Animator;
     private RTSUnit _Unit;
-    private UnitBuilderBase<MenuItem> _UnitBuilderScript;
+    private UnitBuilderBase<PlayerConjurerArgs> _UnitBuilderScript;
 
     void Start()
     {
@@ -14,7 +14,7 @@ public class HumanoidUnitAnimator : MonoBehaviour
         _Unit = GetComponent<RTSUnit>();
 
         if (_Unit.isBuilder)
-            _UnitBuilderScript = GetComponent<UnitBuilderBase<MenuItem>>();
+            _UnitBuilderScript = GetComponent<UnitBuilderBase<PlayerConjurerArgs>>();
     }
 
     void Update()

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DarienEngine;
 
 public class UnitBuilderBase<T> : MonoBehaviour
 {
@@ -34,6 +35,6 @@ public class UnitBuilderBase<T> : MonoBehaviour
 
     public bool IsAI()
     {
-        return typeof(T).IsAssignableFrom(typeof(GameObject));
+        return typeof(T).IsAssignableFrom(typeof(AIConjurerArgs));
     }
 }
