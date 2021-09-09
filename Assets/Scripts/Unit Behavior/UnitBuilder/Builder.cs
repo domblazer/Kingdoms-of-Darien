@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DarienEngine;
 
 // Builder is defined as canMove && canBuild && !isAI
 public class Builder : BuilderBase<PlayerConjurerArgs>, IUnitBuilderPlayer

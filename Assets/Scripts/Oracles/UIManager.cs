@@ -124,11 +124,11 @@ public class UIManager : MonoBehaviour
     {
         if (value)
         {
-            GameManagerScript.Instance.PauseGame();
+            GameManager.Instance.PauseGame();
         }
         else
         {
-            GameManagerScript.Instance.ResumeGame();
+            GameManager.Instance.ResumeGame();
         }
         f2Menu.gameObject.SetActive(value);
     }

@@ -531,6 +531,9 @@ public class RTSUnit : MonoBehaviour
         if (fogOfWarMask != null)
             fogOfWarMask.SetActive(false);
 
+        // Remove this unit from the player context
+        Functions.RemoveUnitFromPlayerContext(this);
+
         // @TODO: need to figure out how to do the white ghost die thing
         if (phaseDie)
             Destroy(gameObject);
@@ -585,10 +588,5 @@ public class RTSUnit : MonoBehaviour
     public bool IsInRangeOf(Vector3 pos, float rng)
     {
         return (transform.position - pos).sqrMagnitude < Mathf.Pow(rng, 2);
-    }
-
-    private void OnDestroy()
-    {
-        Functions.RemoveUnitFromPlayerContext(this);
     }
 }

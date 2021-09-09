@@ -50,9 +50,6 @@ public class BaseUnitScript : RTSUnit
             else
                 _Builder = GetComponent<Factory>();
         }
-
-        // Need to tell unit selection script to refresh allUnits. I think this needs to be in Start()
-        _UnitSelection.RefreshAllUnits();
     }
 
     // Update is called once per frame
@@ -99,7 +96,7 @@ public class BaseUnitScript : RTSUnit
                 state = States.Standby;
 
             // If this unit is selected and no other unit has focus
-            if (selectable && selected && !GameManagerScript.Instance.IsHovering())
+            if (selectable && selected && !GameManager.Instance.IsHovering())
             {
                 // Color select-ring based on health value
                 selectRing.GetComponent<SpriteRenderer>().color = Color.Lerp(Color.red, Color.green, (health / 100));
@@ -118,8 +115,7 @@ public class BaseUnitScript : RTSUnit
             Debug.Log("Has already died, make unselectable.");
             DeSelect();
             _UnitSelection.RemoveUnitFromSelection(gameObject);
-            transform.parent = null; // Clear this unit from the "_Units" gameObject so as to remove it from totalUnits
-            _UnitSelection.RemoveUnitFromTotal(gameObject);
+            // @Note: removal from player context handled in RTSUnit.Die()
             selectable = false;
             hasAlreadyDied = true;
         }
@@ -205,7 +201,7 @@ public class BaseUnitScript : RTSUnit
             CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Select);
             UIManager.Instance.unitInfoInstance.Set(super, null);
         }
-        GameManagerScript.Instance.SetHovering(gameObject);
+        GameManager.Instance.SetHovering(gameObject);
     }
 
     // @TODO: if mouse is over this unit when the unit dies, still need to reset cursor, clear unit ui
@@ -215,11 +211,9 @@ public class BaseUnitScript : RTSUnit
         {
             CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Normal);
             if (!selected)
-            {
                 UIManager.Instance.unitInfoInstance.Toggle(false);
-            }
         }
-        GameManagerScript.Instance.ClearHovering();
+        GameManager.Instance.ClearHovering();
     }
 
     private void OnMouseOver()

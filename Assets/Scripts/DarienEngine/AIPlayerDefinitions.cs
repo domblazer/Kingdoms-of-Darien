@@ -1,9 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace DarienEngine
 {
+    public class AIPlayerContext
+    {
+        public GameObject holder;
+        public AIPlayer player;
+        public InventoryAI inventory;
+        public TeamNumbers team;
+    }
+    
     [System.Serializable]
     public class BuildUnit
     {

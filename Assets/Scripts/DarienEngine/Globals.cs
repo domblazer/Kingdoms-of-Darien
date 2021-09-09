@@ -33,11 +33,11 @@ namespace DarienEngine
             if (unit.playerNumber == PlayerNumbers.Player1)
             {
                 // Add this unit to the main (human) player context
-                GameManagerScript.MainPlayerContext mainPlayer = GameManagerScript.Instance.PlayerMain;
+                MainPlayerContext mainPlayer = GameManager.Instance.PlayerMain;
                 _Holder = mainPlayer.holder;
                 mainPlayer.inventory.AddUnit(unit);
             }
-            else if (GameManagerScript.Instance.AIPlayers.TryGetValue(unit.playerNumber, out GameManagerScript.AIPlayerContext aiPlayer))
+            else if (GameManager.Instance.AIPlayers.TryGetValue(unit.playerNumber, out AIPlayerContext aiPlayer))
             {
                 // Add this unit to the AI player context
                 _Holder = aiPlayer.holder;
@@ -56,11 +56,11 @@ namespace DarienEngine
             if (playerNumber == PlayerNumbers.Player1)
             {
                 // Add this unit to the main (human) player context
-                GameManagerScript.MainPlayerContext mainPlayer = GameManagerScript.Instance.PlayerMain;
+                MainPlayerContext mainPlayer = GameManager.Instance.PlayerMain;
                 _Holder = mainPlayer.holder;
                 mainPlayer.inventory.AddIntangible(unit as IntangibleUnitBase<PlayerConjurerArgs>);
             }
-            else if (GameManagerScript.Instance.AIPlayers.TryGetValue(playerNumber, out GameManagerScript.AIPlayerContext aiPlayer))
+            else if (GameManager.Instance.AIPlayers.TryGetValue(playerNumber, out AIPlayerContext aiPlayer))
             {
                 // Add this unit to the AI player context
                 _Holder = aiPlayer.holder;
@@ -75,8 +75,8 @@ namespace DarienEngine
         public static void RemoveUnitFromPlayerContext(RTSUnit unit)
         {
             if (unit.playerNumber == PlayerNumbers.Player1)
-                GameManagerScript.Instance.PlayerMain.inventory.RemoveUnit(unit);
-            else if (GameManagerScript.Instance.AIPlayers.TryGetValue(unit.playerNumber, out GameManagerScript.AIPlayerContext aiPlayer))
+                GameManager.Instance.PlayerMain.inventory.RemoveUnit(unit);
+            else if (GameManager.Instance.AIPlayers.TryGetValue(unit.playerNumber, out AIPlayerContext aiPlayer))
                 aiPlayer.inventory.RemoveUnit(unit);
         }
     }

@@ -4,25 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using DarienEngine;
 
-public class GameManagerScript : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
-    public static GameManagerScript Instance { get; private set; }
-
-    public class AIPlayerContext
-    {
-        public GameObject holder;
-        public AIPlayer playerScript;
-        public InventoryAI inventory;
-        public TeamNumbers team;
-    }
-
-    public class MainPlayerContext
-    {
-        public GameObject holder;
-        public UnitSelectionScript unitSelectionScript;
-        public Inventory inventory;
-        public TeamNumbers team;
-    }
+    public static GameManager Instance { get; private set; }
 
     [System.Serializable]
     public class PlayerConfig
@@ -38,9 +22,14 @@ public class GameManagerScript : MonoBehaviour
 
     private GameObject currentHovering = null;
 
+    public AudioSource AudioSource { get; set; }
+
     private void Awake()
     {
         Instance = this;
+        AudioSource = GetComponent<AudioSource>();
+        if (!AudioSource)
+            Debug.LogWarning("GameManager could not find AudioSource. Some sounds may not play.");
 
         // @TODO: playerConfigs should be set from skirmish menu. For now, set in inspector
         InitAllPlayers(playerConfigs);
@@ -61,17 +50,17 @@ public class GameManagerScript : MonoBehaviour
     {
         GameObject _Holder = Functions.GetOrCreatePlayerHolder(playerConf.playerNumber);
         // Add AIPlayer and Inventory scripts to holder object
-        AIPlayer player = _Holder.AddComponent<AIPlayer>();
+        AIPlayer newPlayer = _Holder.AddComponent<AIPlayer>();
         // @TODO: can't add generic classes as components, need to split 
         InventoryAI newInventory = _Holder.AddComponent<InventoryAI>();
         // Set initial player vars
-        player.playerNumber = playerConf.playerNumber;
-        player.teamNumber = playerConf.team;
+        newPlayer.playerNumber = playerConf.playerNumber;
+        newPlayer.teamNumber = playerConf.team;
         // Instantiate new AI player context and add it to AIPlayers dictionary
         AIPlayerContext newAI = new AIPlayerContext
         {
             holder = _Holder,
-            playerScript = player,
+            player = newPlayer,
             inventory = newInventory
         };
         AIPlayers.Add(playerConf.playerNumber, newAI);
@@ -83,11 +72,13 @@ public class GameManagerScript : MonoBehaviour
         GameObject _Holder = Functions.GetOrCreatePlayerHolder(PlayerNumbers.Player1);
         // Add Inventory and UnitSelection scripts to Main Player
         Inventory newInventory = _Holder.AddComponent<Inventory>();
-        UnitSelectionScript unitSelection = _Holder.AddComponent<UnitSelectionScript>();
+        Player newPlayer = _Holder.AddComponent<Player>();
+        // @TODO: player team number in theory should always come from the first item in playerConfigs
+        newPlayer.teamNumber = playerConfigs[0].team;
         PlayerMain = new MainPlayerContext
         {
             holder = _Holder,
-            unitSelectionScript = unitSelection,
+            player = newPlayer,
             inventory = newInventory
         };
         return PlayerMain;
