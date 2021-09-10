@@ -9,7 +9,7 @@ namespace DarienEngine
     {
         public class Item
         {
-            public List<BaseUnitScriptAI> units = new List<BaseUnitScriptAI>();
+            public List<BaseUnitAI> units = new List<BaseUnitAI>();
             public int priority;
             public int count { get { return units.Count; } }
             public int limit;
@@ -72,7 +72,7 @@ namespace DarienEngine
             quotaItemList.Add(monarch);
         }
 
-        public void AddUnit(BaseUnitScriptAI unit)
+        public void AddUnit(BaseUnitAI unit)
         {
             Item item = quotaItemList.Find(x => x.label == unit.unitType);
             if (item != null && !item.quotaFull)
@@ -81,19 +81,19 @@ namespace DarienEngine
                 Debug.LogWarning("Unit limit for type " + unit.unitType + " has been reached, last unit (" + unit.name + ") should not have been created and was not added to the AI player context.");
         }
 
-        public List<BaseUnitScriptAI> GetUnitsByType(UnitCategories type)
+        public List<BaseUnitAI> GetUnitsByType(UnitCategories type)
         {
             return quotaItemList.Find(x => x.label == type).units;
         }
 
-        public List<BaseUnitScriptAI> GetUnitsByTypes(params UnitCategories[] types)
+        public List<BaseUnitAI> GetUnitsByTypes(params UnitCategories[] types)
         {
             return quotaItemList.Find(x => types.Contains(x.label)).units;
         }
 
-        public List<BaseUnitScriptAI> GetTotalUnits()
+        public List<BaseUnitAI> GetTotalUnits()
         {
-            List<BaseUnitScriptAI> total = new List<BaseUnitScriptAI>();
+            List<BaseUnitAI> total = new List<BaseUnitAI>();
             quotaItemList.ForEach(x => total.Concat(x.units));
             return total;
         }

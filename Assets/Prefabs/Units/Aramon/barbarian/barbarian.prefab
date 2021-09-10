@@ -286,8 +286,8 @@ GameObject:
   - component: {fileID: 1841554504871734141}
   - component: {fileID: 1841554504871734142}
   - component: {fileID: 1841554504871734143}
-  - component: {fileID: 1841554504871734136}
   - component: {fileID: 1841554504871734137}
+  - component: {fileID: 1841554504871734136}
   m_Layer: 9
   m_Name: barbarian
   m_TagString: Friendly
@@ -504,18 +504,6 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 3
---- !u!114 &1841554504871734136
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1535707412574197296}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b7e209551963094fa1e58d5f2ad9185, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1841554504871734137
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -553,7 +541,6 @@ MonoBehaviour:
   attackTarget: {fileID: 0}
   fogOfWarMask: {fileID: 1841554505567462275}
   bloodSystem: {fileID: 1841554505701696260}
-  _UnitBuilderScript: {fileID: 0}
   attackSounds:
   - {fileID: 8300000, guid: c4f4add1b5698ab40ad42daae0750d88, type: 3}
   - {fileID: 8300000, guid: c8c5a1847dff21849aecd53b7e156599, type: 3}
@@ -566,6 +553,18 @@ MonoBehaviour:
   selectRing: {fileID: 1841554504843388076}
   moveSound: {fileID: 8300000, guid: 4af0668c0b967ad478c87114a18b2cb9, type: 3}
   selectSound: {fileID: 8300000, guid: 6a572077ada565041b01ac9898f92597, type: 3}
+--- !u!114 &1841554504871734136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1535707412574197296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b7e209551963094fa1e58d5f2ad9185, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1841554504196337585
 GameObject:
   m_ObjectHideFlags: 0

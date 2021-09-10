@@ -1626,10 +1626,10 @@ GameObject:
   - component: {fileID: 7672112253590628170}
   - component: {fileID: 7672112253590628169}
   - component: {fileID: 7672112253590628168}
-  - component: {fileID: 7672112253590628151}
-  - component: {fileID: 7672112253590628150}
   - component: {fileID: 7672112253590628149}
+  - component: {fileID: 7672112253590628151}
   - component: {fileID: 7672112253590628148}
+  - component: {fileID: 4135129853923179177}
   m_Layer: 9
   m_Name: mage-builder
   m_TagString: Friendly
@@ -1845,44 +1845,6 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 3
---- !u!114 &7672112253590628151
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7402150474938149980}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b7e209551963094fa1e58d5f2ad9185, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &7672112253590628150
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7402150474938149980}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce06542453afe0341b67ecfff8d2952a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parentMenuPath: BuildMenus/Aramon
-  buildMenuName: MageBuilderMenu
-  buildUnitPrefabs:
-  - {fileID: 6609568831373878206, guid: 5de9d303e6176dc4899ac1c4580711a5, type: 3}
-  - {fileID: 2371707195242254508, guid: feb9e4dae3f7537479a3ae470a3d15a7, type: 3}
-  - {fileID: 7516564138403646659, guid: 6209d295e944046488b064b378633c70, type: 3}
-  - {fileID: 5063472771350491742, guid: eceb6651f3f9d304e8f2aa517d5a8973, type: 3}
-  - {fileID: 8063077399181062547, guid: a5669a1de6bda7647bafbd1155f8e9dd, type: 3}
-  - {fileID: 3152374615478420981, guid: a5669a1de6bda7647bafbd1155f8e9dd, type: 3}
-  - {fileID: 8284541907566071018, guid: f6d500b00ef9f5a449f3d55fa8b6f42b, type: 3}
-  - {fileID: 3152374615478420981, guid: a5669a1de6bda7647bafbd1155f8e9dd, type: 3}
-  _BaseUnit: {fileID: 0}
-  builderSpawnPoint: {fileID: 0}
-  builderRallyPoint: {fileID: 0}
 --- !u!114 &7672112253590628149
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1919,7 +1881,6 @@ MonoBehaviour:
   attackTarget: {fileID: 0}
   fogOfWarMask: {fileID: 0}
   bloodSystem: {fileID: 7672112254575380417}
-  _UnitBuilderScript: {fileID: 0}
   attackSounds: []
   hitSounds: []
   dieSound: {fileID: 0}
@@ -1928,6 +1889,18 @@ MonoBehaviour:
   selectRing: {fileID: 7672112254513394519}
   moveSound: {fileID: 0}
   selectSound: {fileID: 0}
+--- !u!114 &7672112253590628151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7402150474938149980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b7e209551963094fa1e58d5f2ad9185, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &7672112253590628148
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1944,6 +1917,20 @@ MonoBehaviour:
   projectilePrefab: {fileID: 3465070647124285113, guid: 19d906da7782a0e4e95db691adf484ba, type: 3}
   projectileVelocity: 8
   animDelay: 0.5
+--- !u!114 &4135129853923179177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7402150474938149980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47c8f4989f284d448b15570d423f413b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  menuRoot: {fileID: 0}
+  activeFloatingGhost: {fileID: 0}
 --- !u!1 &7467070316275484216
 GameObject:
   m_ObjectHideFlags: 0

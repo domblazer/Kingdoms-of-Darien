@@ -10,7 +10,7 @@ using DarienEngine;
     BaseUnit must, however, implement the Unity game methods Awake(), Start(), and Update() since "super" is not a thing in C#,
     so RTSUnit class can't implement any common functionality that happens in those methods.
 */
-public class BaseUnitScriptAI : RTSUnit
+public class BaseUnitAI : RTSUnit
 {
     public float patrolRange = 25.0f;
     public int patrolPointsCount = 3;

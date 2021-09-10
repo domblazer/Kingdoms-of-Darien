@@ -5,8 +5,8 @@ using UnityEngine;
 public class FortUnitAnimatorScript : MonoBehaviour
 {
     private Animator m_Animator;
-    private BaseUnitScript baseUnit;
-    private BaseUnitScriptAI baseUnitAI;
+    private BaseUnit baseUnit;
+    private BaseUnitAI baseUnitAI;
 
     public bool isAI = false;
 
@@ -15,11 +15,11 @@ public class FortUnitAnimatorScript : MonoBehaviour
         m_Animator = GetComponent<Animator>();
         if (isAI)
         {
-            baseUnitAI = GetComponent<BaseUnitScriptAI>();
+            baseUnitAI = GetComponent<BaseUnitAI>();
         }
         else
         {
-            baseUnit = GetComponent<BaseUnitScript>();
+            baseUnit = GetComponent<BaseUnit>();
         }
     }
 

@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
     {
         public PlayerNumbers playerNumber;
         public TeamNumbers team;
+        public Factions faction;
+        // public FactionColor factionColor;
     }
 
     public Dictionary<PlayerNumbers, AIPlayerContext> AIPlayers = new Dictionary<PlayerNumbers, AIPlayerContext>();
@@ -51,7 +53,6 @@ public class GameManager : MonoBehaviour
         GameObject _Holder = Functions.GetOrCreatePlayerHolder(playerConf.playerNumber);
         // Add AIPlayer and Inventory scripts to holder object
         AIPlayer newPlayer = _Holder.AddComponent<AIPlayer>();
-        // @TODO: can't add generic classes as components, need to split 
         InventoryAI newInventory = _Holder.AddComponent<InventoryAI>();
         // Set initial player vars
         newPlayer.playerNumber = playerConf.playerNumber;
@@ -74,7 +75,20 @@ public class GameManager : MonoBehaviour
         Inventory newInventory = _Holder.AddComponent<Inventory>();
         Player newPlayer = _Holder.AddComponent<Player>();
         // @TODO: player team number in theory should always come from the first item in playerConfigs
-        newPlayer.teamNumber = playerConfigs[0].team;
+        PlayerConfig playerConf = Array.Find(playerConfigs, p => p.playerNumber == PlayerNumbers.Player1);
+        if (playerConf == null)
+            throw new System.Exception("Error: Could not find Player1 in startup config. Cannot start.");
+
+        newPlayer.teamNumber = playerConf.team;
+        // @TODO: get rect transform of selection box ui
+        // @TODO: faction based path, e.g. faction == 'Taros' ? 'TaroCanvas' : faction == 'Aramon' ? 'AraCanvas'
+        RectTransform square = GameObject.Find("AraCanvas/selection-box").GetComponent<RectTransform>();
+        // @TODO: get audio clip for click sound
+        AudioClip clip = Resources.Load<AudioClip>("/runtime/audioclips/ara-click-01.wav");
+        if (clip == null)
+            Debug.LogWarning("Warning: Could not load click sound for Player.");
+        newPlayer.Init(newInventory, square, clip);
+
         PlayerMain = new MainPlayerContext
         {
             holder = _Holder,

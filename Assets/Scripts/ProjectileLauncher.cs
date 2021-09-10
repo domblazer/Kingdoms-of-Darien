@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // [RequireComponent(typeof(AudioSource))]
-[RequireComponent(typeof(BaseUnitScript))]
+[RequireComponent(typeof(BaseUnit))]
 public class ProjectileLauncher : MonoBehaviour
 {
     public Transform launchPoint;
@@ -11,14 +11,14 @@ public class ProjectileLauncher : MonoBehaviour
     public float projectileVelocity = 30.0f;
     // public AudioClip launchSound;
 
-    private BaseUnitScript _BaseUnit;
+    private BaseUnit _BaseUnit;
 
     public float animDelay = 1.5f;
 
     // Start is called before the first frame update
     void Start()
     {
-        _BaseUnit = gameObject.GetComponent<BaseUnitScript>();
+        _BaseUnit = gameObject.GetComponent<BaseUnit>();
     }
 
     private void Update()

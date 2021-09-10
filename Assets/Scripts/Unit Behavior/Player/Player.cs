@@ -11,7 +11,7 @@ public class Player : MonoBehaviour
     public TeamNumbers teamNumber;
 
     // To determine if we are clicking with left mouse or holding down left mouse
-    public float clickHoldDelay = 0.15f;
+    public float clickHoldDelay = 0.2f;
     private float clickTime = 0f;
     private bool isHoldingDown = false;
     private bool isClicking = false;
@@ -24,21 +24,27 @@ public class Player : MonoBehaviour
     // The selection squares 4 corner positions
     private Vector3 TL, TR, BL, BR;
 
-    private List<BaseUnitScript> selectedUnits = new List<BaseUnitScript>();
+    private List<BaseUnit> selectedUnits = new List<BaseUnit>();
 
     // The selection square we draw when we drag the mouse to select units
     public RectTransform selectionSquareTrans;
     public AudioClip clickSound;
-    public UnitBuilderBase<PlayerConjurerArgs> currentActiveBuilder;
 
+    public UnitBuilderBase<PlayerConjurerArgs> currentActiveBuilder;
     public Inventory inventory;
+
+    // Called at run-time in GameManager when Player component initialized
+    public void Init(Inventory inv, RectTransform square, AudioClip sound)
+    {
+        inventory = inv;
+        selectionSquareTrans = square;
+        clickSound = sound;
+        selectionSquareTrans.gameObject.SetActive(false);
+    }
 
     void Start()
     {
         CursorManager.Instance.OnCursorChanged += Instance_OnCursorChanged;
-
-        // Keep reference to human player inventory
-        inventory = GameManager.Instance.PlayerMain.inventory;
     }
 
     private void Instance_OnCursorChanged(object sender, CursorManager.OnCursorChangedEventArgs e)
@@ -132,7 +138,7 @@ public class Player : MonoBehaviour
     // Select units under square
     public void HandleUnitsUnderSquare(bool highlightOnly = false)
     {
-        foreach (BaseUnitScript currentUnit in inventory.totalUnits)
+        foreach (BaseUnit currentUnit in inventory.totalUnits)
         {
             // Is this unit within the square
             if (IsWithinPolygon(currentUnit.transform.position) && currentUnit.selectable)
@@ -169,7 +175,7 @@ public class Player : MonoBehaviour
             else if (selectedUnits.Count == 1)
             {
                 // Just move the single selected unit directly to click point
-                BaseUnitScript unit = selectedUnits[0];
+                BaseUnit unit = selectedUnits[0];
                 unit.SetMove(hit.point, addToMoveQueue, doAttackMove);
                 unit.PlayMoveSound();
             }
@@ -189,12 +195,12 @@ public class Player : MonoBehaviour
                 // Deselect all units when clicking single other unit, unless holding shift
                 if (!InputManager.HoldingShift())
                 {
-                    foreach (BaseUnitScript unit in selectedUnits)
+                    foreach (BaseUnit unit in selectedUnits)
                         unit.DeSelect();
                     selectedUnits.Clear();
                 }
 
-                BaseUnitScript activeUnit = hit.collider.gameObject.GetComponent<BaseUnitScript>();
+                BaseUnit activeUnit = hit.collider.gameObject.GetComponent<BaseUnit>();
                 if (activeUnit.selectable)
                 {
                     // Play click sound
@@ -207,7 +213,7 @@ public class Player : MonoBehaviour
             else if (hit.collider.CompareTag("Enemy"))
             {
                 // If we clicked an Enemy unit while at least one canAttack unit is selected, tell those/that unit to attack
-                foreach (BaseUnitScript unit in selectedUnits)
+                foreach (BaseUnit unit in selectedUnits)
                     unit.TryAttack(hit.collider.gameObject);
             }
         }
@@ -226,13 +232,13 @@ public class Player : MonoBehaviour
     public int SelectedAttackUnitsCount()
     {
         int count = 0;
-        foreach (BaseUnitScript unit in selectedUnits)
+        foreach (BaseUnit unit in selectedUnits)
             if (unit.canAttack)
                 count++;
         return count;
     }
 
-    public void RemoveUnitFromSelection(BaseUnitScript unit)
+    public void RemoveUnitFromSelection(BaseUnit unit)
     {
         selectedUnits.Remove(unit);
     }

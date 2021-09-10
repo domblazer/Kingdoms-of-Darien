@@ -7,7 +7,7 @@ using DarienEngine;
 
 /*
     This class represents core functionality for all units in the game; it must implement only the behavior that is common between
-    the playable units (BaseUnitScript) and the NP-units (BaseUnitScriptAI), i.e. movement/pathfinding, attack routine, etc.
+    the playable units (BaseUnit) and the NP-units (BaseUnitAI), i.e. movement/pathfinding, attack routine, etc.
 */
 // [RequireComponent(typeof(AudioSource))]
 public class RTSUnit : MonoBehaviour
@@ -71,7 +71,7 @@ public class RTSUnit : MonoBehaviour
     protected bool isMovingToAttack = false;
     [HideInInspector] public bool isAttacking = false;
     [HideInInspector] public GameObject attackTarget;
-    // @TODO: check StrongholdScript; ideally BaseUnitScript should handle the facing routine so these vars can remain protected
+    // @TODO: check StrongholdScript; ideally BaseUnit should handle the facing routine so these vars can remain protected
     public bool facing { get; set; } = false;
     public bool isDead { get; set; } = false;
     protected bool isParking = false;

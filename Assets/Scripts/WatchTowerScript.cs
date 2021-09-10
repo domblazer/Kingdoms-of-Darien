@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(BaseUnitScript))]
+[RequireComponent(typeof(BaseUnit))]
 public class WatchTowerScript : MonoBehaviour
 {
     public GameObject archerOne;
@@ -15,14 +15,14 @@ public class WatchTowerScript : MonoBehaviour
     public Rigidbody projectilePrefab;
     public float projectileVelocity = 1;
 
-    private BaseUnitScript _BaseUnit;
+    private BaseUnit _BaseUnit;
 
     // Start is called before the first frame update
     void Start()
     {
         archerOneAnimator = archerOne.GetComponent<Animator>();
         archerTwoAnimator = archerTwo.GetComponent<Animator>();
-        _BaseUnit = GetComponent<BaseUnitScript>();
+        _BaseUnit = GetComponent<BaseUnit>();
     }
 
     // Update is called once per frame

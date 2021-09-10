@@ -22,10 +22,10 @@ namespace DarienEngine.Clustering
 
     public static class Clusters
     {
-        public static void MoveGroup(List<BaseUnitScript> selectedUnits, Vector3 hitPoint, bool addToMoveQueue = false, bool attackMove = false)
+        public static void MoveGroup(List<BaseUnit> selectedUnits, Vector3 hitPoint, bool addToMoveQueue = false, bool attackMove = false)
         {
             UnitClusterMoveInfo clusterMoveInfo = CalculateSmartCenter(selectedUnits);
-            foreach (BaseUnitScript unit in selectedUnits)
+            foreach (BaseUnit unit in selectedUnits)
             {
                 Vector3 offset = (unit.transform.position - clusterMoveInfo.smartCenter);
                 Vector3 moveTo = hitPoint + offset;
@@ -45,7 +45,7 @@ namespace DarienEngine.Clustering
             }
         }
 
-        public static UnitClusterMoveInfo CalculateSmartCenter(List<BaseUnitScript> group)
+        public static UnitClusterMoveInfo CalculateSmartCenter(List<BaseUnit> group)
         {
             // Calculate "SmartCenter" of the selected units
             //   1. Calculate average position of selectedUnits
@@ -54,7 +54,7 @@ namespace DarienEngine.Clustering
             List<DescriptUnit> descriptUnits = new List<DescriptUnit>();
             Vector3 mean = Vector3.zero;
             List<Vector3> positions = new List<Vector3>();
-            foreach (BaseUnitScript unit in group)
+            foreach (BaseUnit unit in group)
             {
                 positions.Add(unit.transform.position);
                 mean += unit.transform.position;
@@ -79,7 +79,7 @@ namespace DarienEngine.Clustering
             // Now calculate the adjusted mean
             Vector3 adjustedMean = Vector3.zero;
             int adjustedCount = 0;
-            foreach (BaseUnitScript unit in group)
+            foreach (BaseUnit unit in group)
             {
                 // If unit is within one standard deviation of the initial average, include it in the adjusted set
                 if ((unit.transform.position - mean).sqrMagnitude <= stdd)

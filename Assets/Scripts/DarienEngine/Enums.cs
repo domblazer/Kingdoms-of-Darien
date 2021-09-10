@@ -51,4 +51,13 @@ namespace DarienEngine
         Team7 = 7,
         Team8 = 8
     }
+
+    public enum Factions
+    {
+        Aramon,
+        Taros,
+        Veruna,
+        Zhon,
+        Creon
+    }
 }

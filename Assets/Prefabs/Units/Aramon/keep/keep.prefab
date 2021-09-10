@@ -297,10 +297,10 @@ GameObject:
   - component: {fileID: 5369399599306411827}
   - component: {fileID: 919132148019758413}
   - component: {fileID: 919132148019758412}
-  - component: {fileID: 919132148019758411}
   - component: {fileID: 919132148019758410}
   - component: {fileID: 919132148019758409}
   - component: {fileID: 2272805403119466675}
+  - component: {fileID: 1209267733}
   m_Layer: 9
   m_Name: keep
   m_TagString: Friendly
@@ -387,7 +387,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerNumber: 1
-  unitType: 3
+  unitType: 4
   unitIcon: {fileID: 21300000, guid: 1127fbe556c73484190397ce3c4c9ebf, type: 3}
   unitName: Keep
   maxHealth: 25116
@@ -410,7 +410,6 @@ MonoBehaviour:
   attackTarget: {fileID: 0}
   fogOfWarMask: {fileID: 0}
   bloodSystem: {fileID: 0}
-  _UnitBuilderScript: {fileID: 0}
   attackSounds: []
   hitSounds: []
   dieSound: {fileID: 0}
@@ -419,33 +418,6 @@ MonoBehaviour:
   selectRing: {fileID: 2011250675025538027}
   moveSound: {fileID: 0}
   selectSound: {fileID: 0}
---- !u!114 &919132148019758411
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1668596875978412019}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce06542453afe0341b67ecfff8d2952a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parentMenuPath: BuildMenus/Aramon
-  buildMenuName: KeepMenu
-  buildUnitPrefabs:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 4210767338165450194, guid: 080d0f9117987854e8bca6526cbcf2c5, type: 3}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  _BaseUnit: {fileID: 0}
-  builderSpawnPoint: {fileID: 3942355593686548371}
-  builderRallyPoint: {fileID: 2045721271734356058}
 --- !u!208 &919132148019758410
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -487,6 +459,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 450c10641a3368e438509bf5f53d798f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1209267733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1668596875978412019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55f2aa8d4cf01b242a7e85b133b57221, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnPoint: {fileID: 3942355593686548371}
+  rallyPoint: {fileID: 2045721271734356058}
+  menuRoot: {fileID: 0}
+  intangibleUnits: []
 --- !u!1 &2011250675025538027
 GameObject:
   m_ObjectHideFlags: 0

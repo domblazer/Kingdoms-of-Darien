@@ -22,11 +22,11 @@ public class AIPlayer : MonoBehaviour
     public PlayerNumbers playerNumber;
     public TeamNumbers teamNumber;
 
-    public void Init(BaseUnitScriptAI[] initialTotalUnits)
+    public void Init(BaseUnitAI[] initialTotalUnits)
     {
         // @TODO: need to be able to start with any unit configuration, e.g. 3 cabals, 1 temple, 10 executioners
         // So, need to compile all units for this team player and group by type, e.g. builders, infantry, fort units, etc.
-        foreach (BaseUnitScriptAI unit in initialTotalUnits)
+        foreach (BaseUnitAI unit in initialTotalUnits)
             profile.AddUnit(unit);
     }
 
@@ -44,12 +44,12 @@ public class AIPlayer : MonoBehaviour
         {
             DetermineNeedState();
 
-            List<BaseUnitScriptAI> factories = profile.GetUnitsByTypes(UnitCategories.FactoryTier1, UnitCategories.FactoryTier2);
+            List<BaseUnitAI> factories = profile.GetUnitsByTypes(UnitCategories.FactoryTier1, UnitCategories.FactoryTier2);
             // @TODO: if no builders?
             // @TODO: mobile builders vs factories
 
             // Tell builders to start building some units
-            foreach (BaseUnitScriptAI factory in factories)
+            foreach (BaseUnitAI factory in factories)
             {
                 FactoryAI builderAI = factory.gameObject.GetComponent<FactoryAI>();
                 if (!builderAI.isBuilding)
@@ -163,7 +163,7 @@ public class AIPlayer : MonoBehaviour
         return needs[0].label;
     }
 
-    public void AddToTotal(BaseUnitScriptAI unitAI)
+    public void AddToTotal(BaseUnitAI unitAI)
     {
         // Add this unit to MasterQuota
         profile.AddUnit(unitAI);

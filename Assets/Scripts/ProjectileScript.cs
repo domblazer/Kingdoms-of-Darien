@@ -38,14 +38,14 @@ public class ProjectileScript : MonoBehaviour
             // play one shot sound
             if (hitSounds.Length > 0)
             {
-                col.gameObject.GetComponent<BaseUnitScriptAI>().GetAudioSource().PlayOneShot(hitSounds[Random.Range(0, hitSounds.Length)], 0.5f);
+                col.gameObject.GetComponent<BaseUnitAI>().GetAudioSource().PlayOneShot(hitSounds[Random.Range(0, hitSounds.Length)], 0.5f);
             }
 
             // @TODO: friendly fire
             // Presumably "Enemy" should only ever be an AI 
-            if (col.gameObject.GetComponent<BaseUnitScriptAI>())
+            if (col.gameObject.GetComponent<BaseUnitAI>())
             {
-                col.gameObject.GetComponent<BaseUnitScriptAI>().ReceiveDamage(damage);
+                col.gameObject.GetComponent<BaseUnitAI>().ReceiveDamage(damage);
             }
             else
             {
@@ -60,7 +60,7 @@ public class ProjectileScript : MonoBehaviour
             if (groundHitSounds.Length > 0)
             {
                 // @TODO: GameManager.GetAudioSource()?
-                // col.gameObject.GetComponent<BaseUnitScriptAI>().GetAudioSource().PlayOneShot(groundHitSounds[Random.Range(0, groundHitSounds.Length)], 0.5f);
+                // col.gameObject.GetComponent<BaseUnitAI>().GetAudioSource().PlayOneShot(groundHitSounds[Random.Range(0, groundHitSounds.Length)], 0.5f);
             }
             Destroy(gameObject);
         }

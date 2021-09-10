@@ -5,7 +5,7 @@ using UnityEngine.AI;
 using UnityEngine.EventSystems;
 using DarienEngine;
 
-public class BaseUnitScript : RTSUnit
+public class BaseUnit : RTSUnit
 {
     private bool selected;
     public bool selectable = true;

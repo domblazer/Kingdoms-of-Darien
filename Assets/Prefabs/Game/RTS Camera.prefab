@@ -86,7 +86,6 @@ GameObject:
   - component: {fileID: 4697402880649432285}
   - component: {fileID: 4697402880649432284}
   - component: {fileID: 4697402880649432283}
-  - component: {fileID: 4697402880649432280}
   - component: {fileID: 4697402880649432281}
   - component: {fileID: 4697402880649432278}
   - component: {fileID: 4697402880649432279}
@@ -187,21 +186,6 @@ MonoBehaviour:
   yOrbitSpeed: 120
   views: []
   lerpSpeed: 50
---- !u!114 &4697402880649432280
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4697402880649432287}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3efbd1d6952e4534983c77f2848ef905, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  clickHoldDelay: 0.15
-  clickSound: {fileID: 8300000, guid: c0aecffc6f2df2b48995ac6938a92503, type: 3}
-  selectionSquareTrans: {fileID: 0}
 --- !u!114 &4697402880649432281
 MonoBehaviour:
   m_ObjectHideFlags: 0

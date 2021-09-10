@@ -10,11 +10,11 @@ public class ArtilleryUnitScript : MonoBehaviour
     private Vector3 targetDirection;
     private Quaternion targetRotation;
 
-    private BaseUnitScript _BaseUnit;
+    private BaseUnit _BaseUnit;
 
     private void Awake()
     {
-        _BaseUnit = gameObject.GetComponent<BaseUnitScript>();
+        _BaseUnit = gameObject.GetComponent<BaseUnit>();
     }
 
     // Start is called before the first frame update

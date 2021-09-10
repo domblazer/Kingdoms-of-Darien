@@ -14,7 +14,7 @@ public class StrongholdScript : MonoBehaviour
     private Quaternion targetRotation;
     private Vector3 targetDirection;
 
-    private BaseUnitScript _BaseUnit;
+    private BaseUnit _BaseUnit;
 
     private float step;
 
@@ -24,7 +24,7 @@ public class StrongholdScript : MonoBehaviour
 
     private void Awake()
     {
-        _BaseUnit = gameObject.GetComponent<BaseUnitScript>();
+        _BaseUnit = gameObject.GetComponent<BaseUnit>();
     }
 
     // Start is called before the first frame update

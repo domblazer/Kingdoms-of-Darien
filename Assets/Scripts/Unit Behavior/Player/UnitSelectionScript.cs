@@ -59,7 +59,7 @@ public class UnitSelectionScript : MonoBehaviour
         CursorManager.Instance.OnCursorChanged += Instance_OnCursorChanged;
 
         // @Note: player in skirmish is always Player1
-        _Units = GameObject.Find("_Units_Player1"); // This needs to remain in Start() since _Units_1 is created on Awake() in BaseUnitScript
+        _Units = GameObject.Find("_Units_Player1"); // This needs to remain in Start() since _Units_1 is created on Awake() in BaseUnit
         RefreshAllUnits();
     }
 
@@ -157,7 +157,7 @@ public class UnitSelectionScript : MonoBehaviour
                     else if (selectedUnits.Count == 1)
                     {
                         // Just move the single selected unit directly to click point
-                        BaseUnitScript unit = selectedUnits[0].GetComponent<BaseUnitScript>();
+                        BaseUnit unit = selectedUnits[0].GetComponent<BaseUnit>();
                         unit.SetMove(hit.point, addToMoveQueue, doAttackMove);
                         unit.PlayMoveSound();
                     }
@@ -189,19 +189,19 @@ public class UnitSelectionScript : MonoBehaviour
                     if (!InputManager.HoldingShift())
                     {
                         foreach (GameObject unit in selectedUnits)
-                            unit.GetComponent<BaseUnitScript>().DeSelect();
+                            unit.GetComponent<BaseUnit>().DeSelect();
 
                         selectedUnits.Clear();
                     }
 
                     GameObject activeUnit = hit.collider.gameObject;
-                    if (activeUnit.GetComponent<BaseUnitScript>().selectable)
+                    if (activeUnit.GetComponent<BaseUnit>().selectable)
                     {
                         // Play click sound
                         if (!InputManager.HoldingShift())
                             GetComponent<AudioSource>().PlayOneShot(clickSound);
 
-                        activeUnit.GetComponent<BaseUnitScript>().Select(true); // Set this unit to selected with param alone=true
+                        activeUnit.GetComponent<BaseUnit>().Select(true); // Set this unit to selected with param alone=true
                         selectedUnits.Add(activeUnit); // Add it to the list of selected units, which is now just 1 unit
                     }
                 }
@@ -209,7 +209,7 @@ public class UnitSelectionScript : MonoBehaviour
                 {
                     // If we clicked an Enemy unit while at least one canAttack unit is selected, tell those/that unit to attack
                     foreach (GameObject unit in selectedUnits)
-                        unit.GetComponent<BaseUnitScript>().TryAttack(hit.collider.gameObject);
+                        unit.GetComponent<BaseUnit>().TryAttack(hit.collider.gameObject);
                 }
             }
         }
@@ -231,15 +231,15 @@ public class UnitSelectionScript : MonoBehaviour
         foreach (GameObject currentUnit in allUnits)
         {
             // Is this unit within the square
-            if (IsWithinPolygon(currentUnit.transform.position) && currentUnit.GetComponent<BaseUnitScript>().selectable)
+            if (IsWithinPolygon(currentUnit.transform.position) && currentUnit.GetComponent<BaseUnit>().selectable)
             {
-                currentUnit.GetComponent<BaseUnitScript>().Select();
+                currentUnit.GetComponent<BaseUnit>().Select();
                 // Add to the selection if not just highlighting
                 if (!highlightOnly)
                     selectedUnits.Add(currentUnit);
             }
             else if (!InputManager.HoldingShift())
-                currentUnit.GetComponent<BaseUnitScript>().DeSelect();
+                currentUnit.GetComponent<BaseUnit>().DeSelect();
         }
     }
 
@@ -261,7 +261,7 @@ public class UnitSelectionScript : MonoBehaviour
             // @TODO: also need to make sure moveTo points don't overlap or get too close to eachother
             // @TODO // if (noPrimaryCluster) // everyone collapse in around click point naively?
 
-            BaseUnitScript unitScript = unit.GetComponent<BaseUnitScript>();
+            BaseUnit unitScript = unit.GetComponent<BaseUnit>();
             if (unitScript && unitScript.isKinematic)
                 unitScript.SetMove(moveTo, addToMoveQueue, attackMove);
         }
@@ -462,7 +462,7 @@ public class UnitSelectionScript : MonoBehaviour
         int count = 0;
         foreach (GameObject unit in selectedUnits)
         {
-            if (unit.GetComponent<BaseUnitScript>().canAttack)
+            if (unit.GetComponent<BaseUnit>().canAttack)
             {
                 count++;
             }
