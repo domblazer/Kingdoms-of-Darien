@@ -106,9 +106,14 @@ public class InventoryBase<T> : MonoBehaviour
 
     public void AddUnit(RTSUnit unit)
     {
+        // Special Add for Lodestones
+        if (unit.unitType == UnitCategories.LodestoneTier1 || unit.unitType == UnitCategories.LodestoneTier2)
+            AddLodestone(unit.GetComponent<LodestoneScript>());
+        // Try if unitType exists in groupedUnits dictionary
         if (groupedUnits.TryGetValue(unit.unitType, out List<RTSUnit> units))
         {
             totalUnits.Add(unit);
+            // Initialize a new list for this key, if not already
             if (units == null)
                 units = new List<RTSUnit>();
             units.Add(unit);
@@ -118,8 +123,10 @@ public class InventoryBase<T> : MonoBehaviour
             totalUnits.Add(unit);
             List<RTSUnit> newUnits = new List<RTSUnit>();
             newUnits.Add(unit);
+            // If a unit is added whose type is not yet in the dictionary, assume to add new key-value for it
             groupedUnits.Add(unit.unitType, newUnits);
         }
+        // Fire unit change event
         OnUnitsChanged?.Invoke(this, new OnInventoryChangedEventArgs
         {
             wasAdded = true,
@@ -131,6 +138,7 @@ public class InventoryBase<T> : MonoBehaviour
 
     public void RemoveUnit(RTSUnit unit)
     {
+        // @TODO: remove lodestone 
         totalUnits.Remove(unit);
         if (groupedUnits.TryGetValue(unit.unitType, out List<RTSUnit> units))
             units.Remove(unit);

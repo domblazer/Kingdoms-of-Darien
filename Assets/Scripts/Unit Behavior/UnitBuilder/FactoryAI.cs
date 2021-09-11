@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using DarienEngine;
 
-public class FactoryAI : FactoryBase<AIConjurerArgs>, IUnitBuilderAI
+public class FactoryAI : UnitBuilderAI
 {
-    public BuildUnit[] buildUnitPrefabs;
+    public Transform spawnPoint;
+    public Transform rallyPoint;
+    protected bool parkingDirectionToggle = false;
 
     private void Update()
     {
@@ -29,14 +31,5 @@ public class FactoryAI : FactoryBase<AIConjurerArgs>, IUnitBuilderAI
         GameObject intangible = Instantiate(itg, spawnPoint.position, new Quaternion(0, 180, 0, 1));
         // @TODO: this itg needs to tell it's final prefab to park then just start roaming around the park point
         intangible.GetComponent<IntangibleUnitAI>().Bind(this, rallyPoint, parkingDirectionToggle);
-    }
-
-    public void QueueBuild(GameObject intangiblePrefab)
-    {
-        Debug.Log("FactoryAI queued: " + intangiblePrefab.GetComponent<IntangibleUnitAI>().finalUnit.unitName);
-        if (masterBuildQueue.Count == 0)
-            nextQueueReady = true;
-        // Enqueue master queue to keep track of build order and total queue
-        masterBuildQueue.Enqueue(new AIConjurerArgs { nextIntangible = intangiblePrefab });
     }
 }

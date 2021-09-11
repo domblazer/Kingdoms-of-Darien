@@ -772,7 +772,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerNumber: 1
-  unitType: 4
+  unitType: 1
   unitIcon: {fileID: 21300000, guid: 33c71af15c37b20488a3f98e1df4ccb1, type: 3}
   unitName: Lodestone
   maxHealth: 5680
@@ -795,7 +795,6 @@ MonoBehaviour:
   attackTarget: {fileID: 0}
   fogOfWarMask: {fileID: 1627391479081996134}
   bloodSystem: {fileID: 0}
-  _UnitBuilderScript: {fileID: 0}
   attackSounds: []
   hitSounds: []
   dieSound: {fileID: 0}

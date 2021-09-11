@@ -11,7 +11,7 @@ namespace DarienEngine
         public Inventory inventory;
         public TeamNumbers team;
     }
-    
+
     public class PlayerConjurerArgs
     {
         public Button menuButton;
@@ -23,6 +23,7 @@ namespace DarienEngine
     {
         float lastClickTime { get; set; }
         float clickDelay { get; set; }
+        bool isCurrentActive { get; set; }
         List<PlayerConjurerArgs> virtualMenu { get; set; }
 
         void QueueBuild(PlayerConjurerArgs item, Vector2 clickPoint);
@@ -31,5 +32,7 @@ namespace DarienEngine
         void ToggleBuildMenu(bool value);
         void TakeOverButtonListeners();
         void ReleaseButtonListeners();
+        void SetCurrentActive();
+        void ReleaseCurrentActive();
     }
 }

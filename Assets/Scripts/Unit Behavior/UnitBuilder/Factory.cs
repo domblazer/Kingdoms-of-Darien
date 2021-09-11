@@ -4,15 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using DarienEngine;
 
-public class Factory : FactoryBase<PlayerConjurerArgs>, IUnitBuilderPlayer
+public class Factory : UnitBuilderPlayer
 {
-    public RectTransform menuRoot;
-    public List<PlayerConjurerArgs> virtualMenu { get; set; } = new List<PlayerConjurerArgs>();
-
+    public Transform spawnPoint;
+    public Transform rallyPoint;
+    protected bool parkingDirectionToggle = false;
     public GameObject[] intangibleUnits;
-
-    public float lastClickTime { get; set; }
-    public float clickDelay { get; set; } = 0.25f;
 
     void Start()
     {
@@ -23,6 +20,7 @@ public class Factory : FactoryBase<PlayerConjurerArgs>, IUnitBuilderPlayer
 
         InitVirtualMenu(intangibleUnits);
         ToggleRallyPoint(false);
+        ToggleBuildMenu(false);
     }
 
     void Update()
@@ -30,8 +28,9 @@ public class Factory : FactoryBase<PlayerConjurerArgs>, IUnitBuilderPlayer
         // Keep track of master queue to know when building
         isBuilding = masterBuildQueue.Count > 0;
 
-        // @TODO: only the single one builder selected should update button text
-        // UpdateAllButtonsText();
+        // Only currently selected builder updates menu text
+        if (isCurrentActive)
+            UpdateAllButtonsText();
 
         // While masterQueue is not empty, continue queueing up intangible prefabs
         if (masterBuildQueue.Count > 0 && nextQueueReady)
@@ -99,27 +98,6 @@ public class Factory : FactoryBase<PlayerConjurerArgs>, IUnitBuilderPlayer
         rallyPoint.gameObject.SetActive(value);
     }
 
-    public void ToggleBuildMenu(bool value)
-    {
-        menuRoot.gameObject.SetActive(value);
-    }
-
-    // Construct a "virtual" menu to represent behavior of menu
-    public void InitVirtualMenu(GameObject[] prefabs)
-    {
-        Button[] menuChildren = menuRoot.GetComponentsInChildren<Button>();
-        foreach (var (button, index) in menuChildren.WithIndex())
-            virtualMenu.Add(new PlayerConjurerArgs { menuButton = button, prefab = prefabs[index] });
-    }
-
-    // Handle small click delay to prevent double clicks on menu
-    public void ProtectDoubleClick()
-    {
-        if (lastClickTime + clickDelay > Time.unscaledTime)
-            return;
-        lastClickTime = Time.unscaledTime;
-    }
-
     // Selected Builder gets the menu button click events
     public void TakeOverButtonListeners()
     {
@@ -127,10 +105,19 @@ public class Factory : FactoryBase<PlayerConjurerArgs>, IUnitBuilderPlayer
             item.menuButton.onClick.AddListener(delegate { QueueBuild(item, Input.mousePosition); });
     }
 
-    // Clear listeners for next selected builder
-    public void ReleaseButtonListeners()
+    public void SetCurrentActive()
     {
-        foreach (PlayerConjurerArgs virtualMenuItem in virtualMenu)
-            virtualMenuItem.menuButton.onClick.RemoveAllListeners();
+        isCurrentActive = true;
+        ToggleRallyPoint(true);
+        ToggleBuildMenu(true); // Show build menu
+        TakeOverButtonListeners();
+    }
+
+    public void ReleaseCurrentActive()
+    {
+        isCurrentActive = false;
+        ToggleRallyPoint(false);
+        ToggleBuildMenu(false); // Hide build menu
+        ReleaseButtonListeners();
     }
 }

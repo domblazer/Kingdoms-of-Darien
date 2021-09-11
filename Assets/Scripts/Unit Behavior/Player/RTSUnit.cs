@@ -99,7 +99,7 @@ public class RTSUnit : MonoBehaviour
     public ParticleSystem bloodSystem;
 
     // Components
-    protected UnitSelectionScript _UnitSelection;
+    protected Player mainPlayer;
     protected NavMeshAgent _Agent;
     protected NavMeshObstacle _Obstacle;
     protected AudioSource _AudioSource;
@@ -149,8 +149,7 @@ public class RTSUnit : MonoBehaviour
         }
 
         // Unit selection behavior is attached to MainCamera
-        // @TODO: _UnitSelection on player1 holder
-        _UnitSelection = Camera.main.gameObject.GetComponent<UnitSelectionScript>();
+        mainPlayer = GameManager.Instance.PlayerMain.player;
         _AudioSource = GetComponent<AudioSource>();
         _Animator = GetComponent<Animator>();
 

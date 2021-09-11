@@ -30,10 +30,11 @@ public class Player : MonoBehaviour
     public RectTransform selectionSquareTrans;
     public AudioClip clickSound;
 
+    [HideInInspector]
     public UnitBuilderBase<PlayerConjurerArgs> currentActiveBuilder;
     public Inventory inventory;
 
-    // Called at run-time in GameManager when Player component initialized
+    // Called at run-time in GameManager.Awake(), when Player component initialized
     public void Init(Inventory inv, RectTransform square, AudioClip sound)
     {
         inventory = inv;
@@ -61,7 +62,7 @@ public class Player : MonoBehaviour
 
         // Clear selection with right-click
         if (Input.GetMouseButtonDown(1))
-            ClearSelectedUnits();
+            ClearAll();
     }
 
     private void SelectUnits()
@@ -194,11 +195,7 @@ public class Player : MonoBehaviour
             {
                 // Deselect all units when clicking single other unit, unless holding shift
                 if (!InputManager.HoldingShift())
-                {
-                    foreach (BaseUnit unit in selectedUnits)
-                        unit.DeSelect();
-                    selectedUnits.Clear();
-                }
+                    ClearSelectedUnits();
 
                 BaseUnit activeUnit = hit.collider.gameObject.GetComponent<BaseUnit>();
                 if (activeUnit.selectable)
@@ -224,8 +221,43 @@ public class Player : MonoBehaviour
         return selectedUnits.Count;
     }
 
+    public void ClearAll()
+    {
+        // Clear selected units and release current builder
+        ClearSelectedUnits();
+        ReleaseActiveBuilder();
+        // Hide the action menus and reset cursor
+        if (UIManager.Instance.actionMenuInstance.actionMenuActive)
+            UIManager.Instance.actionMenuInstance.Toggle(false);
+        CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Normal);
+        UIManager.Instance.unitInfoInstance.Toggle(false);
+    }
+
+    public void SetActiveBuilder(UnitBuilderBase<PlayerConjurerArgs> builder)
+    {
+        currentActiveBuilder = builder;
+        if (currentActiveBuilder.IsFactory())
+            (currentActiveBuilder as Factory).SetCurrentActive();
+        else
+            (currentActiveBuilder as Builder).SetCurrentActive();
+    }
+
+    public void ReleaseActiveBuilder()
+    {
+        if (currentActiveBuilder != null)
+        {
+            if (currentActiveBuilder.IsFactory())
+                (currentActiveBuilder as Factory).ReleaseCurrentActive();
+            else
+                (currentActiveBuilder as Builder).ReleaseCurrentActive();
+            currentActiveBuilder = null;
+        }
+    }
+
     public void ClearSelectedUnits()
     {
+        foreach (BaseUnit unit in selectedUnits)
+            unit.DeSelect();
         selectedUnits.Clear();
     }
 

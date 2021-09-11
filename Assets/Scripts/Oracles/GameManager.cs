@@ -17,14 +17,13 @@ public class GameManager : MonoBehaviour
         // public FactionColor factionColor;
     }
 
-    public Dictionary<PlayerNumbers, AIPlayerContext> AIPlayers = new Dictionary<PlayerNumbers, AIPlayerContext>();
-    public MainPlayerContext PlayerMain;
-
+    // List of players to initialize for the game
     public PlayerConfig[] playerConfigs;
 
-    private GameObject currentHovering = null;
-
+    public Dictionary<PlayerNumbers, AIPlayerContext> AIPlayers { get; set; } = new Dictionary<PlayerNumbers, AIPlayerContext>();
+    public MainPlayerContext PlayerMain { get; set; }
     public AudioSource AudioSource { get; set; }
+    private GameObject currentHovering = null;
 
     private void Awake()
     {
@@ -80,11 +79,10 @@ public class GameManager : MonoBehaviour
             throw new System.Exception("Error: Could not find Player1 in startup config. Cannot start.");
 
         newPlayer.teamNumber = playerConf.team;
-        // @TODO: get rect transform of selection box ui
         // @TODO: faction based path, e.g. faction == 'Taros' ? 'TaroCanvas' : faction == 'Aramon' ? 'AraCanvas'
         RectTransform square = GameObject.Find("AraCanvas/selection-box").GetComponent<RectTransform>();
-        // @TODO: get audio clip for click sound
-        AudioClip clip = Resources.Load<AudioClip>("/runtime/audioclips/ara-click-01.wav");
+        // Get audio clip for click sound
+        AudioClip clip = Resources.Load<AudioClip>("runtime/audioclips/ara-click-01");
         if (clip == null)
             Debug.LogWarning("Warning: Could not load click sound for Player.");
         newPlayer.Init(newInventory, square, clip);

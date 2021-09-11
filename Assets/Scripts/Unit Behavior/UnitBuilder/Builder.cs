@@ -5,16 +5,18 @@ using UnityEngine.UI;
 using DarienEngine;
 
 // Builder is defined as canMove && canBuild && !isAI
-public class Builder : BuilderBase<PlayerConjurerArgs>, IUnitBuilderPlayer
+public class Builder : UnitBuilderPlayer
 {
-    // @Note: cannot include menuRoot in interface since it must be a public var visible in inspector
-    public RectTransform menuRoot;
-    public List<PlayerConjurerArgs> virtualMenu { get; set; } = new List<PlayerConjurerArgs>();
+    public GameObject[] ghostUnits;
     public int placedSinceLastShift { get; set; } = 0;
+    [HideInInspector]
     public GameObject activeFloatingGhost;
 
-    public float lastClickTime { get; set; }
-    public float clickDelay { get; set; } = 0.25f;
+    void Start()
+    {
+        InitVirtualMenu(ghostUnits);
+        ToggleBuildMenu(false);
+    }
 
     void Update()
     {
@@ -47,11 +49,6 @@ public class Builder : BuilderBase<PlayerConjurerArgs>, IUnitBuilderPlayer
         }
     }
 
-    public void ToggleBuildMenu(bool value)
-    {
-        menuRoot.gameObject.SetActive(value);
-    }
-
     public void QueueBuild(PlayerConjurerArgs item, Vector2 clickPoint)
     {
         // First, protect double clicks with click delay
@@ -70,22 +67,6 @@ public class Builder : BuilderBase<PlayerConjurerArgs>, IUnitBuilderPlayer
         return ghost;
     }
 
-    // Construct a "virtual" menu to represent behavior of menu
-    public void InitVirtualMenu(GameObject[] prefabs)
-    {
-        Button[] menuChildren = menuRoot.GetComponentsInChildren<Button>();
-        foreach (var (button, index) in menuChildren.WithIndex())
-            virtualMenu.Add(new PlayerConjurerArgs { menuButton = button, prefab = prefabs[index] });
-    }
-
-    // Handle small click delay to prevent double clicks on menu
-    public void ProtectDoubleClick()
-    {
-        if (lastClickTime + clickDelay > Time.unscaledTime)
-            return;
-        lastClickTime = Time.unscaledTime;
-    }
-
     // Selected Builder gets the menu button click events
     public void TakeOverButtonListeners()
     {
@@ -93,10 +74,17 @@ public class Builder : BuilderBase<PlayerConjurerArgs>, IUnitBuilderPlayer
             item.menuButton.onClick.AddListener(delegate { QueueBuild(item, Input.mousePosition); });
     }
 
-    // Clear listeners for next selected builder
-    public void ReleaseButtonListeners()
+    public void SetCurrentActive()
     {
-        foreach (PlayerConjurerArgs virtualMenuItem in virtualMenu)
-            virtualMenuItem.menuButton.onClick.RemoveAllListeners();
+        isCurrentActive = true;
+        ToggleBuildMenu(true); // Show build menu
+        TakeOverButtonListeners();
+    }
+
+    public void ReleaseCurrentActive()
+    {
+        isCurrentActive = false;
+        ToggleBuildMenu(false); // Hide build menu
+        ReleaseButtonListeners();
     }
 }

@@ -114,7 +114,7 @@ public class BaseUnit : RTSUnit
             // Called once to set this unit to dead state
             Debug.Log("Has already died, make unselectable.");
             DeSelect();
-            _UnitSelection.RemoveUnitFromSelection(gameObject);
+            mainPlayer.RemoveUnitFromSelection(this);
             // @Note: removal from player context handled in RTSUnit.Die()
             selectable = false;
             hasAlreadyDied = true;
@@ -131,6 +131,8 @@ public class BaseUnit : RTSUnit
             // If the unit is a builder, show the build menu when selected
             if (isBuilder && alone)
             {
+                mainPlayer.SetActiveBuilder(_Builder);
+                /* mainPlayer.currentActiveBuilder = _Builder;
                 if (!isKinematic)
                 {
                     (_Builder as Factory).ToggleRallyPoint(true);
@@ -141,17 +143,14 @@ public class BaseUnit : RTSUnit
                 {
                     (_Builder as Builder).ToggleBuildMenu(true); // Show build menu
                     (_Builder as Builder).TakeOverButtonListeners();
-                }
+                } */
             }
             if (alone)
             {
                 UIManager.Instance.actionMenuInstance.Set(isKinematic, canAttack, isBuilder, specialAttacks);
-
                 // Play the select sound 50% of the time
                 if (Random.Range(0.0f, 1.0f) > 0.5f && selectSound != null)
-                {
                     _AudioSource.PlayOneShot(selectSound, 1);
-                }
             }
         }
     }
@@ -163,7 +162,7 @@ public class BaseUnit : RTSUnit
             selected = false;
             selectRing.SetActive(false);
 
-            if (isBuilder)
+            /* if (isBuilder)
             {
                 // @TODO: this should only be applied to the current active builder
                 if (!isKinematic)
@@ -185,7 +184,7 @@ public class BaseUnit : RTSUnit
                 UIManager.Instance.actionMenuInstance.Toggle(false);
             }
             CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Normal);
-            UIManager.Instance.unitInfoInstance.Toggle(false);
+            UIManager.Instance.unitInfoInstance.Toggle(false); */
         }
     }
 

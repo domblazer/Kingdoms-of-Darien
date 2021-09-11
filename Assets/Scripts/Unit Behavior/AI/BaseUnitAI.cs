@@ -153,7 +153,7 @@ public class BaseUnitAI : RTSUnit
     void OnMouseEnter()
     {
         // Change to Attack cursor if hovering enemy AND at least one friendly unit who canAttack is selected
-        if (gameObject.tag == "Enemy" && _UnitSelection.SelectedAttackUnitsCount() > 0)
+        if (gameObject.tag == "Enemy" && mainPlayer.SelectedAttackUnitsCount() > 0)
             CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Attack);
         GameManager.Instance.SetHovering(gameObject);
     }
