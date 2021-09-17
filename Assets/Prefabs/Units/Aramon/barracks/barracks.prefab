@@ -936,10 +936,10 @@ GameObject:
   - component: {fileID: 4447781333558076717}
   - component: {fileID: 7841651127221688506}
   - component: {fileID: 7841651127221688484}
-  - component: {fileID: 7841651127221688487}
   - component: {fileID: 7841651127221688505}
   - component: {fileID: 7841651127221688504}
   - component: {fileID: 2070191482919304902}
+  - component: {fileID: 3074783620023376642}
   m_Layer: 9
   m_Name: barracks
   m_TagString: Friendly
@@ -1024,8 +1024,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6529f6a288da29f458b340ec3e746e38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  faction: 0
   playerNumber: 1
-  unitType: 1
+  unitType: 3
   unitIcon: {fileID: 21300000, guid: c2e931f3a0364c3428d5c8cb008cea1f, type: 3}
   unitName: Barracks
   maxHealth: 17162
@@ -1048,7 +1049,6 @@ MonoBehaviour:
   attackTarget: {fileID: 0}
   fogOfWarMask: {fileID: 0}
   bloodSystem: {fileID: 0}
-  _UnitBuilderScript: {fileID: 0}
   attackSounds: []
   hitSounds: []
   dieSound: {fileID: 0}
@@ -1057,30 +1057,6 @@ MonoBehaviour:
   selectRing: {fileID: 7841651127549082617}
   moveSound: {fileID: 0}
   selectSound: {fileID: 0}
---- !u!114 &7841651127221688487
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6922681298974287341}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce06542453afe0341b67ecfff8d2952a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parentMenuPath: BuildMenus/Aramon
-  buildMenuName: BarracksMenu
-  buildUnitPrefabs:
-  - {fileID: 2837756387211081215, guid: 2a60f1b1da4d0b54a92ffae637b12bea, type: 3}
-  - {fileID: 6141550388823117654, guid: 5dfe7e5b47c7ed244ace31d36869c058, type: 3}
-  - {fileID: 854424073394294190, guid: a2cba2178d9060f46a4279cbc4341aea, type: 3}
-  - {fileID: 8599506329157801840, guid: 6300043c965bdab48ad72dad7b4c746f, type: 3}
-  - {fileID: 7717317196370301868, guid: b74784e29d70ba6469b6b7a9d0b3622c, type: 3}
-  - {fileID: 1764529667959358378, guid: 7b4d49c530282474d83cfa13f51ec73e, type: 3}
-  _BaseUnit: {fileID: 0}
-  builderSpawnPoint: {fileID: 4723236370120944025}
-  builderRallyPoint: {fileID: 7735386845106891754}
 --- !u!54 &7841651127221688505
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1125,6 +1101,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 450c10641a3368e438509bf5f53d798f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3074783620023376642
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6922681298974287341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55f2aa8d4cf01b242a7e85b133b57221, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  menuRoot: {fileID: 0}
+  spawnPoint: {fileID: 4723236370120944025}
+  rallyPoint: {fileID: 7735386845106891754}
+  intangibleUnits:
+  - {fileID: 0}
+  - {fileID: 6141550388823117654, guid: 5dfe7e5b47c7ed244ace31d36869c058, type: 3}
+  - {fileID: 854424073394294190, guid: a2cba2178d9060f46a4279cbc4341aea, type: 3}
+  - {fileID: 8599506329157801840, guid: 6300043c965bdab48ad72dad7b4c746f, type: 3}
+  - {fileID: 0}
+  - {fileID: 1764529667959358378, guid: 7b4d49c530282474d83cfa13f51ec73e, type: 3}
 --- !u!1 &6981096516163507366
 GameObject:
   m_ObjectHideFlags: 0

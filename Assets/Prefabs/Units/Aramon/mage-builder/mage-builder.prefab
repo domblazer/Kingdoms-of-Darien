@@ -1857,8 +1857,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6529f6a288da29f458b340ec3e746e38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  faction: 0
   playerNumber: 1
-  unitType: 0
+  unitType: 5
   unitIcon: {fileID: 21300000, guid: b08141e0a37fe94418a0cec2ce1bf403, type: 3}
   unitName: Mage Builder
   maxHealth: 1703
@@ -1930,6 +1931,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menuRoot: {fileID: 0}
+  ghostUnits:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 8284541907566071018, guid: f6d500b00ef9f5a449f3d55fa8b6f42b, type: 3}
+  - {fileID: 0}
   activeFloatingGhost: {fileID: 0}
 --- !u!1 &7467070316275484216
 GameObject:

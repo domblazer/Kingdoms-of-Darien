@@ -29,6 +29,7 @@ public class RTSUnit : MonoBehaviour
     }
     public States state { get; set; } = States.Standby;
 
+    public Factions faction;
     public PlayerNumbers playerNumber = PlayerNumbers.Player1;
     public UnitCategories unitType;
     public Sprite unitIcon;

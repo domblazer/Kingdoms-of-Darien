@@ -5295,8 +5295,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6529f6a288da29f458b340ec3e746e38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  faction: 0
   playerNumber: 1
-  unitType: 13
+  unitType: 17
   unitIcon: {fileID: 21300000, guid: 8fd357a08b7b9ea4db6914acef008da7, type: 3}
   unitName: Swordsman
   maxHealth: 3000
@@ -5320,7 +5321,6 @@ MonoBehaviour:
   attackTarget: {fileID: 0}
   fogOfWarMask: {fileID: 938548816310989045}
   bloodSystem: {fileID: 1418828522}
-  _UnitBuilderScript: {fileID: 0}
   attackSounds:
   - {fileID: 8300000, guid: da357314128edd04ebc918e772fe6516, type: 3}
   - {fileID: 8300000, guid: 857699d36a58ca14eb97a468e720d1cc, type: 3}

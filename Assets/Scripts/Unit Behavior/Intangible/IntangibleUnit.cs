@@ -33,7 +33,7 @@ public class IntangibleUnit : IntangibleUnitBase<PlayerConjurerArgs>
     {
         builder = bld;
         playerConjurerArgs = args;
-        rallyPoint = transform;
+        rallyPoint = transform.position;
         SetFacingDir(dir);
     }
 
@@ -43,7 +43,7 @@ public class IntangibleUnit : IntangibleUnitBase<PlayerConjurerArgs>
         builder = bld;
         playerConjurerArgs = args;
         parkToggle = parkDirToggle;
-        rallyPoint = rally;
+        rallyPoint = rally.position;
         SetFacingDir(dir);
     }
 }

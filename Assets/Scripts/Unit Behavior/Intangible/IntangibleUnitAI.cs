@@ -25,7 +25,7 @@ public class IntangibleUnitAI : IntangibleUnitBase<AIConjurerArgs>
     {
         builder = bld;
         parkToggle = parkDirToggle;
-        rallyPoint = rally;
+        rallyPoint = rally.position;
         SetFacingDir(dir);
     }
 }

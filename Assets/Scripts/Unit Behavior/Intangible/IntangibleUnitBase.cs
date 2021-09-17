@@ -12,6 +12,7 @@ public class IntangibleUnitBase<T> : MonoBehaviour
     public RTSUnit finalUnit { get { return finalUnitPrefab.GetComponent<RTSUnit>(); } }
     public float buildCost { get { return finalUnit.buildCost; } }
     public float buildTime { get { return finalUnit.buildTime; } }
+    public int drainRate { get { return Mathf.RoundToInt((buildCost / buildTime) * 10); } }
 
     // Keep track of model materials to create "Intangible Mass" effect
     private List<Material> materials = new List<Material>();
@@ -58,7 +59,7 @@ public class IntangibleUnitBase<T> : MonoBehaviour
     // Other state variables
     protected Directions facingDir = Directions.Forward;
     protected bool parkToggle;
-    protected Transform rallyPoint;
+    protected Vector3 rallyPoint;
 
     void Start()
     {
@@ -96,7 +97,7 @@ public class IntangibleUnitBase<T> : MonoBehaviour
         GameObject newUnit = Instantiate(finalUnitPrefab, transform.position, transform.rotation);
         // @TODO: determine appropriate next state
         RTSUnit.States nextState = RTSUnit.States.Standby;
-        newUnit.GetComponent<RTSUnit>().Begin(facingDir, rallyPoint.position, parkToggle, nextState);
+        newUnit.GetComponent<RTSUnit>().Begin(facingDir, rallyPoint, parkToggle, nextState);
 
         // Tell builder it can continue then destroy this intangible
         builder.SetNextQueueReady(true);

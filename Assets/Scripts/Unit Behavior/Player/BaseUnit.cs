@@ -128,25 +128,12 @@ public class BaseUnit : RTSUnit
             selected = true;
             selectRing.SetActive(true);
 
-            // If the unit is a builder, show the build menu when selected
-            if (isBuilder && alone)
-            {
-                mainPlayer.SetActiveBuilder(_Builder);
-                /* mainPlayer.currentActiveBuilder = _Builder;
-                if (!isKinematic)
-                {
-                    (_Builder as Factory).ToggleRallyPoint(true);
-                    (_Builder as Factory).ToggleBuildMenu(true); // Show build menu
-                    (_Builder as Factory).TakeOverButtonListeners();
-                }
-                else
-                {
-                    (_Builder as Builder).ToggleBuildMenu(true); // Show build menu
-                    (_Builder as Builder).TakeOverButtonListeners();
-                } */
-            }
             if (alone)
             {
+                // If the unit is a builder, show the build menu when selected
+                if (isBuilder)
+                    mainPlayer.SetActiveBuilder(_Builder);
+                // Show the unit action menu
                 UIManager.Instance.actionMenuInstance.Set(isKinematic, canAttack, isBuilder, specialAttacks);
                 // Play the select sound 50% of the time
                 if (Random.Range(0.0f, 1.0f) > 0.5f && selectSound != null)

@@ -17,6 +17,13 @@ namespace DarienEngine
         public Button menuButton;
         public GameObject prefab;
         public int buildQueueCount = 0;
+        public override string ToString()
+        {
+            string str = "\nMenu Button: " + menuButton + "\n";
+            str += "Prefab: " + prefab + "\n";
+            str += "Build Queue Count: " + buildQueueCount + "\n";
+            return str;
+        }
     }
 
     public interface IUnitBuilderPlayer

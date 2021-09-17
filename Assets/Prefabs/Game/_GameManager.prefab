@@ -49,8 +49,10 @@ MonoBehaviour:
   playerConfigs:
   - playerNumber: 1
     team: 1
+    faction: 0
   - playerNumber: 2
     team: 2
+    faction: 0
 --- !u!114 &2598857554717851823
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -97,6 +99,11 @@ MonoBehaviour:
     passiveBtn: {fileID: 0}
   f4Menu: {fileID: 0}
   f2Menu: {fileID: 0}
+  buildMenus:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   pauseOnStart: 0
   chrystalBallTexture: {fileID: 0}
   chrystalBallTextureArray:

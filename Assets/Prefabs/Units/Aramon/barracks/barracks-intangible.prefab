@@ -810,9 +810,9 @@ GameObject:
   - component: {fileID: 5910755561081675153}
   - component: {fileID: 353273125750556651}
   - component: {fileID: 6164725992268855932}
-  - component: {fileID: 532728582582305028}
   - component: {fileID: 8826379658034052278}
   - component: {fileID: 8826379658034052277}
+  - component: {fileID: 2186991669824374086}
   m_Layer: 9
   m_Name: barracks-intangible
   m_TagString: Friendly
@@ -879,20 +879,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 6, y: 4.2, z: 3.74}
   m_Center: {x: 0, y: 2, z: 0}
---- !u!114 &532728582582305028
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6434773541224204075}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c29b60a965dd9fc4dbbc061d873fad82, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  manaColor: {r: 1, g: 0.9275652, b: 0, a: 1}
-  finalUnitPrefab: {fileID: 6922681298974287341, guid: c72e64b65a195614e852f838f4dfeaba, type: 3}
 --- !u!199 &8826379658034052278
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -5673,6 +5659,20 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!114 &2186991669824374086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6434773541224204075}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66f4410b0779ebc4b9f3e3a8f21c2ba4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  manaColor: {r: 255, g: 255, b: 0, a: 1}
+  finalUnitPrefab: {fileID: 6922681298974287341, guid: c72e64b65a195614e852f838f4dfeaba, type: 3}
 --- !u!1 &6467014913108670048
 GameObject:
   m_ObjectHideFlags: 0

@@ -5276,6 +5276,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fe4f67068f9b6c4d8244f5807a36993, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  faction: 1
   playerNumber: 2
   unitType: 5
   unitIcon: {fileID: 21300000, guid: 3318019678a86e44994517d33cfd1c68, type: 3}
@@ -5300,7 +5301,6 @@ MonoBehaviour:
   attackTarget: {fileID: 0}
   fogOfWarMask: {fileID: 0}
   bloodSystem: {fileID: 0}
-  _UnitBuilderScript: {fileID: 0}
   attackSounds: []
   hitSounds: []
   dieSound: {fileID: 0}

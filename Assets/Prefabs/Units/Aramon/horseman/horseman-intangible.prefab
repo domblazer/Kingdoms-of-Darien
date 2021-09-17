@@ -4236,9 +4236,9 @@ GameObject:
   - component: {fileID: 8943099776138530250}
   - component: {fileID: 3097466133899450288}
   - component: {fileID: 8905583078859188771}
-  - component: {fileID: 8733550660261458460}
   - component: {fileID: 8733550660261458459}
   - component: {fileID: 8733550660261458458}
+  - component: {fileID: 5471169954861992377}
   m_Layer: 9
   m_Name: horseman-intangible
   m_TagString: Friendly
@@ -4255,7 +4255,7 @@ Transform:
   m_GameObject: {fileID: 8599506329157801840}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 546.61, y: 1.0071468, z: 262.93}
-  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
+  m_LocalScale: {x: 0.33, y: 0.33, z: 0.33}
   m_Children:
   - {fileID: 3723211296029482598}
   - {fileID: 6142606187645832990}
@@ -4304,20 +4304,6 @@ CapsuleCollider:
   m_Height: 6.95
   m_Direction: 2
   m_Center: {x: 0, y: 2.97, z: 0.34}
---- !u!114 &8733550660261458460
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8599506329157801840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c29b60a965dd9fc4dbbc061d873fad82, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  manaColor: {r: 1, g: 0.9275652, b: 0, a: 1}
-  finalUnitPrefab: {fileID: 11759965872997376, guid: ec0be4aa15fe18f449d737e0d991962c, type: 3}
 --- !u!199 &8733550660261458459
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -9098,6 +9084,20 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!114 &5471169954861992377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8599506329157801840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66f4410b0779ebc4b9f3e3a8f21c2ba4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  manaColor: {r: 255, g: 255, b: 0, a: 1}
+  finalUnitPrefab: {fileID: 11759965872997376, guid: ec0be4aa15fe18f449d737e0d991962c, type: 3}
 --- !u!1 &8633546915370656207
 GameObject:
   m_ObjectHideFlags: 0

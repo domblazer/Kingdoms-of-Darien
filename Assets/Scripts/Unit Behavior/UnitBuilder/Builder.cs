@@ -15,7 +15,6 @@ public class Builder : UnitBuilderPlayer
     void Start()
     {
         InitVirtualMenu(ghostUnits);
-        ToggleBuildMenu(false);
     }
 
     void Update()
@@ -23,14 +22,19 @@ public class Builder : UnitBuilderPlayer
         // Keep traveling to ghosts in the queue until empty
         if (masterBuildQueue.Count > 0 && nextQueueReady)
         {
-            // Builders always keep a queue of GhostUnits
-            GameObject nextGhost = masterBuildQueue.Peek().prefab;
-            GhostUnit nextGhostScript = nextGhost.GetComponent<GhostUnit>();
+            string dbg = "";
+            foreach (PlayerConjurerArgs q in masterBuildQueue)
+                dbg += q.ToString();
+            Debug.Log("masterBuildQueue: " + dbg);
 
+            // Builders always keep a queue of GhostUnits
+            GhostUnit nextGhost = masterBuildQueue.Peek().prefab.GetComponent<GhostUnit>();
+            Debug.Log("masterBuildQueue.Peek(): " + masterBuildQueue.Peek());
+            Debug.Log("next ghost: " + nextGhost);
             // @TODO: offset depends on direction, e.g. if walking along x, use x, y, y, and diagonal use mix
-            Vector3 offsetRange = nextGhostScript.offset;
+            Vector3 offsetRange = nextGhost.offset;
             // Move to next ghost in the queue
-            if (nextGhostScript.IsSet() && !baseUnit.IsInRangeOf(nextGhost.transform.position, offsetRange.x))
+            if (nextGhost.IsSet() && !baseUnit.IsInRangeOf(nextGhost.transform.position, offsetRange.x))
             {
                 baseUnit.SetMove(nextGhost.transform.position);
                 Debug.Log("Builder moving to ghost");
@@ -44,7 +48,7 @@ public class Builder : UnitBuilderPlayer
                 nextQueueReady = false;
                 isBuilding = true;
                 masterBuildQueue.Dequeue();
-                nextGhostScript.StartBuild();
+                nextGhost.StartBuild();
             }
         }
     }
@@ -54,13 +58,13 @@ public class Builder : UnitBuilderPlayer
         // First, protect double clicks with click delay
         ProtectDoubleClick();
         // Instantiate ghost prefab. @Note: ghost is only enqueued when set
-        GameObject ghost = InstantiateGhost(item, clickPoint);
+        GameObject ghost = InstantiateGhost(item, new Vector3(clickPoint.x, 1, clickPoint.y));
     }
 
     // Instantiate new ghost and set bindings with this builder and the menu item clicked
-    private GameObject InstantiateGhost(PlayerConjurerArgs item, Vector2 clickPoint)
+    public GameObject InstantiateGhost(PlayerConjurerArgs item, Vector3 clickPoint)
     {
-        GameObject ghost = Instantiate(item.prefab, new Vector3(clickPoint.x, 1, clickPoint.y), item.prefab.transform.localRotation);
+        GameObject ghost = Instantiate(item.prefab, clickPoint, item.prefab.transform.localRotation);
         ghost.GetComponent<GhostUnit>().Bind(this, item);
         // The ghost instantiated by any menu click will always become the activeFloatingGhost
         activeFloatingGhost = ghost;

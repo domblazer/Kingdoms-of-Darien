@@ -235,6 +235,7 @@ public class Player : MonoBehaviour
 
     public void SetActiveBuilder(UnitBuilderBase<PlayerConjurerArgs> builder)
     {
+        Debug.Log("Builder set to active: " + builder.name);
         currentActiveBuilder = builder;
         if (currentActiveBuilder.IsFactory())
             (currentActiveBuilder as Factory).SetCurrentActive();

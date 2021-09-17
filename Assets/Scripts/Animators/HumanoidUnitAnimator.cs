@@ -14,6 +14,7 @@ public class HumanoidUnitAnimator : MonoBehaviour
         _Animator = GetComponent<Animator>();
         _Unit = GetComponent<RTSUnit>();
 
+        // @TODO: humanoid unit animator for AI
         if (_Unit.isBuilder)
             _UnitBuilderScript = GetComponent<UnitBuilderBase<PlayerConjurerArgs>>();
     }

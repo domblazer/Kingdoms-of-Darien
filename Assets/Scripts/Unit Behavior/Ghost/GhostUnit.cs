@@ -86,15 +86,12 @@ public class GhostUnit : MonoBehaviour
         invalidIcon.SetActive(false);
         // Increase the count of ghosts placed during this shift period
         builder.placedSinceLastShift++;
-
         // Add this newly placed self to the build queue
+        playerConjurerArgs.prefab = builder.activeFloatingGhost;
+        Debug.Log("Placed and copied: " + playerConjurerArgs.prefab);
         builder.masterBuildQueue.Enqueue(playerConjurerArgs);
-
         // Instantiate a copy of this self, which will now become the "active" (!isSet) ghost
-        GameObject ghost = Instantiate(gameObject, hitPos + offset, gameObject.transform.localRotation);
-        builder.activeFloatingGhost = ghost;
-        ghost.GetComponent<GhostUnit>().Bind(builder, playerConjurerArgs, facingDir);
-
+        builder.InstantiateGhost(new PlayerConjurerArgs { prefab = playerConjurerArgs.prefab, menuButton = playerConjurerArgs.menuButton }, hitPos + offset);
         // Tell the builder this ghost has been placed and is ready to be reached and built
         builder.SetNextQueueReady(true);
     }
@@ -106,8 +103,8 @@ public class GhostUnit : MonoBehaviour
         invalidIcon.SetActive(false);
         // Reset count of ghosts placed this shift period
         builder.placedSinceLastShift = 0;
-
         // Queue this self on single place
+        playerConjurerArgs.prefab = gameObject;
         builder.masterBuildQueue.Enqueue(playerConjurerArgs);
         builder.SetNextQueueReady(true);
 
@@ -176,6 +173,7 @@ public class GhostUnit : MonoBehaviour
         builder = bld;
         playerConjurerArgs = args;
         SetFacingDir(dir);
+        Debug.Log("GhostUnit.Bind() then builder: " + builder);
     }
 
     // Set facing and rotation
@@ -240,5 +238,14 @@ public class GhostUnit : MonoBehaviour
         Color tempColor = mat.color;
         tempColor.a = 0.25f; // Set the material alpha value
         mat.color = tempColor;
+    }
+
+    public override string ToString()
+    {
+        string s1 = "Name: " + gameObject.name + "\n";
+        s1 += "Builder Name: " + builder.gameObject.name + "\n";
+        s1 += "Is Set: " + isSet + "\n";
+        s1 += "Offset: " + offset + "\n";
+        return s1;
     }
 }

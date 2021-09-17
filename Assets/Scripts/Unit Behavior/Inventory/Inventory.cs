@@ -10,7 +10,7 @@ public class Inventory : InventoryBase<PlayerConjurerArgs>
     {
         UpdateMana();
 
-        // @TODO: show mana ui
-        // UIManager.Instance.SetManaUI(inventory);
+        // @TODO: only update ui if there is a non-zero mana changeRate
+        UIManager.Instance.SetManaUI(this);
     }
 }

@@ -79,5 +79,21 @@ namespace DarienEngine
             else if (GameManager.Instance.AIPlayers.TryGetValue(unit.playerNumber, out AIPlayerContext aiPlayer))
                 aiPlayer.inventory.RemoveUnit(unit);
         }
+
+        public static RectTransform FindBuildMenu(RTSUnit unit)
+        {
+            string searchPath = null;
+            if (unit.unitName == "Mage Builder")
+                searchPath = "AraCanvas/BuildMenus/MageBuilderMenu";
+            else if (unit.unitName == "Barracks")
+                searchPath = "AraCanvas/BuildMenus/BarracksMenu";
+            else if (unit.unitName == "Keep")
+                searchPath = "AraCanvas/BuildMenus/KeepMenu";
+            else if (unit.unitName == "Dark Mason")
+                searchPath = "TaroCanvas/BuildMenus/DarkMasonMenu";
+            else if (unit.unitName == "Cabal")
+                searchPath = "TaroCanvas/BuildMenus/CabalMenu";
+            return GameObject.Find(searchPath).GetComponent<RectTransform>();
+        }
     }
 }

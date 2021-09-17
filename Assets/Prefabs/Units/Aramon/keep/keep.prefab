@@ -471,10 +471,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55f2aa8d4cf01b242a7e85b133b57221, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  menuRoot: {fileID: 0}
   spawnPoint: {fileID: 3942355593686548371}
   rallyPoint: {fileID: 2045721271734356058}
-  menuRoot: {fileID: 0}
-  intangibleUnits: []
+  intangibleUnits:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!1 &2011250675025538027
 GameObject:
   m_ObjectHideFlags: 0

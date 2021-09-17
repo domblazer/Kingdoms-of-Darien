@@ -24,9 +24,12 @@ public class InventoryBase<T> : MonoBehaviour
         public Dictionary<UnitCategories, List<RTSUnit>> newGroupedUnits;
     }
 
-    public List<LodestoneScript> lodestones = new List<LodestoneScript>();
+    // Maintain totalUnits list and groupedUnits dictionary 
     public List<RTSUnit> totalUnits = new List<RTSUnit>();
     public Dictionary<UnitCategories, List<RTSUnit>> groupedUnits = new Dictionary<UnitCategories, List<RTSUnit>>();
+
+    // Separate lists to maintain lodestones and intangibles
+    public List<RTSUnit> lodestones = new List<RTSUnit>();
     public List<IntangibleUnitBase<T>> intangibleUnits = new List<IntangibleUnitBase<T>>();
 
     protected void UpdateMana()
@@ -78,25 +81,28 @@ public class InventoryBase<T> : MonoBehaviour
 
     public void AddIntangible(IntangibleUnitBase<T> unit)
     {
-        // @TODO
+        manaDrainRate += unit.drainRate;
         intangibleUnits.Add(unit);
-        int drain = Mathf.RoundToInt((unit.buildCost / unit.buildTime) * 10);
-        manaDrainRate += drain;
     }
 
     public void RemoveIntangible(IntangibleUnitBase<T> unit)
     {
-        // @TODO
+        manaDrainRate -= unit.drainRate;
         intangibleUnits.Remove(unit);
-        int drain = Mathf.RoundToInt((unit.buildCost / unit.buildTime) * 10);
-        manaDrainRate -= drain;
     }
 
-    public void AddLodestone(LodestoneScript lode)
+    protected void AddLodestone(RTSUnit lodeUnit)
     {
-        totalManaStorage += (int)lode.GetManaStorage();
-        totalManaIncome += (int)lode.GetManaIncome();
-        lodestones.Add(lode);
+        totalManaStorage += lodeUnit.manaStorage;
+        totalManaIncome += lodeUnit.manaIncome;
+        lodestones.Add(lodeUnit);
+    }
+
+    protected void RemoveLodestone(RTSUnit lodeUnit)
+    {
+        totalManaStorage -= lodeUnit.manaStorage;
+        totalManaIncome -= lodeUnit.manaIncome;
+        lodestones.Remove(lodeUnit);
     }
 
     public int GetManaChangeRate()
@@ -108,7 +114,8 @@ public class InventoryBase<T> : MonoBehaviour
     {
         // Special Add for Lodestones
         if (unit.unitType == UnitCategories.LodestoneTier1 || unit.unitType == UnitCategories.LodestoneTier2)
-            AddLodestone(unit.GetComponent<LodestoneScript>());
+            AddLodestone(unit);
+
         // Try if unitType exists in groupedUnits dictionary
         if (groupedUnits.TryGetValue(unit.unitType, out List<RTSUnit> units))
         {
@@ -126,7 +133,7 @@ public class InventoryBase<T> : MonoBehaviour
             // If a unit is added whose type is not yet in the dictionary, assume to add new key-value for it
             groupedUnits.Add(unit.unitType, newUnits);
         }
-        // Fire unit change event
+        // Fire unit added change event
         OnUnitsChanged?.Invoke(this, new OnInventoryChangedEventArgs
         {
             wasAdded = true,
@@ -138,13 +145,16 @@ public class InventoryBase<T> : MonoBehaviour
 
     public void RemoveUnit(RTSUnit unit)
     {
-        // @TODO: remove lodestone 
+        // Remove lodestone 
+        if (unit.unitType == UnitCategories.LodestoneTier1 || unit.unitType == UnitCategories.LodestoneTier2)
+            RemoveLodestone(unit);
+        // Remove from totalUnits and groupedUnits
         totalUnits.Remove(unit);
         if (groupedUnits.TryGetValue(unit.unitType, out List<RTSUnit> units))
             units.Remove(unit);
         else
             Debug.LogWarning("Error removing unit from grouped inventory.");
-
+        // Fire unit removed change event
         OnUnitsChanged?.Invoke(this, new OnInventoryChangedEventArgs
         {
             wasAdded = false,

@@ -20,7 +20,6 @@ public class Factory : UnitBuilderPlayer
 
         InitVirtualMenu(intangibleUnits);
         ToggleRallyPoint(false);
-        ToggleBuildMenu(false);
     }
 
     void Update()

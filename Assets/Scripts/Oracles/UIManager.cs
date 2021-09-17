@@ -78,6 +78,7 @@ public class UIManager : MonoBehaviour
 
     public RectTransform f4Menu;
     public RectTransform f2Menu;
+    public RectTransform[] buildMenus;
     public bool pauseOnStart = false;
 
     [HideInInspector]
@@ -97,22 +98,21 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
+        // Deactivate all menus on start. @Note: by default, the canvas prefab should have menus set in "active" state
         ToggleF4Menu(false);
         ToggleF2InfoMenu(pauseOnStart);
         actionMenuInstance.Toggle(false);
         unitInfoInstance.Toggle(false);
+        foreach (RectTransform buildMenu in buildMenus)
+            buildMenu.gameObject.SetActive(false);
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.F2))
-        {
             ToggleF2InfoMenu(!f2Menu.gameObject.activeInHierarchy);
-        }
         if (Input.GetKeyDown(KeyCode.F4))
-        {
             ToggleF4Menu(!f4Menu.gameObject.activeInHierarchy);
-        }
     }
 
     public void ToggleF4Menu(bool value)
@@ -123,13 +123,9 @@ public class UIManager : MonoBehaviour
     public void ToggleF2InfoMenu(bool value)
     {
         if (value)
-        {
             GameManager.Instance.PauseGame();
-        }
         else
-        {
             GameManager.Instance.ResumeGame();
-        }
         f2Menu.gameObject.SetActive(value);
     }
 
@@ -149,7 +145,7 @@ public class UIManager : MonoBehaviour
         {
             actionMenuActive = value;
             bool opp = !value;
-            Debug.Log("show action menu default " + opp);
+            // Debug.Log("show action menu default " + opp);
             actionMenuDefault.gameObject.SetActive(opp);
             actionMenuButtons.moveBtn.gameObject.SetActive(value);
             actionMenuButtons.patrolBtn.gameObject.SetActive(value);
@@ -326,7 +322,6 @@ public class UIManager : MonoBehaviour
     public void SetManaUI(Inventory inventory)
     {
         manaProportionText.text = inventory.currentMana + "/" + inventory.totalManaStorage;
-
         manaRechargeRateText.text = "+" + inventory.totalManaIncome;
         manaUsageRateText.text = "-" + inventory.manaDrainRate;
 

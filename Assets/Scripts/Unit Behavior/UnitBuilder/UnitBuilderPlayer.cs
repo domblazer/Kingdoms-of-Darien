@@ -20,6 +20,12 @@ public class UnitBuilderPlayer : UnitBuilderBase<PlayerConjurerArgs>
     // Construct a "virtual" menu to represent behavior of menu
     public void InitVirtualMenu(GameObject[] prefabs)
     {
+        // If menuRoot is unset on Start(), try to find it in the canvas
+        if (!menuRoot)
+            menuRoot = Functions.FindBuildMenu(baseUnit);
+        if (!menuRoot)
+            throw new System.Exception("Builder could not initialize virtual menu. Menu root not found.");
+        // Get all the buttons in the build menu
         Button[] menuChildren = menuRoot.GetComponentsInChildren<Button>();
         foreach (var (button, index) in menuChildren.WithIndex())
             virtualMenu.Add(new PlayerConjurerArgs { menuButton = button, prefab = prefabs[index] });
@@ -32,13 +38,6 @@ public class UnitBuilderPlayer : UnitBuilderBase<PlayerConjurerArgs>
             return;
         lastClickTime = Time.unscaledTime;
     }
-
-    // Selected Builder gets the menu button click events
-    /* public void TakeOverButtonListeners()
-    {
-        foreach (PlayerConjurerArgs item in virtualMenu)
-            item.menuButton.onClick.AddListener(delegate { QueueBuild(item, Input.mousePosition); });
-    } */
 
     // Clear listeners for next selected builder
     public void ReleaseButtonListeners()
