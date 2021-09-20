@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 930185125694765391}
   - component: {fileID: 930185125694765390}
   - component: {fileID: 1626359666}
+  - component: {fileID: 4632063194076061191}
   m_Layer: 9
   m_Name: horseman
   m_TagString: Friendly
@@ -268,27 +269,10 @@ MonoBehaviour:
   - {fileID: 6744936189374835309}
   isAttacking: 0
   attackTarget: {fileID: 0}
-  fogOfWarMask: {fileID: 4589014739474092530}
   bloodSystem: {fileID: 930185126259309868}
-  attackSounds:
-  - {fileID: 8300000, guid: 5ad20231f1572e34e83d64fcd65cbabd, type: 3}
-  hitSounds:
-  - {fileID: 8300000, guid: ffd62a35e9c0f1f4eb74d1e5ad718222, type: 3}
-  - {fileID: 8300000, guid: 2ea6ae50cd3e1c644adc95d6b8c9c060, type: 3}
-  - {fileID: 8300000, guid: ec94102be5053364da6d23120508740e, type: 3}
-  - {fileID: 8300000, guid: 57b349fef94751a4e971737476ea4e69, type: 3}
-  - {fileID: 8300000, guid: 5a8b1776395032b43b04b6a9662d0506, type: 3}
-  - {fileID: 8300000, guid: 0dd02402e9e42724d931f27683de0cb3, type: 3}
-  - {fileID: 8300000, guid: 3875c0daa344d224e9f0c7814f098077, type: 3}
-  - {fileID: 8300000, guid: dcf24423c8e058d47a55863ad64d70a5, type: 3}
-  - {fileID: 8300000, guid: 55bf79e161b9be941bcd85dc6bfa6a00, type: 3}
-  - {fileID: 8300000, guid: 873ef524b6b72c94da1d08167b51212e, type: 3}
-  dieSound: {fileID: 0}
-  playAttackSounds: 1
   selectable: 1
   selectRing: {fileID: 930185125958572863}
-  moveSound: {fileID: 0}
-  selectSound: {fileID: 0}
+  fogOfWarMask: {fileID: 4589014739474092530}
 --- !u!208 &1626359666
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -305,6 +289,24 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 3, z: 0.52}
   m_TimeToStationary: 0.5
+--- !u!114 &4632063194076061191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 11759965872997376}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69a232441f881fd4a9c3a577868aa4a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackSounds: []
+  hitSounds: []
+  dieSound: {fileID: 0}
+  moveSound: {fileID: 0}
+  selectSound: {fileID: 0}
+  unitPlaysAttackSounds: 1
 --- !u!1 &41784093922689573
 GameObject:
   m_ObjectHideFlags: 0

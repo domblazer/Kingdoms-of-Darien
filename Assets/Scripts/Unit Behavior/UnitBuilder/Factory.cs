@@ -24,6 +24,8 @@ public class Factory : UnitBuilderPlayer
 
     void Update()
     {
+        // @TODO: ability to reposition builderRallyPoint
+
         // Keep track of master queue to know when building
         isBuilding = masterBuildQueue.Count > 0;
 

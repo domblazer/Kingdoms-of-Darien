@@ -68,8 +68,8 @@ public class WatchTowerScript : MonoBehaviour
         projectile.velocity = (adjustedTargetPos - launchPoint.position).normalized * projectileVelocity;
 
         // If sounds should be played on launch, not at start of attack
-        if (_BaseUnit.attackSounds.Length > 0 && !_BaseUnit.playAttackSounds)
-            _BaseUnit.GetAudioSource().PlayOneShot(_BaseUnit.attackSounds[Random.Range(0, _BaseUnit.attackSounds.Length)], 0.4f);
+        if (!_BaseUnit.AudioManager.unitPlaysAttackSounds)
+            _BaseUnit.AudioManager.PlayAttackSound();
 
         // ignore collisions between the projectile and parent object
         Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), projectile.GetComponent<Collider>(), true);

@@ -60,6 +60,7 @@ public class IntangibleUnitBase<T> : MonoBehaviour
     protected Directions facingDir = Directions.Forward;
     protected bool parkToggle;
     protected Vector3 rallyPoint;
+    protected RTSUnit.States firstState = RTSUnit.States.Standby;
 
     void Start()
     {
@@ -96,13 +97,13 @@ public class IntangibleUnitBase<T> : MonoBehaviour
         // Instantiate final new unit
         GameObject newUnit = Instantiate(finalUnitPrefab, transform.position, transform.rotation);
         // @TODO: determine appropriate next state
-        RTSUnit.States nextState = RTSUnit.States.Standby;
-        newUnit.GetComponent<RTSUnit>().Begin(facingDir, rallyPoint, parkToggle, nextState);
+        newUnit.GetComponent<RTSUnit>().Begin(facingDir, rallyPoint, parkToggle, firstState);
 
         // Tell builder it can continue then destroy this intangible
         builder.SetNextQueueReady(true);
 
         // @TODO: remove intangible from inventory/player context as well
+        // Functions.RemoveIntangibleFromPlayerContext<T>(this);
 
         Destroy(gameObject);
     }

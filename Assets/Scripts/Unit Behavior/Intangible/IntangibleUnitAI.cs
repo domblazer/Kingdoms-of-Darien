@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DarienEngine;
+using DarienEngine.AI;
 
 public class IntangibleUnitAI : IntangibleUnitBase<AIConjurerArgs>
 {
@@ -20,12 +21,13 @@ public class IntangibleUnitAI : IntangibleUnitBase<AIConjurerArgs>
         }
     }
 
-    // Bind vars for AI, which does not use PlayerConjurerArgs
-    public void Bind(UnitBuilderBase<AIConjurerArgs> bld, Transform rally, bool parkDirToggle = false, Directions dir = Directions.Forward)
+    // Bind vars for AI
+    public void Bind(UnitBuilderBase<AIConjurerArgs> bld, Transform rally, RTSUnit.States initialState, bool parkDirToggle = false, Directions dir = Directions.Forward)
     {
         builder = bld;
         parkToggle = parkDirToggle;
         rallyPoint = rally.position;
+        firstState = initialState;
         SetFacingDir(dir);
     }
 }

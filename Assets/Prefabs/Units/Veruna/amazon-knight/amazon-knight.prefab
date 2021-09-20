@@ -9408,6 +9408,7 @@ GameObject:
   - component: {fileID: 8274941175652985905}
   - component: {fileID: 8274941175652985904}
   - component: {fileID: 8274941175652985899}
+  - component: {fileID: 2870079829581357989}
   m_Layer: 9
   m_Name: amazon-knight
   m_TagString: Friendly
@@ -9527,16 +9528,10 @@ MonoBehaviour:
   meleeWeapons: []
   isAttacking: 0
   attackTarget: {fileID: 0}
-  fogOfWarMask: {fileID: 8274941175514829512}
   bloodSystem: {fileID: 8274941175842810400}
-  attackSounds: []
-  hitSounds: []
-  dieSound: {fileID: 8300000, guid: 43635e3c76b567d42bc895a165e1ea6d, type: 3}
-  playAttackSounds: 1
   selectable: 1
   selectRing: {fileID: 8274941177128802694}
-  moveSound: {fileID: 8300000, guid: 9f7c427272bcd9a4e95d0d8a6b11063b, type: 3}
-  selectSound: {fileID: 8300000, guid: 291a39177d1420848b33be4bcf50be70, type: 3}
+  fogOfWarMask: {fileID: 8274941175514829512}
 --- !u!114 &8274941175652985911
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9699,6 +9694,24 @@ MonoBehaviour:
   projectilePrefab: {fileID: 963733164422937508, guid: 098dd7fb306b1e54bab113717028091c, type: 3}
   projectileVelocity: 15
   animDelay: 0.5
+--- !u!114 &2870079829581357989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9085756035234369891}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69a232441f881fd4a9c3a577868aa4a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackSounds: []
+  hitSounds: []
+  dieSound: {fileID: 0}
+  moveSound: {fileID: 0}
+  selectSound: {fileID: 0}
+  unitPlaysAttackSounds: 0
 --- !u!1 &9154603903196170853
 GameObject:
   m_ObjectHideFlags: 0

@@ -27,16 +27,10 @@ public class BaseUnitAI : RTSUnit
 
     public enum StartStates
     {
-        Standby, Patrolling
+        Standby, Patrolling, Parking
     }
     public StartStates startState;
     private States defaultState;
-
-    private void Awake()
-    {
-        // @TODO: implement moveToPositionQueue
-        // moveToPosition = transform.position;
-    }
 
     private void Start()
     {
@@ -63,7 +57,8 @@ public class BaseUnitAI : RTSUnit
     private void Update()
     {
         // Update health
-        UpdateHealth();
+        if (!isDead && UpdateHealth() <= 0)
+            StartCoroutine(Die());
 
         // Show/hide based on Fog of War
         if (enableFogOfWar)
@@ -71,11 +66,13 @@ public class BaseUnitAI : RTSUnit
 
         if (!isDead)
         {
-            if (!IsAttacking() && !engagingTarget)
-                state = defaultState;
+            // @TODO: should be careful resetting state here
+            // if (!IsAttacking() && !engagingTarget)
+            //     state = defaultState;
 
             if (isKinematic)
             {
+                // @TODO: AIs need different patrol points on start based on surroundings
                 if (state.Value == States.Patrolling.Value)
                     Patrol();
                 else
@@ -148,6 +145,13 @@ public class BaseUnitAI : RTSUnit
                 r.enabled = true;
         alreadyHidden = false;
         alreadyShown = true;
+    }
+
+    private IEnumerator Die()
+    {
+        HandleDie();
+        yield return new WaitForSeconds(dieTime);
+        Destroy(gameObject);
     }
 
     void OnMouseEnter()

@@ -7623,6 +7623,7 @@ GameObject:
   - component: {fileID: 8276149308997763325}
   - component: {fileID: 8276149308997763322}
   - component: {fileID: 1430258441087659845}
+  - component: {fileID: 2514323028835848404}
   m_Layer: 9
   m_Name: archer
   m_TagString: Friendly
@@ -7754,16 +7755,10 @@ MonoBehaviour:
   meleeWeapons: []
   isAttacking: 0
   attackTarget: {fileID: 0}
-  fogOfWarMask: {fileID: 6997183358627103113}
   bloodSystem: {fileID: 8276149309757412236}
-  attackSounds: []
-  hitSounds: []
-  dieSound: {fileID: 0}
-  playAttackSounds: 0
   selectable: 1
   selectRing: {fileID: 8276149309611925461}
-  moveSound: {fileID: 0}
-  selectSound: {fileID: 0}
+  fogOfWarMask: {fileID: 6997183358627103113}
 --- !u!195 &8276149308997763324
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -7914,6 +7909,24 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 2.5, z: 0}
   m_TimeToStationary: 0.5
+--- !u!114 &2514323028835848404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9087032747262033320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69a232441f881fd4a9c3a577868aa4a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackSounds: []
+  hitSounds: []
+  dieSound: {fileID: 0}
+  moveSound: {fileID: 0}
+  selectSound: {fileID: 0}
+  unitPlaysAttackSounds: 0
 --- !u!1 &9126544680479047678
 GameObject:
   m_ObjectHideFlags: 0

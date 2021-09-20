@@ -21,34 +21,32 @@ public class AIPlayer : MonoBehaviour
     public AIProfileTypes profileType;
     public PlayerNumbers playerNumber;
     public TeamNumbers teamNumber;
+    public InventoryAI inventory;
 
-    public void Init(BaseUnitAI[] initialTotalUnits)
+    public void Init(InventoryAI inv)
     {
-        // @TODO: need to be able to start with any unit configuration, e.g. 3 cabals, 1 temple, 10 executioners
-        // So, need to compile all units for this team player and group by type, e.g. builders, infantry, fort units, etc.
-        foreach (BaseUnitAI unit in initialTotalUnits)
-            profile.AddUnit(unit);
+        inventory = inv;
     }
 
     // Start is called before the first frame update
     void Start()
     {
         // Init profile
-        profile = AIProfiles.NewProfile(profileType);
+        profile = AIProfiles.NewProfile(profileType, inventory);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (profile.totalUnitsCount < unitLimit)
+        if (inventory.totalUnits.Count < unitLimit)
         {
             DetermineNeedState();
 
-            List<BaseUnitAI> factories = profile.GetUnitsByTypes(UnitCategories.FactoryTier1, UnitCategories.FactoryTier2);
-            // @TODO: if no builders?
-            // @TODO: mobile builders vs factories
+            List<RTSUnit> factories = inventory.GetUnitsByTypes(UnitCategories.FactoryTier1, UnitCategories.FactoryTier2);
+            // @TODO: if no factories?
+            // @TODO: builders vs factories
 
-            // Tell builders to start building some units
+            // Tell factories to start building some units
             foreach (BaseUnitAI factory in factories)
             {
                 FactoryAI builderAI = factory.gameObject.GetComponent<FactoryAI>();
@@ -84,8 +82,11 @@ public class AIPlayer : MonoBehaviour
 
         // @TODO: monarch can substitute need for builder at the beginning
 
+        // Getting all quota items upfront eliminates 50% of unnessesary calls to GetQuotaItem()
+        AllQuotaItems quotaItems = profile.GetAllQuotaItems();
+
         // Needs that require BuilderTier1
-        if (profile.buildersTier1.count > 0)
+        if (quotaItems.BuilderTier1.count > 0)
         {
             // @TODO: ratios probably need to change over time so needs can alternate, like once a few lodestones are built,
             // can go ahead and build more factories, armies, etc. but as that capacity increases, so does the lodestone need 
@@ -95,47 +96,48 @@ public class AIPlayer : MonoBehaviour
             // Maybe ratio follows lodestone ratio? Like as a reflection of mana capacity. still needs more though of course
 
             // Lodestones Tier 1
-            if (profile.lodestonesTier1.ratio < 0.2f)
-                needs.Add(profile.lodestonesTier1);
+            if (quotaItems.LodestoneTier1.ratio < 0.2f)
+                needs.Add(quotaItems.LodestoneTier1);
             // Factories Tier 1
-            if (profile.factoriesTier1.ratio < 0.2f)
-                needs.Add(profile.factoriesTier1);
+            if (quotaItems.FactoryTier1.ratio < 0.2f)
+                needs.Add(quotaItems.FactoryTier1);
             // Factory Tier 2
-            if (profile.factoriesTier2.ratio < 0.2f)
-                needs.Add(profile.factoriesTier2);
+            if (quotaItems.FactoryTier2.ratio < 0.2f)
+                needs.Add(quotaItems.FactoryTier2);
             // Fort Tier 1
-            if (profile.fortTier1.ratio < 0.2f)
-                needs.Add(profile.fortTier1);
+            if (quotaItems.FortTier1.ratio < 0.2f)
+                needs.Add(quotaItems.FortTier1);
             // Fort Tier 2
-            if (profile.fortTier2.ratio < 0.2f)
-                needs.Add(profile.fortTier2);
+            if (quotaItems.FortTier2.ratio < 0.2f)
+                needs.Add(quotaItems.FortTier2);
             // Naval Tier 1
-            if (profile.navalTier1.ratio < 0.2f)
-                needs.Add(profile.navalTier1);
+            if (quotaItems.NavalTier1.ratio < 0.2f)
+                needs.Add(quotaItems.NavalTier1);
         }
-        else if (profile.factoriesTier1.count > 0 || profile.factoriesTier2.count > 0)
+        else if (quotaItems.FactoryTier1.count > 0 || quotaItems.FactoryTier2.count > 0)
         {
             // Obviously, if no builders exist, creating them takes top priority
-            needs.Add(profile.buildersTier1);
+            quotaItems.BuilderTier1.priority = 1;
+            needs.Add(quotaItems.BuilderTier1);
         }
 
         // Needs that require FactoryTier1
-        if (profile.factoriesTier1.count > 0)
+        if (quotaItems.FactoryTier1.count > 0)
         {
             // Scout? 
             // InfantryTier1
-            if (profile.infantryTier1.ratio < 0.2f)
-                needs.Add(profile.infantryTier1);
+            if (quotaItems.InfantryTier1.ratio < 0.2f)
+                needs.Add(quotaItems.InfantryTier1);
             // StalwartTier1
-            if (profile.stalwartTier1.ratio < 0.2f)
-                needs.Add(profile.stalwartTier1);
+            if (quotaItems.StalwartTier1.ratio < 0.2f)
+                needs.Add(quotaItems.StalwartTier1);
             // SiegeTier1
-            if (profile.siegeTier1.ratio < 0.2f)
-                needs.Add(profile.siegeTier1);
+            if (quotaItems.SiegeTier1.ratio < 0.2f)
+                needs.Add(quotaItems.SiegeTier1);
         }
 
         // Needs that require FactoryTier2
-        if (profile.factoriesTier2.count > 0)
+        if (quotaItems.FactoryTier2.count > 0)
         {
             // InfantryTier2
             // StalwartTier2
@@ -145,7 +147,7 @@ public class AIPlayer : MonoBehaviour
         }
 
         // Needs that require Builders Tier 2 (e.g. Acolyte, Dark Priest, etc)
-        if (profile.buildersTier2.count > 0)
+        if (quotaItems.BuilderTier2.count > 0)
         {
             // Dragon
             // Lodestone Tier 2
@@ -161,11 +163,5 @@ public class AIPlayer : MonoBehaviour
         currentNeedType = needs[0].label;
         Debug.Log(playerNumber + " current need: " + currentNeedType);
         return needs[0].label;
-    }
-
-    public void AddToTotal(BaseUnitAI unitAI)
-    {
-        // Add this unit to MasterQuota
-        profile.AddUnit(unitAI);
     }
 }

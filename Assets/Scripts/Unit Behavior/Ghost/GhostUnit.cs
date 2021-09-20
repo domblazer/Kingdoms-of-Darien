@@ -86,14 +86,20 @@ public class GhostUnit : MonoBehaviour
         invalidIcon.SetActive(false);
         // Increase the count of ghosts placed during this shift period
         builder.placedSinceLastShift++;
-        // Add this newly placed self to the build queue
+        // Add the activeFloatingGhost (this) to the player args and enqueue it to the masterBuildQueue
         playerConjurerArgs.prefab = builder.activeFloatingGhost;
-        Debug.Log("Placed and copied: " + playerConjurerArgs.prefab);
         builder.masterBuildQueue.Enqueue(playerConjurerArgs);
-        // Instantiate a copy of this self, which will now become the "active" (!isSet) ghost
-        builder.InstantiateGhost(new PlayerConjurerArgs { prefab = playerConjurerArgs.prefab, menuButton = playerConjurerArgs.menuButton }, hitPos + offset);
-        // Tell the builder this ghost has been placed and is ready to be reached and built
-        builder.SetNextQueueReady(true);
+        // Instantiate a copy of the player args initially passed to this ghost. (Pass-by-value will overwrite prefab)
+        PlayerConjurerArgs nextItem = new PlayerConjurerArgs
+        {
+            menuButton = playerConjurerArgs.menuButton,
+            prefab = playerConjurerArgs.prefab,
+            buildQueueCount = playerConjurerArgs.buildQueueCount
+        };
+        builder.InstantiateGhost(nextItem, hitPos + offset);
+        // Only set next ready when masterBuildQueue is empty
+        if (builder.masterBuildQueue.Count == 0)
+            builder.SetNextQueueReady(true);
     }
 
     // Place self and done
@@ -105,6 +111,7 @@ public class GhostUnit : MonoBehaviour
         builder.placedSinceLastShift = 0;
         // Queue this self on single place
         playerConjurerArgs.prefab = gameObject;
+        // @TODO: clear the current queue if just placed a single
         builder.masterBuildQueue.Enqueue(playerConjurerArgs);
         builder.SetNextQueueReady(true);
 
@@ -154,9 +161,8 @@ public class GhostUnit : MonoBehaviour
             Toggle(true);
         // Hide again when shift is released
         if (isSet && InputManager.ShiftReleased())
-        {
             Toggle(false);
-        }
+
         // If not set (active ghost) and shift released, only remove when placed count since last shift release greater than 0
         else if (!isSet && InputManager.ShiftReleased() && builder.placedSinceLastShift > 0)
         {
@@ -171,9 +177,14 @@ public class GhostUnit : MonoBehaviour
     public void Bind(Builder bld, PlayerConjurerArgs args, Directions dir = Directions.Forward)
     {
         builder = bld;
-        playerConjurerArgs = args;
+        // Ghosts need to instantiate new args; they are more independent than intangibles
+        playerConjurerArgs = new PlayerConjurerArgs
+        {
+            menuButton = args.menuButton,
+            prefab = args.prefab,
+            buildQueueCount = args.buildQueueCount
+        };
         SetFacingDir(dir);
-        Debug.Log("GhostUnit.Bind() then builder: " + builder);
     }
 
     // Set facing and rotation

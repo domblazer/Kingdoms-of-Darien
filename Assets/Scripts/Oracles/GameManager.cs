@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DarienEngine;
+using DarienEngine.AI;
 
 public class GameManager : MonoBehaviour
 {
@@ -54,6 +55,7 @@ public class GameManager : MonoBehaviour
         AIPlayer newPlayer = _Holder.AddComponent<AIPlayer>();
         InventoryAI newInventory = _Holder.AddComponent<InventoryAI>();
         // Set initial player vars
+        newPlayer.Init(newInventory);
         newPlayer.playerNumber = playerConf.playerNumber;
         newPlayer.teamNumber = playerConf.team;
         // Instantiate new AI player context and add it to AIPlayers dictionary

@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DarienEngine;
+using DarienEngine.AI;
 
-public class HumanoidUnitAnimator : HumanoidUnitAnimatorBase<PlayerConjurerArgs>
+public class HumanoidAnimatorAI : HumanoidUnitAnimatorBase<AIConjurerArgs>
 {
     
 }

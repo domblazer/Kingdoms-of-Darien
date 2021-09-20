@@ -110,6 +110,7 @@ GameObject:
   - component: {fileID: 738280607077118045}
   - component: {fileID: 738280607077117986}
   - component: {fileID: 738280607077117987}
+  - component: {fileID: 6708135219041040190}
   m_Layer: 9
   m_Name: zombie
   m_TagString: Enemy
@@ -198,6 +199,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fe4f67068f9b6c4d8244f5807a36993, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  faction: 0
   playerNumber: 2
   unitType: 17
   unitIcon: {fileID: 21300000, guid: 94e09cbd081bba54887f98296357903b, type: 3}
@@ -222,19 +224,7 @@ MonoBehaviour:
   - {fileID: 738280607077118041}
   isAttacking: 0
   attackTarget: {fileID: 0}
-  fogOfWarMask: {fileID: 0}
   bloodSystem: {fileID: 738280606498455322}
-  _UnitBuilderScript: {fileID: 0}
-  attackSounds:
-  - {fileID: 8300000, guid: 40c8e24037e0128459253ba7dbffd0c9, type: 3}
-  hitSounds:
-  - {fileID: 8300000, guid: 2ea6ae50cd3e1c644adc95d6b8c9c060, type: 3}
-  - {fileID: 8300000, guid: ec94102be5053364da6d23120508740e, type: 3}
-  - {fileID: 8300000, guid: 57b349fef94751a4e971737476ea4e69, type: 3}
-  - {fileID: 8300000, guid: 5a8b1776395032b43b04b6a9662d0506, type: 3}
-  - {fileID: 8300000, guid: 0dd02402e9e42724d931f27683de0cb3, type: 3}
-  dieSound: {fileID: 8300000, guid: 35b1821f150b1cc4f92afad0a97fe5fa, type: 3}
-  playAttackSounds: 1
   patrolRange: 25
   patrolPointsCount: 3
   enableFogOfWar: 1
@@ -385,6 +375,24 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &6708135219041040190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 504279588120628597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69a232441f881fd4a9c3a577868aa4a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackSounds: []
+  hitSounds: []
+  dieSound: {fileID: 0}
+  moveSound: {fileID: 0}
+  selectSound: {fileID: 0}
+  unitPlaysAttackSounds: 1
 --- !u!1 &514252222208197532
 GameObject:
   m_ObjectHideFlags: 0

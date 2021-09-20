@@ -297,6 +297,7 @@ GameObject:
   - component: {fileID: 3273951307579666021}
   - component: {fileID: 3273951307579666018}
   - component: {fileID: 3273951307579666019}
+  - component: {fileID: 2340003831957219882}
   m_Layer: 9
   m_Name: transport-ship
   m_TagString: Friendly
@@ -536,6 +537,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6529f6a288da29f458b340ec3e746e38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  faction: 0
   playerNumber: 1
   unitType: 5
   unitIcon: {fileID: 21300000, guid: 3eff4e99f1899eb4ab186a59f5dcec06, type: 3}
@@ -558,17 +560,28 @@ MonoBehaviour:
   meleeWeapons: []
   isAttacking: 0
   attackTarget: {fileID: 0}
-  fogOfWarMask: {fileID: 0}
   bloodSystem: {fileID: 0}
-  _UnitBuilderScript: {fileID: 0}
+  selectable: 1
+  selectRing: {fileID: 3273951307374451740}
+  fogOfWarMask: {fileID: 0}
+--- !u!114 &2340003831957219882
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2426877867583068731}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69a232441f881fd4a9c3a577868aa4a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   attackSounds: []
   hitSounds: []
   dieSound: {fileID: 0}
-  playAttackSounds: 1
-  selectable: 1
-  selectRing: {fileID: 3273951307374451740}
   moveSound: {fileID: 0}
   selectSound: {fileID: 0}
+  unitPlaysAttackSounds: 0
 --- !u!1 &3273951307374451740
 GameObject:
   m_ObjectHideFlags: 0

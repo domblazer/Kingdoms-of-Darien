@@ -30,7 +30,7 @@ public class Player : MonoBehaviour
     public RectTransform selectionSquareTrans;
     public AudioClip clickSound;
 
-    [HideInInspector]
+    // [HideInInspector]
     public UnitBuilderBase<PlayerConjurerArgs> currentActiveBuilder;
     public Inventory inventory;
 
@@ -142,7 +142,7 @@ public class Player : MonoBehaviour
         foreach (BaseUnit currentUnit in inventory.totalUnits)
         {
             // Is this unit within the square
-            if (IsWithinPolygon(currentUnit.transform.position) && currentUnit.selectable)
+            if (currentUnit.selectable && IsWithinPolygon(currentUnit.transform.position))
             {
                 currentUnit.Select();
                 // Add to the selection if not just highlighting
@@ -152,6 +152,9 @@ public class Player : MonoBehaviour
             else if (!InputManager.HoldingShift())
                 currentUnit.DeSelect();
         }
+        // Release any active builder if we just selected more than 1 unit
+        if (!highlightOnly && selectedUnits.Count > 1)
+            ReleaseActiveBuilder();
     }
 
     // Handle click-to-move command for selected, kinematic units
@@ -178,13 +181,14 @@ public class Player : MonoBehaviour
                 // Just move the single selected unit directly to click point
                 BaseUnit unit = selectedUnits[0];
                 unit.SetMove(hit.point, addToMoveQueue, doAttackMove);
-                unit.PlayMoveSound();
+                unit.AudioManager.PlayMoveSound();
             }
+            // TODO: conflict with unit.PlayMoveSound()?
             GameManager.Instance.AudioSource.PlayOneShot(clickSound);
         }
     }
 
-    // Handle if a unit was clicked
+    // Handle if a single unit was clicked
     private void HandleUnitClicked(RaycastHit hit)
     {
         if (goodHit)
@@ -203,8 +207,9 @@ public class Player : MonoBehaviour
                     // Play click sound
                     if (!InputManager.HoldingShift())
                         GameManager.Instance.AudioSource.PlayOneShot(clickSound);
-                    activeUnit.Select(true); // Set this unit to selected with param alone=true
-                    selectedUnits.Add(activeUnit); // Add it to the list of selected units, which is now just 1 unit
+                    // Select this unit alone
+                    activeUnit.Select(true);
+                    selectedUnits.Add(activeUnit);
                 }
             }
             else if (hit.collider.CompareTag("Enemy"))
@@ -235,7 +240,10 @@ public class Player : MonoBehaviour
 
     public void SetActiveBuilder(UnitBuilderBase<PlayerConjurerArgs> builder)
     {
-        Debug.Log("Builder set to active: " + builder.name);
+        // Release the current active builder before setting new one
+        if (currentActiveBuilder != null)
+            ReleaseActiveBuilder();
+        // Set new current active builder
         currentActiveBuilder = builder;
         if (currentActiveBuilder.IsFactory())
             (currentActiveBuilder as Factory).SetCurrentActive();

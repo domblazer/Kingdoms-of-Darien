@@ -33,10 +33,7 @@ public class MeleeWeaponScript : MonoBehaviour
                 // Debug.Log("_BaseUnit.animStateTime " + _BaseUnit.animStateTime);
 
                 // Play one shot sound
-                if (_BaseUnit.hitSounds.Length > 0)
-                {
-                    _BaseUnit.GetAudioSource().PlayOneShot(_BaseUnit.hitSounds[Random.Range(0, _BaseUnit.hitSounds.Length)], 0.4f);
-                }
+                _BaseUnit.AudioManager.PlayHitSound();
 
                 // @TODO: friendly fire
                 if (col.gameObject.GetComponent<RTSUnit>())

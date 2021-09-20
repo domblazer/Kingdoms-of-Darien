@@ -28,7 +28,7 @@ public class IntangibleUnit : IntangibleUnitBase<PlayerConjurerArgs>
         }
     }
 
-    // Binding GhostUnits requires fewer args
+    // Bind vars from referring builder/factory
     public void Bind(UnitBuilderBase<PlayerConjurerArgs> bld, PlayerConjurerArgs args, Directions dir = Directions.Forward)
     {
         builder = bld;
@@ -37,7 +37,6 @@ public class IntangibleUnit : IntangibleUnitBase<PlayerConjurerArgs>
         SetFacingDir(dir);
     }
 
-    // Bind vars from referring builder/factory
     public void Bind(UnitBuilderBase<PlayerConjurerArgs> bld, PlayerConjurerArgs args, Transform rally, bool parkDirToggle = false, Directions dir = Directions.Forward)
     {
         builder = bld;

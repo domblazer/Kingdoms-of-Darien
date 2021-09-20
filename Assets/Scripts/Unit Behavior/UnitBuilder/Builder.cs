@@ -25,12 +25,10 @@ public class Builder : UnitBuilderPlayer
             string dbg = "";
             foreach (PlayerConjurerArgs q in masterBuildQueue)
                 dbg += q.ToString();
-            Debug.Log("masterBuildQueue: " + dbg);
+            Debug.Log("Builder.masterBuildQueue: " + dbg);
 
             // Builders always keep a queue of GhostUnits
             GhostUnit nextGhost = masterBuildQueue.Peek().prefab.GetComponent<GhostUnit>();
-            Debug.Log("masterBuildQueue.Peek(): " + masterBuildQueue.Peek());
-            Debug.Log("next ghost: " + nextGhost);
             // @TODO: offset depends on direction, e.g. if walking along x, use x, y, y, and diagonal use mix
             Vector3 offsetRange = nextGhost.offset;
             // Move to next ghost in the queue
@@ -57,8 +55,8 @@ public class Builder : UnitBuilderPlayer
     {
         // First, protect double clicks with click delay
         ProtectDoubleClick();
-        // Instantiate ghost prefab. @Note: ghost is only enqueued when set
-        GameObject ghost = InstantiateGhost(item, new Vector3(clickPoint.x, 1, clickPoint.y));
+        // Instantiate new active ghost
+        InstantiateGhost(item, new Vector3(clickPoint.x, 1, clickPoint.y));
     }
 
     // Instantiate new ghost and set bindings with this builder and the menu item clicked

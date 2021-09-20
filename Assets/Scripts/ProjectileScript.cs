@@ -36,10 +36,7 @@ public class ProjectileScript : MonoBehaviour
             Debug.Log("Got em!");
 
             // play one shot sound
-            if (hitSounds.Length > 0)
-            {
-                col.gameObject.GetComponent<BaseUnitAI>().GetAudioSource().PlayOneShot(hitSounds[Random.Range(0, hitSounds.Length)], 0.5f);
-            }
+            col.gameObject.GetComponent<BaseUnitAI>().AudioManager.PlayHitSound();
 
             // @TODO: friendly fire
             // Presumably "Enemy" should only ever be an AI 

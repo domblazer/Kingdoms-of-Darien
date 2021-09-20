@@ -427,6 +427,8 @@ GameObject:
   - component: {fileID: 3940524848047157282}
   - component: {fileID: 3940524848047157285}
   - component: {fileID: 5214491221684779718}
+  - component: {fileID: 5894929894114207334}
+  - component: {fileID: 56407038309657111}
   m_Layer: 9
   m_Name: cabal
   m_TagString: Enemy
@@ -559,12 +561,7 @@ MonoBehaviour:
   meleeWeapons: []
   isAttacking: 0
   attackTarget: {fileID: 0}
-  fogOfWarMask: {fileID: 0}
   bloodSystem: {fileID: 0}
-  attackSounds: []
-  hitSounds: []
-  dieSound: {fileID: 0}
-  playAttackSounds: 1
   patrolRange: 25
   patrolPointsCount: 3
   enableFogOfWar: 0
@@ -593,9 +590,129 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d7fa2528cd67e348bf0f5a27804f2b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buildUnitPrefabs: []
-  spawnPoint: {fileID: 0}
-  rallyPoint: {fileID: 0}
+  buildUnitPrefabs:
+  - unitCategory: 5
+    intangiblePrefab: {fileID: 1667658460211728225, guid: 3ff6ea5407396854caa5bd58e774b708, type: 3}
+  - unitCategory: 17
+    intangiblePrefab: {fileID: 6829218956405863628, guid: b2a043a1009ffa74eac0d46522765ce2, type: 3}
+  - unitCategory: 17
+    intangiblePrefab: {fileID: 7537644809192631856, guid: 71001f0ef8c23564381a909ab1047797, type: 3}
+  spawnPoint: {fileID: 196753126013886221}
+  rallyPoint: {fileID: 3940524848365188346}
+--- !u!82 &5894929894114207334
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4210557415126704656}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 0
+  MinDistance: 2
+  MaxDistance: 100
+  Pan2D: 0
+  rolloffMode: 1
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &56407038309657111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4210557415126704656}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69a232441f881fd4a9c3a577868aa4a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackSounds: []
+  hitSounds: []
+  dieSound: {fileID: 0}
+  moveSound: {fileID: 0}
+  selectSound: {fileID: 0}
+  unitPlaysAttackSounds: 1
 --- !u!1 &4473895595305456181
 GameObject:
   m_ObjectHideFlags: 0

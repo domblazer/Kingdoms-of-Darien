@@ -163,4 +163,20 @@ public class InventoryBase<T> : MonoBehaviour
             newGroupedUnits = groupedUnits
         });
     }
+
+    public List<RTSUnit> GetUnitsByType(UnitCategories type)
+    {
+        if (groupedUnits.TryGetValue(type, out List<RTSUnit> grouped))
+            return grouped;
+        return new List<RTSUnit>();
+    }
+
+    public List<RTSUnit> GetUnitsByTypes(params UnitCategories[] types)
+    {
+        List<RTSUnit> units = new List<RTSUnit>();
+        foreach (UnitCategories category in types)
+            if (groupedUnits.TryGetValue(category, out List<RTSUnit> grouped))
+                units.AddRange(grouped);
+        return units;
+    }
 }

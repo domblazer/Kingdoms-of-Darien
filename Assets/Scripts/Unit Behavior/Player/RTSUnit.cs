@@ -9,7 +9,7 @@ using DarienEngine;
     This class represents core functionality for all units in the game; it must implement only the behavior that is common between
     the playable units (BaseUnit) and the NP-units (BaseUnitAI), i.e. movement/pathfinding, attack routine, etc.
 */
-// [RequireComponent(typeof(AudioSource))]
+[RequireComponent(typeof(UnitAudioManager))]
 public class RTSUnit : MonoBehaviour
 {
     public class States
@@ -77,11 +77,22 @@ public class RTSUnit : MonoBehaviour
     public bool isDead { get; set; } = false;
     protected bool isParking = false;
     protected bool tryParkingDirection;
+    protected States nextStateAfterParking;
     protected bool attackMove = false;
 
-    // Global 
-    protected Vector3 moveToPosition;
-    protected Queue<Vector3> moveToPositionQueue = new Queue<Vector3>();
+    // @TODO: implement commandQueue for multi-command type queueing (attackQueue, masterBuildQueue)
+    protected Queue<CommandQueueItem> commandQueue = new Queue<CommandQueueItem>();
+    protected CommandQueueItem currentCommand
+    {
+        get { return commandQueue.Peek(); }
+        set
+        {
+            // Setting current command means resetting queue
+            commandQueue.Clear();
+            commandQueue.Enqueue(value);
+        }
+    }
+
     public Vector3 offset { get; set; } = new Vector3(1, 1, 1);
     protected RTSUnit super;
 
@@ -96,25 +107,26 @@ public class RTSUnit : MonoBehaviour
     private float doubleAvoidanceRadius;
     private static float avoidanceTickerTo = 0.0f;
     private static float avoidanceTickerFrom = 0.0f;
-    public GameObject fogOfWarMask;
+
     public ParticleSystem bloodSystem;
 
     // Components
     protected Player mainPlayer;
     protected NavMeshAgent _Agent;
     protected NavMeshObstacle _Obstacle;
-    protected AudioSource _AudioSource;
     protected Animator _Animator;
+    public UnitAudioManager AudioManager { get; set; }
 
     public UIManager.ActionMenuSettings.SpecialAttackItem[] specialAttacks;
     protected List<GameObject> whoCanSeeMe = new List<GameObject>();
 
-    // Sounds
-    public AudioClip[] attackSounds;
-    public AudioClip[] hitSounds;
-    public AudioClip dieSound;
-    // Specifically to set whether this scipt will play the attack sounds (e.g. Archer plays through ProjectileLauncher)
-    public bool playAttackSounds = true;
+    protected float dieTime = 30;
+
+    private void Awake()
+    {
+        // Default move position, for units not instantiated with a parking location
+        currentCommand = new CommandQueueItem { commandType = CommandTypes.Move, commandPoint = transform.position };
+    }
 
     protected void Init()
     {
@@ -151,7 +163,7 @@ public class RTSUnit : MonoBehaviour
 
         // Unit selection behavior is attached to MainCamera
         mainPlayer = GameManager.Instance.PlayerMain.player;
-        _AudioSource = GetComponent<AudioSource>();
+        AudioManager = GetComponent<UnitAudioManager>();
         _Animator = GetComponent<Animator>();
 
         // Set up linkage with melee weapon(s) if unit is a melee attacker
@@ -163,47 +175,52 @@ public class RTSUnit : MonoBehaviour
         Functions.AddUnitToPlayerContext(this);
     }
 
-    protected void UpdateHealth()
+    protected float UpdateHealth()
     {
-        if (!isDead)
+        // Slowly regenerate health automatically
+        if (Time.time > nextHealthRecharge && health < 100)
         {
-            // Die if health is 0 or lower
-            if (health <= 0)
-                StartCoroutine(Die());
-            // Slowly regenerate health automatically
-            else if (Time.time > nextHealthRecharge && health < 100)
-            {
-                // @TODO?: PlusHealth(healthIncrement);
-                PlusHealth(1);
-                nextHealthRecharge = Time.time + healthRechargeRate;
-            }
+            // @TODO?: PlusHealth(healthIncrement);
+            PlusHealth(1);
+            nextHealthRecharge = Time.time + healthRechargeRate;
         }
+        return health;
     }
 
     protected void HandleMovement()
     {
-        // Debug.Log("moveToPositionQueue.Count " + moveToPositionQueue.Count);
         if (_Agent.enabled)
         {
-            if (moveToPositionQueue.Count > 0)
+            if (commandQueue.Count > 0)
             {
-                moveToPosition = moveToPositionQueue.Peek();
-                _Agent.SetDestination(moveToPosition);
-                if (!IsInRangeOf(moveToPosition))
-                {
-                    if (IsMoving())
-                        HandleFacing(_Agent.steeringTarget, 0.25f); // Add extra steering while moving
-                }
-                else
-                    moveToPositionQueue.Dequeue(); // If unit has reached the position, dequeue it
+                _Agent.SetDestination(currentCommand.commandPoint);
 
+                // Parking should always be the first state of a new unit, even if it's just parking to transform.position
                 if (isParking)
-                    isParking = !IsInRangeOf(moveToPosition);
+                {
+                    isParking = !IsInRangeOf(currentCommand.commandPoint);
+                    if (!isParking)
+                    {
+                        // Here we can reliably say last state was Parking and now parking is done, next state set here
+                        state = nextStateAfterParking;
+                    }
+                }
+
+                if (!IsInRangeOf(currentCommand.commandPoint))
+                {
+                    // Add extra steering while moving
+                    if (IsMoving())
+                        HandleFacing(_Agent.steeringTarget, 0.25f);
+                }
+                // If unit has reached the position, dequeue it
+                else
+                    commandQueue.Dequeue();
 
                 // InflateAvoidanceRadius();
             }
             /* else
             {
+                // Return to being an obstacle while not moving
                 TryToggleToObstacle();
             } */
         }
@@ -211,7 +228,7 @@ public class RTSUnit : MonoBehaviour
 
     protected void InflateAvoidanceRadius()
     {
-        if (!IsInRangeOf(moveToPosition, 4))
+        if (!IsInRangeOf(currentCommand.commandPoint, 4))
         {
             // Increase the avoidance radius while on the move
             if (_Agent.radius != doubleAvoidanceRadius)
@@ -256,14 +273,24 @@ public class RTSUnit : MonoBehaviour
             isMovingToAttack = true;
             isAttacking = false;
 
-            // Follow the target by continuing to set the moveToPosition
-            if (moveToPositionQueue.Count > 0)
+            // Update or create command queue item for attacking target
+            if (commandQueue.Count > 0)
             {
-                moveToPositionQueue.Dequeue();
-                moveToPositionQueue.Enqueue(attackTarget.transform.position);
+                // Update the Vector3 position for current command with current attackTarget position
+                currentCommand.commandPoint = attackTarget.transform.position;
             }
             else
-                moveToPositionQueue.Enqueue(attackTarget.transform.position);
+            {
+                commandQueue.Enqueue(new CommandQueueItem
+                {
+                    commandType = CommandTypes.Attack,
+                    commandPoint = attackTarget.transform.position,
+                    attackInfo = new AttackInfo
+                    {
+                        attackTarget = attackTarget
+                    }
+                });
+            }
 
         }
         // Once unit is in range, can stop moving
@@ -290,11 +317,8 @@ public class RTSUnit : MonoBehaviour
             {
                 nextAttack = Time.time + attackRate;
                 nextAttackReady = true;
-
-                // @TODO: vary when to play a sound, to limit the amount of one shots playing at a time when lots of units
-                // @TODO: some sounds need a delay to account for animation
-                if (playAttackSounds && attackSounds.Length > 0)
-                    _AudioSource.PlayOneShot(attackSounds[Random.Range(0, attackSounds.Length)], 0.4f);
+                if (AudioManager.unitPlaysAttackSounds)
+                    AudioManager.PlayAttackSound();
             }
             else
                 nextAttackReady = false;
@@ -325,10 +349,9 @@ public class RTSUnit : MonoBehaviour
             Debug.Log(unitName + ": Whoops, sorry I bumped you while parking. I'll adjust my destination.");
 
             // If I bumped, dump the move position that led me here, then modify that position with offset then queue it back 
-            Vector3 lastMove = moveToPositionQueue.Dequeue();
+            Vector3 lastMove = commandQueue.Dequeue().commandPoint;
             lastMove.x += tryParkingDirection ? offset.x : -offset.x;
-            moveToPositionQueue.Enqueue(lastMove);
-            // moveToPosition.x += tryParkingDirection ? offset.x : -offset.x;
+            commandQueue.Enqueue(new CommandQueueItem { commandType = CommandTypes.Move, commandPoint = lastMove });
         }
     }
 
@@ -345,9 +368,9 @@ public class RTSUnit : MonoBehaviour
             TryToggleToAgent();
 
             // Stop any movement at this point until another valid target is picked
-            moveToPositionQueue.Clear();
-            moveToPositionQueue.Enqueue(transform.position);
+            // @TODO: to stop movement/commands should be able to just clear commandQueue
             // @TODO: stop unless there's another in the attackQueue
+            commandQueue.Clear();
         }
 
         // Find closest target
@@ -416,12 +439,12 @@ public class RTSUnit : MonoBehaviour
         }
     }
 
-    public void SetMove(Vector3 position, bool addToMoveQueue = false, bool doAttackMove = false)
+    public void SetMove(Vector3 position, bool addToQueue = false, bool doAttackMove = false)
     {
         // If not holding shift on this move, clear the moveto queue and make this position first in queue
-        if (!addToMoveQueue)
-            moveToPositionQueue.Clear();
-        moveToPositionQueue.Enqueue(position);
+        if (!addToQueue)
+            commandQueue.Clear();
+        commandQueue.Enqueue(new CommandQueueItem { commandType = CommandTypes.Move, commandPoint = position });
         attackMove = doAttackMove;
         isParking = false;
         ClearAttack();
@@ -433,16 +456,14 @@ public class RTSUnit : MonoBehaviour
     {
         isParking = true;
         state = States.Parking;
-        moveToPositionQueue.Clear();
-        moveToPositionQueue.Enqueue(position);
+        currentCommand = new CommandQueueItem { commandType = CommandTypes.Move, commandPoint = position };
     }
 
     public void SetParking(Vector3 position, bool parkingDirectionToggle)
     {
         isParking = true;
         state = States.Parking;
-        moveToPositionQueue.Clear();
-        moveToPositionQueue.Enqueue(position);
+        currentCommand = new CommandQueueItem { commandType = CommandTypes.Move, commandPoint = position };
         tryParkingDirection = parkingDirectionToggle;
     }
 
@@ -452,6 +473,8 @@ public class RTSUnit : MonoBehaviour
         // @TODO: if no parking/start is not parking
         SetParking(parkPosition, parkToggle);
         // @TODO next state after parking
+        // @TODO: AI after park is done, SetPatrolPoints(parkPosition), state = nextState;
+        nextStateAfterParking = nextState;
     }
 
     public void TryAttack(GameObject target, bool addToQueue = false)
@@ -459,19 +482,24 @@ public class RTSUnit : MonoBehaviour
         if (canAttack)
         {
             Debug.Log(gameObject.name + " trying attack on " + target.name);
+            attackTarget = target;
             engagingTarget = true;
             isMovingToAttack = true;
             TryToggleToAgent();
 
             // @TODO: handle queue of attack targets
-            if (addToQueue)
+            if (!addToQueue)
+                commandQueue.Clear();
+            commandQueue.Enqueue(new CommandQueueItem
             {
-                // @TODO
-            }
+                commandType = CommandTypes.Attack,
+                commandPoint = attackTarget.transform.position,
+                attackInfo = new AttackInfo
+                {
+                    attackTarget = attackTarget
+                }
+            });
 
-            moveToPositionQueue.Clear();
-            moveToPositionQueue.Enqueue(target.transform.position);
-            attackTarget = target;
             state = States.Attacking;
         }
     }
@@ -504,11 +532,9 @@ public class RTSUnit : MonoBehaviour
         nextHealthRecharge = Time.time + lastHitRechargeDelay;
     }
 
-    IEnumerator Die()
+    protected void HandleDie()
     {
-        Debug.Log("I (" + gameObject.name + ") die!");
         isDead = true;
-
         ClearAttack();
 
         if (_Agent)
@@ -517,9 +543,7 @@ public class RTSUnit : MonoBehaviour
         if (_Obstacle)
             _Obstacle.enabled = false;
 
-        // Play the die sound 50% of the time
-        if (Random.Range(0.0f, 1.0f) > 0.5f && dieSound != null)
-            _AudioSource.PlayOneShot(dieSound, 0.5f);
+        AudioManager.PlayDieSound();
 
         // @TODO: play animation, play the dust particle system, destroy this object, and finally instantiate corpse object
         // @TODO: some units don't have a die animation, e.g. Factory units like Barracks
@@ -527,19 +551,12 @@ public class RTSUnit : MonoBehaviour
         if (_Animator)
             _Animator.SetTrigger("die");
 
-        // Units loose line-of-sight when dead
-        if (fogOfWarMask != null)
-            fogOfWarMask.SetActive(false);
-
         // Remove this unit from the player context
         Functions.RemoveUnitFromPlayerContext(this);
 
         // @TODO: need to figure out how to do the white ghost die thing
         if (phaseDie)
-            Destroy(gameObject);
-
-        yield return new WaitForSeconds(30);
-        Destroy(gameObject);
+            dieTime = 0; // Remove immediately 
     }
 
     public void TryToggleToAgent()
@@ -558,11 +575,6 @@ public class RTSUnit : MonoBehaviour
             _Agent.enabled = false;
             _Obstacle.enabled = true;
         }
-    }
-
-    public AudioSource GetAudioSource()
-    {
-        return _AudioSource;
     }
 
     public Vector3 GetVelocity()

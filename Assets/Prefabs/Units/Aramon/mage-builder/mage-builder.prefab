@@ -1630,6 +1630,7 @@ GameObject:
   - component: {fileID: 7672112253590628151}
   - component: {fileID: 7672112253590628148}
   - component: {fileID: 4135129853923179177}
+  - component: {fileID: 221852510}
   m_Layer: 9
   m_Name: mage-builder
   m_TagString: Friendly
@@ -1880,16 +1881,10 @@ MonoBehaviour:
   meleeWeapons: []
   isAttacking: 0
   attackTarget: {fileID: 0}
-  fogOfWarMask: {fileID: 0}
   bloodSystem: {fileID: 7672112254575380417}
-  attackSounds: []
-  hitSounds: []
-  dieSound: {fileID: 0}
-  playAttackSounds: 1
   selectable: 1
   selectRing: {fileID: 7672112254513394519}
-  moveSound: {fileID: 0}
-  selectSound: {fileID: 0}
+  fogOfWarMask: {fileID: 6021291778148488087}
 --- !u!114 &7672112253590628151
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1941,6 +1936,24 @@ MonoBehaviour:
   - {fileID: 8284541907566071018, guid: f6d500b00ef9f5a449f3d55fa8b6f42b, type: 3}
   - {fileID: 0}
   activeFloatingGhost: {fileID: 0}
+--- !u!114 &221852510
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7402150474938149980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69a232441f881fd4a9c3a577868aa4a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackSounds: []
+  hitSounds: []
+  dieSound: {fileID: 0}
+  moveSound: {fileID: 0}
+  selectSound: {fileID: 0}
+  unitPlaysAttackSounds: 0
 --- !u!1 &7467070316275484216
 GameObject:
   m_ObjectHideFlags: 0

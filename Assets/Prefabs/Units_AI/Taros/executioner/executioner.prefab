@@ -6561,6 +6561,7 @@ GameObject:
   - component: {fileID: 7162712932485172820}
   - component: {fileID: 8325120277223378903}
   - component: {fileID: 1196372270}
+  - component: {fileID: 7217988122251717979}
   m_Layer: 9
   m_Name: executioner
   m_TagString: Enemy
@@ -6652,6 +6653,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fe4f67068f9b6c4d8244f5807a36993, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  faction: 0
   playerNumber: 2
   unitType: 17
   unitIcon: {fileID: 21300000, guid: 356939765b11dd24d8506ec4faddc57a, type: 3}
@@ -6675,19 +6677,7 @@ MonoBehaviour:
   - {fileID: 7162712932485172817}
   isAttacking: 0
   attackTarget: {fileID: 0}
-  fogOfWarMask: {fileID: 0}
   bloodSystem: {fileID: 7162712931574828126}
-  _UnitBuilderScript: {fileID: 0}
-  attackSounds:
-  - {fileID: 8300000, guid: c4f4add1b5698ab40ad42daae0750d88, type: 3}
-  hitSounds:
-  - {fileID: 8300000, guid: ebfaaf95c97c3714c944f1fca038f7c9, type: 3}
-  - {fileID: 8300000, guid: cbfc415ec7ed18a49b45eecaaa701235, type: 3}
-  - {fileID: 8300000, guid: 6068160216531eb409aed77e0019443b, type: 3}
-  - {fileID: 8300000, guid: 70218cda93611864e93f6b6a9d73e0ad, type: 3}
-  - {fileID: 8300000, guid: 9d7811d68ebac274eacfc4c9e9278cb6, type: 3}
-  dieSound: {fileID: 0}
-  playAttackSounds: 1
   patrolRange: 25
   patrolPointsCount: 3
   enableFogOfWar: 1
@@ -6838,6 +6828,24 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 2.87, z: 0}
   m_TimeToStationary: 0.5
+--- !u!114 &7217988122251717979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8045250445228978974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69a232441f881fd4a9c3a577868aa4a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackSounds: []
+  hitSounds: []
+  dieSound: {fileID: 0}
+  moveSound: {fileID: 0}
+  selectSound: {fileID: 0}
+  unitPlaysAttackSounds: 1
 --- !u!1 &8178076669230634209
 GameObject:
   m_ObjectHideFlags: 0

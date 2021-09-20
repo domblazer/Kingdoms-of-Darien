@@ -2,7 +2,10 @@ namespace DarienEngine
 {
     public enum Directions : int
     {
-        Forward = 180, Right = 90, Backwards = 0, Left = -90
+        Forward = 180,
+        Right = 90,
+        Backwards = 0,
+        Left = -90
     }
 
     public enum UnitCategories
@@ -59,5 +62,14 @@ namespace DarienEngine
         Veruna,
         Zhon,
         Creon
+    }
+
+    public enum CommandTypes
+    {
+        Move, 
+        Attack, 
+        Conjure,
+        Patrol, 
+        Guard
     }
 }

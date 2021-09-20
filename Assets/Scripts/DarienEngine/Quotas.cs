@@ -7,9 +7,11 @@ namespace DarienEngine
 {
     public class MasterQuota
     {
+        public Dictionary<UnitCategories, Item> quota;
         public class Item
         {
-            public List<BaseUnitAI> units = new List<BaseUnitAI>();
+            public InventoryAI _inventory;
+            public List<RTSUnit> units { get { return _inventory.GetUnitsByType(label); } }
             public int priority;
             public int count { get { return units.Count; } }
             public int limit;
@@ -21,87 +23,64 @@ namespace DarienEngine
                 return label.ToString();
             }
         }
-        // @TODO: axe all this Item shit and bind this with InventoryAI
-        public Item lodestonesTier1;
-        public Item lodestonesTier2;
-        public Item factoriesTier1;
-        public Item factoriesTier2;
-        public Item buildersTier1;
-        public Item buildersTier2;
-        public Item fortTier1;
-        public Item fortTier2;
-        public Item navalTier1;
-        public Item navalTier2;
-        public Item scout;
-        public Item infantryTier1;
-        public Item infantryTier2;
-        public Item stalwartTier1;
-        public Item stalwartTier2;
-        public Item specialInfantry; // like assasin, grenadier, etc.
-        public Item siegeTier1;
-        public Item siegeTier2;
-        public Item dragon;
-        public Item monarch;
-        public List<Item> quotaItemList = new List<Item>();
-        public int totalUnitsCount { get { return quotaItemList[0] != null ? quotaItemList.Sum(x => x != null ? x.count : 0) : 0; } }
+
+        public Item GetQuotaItem(UnitCategories category)
+        {
+            if (quota.TryGetValue(category, out Item quotaItem))
+                return quotaItem;
+            return null;
+        }
+
+        public AllQuotaItems GetAllQuotaItems()
+        {
+            return new AllQuotaItems
+            {
+                Monarch = GetQuotaItem(UnitCategories.Monarch),
+                LodestoneTier1 = GetQuotaItem(UnitCategories.LodestoneTier1),
+                LodestoneTier2 = GetQuotaItem(UnitCategories.LodestoneTier2),
+                FactoryTier1 = GetQuotaItem(UnitCategories.FactoryTier1),
+                FactoryTier2 = GetQuotaItem(UnitCategories.FactoryTier2),
+                BuilderTier1 = GetQuotaItem(UnitCategories.BuilderTier1),
+                BuilderTier2 = GetQuotaItem(UnitCategories.BuilderTier2),
+                FortTier1 = GetQuotaItem(UnitCategories.FortTier1),
+                FortTier2 = GetQuotaItem(UnitCategories.FortTier2),
+                SiegeTier1 = GetQuotaItem(UnitCategories.SiegeTier1),
+                SiegeTier2 = GetQuotaItem(UnitCategories.SiegeTier2),
+                NavalTier1 = GetQuotaItem(UnitCategories.NavalTier1),
+                NavalTier2 = GetQuotaItem(UnitCategories.NavalTier2),
+                Dragon = GetQuotaItem(UnitCategories.Dragon),
+                Scout = GetQuotaItem(UnitCategories.Scout),
+                StalwartTier1 = GetQuotaItem(UnitCategories.StalwartTier1),
+                StalwartTier2 = GetQuotaItem(UnitCategories.StalwartTier2),
+                InfantryTier1 = GetQuotaItem(UnitCategories.InfantryTier1),
+                InfantryTier2 = GetQuotaItem(UnitCategories.InfantryTier2)
+            };
+        }
 
         public ArmyQuota armyQuota;
+    }
 
-        public void RefreshQuotaList()
-        {
-            quotaItemList.Clear();
-            quotaItemList.Add(lodestonesTier1);
-            quotaItemList.Add(lodestonesTier2);
-            quotaItemList.Add(factoriesTier1);
-            quotaItemList.Add(factoriesTier2);
-            quotaItemList.Add(buildersTier1);
-            quotaItemList.Add(buildersTier2);
-            quotaItemList.Add(fortTier1);
-            quotaItemList.Add(fortTier2);
-            quotaItemList.Add(navalTier1);
-            quotaItemList.Add(navalTier2);
-            quotaItemList.Add(scout);
-            quotaItemList.Add(infantryTier1);
-            quotaItemList.Add(infantryTier2);
-            quotaItemList.Add(stalwartTier1);
-            quotaItemList.Add(stalwartTier2);
-            quotaItemList.Add(specialInfantry);
-            quotaItemList.Add(siegeTier1);
-            quotaItemList.Add(siegeTier2);
-            quotaItemList.Add(dragon);
-            quotaItemList.Add(monarch);
-        }
-
-        public void AddUnit(BaseUnitAI unit)
-        {
-            Item item = quotaItemList.Find(x => x.label == unit.unitType);
-            if (item != null && !item.quotaFull)
-                item.units.Add(unit);
-            else
-                Debug.LogWarning("Unit limit for type " + unit.unitType + " has been reached, last unit (" + unit.name + ") should not have been created and was not added to the AI player context.");
-        }
-
-        public List<BaseUnitAI> GetUnitsByType(UnitCategories type)
-        {
-            return quotaItemList.Find(x => x.label == type).units;
-        }
-
-        public List<BaseUnitAI> GetUnitsByTypes(params UnitCategories[] types)
-        {
-            return quotaItemList.Find(x => types.Contains(x.label)).units;
-        }
-
-        public List<BaseUnitAI> GetTotalUnits()
-        {
-            List<BaseUnitAI> total = new List<BaseUnitAI>();
-            quotaItemList.ForEach(x => total.Concat(x.units));
-            return total;
-        }
-
-        public List<Item> ToList()
-        {
-            return quotaItemList;
-        }
+    public class AllQuotaItems
+    {
+        public MasterQuota.Item Monarch;
+        public MasterQuota.Item LodestoneTier1;
+        public MasterQuota.Item LodestoneTier2;
+        public MasterQuota.Item FactoryTier1;
+        public MasterQuota.Item FactoryTier2;
+        public MasterQuota.Item BuilderTier1;
+        public MasterQuota.Item BuilderTier2;
+        public MasterQuota.Item FortTier1;
+        public MasterQuota.Item FortTier2;
+        public MasterQuota.Item SiegeTier1;
+        public MasterQuota.Item SiegeTier2;
+        public MasterQuota.Item NavalTier1;
+        public MasterQuota.Item NavalTier2;
+        public MasterQuota.Item Dragon;
+        public MasterQuota.Item Scout;
+        public MasterQuota.Item StalwartTier1;
+        public MasterQuota.Item StalwartTier2;
+        public MasterQuota.Item InfantryTier1;
+        public MasterQuota.Item InfantryTier2;
     }
 
     // @TODO: need to have some kind of two-way binding between ArmyQuota and MasterQuota

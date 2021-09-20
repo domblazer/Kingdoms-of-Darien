@@ -30,6 +30,6 @@ public class FactoryAI : UnitBuilderAI
     {
         GameObject intangible = Instantiate(itg, spawnPoint.position, new Quaternion(0, 180, 0, 1));
         // @TODO: this itg needs to tell it's final prefab to park then just start roaming around the park point
-        intangible.GetComponent<IntangibleUnitAI>().Bind(this, rallyPoint, parkingDirectionToggle);
+        intangible.GetComponent<IntangibleUnitAI>().Bind(this, rallyPoint, RTSUnit.States.Patrolling, parkingDirectionToggle);
     }
 }

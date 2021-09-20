@@ -113,6 +113,7 @@ GameObject:
   - component: {fileID: 6407128823540615194}
   - component: {fileID: 6407128823540615193}
   - component: {fileID: 257076087671587628}
+  - component: {fileID: 2889051426030056116}
   m_Layer: 9
   m_Name: watch-tower
   m_TagString: Friendly
@@ -247,6 +248,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6529f6a288da29f458b340ec3e746e38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  faction: 0
   playerNumber: 1
   unitType: 0
   unitIcon: {fileID: 21300000, guid: 54e61ee412572fc46824fa6acc58d253, type: 3}
@@ -269,28 +271,10 @@ MonoBehaviour:
   meleeWeapons: []
   isAttacking: 0
   attackTarget: {fileID: 0}
-  fogOfWarMask: {fileID: 0}
   bloodSystem: {fileID: 0}
-  _UnitBuilderScript: {fileID: 0}
-  attackSounds:
-  - {fileID: 8300000, guid: 64e2b1cad3ac5944396432688d457355, type: 3}
-  hitSounds:
-  - {fileID: 8300000, guid: be445c290c9614c4da1abadb350ab328, type: 3}
-  - {fileID: 8300000, guid: aea7b20df366cc14cb1eb48ab75d91f2, type: 3}
-  - {fileID: 8300000, guid: f96432f0723567c4a8f94bfe171dd270, type: 3}
-  - {fileID: 8300000, guid: facee03cbac6fb04f9b5cc095bca7f06, type: 3}
-  - {fileID: 8300000, guid: 84265b08f0e4b67409017316e4f32480, type: 3}
-  - {fileID: 8300000, guid: 22978eea05cab064196f4a4b5b83d501, type: 3}
-  - {fileID: 8300000, guid: cf5eb1de912dc2141bca5a639f30a455, type: 3}
-  - {fileID: 8300000, guid: e526e6f8216b13c448831e3bec0678b9, type: 3}
-  - {fileID: 8300000, guid: 356e46be231f0bb4d8f6b9910c7a6015, type: 3}
-  - {fileID: 8300000, guid: 4743a9c316676774fb1ac18928878f67, type: 3}
-  dieSound: {fileID: 0}
-  playAttackSounds: 0
   selectable: 1
   selectRing: {fileID: 6407128823468580700}
-  moveSound: {fileID: 0}
-  selectSound: {fileID: 0}
+  fogOfWarMask: {fileID: 0}
 --- !u!114 &6407128823540615193
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -406,6 +390,24 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &2889051426030056116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6065179256072385862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69a232441f881fd4a9c3a577868aa4a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackSounds: []
+  hitSounds: []
+  dieSound: {fileID: 0}
+  moveSound: {fileID: 0}
+  selectSound: {fileID: 0}
+  unitPlaysAttackSounds: 1
 --- !u!1 &6407128822153912531
 GameObject:
   m_ObjectHideFlags: 0

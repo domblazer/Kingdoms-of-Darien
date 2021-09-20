@@ -2066,6 +2066,7 @@ GameObject:
   - component: {fileID: 4183819656204189051}
   - component: {fileID: 4183819656204189054}
   - component: {fileID: 4183819656204189055}
+  - component: {fileID: 4369845862202542419}
   m_Layer: 9
   m_Name: knight
   m_TagString: Friendly
@@ -2164,6 +2165,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6529f6a288da29f458b340ec3e746e38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  faction: 0
   playerNumber: 1
   unitType: 0
   unitIcon: {fileID: 21300000, guid: cef4839e3006f364c84583606fcefb2c, type: 3}
@@ -2187,23 +2189,10 @@ MonoBehaviour:
   - {fileID: 4183819656204189026}
   isAttacking: 0
   attackTarget: {fileID: 0}
-  fogOfWarMask: {fileID: 7884527103549889147}
   bloodSystem: {fileID: 4183819655874345685}
-  _UnitBuilderScript: {fileID: 0}
-  attackSounds:
-  - {fileID: 8300000, guid: ddc5497ae789de34584ba54942567c1b, type: 3}
-  hitSounds:
-  - {fileID: 8300000, guid: ebfaaf95c97c3714c944f1fca038f7c9, type: 3}
-  - {fileID: 8300000, guid: 5716690d8abb90b46be54af47f89e860, type: 3}
-  - {fileID: 8300000, guid: 70218cda93611864e93f6b6a9d73e0ad, type: 3}
-  - {fileID: 8300000, guid: cbfc415ec7ed18a49b45eecaaa701235, type: 3}
-  - {fileID: 8300000, guid: dc44f7d37fa6bea4b9d04db9f68e79c6, type: 3}
-  dieSound: {fileID: 0}
-  playAttackSounds: 1
   selectable: 1
   selectRing: {fileID: 4183819654780574878}
-  moveSound: {fileID: 0}
-  selectSound: {fileID: 0}
+  fogOfWarMask: {fileID: 7884527103549889147}
 --- !u!114 &4183819656204189052
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2350,6 +2339,24 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &4369845862202542419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3949234792143634471}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69a232441f881fd4a9c3a577868aa4a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackSounds: []
+  hitSounds: []
+  dieSound: {fileID: 0}
+  moveSound: {fileID: 0}
+  selectSound: {fileID: 0}
+  unitPlaysAttackSounds: 1
 --- !u!1 &4097759497473659793
 GameObject:
   m_ObjectHideFlags: 0
