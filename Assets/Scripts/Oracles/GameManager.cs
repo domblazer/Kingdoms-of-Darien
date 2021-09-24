@@ -21,6 +21,9 @@ public class GameManager : MonoBehaviour
     // List of players to initialize for the game
     public PlayerConfig[] playerConfigs;
 
+    public bool enableFogOfWar = true;
+    public GameObject fogOfWarPlane;
+
     public Dictionary<PlayerNumbers, AIPlayerContext> AIPlayers { get; set; } = new Dictionary<PlayerNumbers, AIPlayerContext>();
     public MainPlayerContext PlayerMain { get; set; }
     public AudioSource AudioSource { get; set; }
@@ -35,6 +38,9 @@ public class GameManager : MonoBehaviour
 
         // @TODO: playerConfigs should be set from skirmish menu. For now, set in inspector
         InitAllPlayers(playerConfigs);
+
+        // Set initial fog-of-war plane value. BaseUnitAIs will also use this value on start
+        fogOfWarPlane.SetActive(enableFogOfWar);
     }
 
     private void InitAllPlayers(PlayerConfig[] playerConfigs)

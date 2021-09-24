@@ -16,11 +16,11 @@ namespace DarienEngine
             public int count { get { return units.Count; } }
             public int limit;
             public UnitCategories label;
-            public float ratio { get { return count / limit; } }
+            public float ratio { get { return (float)count / (float)limit; } }
             public bool quotaFull { get { return count == limit; } }
             public override string ToString()
             {
-                return label.ToString();
+                return label.ToString() + " (ratio: " + ratio + ", count: " + count + ", limit: " + limit + ")";
             }
         }
 

@@ -25,6 +25,9 @@ namespace DarienEngine.Clustering
         public static void MoveGroup(List<BaseUnit> selectedUnits, Vector3 hitPoint, bool addToMoveQueue = false, bool attackMove = false)
         {
             UnitClusterMoveInfo clusterMoveInfo = CalculateSmartCenter(selectedUnits);
+            
+            // System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
+            // st.Start();
             foreach (BaseUnit unit in selectedUnits)
             {
                 Vector3 offset = (unit.transform.position - clusterMoveInfo.smartCenter);
@@ -35,7 +38,7 @@ namespace DarienEngine.Clustering
                 {
                     // @TODO: need to use offset direction with stdDev magnitude
                     moveTo = hitPoint + (offset.normalized * 2); // new Vector3(hitPoint.x + clusterMoveInfo.standardDeviation, hitPoint.y, hitPoint.z + clusterMoveInfo.standardDeviation);
-                    Debug.Log("I " + unit.name + " am outside the primary cluster, moving to " + moveTo);
+                    // Debug.Log("I " + unit.name + " am outside the primary cluster, moving to " + moveTo);
                 }
                 // @TODO: also need to make sure moveTo points don't overlap or get too close to eachother
                 // @TODO // if (noPrimaryCluster) // everyone collapse in around click point naively?
@@ -43,6 +46,8 @@ namespace DarienEngine.Clustering
                 if (unit && unit.isKinematic)
                     unit.SetMove(moveTo, addToMoveQueue, attackMove);
             }
+            // st.Stop();
+            // Debug.Log(string.Format("{0} Selected units took {1} ms to complete", selectedUnits.Count, st.ElapsedMilliseconds));
         }
 
         public static UnitClusterMoveInfo CalculateSmartCenter(List<BaseUnit> group)
@@ -89,12 +94,12 @@ namespace DarienEngine.Clustering
                 }
                 else
                 {
-                    Debug.Log("This unit " + unit.name + " is not within 1 standard deviation of average position.");
+                    // Debug.Log("This unit " + unit.name + " is not within 1 standard deviation of average position.");
                     // @TODO: this unit needs to be told to go to hitPoint + offset(with magnitude = stdd)
                 }
             }
             adjustedMean = adjustedMean / adjustedCount;
-            Debug.Log("Adjusted average: " + adjustedMean);
+            // Debug.Log("Adjusted average: " + adjustedMean);
 
             // If a primary cluster exists but at least 1 unit is more than 1 standard deviation away from mean
             // if (primaryClusterExists && adjustedCount < group.Count)

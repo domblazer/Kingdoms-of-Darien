@@ -6898,9 +6898,9 @@ GameObject:
   - component: {fileID: 3940314617026578572}
   - component: {fileID: 3940314617026578573}
   - component: {fileID: 3940314617026578570}
-  - component: {fileID: 3946566293548729049}
   - component: {fileID: 8585407611729354801}
   - component: {fileID: 6621084904596244043}
+  - component: {fileID: 5191753190696811757}
   m_Layer: 9
   m_Name: knight-intangible
   m_TagString: Friendly
@@ -6917,7 +6917,7 @@ Transform:
   m_GameObject: {fileID: 4210767338165450194}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 548.101, y: 1.0071441, z: 263.37}
-  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
+  m_LocalScale: {x: 0.33, y: 0.33, z: 0.33}
   m_Children:
   - {fileID: 7035297314364896702}
   - {fileID: 9120830580203240644}
@@ -7079,20 +7079,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &3946566293548729049
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4210767338165450194}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c29b60a965dd9fc4dbbc061d873fad82, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  manaColor: {r: 1, g: 0.9275652, b: 0, a: 1}
-  finalUnitPrefab: {fileID: 3949234792143634471, guid: e5d5f7be6a8a4e5438ea33ffd5c220e3, type: 3}
 --- !u!199 &8585407611729354801
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -11873,6 +11859,20 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!114 &5191753190696811757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4210767338165450194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66f4410b0779ebc4b9f3e3a8f21c2ba4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  manaColor: {r: 1, g: 1, b: 0, a: 1}
+  finalUnitPrefab: {fileID: 3949234792143634471, guid: e5d5f7be6a8a4e5438ea33ffd5c220e3, type: 3}
 --- !u!1 &4222108907068164170
 GameObject:
   m_ObjectHideFlags: 0

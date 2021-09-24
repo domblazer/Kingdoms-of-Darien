@@ -53,6 +53,8 @@ MonoBehaviour:
   - playerNumber: 2
     team: 2
     faction: 0
+  enableFogOfWar: 1
+  fogOfWarPlane: {fileID: 0}
 --- !u!114 &2598857554717851823
 MonoBehaviour:
   m_ObjectHideFlags: 0

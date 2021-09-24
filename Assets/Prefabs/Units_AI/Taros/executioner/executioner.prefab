@@ -6680,7 +6680,7 @@ MonoBehaviour:
   bloodSystem: {fileID: 7162712931574828126}
   patrolRange: 25
   patrolPointsCount: 3
-  enableFogOfWar: 1
+  enableFogOfWar: 0
   startState: 0
 --- !u!114 &7162712932485172821
 MonoBehaviour:

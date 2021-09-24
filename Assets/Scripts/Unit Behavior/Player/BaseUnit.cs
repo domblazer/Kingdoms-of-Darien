@@ -12,7 +12,7 @@ public class BaseUnit : RTSUnit
     public GameObject selectRing;
     public GameObject fogOfWarMask;
     private Directions facingDir = Directions.Forward;
-    private UnitBuilderBase<PlayerConjurerArgs> _Builder;
+    private UnitBuilderPlayer _Builder;
 
     // Start is called before the first frame update
     void Start()
@@ -49,6 +49,29 @@ public class BaseUnit : RTSUnit
 
         if (!isDead)
         {
+            // @TODO: maybe do something like this:
+            if (currentCommand != null)
+            {
+                switch (currentCommand.commandType)
+                {
+                    case CommandTypes.Move:
+                        // just handle move behaviour
+                        // @TODO: Sub-CommandTypes? E.g. Attack-Move, Guard-Move, etc.?
+                        break;
+                    case CommandTypes.Attack:
+                        // handle engaging target (moveTo target) and attacking behaviour
+                        break;
+                    case CommandTypes.Patrol:
+                        // handle patrol behavior
+                        break;
+                        // @TODO: Guard
+                        // @TODO: case CommandTypes.Conjure: // Handled in _Builder tho
+                }
+            }
+
+            // Set the state properly
+            DetermineCurrentState<PlayerConjurerArgs>(_Builder);
+
             // Handle movement and the various states of movement possible, e.g. "Parking"
             if (isKinematic)
                 HandleMovement();
@@ -71,10 +94,6 @@ public class BaseUnit : RTSUnit
                 else if (!isKinematic)
                     AutoPickAttackTarget();
             }
-
-            // @TODO: and !isBuilding
-            if (!isParking && !IsAttacking() && !engagingTarget && !IsMoving())
-                state = States.Standby;
 
             // If this unit is selected and no other unit has focus
             if (selectable && selected && !GameManager.Instance.IsHovering())

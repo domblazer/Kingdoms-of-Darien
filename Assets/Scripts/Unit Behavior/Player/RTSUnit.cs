@@ -75,7 +75,7 @@ public class RTSUnit : MonoBehaviour
     // @TODO: check StrongholdScript; ideally BaseUnit should handle the facing routine so these vars can remain protected
     public bool facing { get; set; } = false;
     public bool isDead { get; set; } = false;
-    protected bool isParking = false;
+    public bool isParking { get; set; } = false;
     protected bool tryParkingDirection;
     protected States nextStateAfterParking;
     protected bool attackMove = false;
@@ -84,7 +84,7 @@ public class RTSUnit : MonoBehaviour
     protected Queue<CommandQueueItem> commandQueue = new Queue<CommandQueueItem>();
     protected CommandQueueItem currentCommand
     {
-        get { return commandQueue.Peek(); }
+        get { return commandQueue.Count > 0 ? commandQueue.Peek() : null; }
         set
         {
             // Setting current command means resetting queue
@@ -226,6 +226,24 @@ public class RTSUnit : MonoBehaviour
         }
     }
 
+    protected void DetermineCurrentState<T>(UnitBuilderBase<T> builder)
+    {
+        // @TODO: state should probably be determined in some way by what's in the commandQueue
+        if (isKinematic && isParking)
+            state = States.Parking;
+        else if (builder != null && builder.isBuilding)
+            state = States.Conjuring;
+        else if (IsMoving() && !IsAttacking() && !engagingTarget)
+            state = States.Moving;
+        else if (IsAttacking())
+            state = States.Attacking;
+        // @TODO: other states: guarding, patrolling, etc.
+        else if (state.Value == States.Patrolling.Value)
+            state = States.Patrolling;
+        else
+            state = States.Standby;
+    }
+
     protected void InflateAvoidanceRadius()
     {
         if (!IsInRangeOf(currentCommand.commandPoint, 4))
@@ -278,6 +296,15 @@ public class RTSUnit : MonoBehaviour
             {
                 // Update the Vector3 position for current command with current attackTarget position
                 currentCommand.commandPoint = attackTarget.transform.position;
+                /* currentCommand = new CommandQueueItem
+                {
+                    commandType = CommandTypes.Attack,
+                    commandPoint = attackTarget.transform.position,
+                    attackInfo = new AttackInfo
+                    {
+                        attackTarget = attackTarget
+                    }
+                }; */
             }
             else
             {
@@ -306,11 +333,21 @@ public class RTSUnit : MonoBehaviour
         // a bit into a loose formation
 
         // Handle attacking behavior
-        if (isAttacking && attackTarget)
+        if (isAttacking && attackTarget != null)
         {
+            if (attackTarget.GetComponent<RTSUnit>() && attackTarget.GetComponent<RTSUnit>().isDead)
+            {
+                // If attack target has died at any point while I was attacking it, clear attack and stop attack routine
+                ClearAttack();
+                return;
+            }
+
             // Kinematic units do facing; @Note: stationary attack units do their own facing routine (e.g. Stronghold)
             if (isKinematic && !IsMoving())
                 facing = HandleFacing(attackTarget.transform.position, 0.5f); // Continue facing attackTarget while isAttacking
+
+            // @TODO: somewhere other than in AutoPickAttackTarget, we need to determine when the current attackTarget dies/is killed
+            // so we can ClearAttack() cuz it's not working right now
 
             // Attack interval
             if (Time.time > nextAttack)
@@ -370,7 +407,8 @@ public class RTSUnit : MonoBehaviour
             // Stop any movement at this point until another valid target is picked
             // @TODO: to stop movement/commands should be able to just clear commandQueue
             // @TODO: stop unless there's another in the attackQueue
-            commandQueue.Clear();
+            // commandQueue.Clear();
+            currentCommand = new CommandQueueItem { commandType = CommandTypes.Move, commandPoint = transform.position };
         }
 
         // Find closest target
@@ -399,6 +437,9 @@ public class RTSUnit : MonoBehaviour
         // Layer 15 is "Fog of War" mask layer
         else if (col.gameObject.tag == compareTag && col.gameObject.layer == 15)
             whoCanSeeMe.Add(col.transform.parent.gameObject);
+
+        // @TODO: theoretically might be more efficient to send a callback to col.gameObject.RTSUnit that gets called when it dies,
+        // then the calledback function would do the remove
     }
 
     private void OnTriggerExit(Collider col)
@@ -416,7 +457,10 @@ public class RTSUnit : MonoBehaviour
         float distance = Mathf.Infinity;
         Vector3 position = transform.position;
         if (enemiesInSight.Count > 0)
+        {
+            // @TODO: need to handle intangibles too, i.e. item.GetCompontent<IngangibleUnitBase<T??>() ? isIntangible
             enemiesInSight = enemiesInSight.Where(item => item != null && !item.GetComponent<RTSUnit>().isDead).ToList();
+        }
         foreach (GameObject go in enemiesInSight)
         {
             Vector3 diff = go.transform.position - position;
@@ -430,14 +474,14 @@ public class RTSUnit : MonoBehaviour
         return closest;
     }
 
-    protected void DebugNavPath()
+    /* protected void DebugNavPath()
     {
         var path = _Agent.path;
         for (int i = 0; i < path.corners.Length - 1; i++)
         {
             Debug.DrawLine(path.corners[i], path.corners[i + 1], Color.red);
         }
-    }
+    } */
 
     public void SetMove(Vector3 position, bool addToQueue = false, bool doAttackMove = false)
     {
@@ -470,10 +514,7 @@ public class RTSUnit : MonoBehaviour
     public void Begin(DarienEngine.Directions facingDir, Vector3 parkPosition, bool parkToggle, States nextState)
     {
         // SetFacingDir(facingDir);
-        // @TODO: if no parking/start is not parking
         SetParking(parkPosition, parkToggle);
-        // @TODO next state after parking
-        // @TODO: AI after park is done, SetPatrolPoints(parkPosition), state = nextState;
         nextStateAfterParking = nextState;
     }
 

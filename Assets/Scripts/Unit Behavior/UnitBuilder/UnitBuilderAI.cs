@@ -10,7 +10,7 @@ public class UnitBuilderAI : UnitBuilderBase<AIConjurerArgs>
 
     public void QueueBuild(GameObject intangiblePrefab)
     {
-        Debug.Log("FactoryAI queued: " + intangiblePrefab.GetComponent<IntangibleUnitAI>().finalUnit.unitName);
+        // Debug.Log("UnitBuilderAI queued: " + intangiblePrefab.GetComponent<IntangibleUnitAI>().finalUnit.unitName);
         if (masterBuildQueue.Count == 0)
             nextQueueReady = true;
         // Enqueue master queue to keep track of build order and total queue

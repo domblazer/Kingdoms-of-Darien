@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Linq;
 using DarienEngine;
 
+public delegate void IntangibleCompletedCallback();
 public class IntangibleUnitBase<T> : MonoBehaviour
 {
     // Material fade starts with a basic mana color
@@ -62,6 +63,8 @@ public class IntangibleUnitBase<T> : MonoBehaviour
     protected Vector3 rallyPoint;
     protected RTSUnit.States firstState = RTSUnit.States.Standby;
 
+    protected IntangibleCompletedCallback intangibleCompletedCallback;
+
     void Start()
     {
         // Check if finalUnit is assigned
@@ -94,18 +97,27 @@ public class IntangibleUnitBase<T> : MonoBehaviour
     // Finalize and destroy this intangible when done
     protected void FinishIntangible()
     {
-        // Instantiate final new unit
-        GameObject newUnit = Instantiate(finalUnitPrefab, transform.position, transform.rotation);
-        // @TODO: determine appropriate next state
-        newUnit.GetComponent<RTSUnit>().Begin(facingDir, rallyPoint, parkToggle, firstState);
+        // If any callback function was set, call it now
+        if (intangibleCompletedCallback != null)
+            intangibleCompletedCallback();
 
-        // Tell builder it can continue then destroy this intangible
+        // Every builder gets nextQueueReady = true
         builder.SetNextQueueReady(true);
 
-        // @TODO: remove intangible from inventory/player context as well
-        // Functions.RemoveIntangibleFromPlayerContext<T>(this);
+        // Instantiate final new unit
+        GameObject newUnit = Instantiate(finalUnitPrefab, transform.position, transform.rotation);
+        newUnit.GetComponent<RTSUnit>().Begin(facingDir, rallyPoint, parkToggle, firstState);
+
+        // Remove intangible from inventory/player context as well
+        Functions.RemoveIntangibleFromPlayerContext<T>(this);
 
         Destroy(gameObject);
+    }
+
+    // Set the completed event callback function
+    public void Callback(IntangibleCompletedCallback completedCallback)
+    {
+        intangibleCompletedCallback = completedCallback;
     }
 
     // Evaluate color gradient change over time

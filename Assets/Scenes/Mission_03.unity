@@ -5404,6 +5404,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec0be4aa15fe18f449d737e0d991962c, type: 3}
+--- !u!1 &886139524 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4594108627060567350, guid: 726c852aaa7621940b376de8aca4ed6c, type: 3}
+  m_PrefabInstance: {fileID: 1397585286}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &891881197
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7706,7 +7711,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2045721270820361545, guid: 305ea59da342e7546a551c276e4921f7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 482.28775
+      value: 450.3
       objectReference: {fileID: 0}
     - target: {fileID: 2045721270820361545, guid: 305ea59da342e7546a551c276e4921f7, type: 3}
       propertyPath: m_LocalPosition.y
@@ -11836,7 +11841,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4697402880649432282, guid: 7979fadd7b02d1d41942fd09ff56cdf5, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.53729963
+      value: 0.60876137
       objectReference: {fileID: 0}
     - target: {fileID: 4697402880649432282, guid: 7979fadd7b02d1d41942fd09ff56cdf5, type: 3}
       propertyPath: m_LocalRotation.y
@@ -11848,7 +11853,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4697402880649432282, guid: 7979fadd7b02d1d41942fd09ff56cdf5, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.8433915
+      value: 0.7933534
       objectReference: {fileID: 0}
     - target: {fileID: 4697402880649432282, guid: 7979fadd7b02d1d41942fd09ff56cdf5, type: 3}
       propertyPath: m_RootOrder
@@ -11856,7 +11861,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4697402880649432282, guid: 7979fadd7b02d1d41942fd09ff56cdf5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 65
+      value: 75
       objectReference: {fileID: 0}
     - target: {fileID: 4697402880649432282, guid: 7979fadd7b02d1d41942fd09ff56cdf5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -12252,6 +12257,14 @@ PrefabInstance:
       propertyPath: chrystalBallTexture
       value: 
       objectReference: {fileID: 1145785705}
+    - target: {fileID: 4784665177073564799, guid: 3f9a5157eb52fe345af52896cba1079d, type: 3}
+      propertyPath: fogOfWarPlane
+      value: 
+      objectReference: {fileID: 886139524}
+    - target: {fileID: 4784665177073564799, guid: 3f9a5157eb52fe345af52896cba1079d, type: 3}
+      propertyPath: enableFogOfWar
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3f9a5157eb52fe345af52896cba1079d, type: 3}
 --- !u!114 &1922401650 stripped

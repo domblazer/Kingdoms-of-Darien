@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2413664563623540515}
   - component: {fileID: 983803736744737326}
   - component: {fileID: 3149596455156961966}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: skull
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 5706384213461166343}
   - component: {fileID: 8675428354389828761}
   - component: {fileID: 2533849896862283688}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: inner-lodestone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -173,7 +173,7 @@ GameObject:
   - component: {fileID: 929987522019641447}
   - component: {fileID: 4191440361934857575}
   - component: {fileID: 842079179433366304}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: accents
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -254,7 +254,7 @@ GameObject:
   - component: {fileID: 1636270818559867290}
   - component: {fileID: 8260210823560402681}
   - component: {fileID: 8284278192579587276}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -338,7 +338,7 @@ GameObject:
   - component: {fileID: 8509520811354461017}
   - component: {fileID: 4428783810701471513}
   - component: {fileID: 1392345592760085698}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: accents.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -423,7 +423,7 @@ GameObject:
   - component: {fileID: 5481792476197831249}
   - component: {fileID: 319149737849403989}
   - component: {fileID: 5380553582978437287}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: taro-lodestone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -537,7 +537,6 @@ MonoBehaviour:
   bloodSystem: {fileID: 0}
   patrolRange: 0
   patrolPointsCount: 0
-  enableFogOfWar: 0
   startState: 0
 --- !u!82 &319149737849403989
 AudioSource:
@@ -930,7 +929,7 @@ GameObject:
   - component: {fileID: 8049093341378833677}
   - component: {fileID: 5336006549234760120}
   - component: {fileID: 4023647702027888948}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: lodestone
   m_TagString: Untagged
   m_Icon: {fileID: 0}

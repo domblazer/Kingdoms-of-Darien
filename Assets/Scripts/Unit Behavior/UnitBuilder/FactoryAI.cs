@@ -23,13 +23,19 @@ public class FactoryAI : UnitBuilderAI
             InstantiateNextIntangible(nextItg);
             nextQueueReady = false;
         }
-
     }
 
     private void InstantiateNextIntangible(GameObject itg)
     {
         GameObject intangible = Instantiate(itg, spawnPoint.position, new Quaternion(0, 180, 0, 1));
-        // @TODO: this itg needs to tell it's final prefab to park then just start roaming around the park point
         intangible.GetComponent<IntangibleUnitAI>().Bind(this, rallyPoint, RTSUnit.States.Patrolling, parkingDirectionToggle);
+        intangible.GetComponent<IntangibleUnitAI>().Callback(NextIntangibleCompleted);
+    }
+
+    // Callback when intangible is complete
+    private void NextIntangibleCompleted()
+    {
+        // Factory just needs to dequeue on intangible complete
+        masterBuildQueue.Dequeue();
     }
 }

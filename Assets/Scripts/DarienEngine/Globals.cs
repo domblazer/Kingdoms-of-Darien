@@ -50,6 +50,14 @@ namespace DarienEngine
                 unit.transform.parent = _Holder.transform;
         }
 
+        public static void RemoveUnitFromPlayerContext(RTSUnit unit)
+        {
+            if (unit.playerNumber == PlayerNumbers.Player1)
+                GameManager.Instance.PlayerMain.inventory.RemoveUnit(unit);
+            else if (GameManager.Instance.AIPlayers.TryGetValue(unit.playerNumber, out AIPlayerContext aiPlayer))
+                aiPlayer.inventory.RemoveUnit(unit);
+        }
+
         public static void AddIntangibleToPlayerContext<T>(IntangibleUnitBase<T> unit, bool addToHolder = true)
         {
             GameObject _Holder = null;
@@ -73,12 +81,13 @@ namespace DarienEngine
                 unit.transform.parent = _Holder.transform;
         }
 
-        public static void RemoveUnitFromPlayerContext(RTSUnit unit)
+        public static void RemoveIntangibleFromPlayerContext<T>(IntangibleUnitBase<T> unit)
         {
-            if (unit.playerNumber == PlayerNumbers.Player1)
-                GameManager.Instance.PlayerMain.inventory.RemoveUnit(unit);
-            else if (GameManager.Instance.AIPlayers.TryGetValue(unit.playerNumber, out AIPlayerContext aiPlayer))
-                aiPlayer.inventory.RemoveUnit(unit);
+            PlayerNumbers playerNumber = unit.builder.baseUnit.playerNumber;
+            if (playerNumber == PlayerNumbers.Player1)
+                GameManager.Instance.PlayerMain.inventory.RemoveIntangible(unit as IntangibleUnitBase<PlayerConjurerArgs>);
+            else if (GameManager.Instance.AIPlayers.TryGetValue(playerNumber, out AIPlayerContext aiPlayer))
+                aiPlayer.inventory.RemoveIntangible(unit as IntangibleUnitBase<AIConjurerArgs>);
         }
 
         public static RectTransform FindBuildMenu(RTSUnit unit)

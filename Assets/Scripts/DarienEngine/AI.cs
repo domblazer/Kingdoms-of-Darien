@@ -31,6 +31,7 @@ namespace DarienEngine.AI
     public class AIConjurerArgs
     {
         public GameObject nextIntangible;
+        public Vector3 buildSpot;
     }
 
     public interface IUnitBuilderAI
@@ -82,7 +83,7 @@ namespace DarienEngine.AI
                     },
                     [UnitCategories.FactoryTier1] = new MasterQuota.Item
                     {
-                        priority = 9,
+                        priority = 7,
                         limit = 8,
                         label = UnitCategories.FactoryTier1,
                         _inventory = inv
@@ -96,14 +97,14 @@ namespace DarienEngine.AI
                     },
                     [UnitCategories.FortTier1] = new MasterQuota.Item
                     {
-                        priority = 7,
+                        priority = 11,
                         limit = 10,
                         label = UnitCategories.FortTier1,
                         _inventory = inv
                     },
                     [UnitCategories.FortTier2] = new MasterQuota.Item
                     {
-                        priority = 8,
+                        priority = 12,
                         limit = 10,
                         label = UnitCategories.FortTier2,
                         _inventory = inv
@@ -111,7 +112,7 @@ namespace DarienEngine.AI
                     [UnitCategories.InfantryTier1] = new MasterQuota.Item
                     {
                         priority = 4,
-                        limit = 200,
+                        limit = 100,
                         label = UnitCategories.InfantryTier1,
                         _inventory = inv
                     },

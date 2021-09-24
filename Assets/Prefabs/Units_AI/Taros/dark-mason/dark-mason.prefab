@@ -5185,6 +5185,7 @@ GameObject:
   - component: {fileID: 148126531891686207}
   - component: {fileID: 4729433209510143448}
   - component: {fileID: 474923272926959730}
+  - component: {fileID: 1662738046}
   m_Layer: 9
   m_Name: dark-mason
   m_TagString: Enemy
@@ -5302,7 +5303,6 @@ MonoBehaviour:
   bloodSystem: {fileID: 0}
   patrolRange: 25
   patrolPointsCount: 3
-  enableFogOfWar: 0
   startState: 0
 --- !u!195 &148126531891686201
 NavMeshAgent:
@@ -5453,6 +5453,9 @@ MonoBehaviour:
   buildUnitPrefabs:
   - unitCategory: 1
     intangiblePrefab: {fileID: 1272534049225813981, guid: 38b15bf4f1f3b2149a0ffdb4a789d914, type: 3}
+  - unitCategory: 3
+    intangiblePrefab: {fileID: 4760123780441144028, guid: 6f6fa306004746b4896dd8c2abb07278, type: 3}
+  roamIntervalTime: 30
 --- !u!114 &474923272926959730
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5465,6 +5468,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 423b4c0edb519874596fa7548c9c72f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1662738046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1067117378873714735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69a232441f881fd4a9c3a577868aa4a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackSounds: []
+  hitSounds: []
+  dieSound: {fileID: 0}
+  moveSound: {fileID: 0}
+  selectSound: {fileID: 0}
+  unitPlaysAttackSounds: 1
 --- !u!1 &1068210309668849882
 GameObject:
   m_ObjectHideFlags: 0

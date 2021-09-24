@@ -403,9 +403,9 @@ MonoBehaviour:
   isKinematic: 0
   isBuilder: 1
   canAttack: 0
-  attackRate: 2.5
-  attackRange: 1
-  weaponDamage: 100
+  attackRate: 0
+  attackRange: 0
+  weaponDamage: 0
   phaseDie: 0
   isMeleeAttacker: 0
   meleeWeapons: []
@@ -474,7 +474,7 @@ MonoBehaviour:
   intangibleUnits:
   - {fileID: 0}
   - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 4210767338165450194, guid: 080d0f9117987854e8bca6526cbcf2c5, type: 3}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}

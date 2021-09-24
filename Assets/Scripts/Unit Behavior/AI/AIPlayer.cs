@@ -8,7 +8,8 @@ using DarienEngine.AI;
 public class AIPlayer : MonoBehaviour
 {
     private int unitLimit = 500;
-    private UnitCategories currentNeedType;
+    private UnitCategories currentNeed;
+    private List<UnitCategories> allCurrentNeeds;
 
     // @TODO: AI player needs certain quotas to try to reach:
     // e.g. base starting player main quota is like 7 mage builders, 100 infrantry, etc.
@@ -40,42 +41,71 @@ public class AIPlayer : MonoBehaviour
     {
         if (inventory.totalUnits.Count < unitLimit)
         {
-            DetermineNeedState();
+            allCurrentNeeds = DetermineNeedState();
+            // currentNeed = allCurrentNeeds[0];
 
             List<RTSUnit> factories = inventory.GetUnitsByTypes(UnitCategories.FactoryTier1, UnitCategories.FactoryTier2);
-            // @TODO: if no factories?
-            // @TODO: builders vs factories
+            List<RTSUnit> builders = inventory.GetUnitsByTypes(UnitCategories.BuilderTier1, UnitCategories.BuilderTier2);
 
             // Tell factories to start building some units
             foreach (BaseUnitAI factory in factories)
             {
-                FactoryAI builderAI = factory.gameObject.GetComponent<FactoryAI>();
-                if (!builderAI.isBuilding)
+                FactoryAI factoryAI = factory.gameObject.GetComponent<FactoryAI>();
+                // If this builder is not already conjuring something, pick a unit that meets the current need
+                if (!factoryAI.isBuilding)
                 {
-                    // If this builder is not already conjuring something, pick a unit that meets the current need
-                    BuildUnit[] opts = builderAI.buildUnitPrefabs.Where(x => x.unitCategory == currentNeedType).ToArray();
-                    Debug.Log("opts: " + string.Join<BuildUnit>(", ", opts.ToArray()));
-                    if (opts.Length > 0)
-                    {
-                        // Choose an individual unit by type at random to build next
-                        GameObject toBld = opts[Random.Range(0, opts.Length)].intangiblePrefab;
-                        builderAI.QueueBuild(toBld);
-                    }
+                    GameObject unitToBuild = SelectValidUnit(factoryAI.buildUnitPrefabs);
+                    if (unitToBuild)
+                        factoryAI.QueueBuild(unitToBuild);
+                }
+            }
+
+            // @TODO: if builders/factories are already working on some units of currentNeed, they can pick from second or third need
+            // So maybe: intangibleUnits.Contains(x => x.finalUnit.unitCategory == currentNeedType).Length > 0 ? use needs[1] or needs[2]?
+
+            // Give orders to builders
+            foreach (BaseUnitAI builder in builders)
+            {
+                BuilderAI builderAI = builder.gameObject.GetComponent<BuilderAI>();
+                // Only queue builders who are not in a roaming interval, and not in a build routing with at least 1 unit in the queue
+                if (!builderAI.isInRoamInterval && !builderAI.isBuilding && !builderAI.baseUnit.isParking && builderAI.masterBuildQueue.Count < 1)
+                {
+                    GameObject unitToBuild = SelectValidUnit(builderAI.buildUnitPrefabs);
+                    if (unitToBuild)
+                        builderAI.QueueBuild(unitToBuild);
                 }
             }
 
             // @TODO: AIs should avoid building gates and walls, which belong to FortTier1, also possibly scouts altogether
-
-            // Cases:
-            // if (builderUnits.Count < builderUnitCountLimit) => tell mobile builders to queue up some Factories
-            // if (mobileBuilderUnits.Count < mobileBuilderUnitCountLimit) => tell Factories to queue up some mobile builder
         }
 
         // @TODO: if an army quota is met, assuming these units are currently roaming around base, tell them now to form up
         // and launch an attack at the average position represented by a snapshot of an opposing army 
     }
 
-    private UnitCategories DetermineNeedState()
+    private GameObject SelectValidUnit(BuildUnit[] fromUnits)
+    {
+        // Get a unique list of unit categories available in buildUnitPrefabs; HashSet creates unique values
+        // @TODO: occurs to me that this should maybe be set on start in baseUnitAi
+        HashSet<UnitCategories> availableTypes = new HashSet<UnitCategories>();
+        foreach (BuildUnit cat in fromUnits)
+            availableTypes.Add(cat.unitCategory);
+
+        // Factories filter out needs that don't pertain to them and return the first element from resulting sequence
+        IEnumerable<UnitCategories> adjustedNeeds = allCurrentNeeds.Intersect<UnitCategories>(availableTypes);
+        if (adjustedNeeds.Count() > 0)
+        {
+            UnitCategories adjustedCurrentNeed = adjustedNeeds.First<UnitCategories>();
+            // Get all unit prefabs that meet current need
+            BuildUnit[] opts = fromUnits.Where(x => x.unitCategory == adjustedCurrentNeed).ToArray();
+            // Return a random unit prefab from this option list
+            if (opts.Length > 0)
+                return opts[Random.Range(0, opts.Length)].intangiblePrefab;
+        }
+        return null;
+    }
+
+    private List<UnitCategories> DetermineNeedState()
     {
         // Compile all needs in list
         List<MasterQuota.Item> needs = new List<MasterQuota.Item>();
@@ -126,7 +156,7 @@ public class AIPlayer : MonoBehaviour
         {
             // Scout? 
             // InfantryTier1
-            if (quotaItems.InfantryTier1.ratio < 0.2f)
+            if (quotaItems.InfantryTier1.ratio < 0.7f)
                 needs.Add(quotaItems.InfantryTier1);
             // StalwartTier1
             if (quotaItems.StalwartTier1.ratio < 0.2f)
@@ -134,6 +164,9 @@ public class AIPlayer : MonoBehaviour
             // SiegeTier1
             if (quotaItems.SiegeTier1.ratio < 0.2f)
                 needs.Add(quotaItems.SiegeTier1);
+            // BuilderTier1
+            if (quotaItems.BuilderTier1.ratio < 0.2)
+                needs.Add(quotaItems.BuilderTier1);
         }
 
         // Needs that require FactoryTier2
@@ -160,8 +193,11 @@ public class AIPlayer : MonoBehaviour
             return x.priority > y.priority ? 1 : -1;
         });
         Debug.Log("All needs: " + string.Join<MasterQuota.Item>(", ", needs.ToArray()));
-        currentNeedType = needs[0].label;
-        Debug.Log(playerNumber + " current need: " + currentNeedType);
-        return needs[0].label;
+        // currentNeedType = needs[0].label;
+        // Debug.Log(playerNumber + " current need: " + currentNeedType);
+        List<UnitCategories> flattenedNeeds = new List<UnitCategories>();
+        foreach (MasterQuota.Item need in needs)
+            flattenedNeeds.Add(need.label);
+        return flattenedNeeds;
     }
 }

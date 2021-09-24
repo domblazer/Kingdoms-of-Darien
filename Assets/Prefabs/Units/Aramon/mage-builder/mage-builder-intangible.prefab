@@ -5676,7 +5676,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 0.9275652, b: 0, a: 1}
+      maxColor: {r: 1, g: 1, b: 0, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -10212,7 +10212,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66f4410b0779ebc4b9f3e3a8f21c2ba4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  manaColor: {r: 255, g: 255, b: 0, a: 1}
+  manaColor: {r: 1, g: 1, b: 0, a: 1}
   finalUnitPrefab: {fileID: 7402150474938149980, guid: 49f31a097331c7244a57c643163fe56d, type: 3}
 --- !u!1 &1802457304211945744
 GameObject:

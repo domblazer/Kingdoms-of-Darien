@@ -15,6 +15,7 @@ public class FactoryUnitAnimator : MonoBehaviour
 
     void Update()
     {
-        _Animator.SetBool("building", _Unit.state == RTSUnit.States.Conjuring);
+        // @TODO: check animator controller, no factory building animation transition working
+        _Animator.SetBool("building", _Unit.state.Value == RTSUnit.States.Conjuring.Value);
     }
 }

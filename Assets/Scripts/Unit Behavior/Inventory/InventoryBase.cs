@@ -116,10 +116,10 @@ public class InventoryBase<T> : MonoBehaviour
         if (unit.unitType == UnitCategories.LodestoneTier1 || unit.unitType == UnitCategories.LodestoneTier2)
             AddLodestone(unit);
 
+        totalUnits.Add(unit);
         // Try if unitType exists in groupedUnits dictionary
         if (groupedUnits.TryGetValue(unit.unitType, out List<RTSUnit> units))
         {
-            totalUnits.Add(unit);
             // Initialize a new list for this key, if not already
             if (units == null)
                 units = new List<RTSUnit>();
@@ -127,7 +127,6 @@ public class InventoryBase<T> : MonoBehaviour
         }
         else
         {
-            totalUnits.Add(unit);
             List<RTSUnit> newUnits = new List<RTSUnit>();
             newUnits.Add(unit);
             // If a unit is added whose type is not yet in the dictionary, assume to add new key-value for it

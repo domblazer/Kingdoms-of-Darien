@@ -25,7 +25,7 @@ public class MeleeWeaponScript : MonoBehaviour
     private void OnTriggerEnter(Collider col)
     {
         // Only send damage when the collider makes contact while the unit is in attack mode
-        if (_BaseUnit.IsAttacking() && _BaseUnit.animStateTime > animationClipRange.start && _BaseUnit.animStateTime < animationClipRange.end)
+        if (_BaseUnit != null && _BaseUnit.IsAttacking() && _BaseUnit.animStateTime > animationClipRange.start && _BaseUnit.animStateTime < animationClipRange.end)
         {    
             string compareTag = gameObject.tag == "Enemy" ? "Friendly" : "Enemy";
             if (col.gameObject.tag == compareTag && !col.isTrigger)

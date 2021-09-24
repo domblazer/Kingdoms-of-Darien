@@ -10839,7 +10839,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66f4410b0779ebc4b9f3e3a8f21c2ba4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  manaColor: {r: 255, g: 255, b: 0, a: 1}
+  manaColor: {r: 1, g: 1, b: 0, a: 1}
   finalUnitPrefab: {fileID: 1464139452027030493, guid: 8cb586a7079eb094686848bafb299fba, type: 3}
 --- !u!1 &6184447638448396339
 GameObject:

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Linq;
 using DarienEngine;
+using DarienEngine.AI;
 
 /* 
     This class inherits RTSUnit to derive common behavior for all units, AI or otherwise, (e.g. pathfinding, attack routine, etc).
@@ -16,8 +17,7 @@ public class BaseUnitAI : RTSUnit
     public int patrolPointsCount = 3;
     private List<Vector3> patrolPoints = new List<Vector3>();
     private int patrolIndex = 0;
-
-    public bool enableFogOfWar = true;
+    private bool enableFogOfWar;
 
     private List<Renderer> renderers = new List<Renderer>();
     private bool alreadyHidden = false;
@@ -32,10 +32,15 @@ public class BaseUnitAI : RTSUnit
     public StartStates startState;
     private States defaultState;
 
+    private UnitBuilderAI _Builder;
+
     private void Start()
     {
         // General set-up in RTSUnit
         Init();
+
+        // Set fog-of-war based on game manager
+        enableFogOfWar = GameManager.Instance.enableFogOfWar;
 
         // Grab all of this unit's mesh renderers
         foreach (Transform child in transform)
@@ -45,7 +50,16 @@ public class BaseUnitAI : RTSUnit
         // @TODO: if AI is on the same team as player, assign "Friendly-AI" tag
         gameObject.tag = "Enemy";
 
-        SetPatrolPoints(transform.position);
+        // Get builder component, if applicable
+        if (isBuilder)
+        {
+            if (isKinematic)
+                _Builder = GetComponent<BuilderAI>();
+            else
+                _Builder = GetComponent<FactoryAI>();
+        }
+
+        SetPatrolPoints(transform.position, patrolRange);
 
         // Initialize the starting state
         if (startState == StartStates.Patrolling)
@@ -66,13 +80,12 @@ public class BaseUnitAI : RTSUnit
 
         if (!isDead)
         {
-            // @TODO: should be careful resetting state here
-            // if (!IsAttacking() && !engagingTarget)
-            //     state = defaultState;
+            // Set the state properly
+            // DetermineCurrentState<AIConjurerArgs>(_Builder);
 
             if (isKinematic)
             {
-                // @TODO: AIs need different patrol points on start based on surroundings
+                // @TODO: Need different way to check if this unit should patrol
                 if (state.Value == States.Patrolling.Value)
                     Patrol();
                 else
@@ -88,17 +101,75 @@ public class BaseUnitAI : RTSUnit
         }
     }
 
-    void SetPatrolPoints(Vector3 origin)
+    public void SetPatrolPoints(Vector3 origin, float range = 25.0f)
     {
         patrolPoints.Clear();
         for (int i = 0; i < patrolPointsCount; i++)
         {
-            // @TODO: obviously need to check if these points are on the navmesh and not in restricted areas like water
             Vector3 radius = Random.insideUnitSphere;
-            Vector3 randomPoint = (origin + (radius * patrolRange));
-            randomPoint.y = origin.y;
+            Vector3 randomPoint = GenerateValidRandomPoint(origin, range);
             patrolPoints.Add(randomPoint);
         }
+    }
+
+    public Vector3 GenerateValidRandomPoint(Vector3 origin, float range)
+    {
+        Vector3 radius = Random.insideUnitSphere;
+        Vector3 validPoint = (origin + (radius * range));
+        validPoint.y = origin.y;
+        int testLimit = 5;
+        int currentTest = 0;
+        // @TODO: seems possible units could get stuck and a bad point could get added, but
+        // we can't just run this loop forever; maybe need a routine to get out of the loop if it's run too many times
+        // and the point is still bad. Like maybe at that point, increase range? Or just find some default location and
+        // just go there without testing?
+        TestPointInfo info;
+        while (!(info = TestPoint(validPoint)).valid && currentTest < testLimit)
+        {
+            Debug.Log(info.message);
+            // Keep trying points until TestPoint() returns true
+            radius = Random.insideUnitSphere;
+            validPoint = (origin + (radius * range));
+            validPoint.y = origin.y;
+            currentTest++;
+        }
+        validPoint.y = origin.y;
+        return validPoint;
+    }
+
+    private class TestPointInfo
+    {
+        public bool valid = false;
+        public string message = "N/A";
+    }
+    private TestPointInfo TestPoint(Vector3 point)
+    {
+        bool navMeshValid = false;
+        bool pointCollisionValid = true;
+        string errorReasons = "Test point results: ";
+
+        NavMeshHit navMeshHit;
+        // NavMesh check point is on "Built-in-0": "Walkable" area
+        if (NavMesh.SamplePosition(point, out navMeshHit, 1f, NavMesh.AllAreas))
+            navMeshValid = true;
+        else
+            errorReasons += "(Error: NavMesh)";
+
+        // Layer 9 is unit layer
+        int layerMask = 1 << 9;
+        Collider[] hitColliders = Physics.OverlapSphere(point, 1.5f, layerMask);
+        if (hitColliders.Length > 0)
+        {
+            errorReasons += "(Error: PointCollision)";
+            // errorReasons += "(Error: " + gameObject.name + " PointCollision: " + string.Join<Collider>(", ", hitColliders) + ")";
+            pointCollisionValid = false;
+        }
+
+        return new TestPointInfo
+        {
+            valid = navMeshValid && pointCollisionValid,
+            message = errorReasons
+        };
     }
 
     void UpdateFogOfWar()
@@ -117,6 +188,7 @@ public class BaseUnitAI : RTSUnit
         }
     }
 
+    // @TODO: need to move patrol behavior into commandQueue
     void Patrol()
     {
         // Add extra steering while moving

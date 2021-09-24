@@ -60,6 +60,7 @@ public class Player : MonoBehaviour
     {
         SelectUnits();
 
+        // @TODO: right click over build menu should dequeue though
         // Clear selection with right-click
         if (Input.GetMouseButtonDown(1))
             ClearAll();
