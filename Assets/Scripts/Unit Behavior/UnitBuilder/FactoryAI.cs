@@ -12,14 +12,14 @@ public class FactoryAI : UnitBuilderAI
     private void Update()
     {
         // Keep track of master queue to know when building
-        isBuilding = masterBuildQueue.Count > 0;
+        isBuilding = !baseUnit.commandQueue.IsEmpty();
 
         // While masterQueue is not empty, continue queueing up intangible prefabs
-        if (masterBuildQueue.Count > 0 && nextQueueReady)
+        if (!baseUnit.commandQueue.IsEmpty() && nextQueueReady)
         {
             // @TODO: also need to check that the spawn point is clear before moving on to next unit
             baseUnit.state = RTSUnit.States.Conjuring;
-            GameObject nextItg = masterBuildQueue.Peek().nextIntangible;
+            GameObject nextItg = baseUnit.currentCommand.conjurerArgs.prefab;
             InstantiateNextIntangible(nextItg);
             nextQueueReady = false;
         }
@@ -28,7 +28,11 @@ public class FactoryAI : UnitBuilderAI
     private void InstantiateNextIntangible(GameObject itg)
     {
         GameObject intangible = Instantiate(itg, spawnPoint.position, new Quaternion(0, 180, 0, 1));
-        intangible.GetComponent<IntangibleUnitAI>().Bind(this, rallyPoint, RTSUnit.States.Patrolling, parkingDirectionToggle);
+        intangible.GetComponent<IntangibleUnitAI>().Bind(this, rallyPoint, new CommandQueueItem
+        {
+            commandType = CommandTypes.Patrol,
+            patrolRoute = null // @Note: AI will set random patrol (roam) points automatically when this is null
+        }, parkingDirectionToggle);
         intangible.GetComponent<IntangibleUnitAI>().Callback(NextIntangibleCompleted);
     }
 
@@ -36,6 +40,6 @@ public class FactoryAI : UnitBuilderAI
     private void NextIntangibleCompleted()
     {
         // Factory just needs to dequeue on intangible complete
-        masterBuildQueue.Dequeue();
+        baseUnit.commandQueue.Dequeue();
     }
 }

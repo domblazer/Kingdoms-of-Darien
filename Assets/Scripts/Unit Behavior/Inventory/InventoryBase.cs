@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DarienEngine;
 
-public class InventoryBase<T> : MonoBehaviour
+public class InventoryBase : MonoBehaviour
 {
     public int totalManaIncome = 0;
     public int totalManaStorage = 10;
@@ -30,7 +30,7 @@ public class InventoryBase<T> : MonoBehaviour
 
     // Separate lists to maintain lodestones and intangibles
     public List<RTSUnit> lodestones = new List<RTSUnit>();
-    public List<IntangibleUnitBase<T>> intangibleUnits = new List<IntangibleUnitBase<T>>();
+    public List<IntangibleUnitBase> intangibleUnits = new List<IntangibleUnitBase>();
 
     protected void UpdateMana()
     {
@@ -79,13 +79,13 @@ public class InventoryBase<T> : MonoBehaviour
 
     }
 
-    public void AddIntangible(IntangibleUnitBase<T> unit)
+    public void AddIntangible(IntangibleUnitBase unit)
     {
         manaDrainRate += unit.drainRate;
         intangibleUnits.Add(unit);
     }
 
-    public void RemoveIntangible(IntangibleUnitBase<T> unit)
+    public void RemoveIntangible(IntangibleUnitBase unit)
     {
         manaDrainRate -= unit.drainRate;
         intangibleUnits.Remove(unit);

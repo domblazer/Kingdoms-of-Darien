@@ -27,13 +27,6 @@ namespace DarienEngine.AI
         }
     }
 
-    [System.Serializable]
-    public class AIConjurerArgs
-    {
-        public GameObject nextIntangible;
-        public Vector3 buildSpot;
-    }
-
     public interface IUnitBuilderAI
     {
         void QueueBuild(GameObject intangiblePrefab);

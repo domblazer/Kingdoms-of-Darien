@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DarienEngine;
 
-public class Inventory : InventoryBase<PlayerConjurerArgs>
+public class Inventory : InventoryBase
 {
     // Update is called once per frame
     void Update()

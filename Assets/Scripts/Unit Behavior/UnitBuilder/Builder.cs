@@ -20,15 +20,15 @@ public class Builder : UnitBuilderPlayer
     void Update()
     {
         // Keep traveling to ghosts in the queue until empty
-        if (masterBuildQueue.Count > 0 && nextQueueReady)
+        if (!baseUnit.commandQueue.IsEmpty() && nextQueueReady)
         {
             string dbg = "";
-            foreach (PlayerConjurerArgs q in masterBuildQueue)
-                dbg += q.ToString();
-            Debug.Log("Builder.masterBuildQueue: " + dbg);
+            foreach (CommandQueueItem cmd in baseUnit.commandQueue)
+                dbg += cmd.conjurerArgs.ToString();
+            Debug.Log("Builder.commandQueue: " + dbg);
 
             // Builders always keep a queue of GhostUnits
-            GhostUnit nextGhost = masterBuildQueue.Peek().prefab.GetComponent<GhostUnit>();
+            GhostUnit nextGhost = baseUnit.currentCommand.conjurerArgs.prefab.GetComponent<GhostUnit>();
             // @TODO: offset depends on direction, e.g. if walking along x, use x, y, y, and diagonal use mix
             Vector3 offsetRange = nextGhost.offset;
             // Move to next ghost in the queue
@@ -42,16 +42,15 @@ public class Builder : UnitBuilderPlayer
             {
                 Debug.Log("Arrived at ghost");
                 baseUnit.SetMove(transform.position);
-                baseUnit.state = RTSUnit.States.Conjuring;
                 nextQueueReady = false;
                 isBuilding = true;
-                masterBuildQueue.Dequeue();
+                baseUnit.commandQueue.Dequeue();
                 nextGhost.StartBuild();
             }
         }
     }
 
-    public void QueueBuild(PlayerConjurerArgs item, Vector2 clickPoint)
+    public void QueueBuild(ConjurerArgs item, Vector2 clickPoint)
     {
         // First, protect double clicks with click delay
         ProtectDoubleClick();
@@ -60,7 +59,7 @@ public class Builder : UnitBuilderPlayer
     }
 
     // Instantiate new ghost and set bindings with this builder and the menu item clicked
-    public GameObject InstantiateGhost(PlayerConjurerArgs item, Vector3 clickPoint)
+    public GameObject InstantiateGhost(ConjurerArgs item, Vector3 clickPoint)
     {
         GameObject ghost = Instantiate(item.prefab, clickPoint, item.prefab.transform.localRotation);
         ghost.GetComponent<GhostUnit>().Bind(this, item);
@@ -72,7 +71,7 @@ public class Builder : UnitBuilderPlayer
     // Selected Builder gets the menu button click events
     public void TakeOverButtonListeners()
     {
-        foreach (PlayerConjurerArgs item in virtualMenu)
+        foreach (ConjurerArgs item in virtualMenu)
             item.menuButton.onClick.AddListener(delegate { QueueBuild(item, Input.mousePosition); });
     }
 

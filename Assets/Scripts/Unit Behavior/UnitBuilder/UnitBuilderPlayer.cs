@@ -4,10 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using DarienEngine;
 
-public class UnitBuilderPlayer : UnitBuilderBase<PlayerConjurerArgs>
+public class UnitBuilderPlayer : UnitBuilderBase
 {
     public RectTransform menuRoot;
-    public List<PlayerConjurerArgs> virtualMenu { get; set; } = new List<PlayerConjurerArgs>();
+    public List<ConjurerArgs> virtualMenu { get; set; } = new List<ConjurerArgs>();
     public float lastClickTime { get; set; }
     public float clickDelay { get; set; } = 0.25f;
     public bool isCurrentActive { get; set; } = false;
@@ -28,7 +28,7 @@ public class UnitBuilderPlayer : UnitBuilderBase<PlayerConjurerArgs>
         // Get all the buttons in the build menu
         Button[] menuChildren = menuRoot.GetComponentsInChildren<Button>();
         foreach (var (button, index) in menuChildren.WithIndex())
-            virtualMenu.Add(new PlayerConjurerArgs { menuButton = button, prefab = prefabs[index] });
+            virtualMenu.Add(new ConjurerArgs { menuButton = button, prefab = prefabs[index] });
     }
 
     // Handle small click delay to prevent double clicks on menu
@@ -42,17 +42,17 @@ public class UnitBuilderPlayer : UnitBuilderBase<PlayerConjurerArgs>
     // Clear listeners for next selected builder
     public void ReleaseButtonListeners()
     {
-        foreach (PlayerConjurerArgs virtualMenuItem in virtualMenu)
+        foreach (ConjurerArgs virtualMenuItem in virtualMenu)
             virtualMenuItem.menuButton.onClick.RemoveAllListeners();
     }
 
     public void UpdateAllButtonsText()
     {
-        foreach (PlayerConjurerArgs item in virtualMenu)
+        foreach (ConjurerArgs item in virtualMenu)
             UpdateButtonText(item);
     }
 
-    void UpdateButtonText(PlayerConjurerArgs item)
+    void UpdateButtonText(ConjurerArgs item)
     {
         string newBtnText = item.buildQueueCount == 0 ? "" : "+" + item.buildQueueCount.ToString();
         item.menuButton.GetComponentInChildren<Text>().text = newBtnText;

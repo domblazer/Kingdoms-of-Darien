@@ -23,9 +23,9 @@ public class BuilderAI : UnitBuilderAI
 
         // @TODO: builder should start in patrol state after parking before starting building
 
-        if (masterBuildQueue.Count > 0 && nextQueueReady && !isInRoamInterval)
+        if (!baseUnit.commandQueue.IsEmpty() && nextQueueReady && !isInRoamInterval)
         {
-            AIConjurerArgs buildArgs = masterBuildQueue.Peek();
+            ConjurerArgs buildArgs = baseUnit.currentCommand.conjurerArgs;
 
             // Vector3.zero means buildSpot is "null"
             if (buildArgs.buildSpot == Vector3.zero)
@@ -45,14 +45,14 @@ public class BuilderAI : UnitBuilderAI
     }
 
     // Called once upon arrival at next build position
-    private void StartNextIntangible(AIConjurerArgs buildArgs)
+    private void StartNextIntangible(ConjurerArgs buildArgs)
     {
         baseUnit.SetMove(transform.position);
         baseUnit.state = RTSUnit.States.Conjuring;
         nextQueueReady = false;
         isBuilding = true;
-        masterBuildQueue.Dequeue();
-        InstantiateNextIntangible(buildArgs.nextIntangible, buildArgs.buildSpot);
+        baseUnit.commandQueue.Dequeue();
+        InstantiateNextIntangible(buildArgs.prefab, buildArgs.buildSpot);
     }
 
     public Vector3 FindBuildSpot(Vector3 origin)
@@ -67,7 +67,11 @@ public class BuilderAI : UnitBuilderAI
     private void InstantiateNextIntangible(GameObject itg, Vector3 spawnPoint)
     {
         GameObject intangible = Instantiate(itg, spawnPoint, new Quaternion(0, 180, 0, 1));
-        intangible.GetComponent<IntangibleUnitAI>().Bind(this, null, RTSUnit.States.Patrolling);
+        intangible.GetComponent<IntangibleUnitAI>().Bind(this, null, new CommandQueueItem
+        {
+            commandType = CommandTypes.Patrol,
+            patrolRoute = null // @Note: AI will set random patrol (roam) points automatically when this is null
+        });
         intangible.GetComponent<IntangibleUnitAI>().Callback(NextIntangibleCompleted);
     }
 
@@ -79,6 +83,7 @@ public class BuilderAI : UnitBuilderAI
         // Reset timer for roaming interval
         timeRemaining = roamIntervalTime;
         // Set new patrol points for roam
-        (baseUnit as BaseUnitAI).SetPatrolPoints(transform.position, searchBuildRange);
+        // @TODO: use CommandQueue to reset patrol points. New patrol route?
+        (baseUnit as BaseUnitAI).SetPatrolPoints(transform.position, 3, searchBuildRange);
     }
 }

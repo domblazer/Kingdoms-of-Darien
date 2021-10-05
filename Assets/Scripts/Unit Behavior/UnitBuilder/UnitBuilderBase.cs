@@ -4,9 +4,9 @@ using UnityEngine;
 using DarienEngine;
 using DarienEngine.AI;
 
-public class UnitBuilderBase<T> : MonoBehaviour
+public class UnitBuilderBase : MonoBehaviour
 {
-    public Queue<T> masterBuildQueue = new Queue<T>();
+    // public Queue<T> masterBuildQueue = new Queue<T>();
     public bool isBuilding { get; set; }
     public bool nextQueueReady { get; set; } = false;
     public RTSUnit baseUnit { get; set; }
@@ -34,8 +34,8 @@ public class UnitBuilderBase<T> : MonoBehaviour
         return baseUnit.isKinematic;
     }
 
-    public bool IsAI()
+    /* public bool IsAI()
     {
         return typeof(T).IsAssignableFrom(typeof(AIConjurerArgs));
-    }
+    } */
 }

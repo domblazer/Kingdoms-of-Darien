@@ -14,6 +14,8 @@ public class BaseUnit : RTSUnit
     private Directions facingDir = Directions.Forward;
     private UnitBuilderPlayer _Builder;
 
+    private LineRenderer lineRenderer;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -38,6 +40,18 @@ public class BaseUnit : RTSUnit
             else
                 _Builder = GetComponent<Factory>();
         }
+
+        lineRenderer = gameObject.GetComponent<LineRenderer>();
+        if (lineRenderer == null)
+        {
+            lineRenderer = gameObject.AddComponent<LineRenderer>();
+            lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+        }
+        lineRenderer.widthMultiplier = 0.2f;
+        lineRenderer.startColor = lineRenderer.endColor = Color.black;
+        lineRenderer.alignment = LineAlignment.View;
+        lineRenderer.textureMode = LineTextureMode.Tile;
+        ToggleCommandPointsUI(false);
     }
 
     // Update is called once per frame
@@ -49,65 +63,137 @@ public class BaseUnit : RTSUnit
 
         if (!isDead)
         {
-            // @TODO: maybe do something like this:
-            if (currentCommand != null)
+            // @TODO: handle behaviour by what's in the commandQueue
+            if (!commandQueue.IsEmpty())
             {
                 switch (currentCommand.commandType)
                 {
                     case CommandTypes.Move:
                         // just handle move behaviour
                         // @TODO: Sub-CommandTypes? E.g. Attack-Move, Guard-Move, etc.?
+                        // @TODO: state = States.Parking
+                        HandleMovement();
                         break;
                     case CommandTypes.Attack:
                         // handle engaging target (moveTo target) and attacking behaviour
+                        HandleAttackRoutine();
                         break;
                     case CommandTypes.Patrol:
                         // handle patrol behavior
+                        // @TODO: if patrol point not set?
+                        Patrol();
                         break;
-                        // @TODO: Guard
-                        // @TODO: case CommandTypes.Conjure: // Handled in _Builder tho
+                    case CommandTypes.Conjure:
+                        // @TODO: _Builder.handleConjuringRouting (moveTo buildSpot and conjure)
+
+                        state = States.Conjuring;
+                        break;
+                    case CommandTypes.Guard:
+                        // @TODO 
+                        break;
+                    default:
+                        // Idle behavour?
+                        state = States.Standby;
+                        break;
                 }
             }
-
-            // Set the state properly
-            DetermineCurrentState<PlayerConjurerArgs>(_Builder);
-
-            // Handle movement and the various states of movement possible, e.g. "Parking"
-            if (isKinematic)
-                HandleMovement();
-
-            // Handle attack states if can attack
-            if (canAttack)
+            else
             {
-                HandleAttackRoutine();
+                // @TODO: if commandQueue is empty, just be on standby
+                state = States.Standby;
+            }
+
+            // @TODO: Determine when to Auto pick attack targets
+            if (canAttack && state.Value == States.Standby.Value)
+            {
+                AutoPickAttackTarget();
 
                 // If any units in sight to attack, continue picking closest and engage attack
                 // @TODO: break off attack if player unit told to move while isAttacking
                 // @TODO: player unit, autopick enables attack-move by default, but should ignore if in Passive mode
                 // @TODO: also, if in Defensive mode, should not pursue enemies as aggressively, e.g. if chasing for more than 5 secs, break; 
                 // defensive unit should also only engage after enemy gets very close (like hold-your-ground type behavior)
-
-                // Kinematic units can auto-pick targets as long as they are not busy with other commands
-                if ((isKinematic && commandQueue.Count == 0) || attackMove)
-                    AutoPickAttackTarget();
-                // @TODO: non-kinematic always autopick target?
-                else if (!isKinematic)
-                    AutoPickAttackTarget();
             }
 
-            // If this unit is selected and no other unit has focus
-            if (selectable && selected && !GameManager.Instance.IsHovering())
+            if (selectable && selected)
             {
-                // Color select-ring based on health value
+                // Update select ring color based on health when selected
                 selectRing.GetComponent<SpriteRenderer>().color = Color.Lerp(Color.red, Color.green, (health / 100));
 
-                // @TODO: secondary could be a "Conjuring" secondary
-                RTSUnit secondary = attackTarget ? attackTarget.GetComponent<RTSUnit>() : null;
-                UIManager.Instance.unitInfoInstance.Set(super, secondary);
+                Debug.Log(gameObject.name + " commandQueue: " + string.Join<CommandQueueItem>(", ", commandQueue.ToArray()));
+
+                // Update the unit info UI if no other unit has focus from hovering
+                if (!GameManager.Instance.IsHoveringOther(gameObject))
+                {
+                    // @TODO: secondary could be a "Conjuring" secondary
+                    RTSUnit secondary = attackTarget ? attackTarget.GetComponent<RTSUnit>() : null;
+                    UIManager.Instance.unitInfoInstance.Set(super, secondary);
+                }
+
+                // Toggle line renderer on shift up/down for mobile units
+                if (isKinematic)
+                {
+                    if (InputManager.ShiftPressed())
+                        ToggleCommandPointsUI(true);
+                    if (InputManager.HoldingShift())
+                        UpdateCommandPointLines();
+                    if (InputManager.ShiftReleased())
+                        ToggleCommandPointsUI(false);
+                }
             }
 
             // if (isKinematic && _Agent.enabled)
             //    DebugNavPath();
+        }
+    }
+
+    // Draw lines between commandQueue points
+    private void UpdateCommandPointLines()
+    {
+        if (commandQueue.Count > 0)
+        {
+            Vector3 adjustedTransformPosition = new Vector3(transform.position.x, 1.2f, transform.position.z);
+            lineRenderer.positionCount = commandQueue.Count + 1;
+            if (currentCommand.commandType != CommandTypes.Patrol)
+                lineRenderer.SetPosition(0, adjustedTransformPosition);
+            int patrolCount = 0;
+            foreach (var (item, index) in commandQueue.WithIndex())
+            {
+                if (item.commandType == CommandTypes.Patrol)
+                {
+                    // We don't want to draw lines to patrol points, subtract from positionCount after
+                    patrolCount++;
+                }
+                else
+                {
+                    Vector3 adjustedCommandPoint = new Vector3(item.commandPoint.x, 1.2f, item.commandPoint.z);
+                    lineRenderer.SetPosition(index + 1, adjustedCommandPoint);
+                }
+            }
+            lineRenderer.positionCount -= patrolCount;
+        }
+        else
+            lineRenderer.positionCount = 0;
+    }
+
+    private void ToggleCommandPointsUI(bool val)
+    {
+        // @TODO: this works differently when multiple units are selected, only showing a sticker at a general average location
+        // of all the group's movement. Obviously, this could get complicated, like when some units are moving to one area, but others
+        // in the selection are moving to another area, and also if they all have different commandTypes for currentCommand, what icon to show?
+        lineRenderer.enabled = val;
+        foreach (CommandQueueItem item in commandQueue)
+        {
+            if (item.commandType == CommandTypes.Patrol)
+            {
+                item.commandSticker.SetActive(val);
+                foreach (PatrolPoint pp in item.patrolRoute.patrolPoints)
+                {
+                    if (pp.sticker)
+                        pp.sticker.SetActive(val);
+                }
+            }
+            item.commandSticker.SetActive(val);
         }
     }
 
@@ -166,6 +252,8 @@ public class BaseUnit : RTSUnit
 
     void OnMouseEnter()
     {
+        // @TODO: if mainPlayer.nextCommandIsPrimed, this should still change to Select cursor, but when moving back, should
+        // go back to the primed command mouse cursor
         if (!EventSystem.current.IsPointerOverGameObject() && selectable)
         {
             CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Select);

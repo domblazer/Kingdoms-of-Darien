@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DarienEngine;
 
 public class UIManager : MonoBehaviour
 {
@@ -139,6 +140,26 @@ public class UIManager : MonoBehaviour
         {
             actionMenuDefault = actionMenu;
             actionMenuButtons = actionMenuBtns;
+
+            actionMenuButtons.moveBtn.onClick.AddListener(delegate { PrimeCommand(CommandTypes.Move); });
+            actionMenuButtons.patrolBtn.onClick.AddListener(delegate { PrimeCommand(CommandTypes.Patrol); });
+            actionMenuButtons.attackBtn.onClick.AddListener(delegate { PrimeCommand(CommandTypes.Attack); });
+            actionMenuButtons.guardBtn.onClick.AddListener(delegate { PrimeCommand(CommandTypes.Guard); });
+
+            // @TODO: listeners for all other action buttons
+            actionMenuButtons.stopBtn.onClick.AddListener(delegate { GameManager.Instance.PlayerMain.player.StopAllSelectedUnits(); });
+        }
+
+        public void PrimeCommand(CommandTypes commandType)
+        {
+            Debug.Log(string.Format("PrimeCommand({0})", commandType));
+            if (CommandMappings.CursorMap.TryGetValue(commandType, out CursorManager.CursorType ct))
+            {
+                Debug.Log("Command map to cursor found");
+                CursorManager.Instance.SetActiveCursorType(ct);
+            }
+            // @TODO: now the next click needs to send this command to the selected units
+            GameManager.Instance.PlayerMain.player.SetPrimedCommand(commandType);
         }
 
         public void Toggle(bool value)

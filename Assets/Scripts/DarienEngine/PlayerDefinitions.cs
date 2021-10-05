@@ -12,28 +12,14 @@ namespace DarienEngine
         public TeamNumbers team;
     }
 
-    public class PlayerConjurerArgs
-    {
-        public Button menuButton;
-        public GameObject prefab;
-        public int buildQueueCount = 0;
-        public override string ToString()
-        {
-            string str = "\nMenu Button: " + menuButton + "\n";
-            str += "Prefab: " + prefab + "\n";
-            str += "Build Queue Count: " + buildQueueCount + "\n";
-            return str;
-        }
-    }
-
     public interface IUnitBuilderPlayer
     {
         float lastClickTime { get; set; }
         float clickDelay { get; set; }
         bool isCurrentActive { get; set; }
-        List<PlayerConjurerArgs> virtualMenu { get; set; }
+        List<ConjurerArgs> virtualMenu { get; set; }
 
-        void QueueBuild(PlayerConjurerArgs item, Vector2 clickPoint);
+        void QueueBuild(ConjurerArgs item, Vector2 clickPoint);
         void InitVirtualMenu(GameObject[] prefabs);
         void ProtectDoubleClick();
         void ToggleBuildMenu(bool value);

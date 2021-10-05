@@ -16,7 +16,7 @@ public class GhostUnit : MonoBehaviour
     // This is the Builder that queued this ghost
     private Builder builder;
     // Just a reference to the virtualMenu item that instantiated this ghost
-    protected PlayerConjurerArgs playerConjurerArgs;
+    protected ConjurerArgs conjurerArgs;
 
     private List<Material> materials = new List<Material>();
     private List<Renderer> renderers = new List<Renderer>();
@@ -75,7 +75,7 @@ public class GhostUnit : MonoBehaviour
     public void StartBuild()
     {
         GameObject intangible = Instantiate(intangibleUnit, transform.position, intangibleUnit.transform.localRotation);
-        intangible.GetComponent<IntangibleUnit>().Bind(builder, playerConjurerArgs, transform);
+        intangible.GetComponent<IntangibleUnit>().Bind(builder, transform);
         Destroy(gameObject);
     }
 
@@ -86,19 +86,24 @@ public class GhostUnit : MonoBehaviour
         invalidIcon.SetActive(false);
         // Increase the count of ghosts placed during this shift period
         builder.placedSinceLastShift++;
-        // Add the activeFloatingGhost (this) to the player args and enqueue it to the masterBuildQueue
-        playerConjurerArgs.prefab = builder.activeFloatingGhost;
-        builder.masterBuildQueue.Enqueue(playerConjurerArgs);
-        // Instantiate a copy of the player args initially passed to this ghost. (Pass-by-value will overwrite prefab)
-        PlayerConjurerArgs nextItem = new PlayerConjurerArgs
+        // Add the activeFloatingGhost (this) to the player args and enqueue it to the commandQueue
+        conjurerArgs.prefab = builder.activeFloatingGhost;
+        builder.baseUnit.commandQueue.Enqueue(new CommandQueueItem
         {
-            menuButton = playerConjurerArgs.menuButton,
-            prefab = playerConjurerArgs.prefab,
-            buildQueueCount = playerConjurerArgs.buildQueueCount
+            commandType = CommandTypes.Conjure,
+            conjurerArgs = conjurerArgs
+        });
+        // Pass a copy of the player args initially passed to this ghost for the next active. (Pass-by-value will overwrite prefab)
+        ConjurerArgs nextItem = new ConjurerArgs
+        {
+            menuButton = conjurerArgs.menuButton,
+            prefab = conjurerArgs.prefab,
+            buildQueueCount = conjurerArgs.buildQueueCount
         };
+        // Instantiate new active floating ghost
         builder.InstantiateGhost(nextItem, hitPos + offset);
         // Only set next ready when masterBuildQueue is empty
-        if (builder.masterBuildQueue.Count == 0)
+        if (!builder.baseUnit.commandQueue.IsEmpty())
             builder.SetNextQueueReady(true);
     }
 
@@ -110,9 +115,14 @@ public class GhostUnit : MonoBehaviour
         // Reset count of ghosts placed this shift period
         builder.placedSinceLastShift = 0;
         // Queue this self on single place
-        playerConjurerArgs.prefab = gameObject;
+        conjurerArgs.prefab = gameObject;
         // @TODO: clear the current queue if just placed a single
-        builder.masterBuildQueue.Enqueue(playerConjurerArgs);
+        // @TODO: clearing queue also means removing any other set ghosts
+        builder.baseUnit.currentCommand = new CommandQueueItem
+        {
+            commandType = CommandTypes.Conjure,
+            conjurerArgs = conjurerArgs
+        };
         builder.SetNextQueueReady(true);
 
         // Hide immediately
@@ -174,11 +184,11 @@ public class GhostUnit : MonoBehaviour
             Destroy(gameObject);
     }
 
-    public void Bind(Builder bld, PlayerConjurerArgs args, Directions dir = Directions.Forward)
+    public void Bind(Builder bld, ConjurerArgs args, Directions dir = Directions.Forward)
     {
         builder = bld;
         // Ghosts need to instantiate new args; they are more independent than intangibles
-        playerConjurerArgs = new PlayerConjurerArgs
+        conjurerArgs = new ConjurerArgs
         {
             menuButton = args.menuButton,
             prefab = args.prefab,

@@ -4,7 +4,7 @@ using UnityEngine;
 using DarienEngine;
 using DarienEngine.AI;
 
-public class InventoryAI : InventoryBase<AIConjurerArgs>
+public class InventoryAI : InventoryBase
 {
     private void Update()
     {

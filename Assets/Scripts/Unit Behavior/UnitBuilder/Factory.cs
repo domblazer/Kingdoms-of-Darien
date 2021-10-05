@@ -27,18 +27,18 @@ public class Factory : UnitBuilderPlayer
         // @TODO: ability to reposition builderRallyPoint
 
         // Keep track of master queue to know when building
-        isBuilding = masterBuildQueue.Count > 0;
+        isBuilding = !baseUnit.commandQueue.IsEmpty();
 
         // Only currently selected builder updates menu text
         if (isCurrentActive)
             UpdateAllButtonsText();
 
         // While masterQueue is not empty, continue queueing up intangible prefabs
-        if (masterBuildQueue.Count > 0 && nextQueueReady)
+        if (!baseUnit.commandQueue.IsEmpty() && nextQueueReady)
         {
             // @TODO: also need to check that the spawn point is clear before moving on to next unit
             baseUnit.state = RTSUnit.States.Conjuring;
-            PlayerConjurerArgs next = masterBuildQueue.Peek();
+            ConjurerArgs next = baseUnit.currentCommand.conjurerArgs;
             InstantiateNextIntangible(next);
             // Toggle whether new unit parks towards the right or left
             parkingDirectionToggle = !parkingDirectionToggle;
@@ -51,7 +51,7 @@ public class Factory : UnitBuilderPlayer
         }
     }
 
-    public void QueueBuild(PlayerConjurerArgs item, Vector2 clickPoint)
+    public void QueueBuild(ConjurerArgs item, Vector2 clickPoint)
     {
         // First, protect double clicks with click delay
         ProtectDoubleClick();
@@ -77,21 +77,35 @@ public class Factory : UnitBuilderPlayer
         }
     }
 
-    private void QueueUnit(PlayerConjurerArgs item)
+    private void QueueUnit(ConjurerArgs item)
     {
         // Instantiate first immediately
-        if (masterBuildQueue.Count == 0)
+        if (baseUnit.commandQueue.IsEmpty())
             nextQueueReady = true;
         // Increment individual unit queue count
         item.buildQueueCount++;
-        // Enqueue master queue to keep track of build order and total queue
-        masterBuildQueue.Enqueue(item);
+        // New conjure command
+        baseUnit.commandQueue.Enqueue(new CommandQueueItem
+        {
+            commandType = CommandTypes.Conjure,
+            // commandPoint = item // @TODO: commandPoint not needed here?
+            conjurerArgs = item
+        });
     }
 
-    private void InstantiateNextIntangible(PlayerConjurerArgs item)
+    private void InstantiateNextIntangible(ConjurerArgs item)
     {
         GameObject intangible = Instantiate(item.prefab, spawnPoint.position, spawnPoint.rotation);
-        intangible.GetComponent<IntangibleUnit>().Bind(this, item, rallyPoint, parkingDirectionToggle);
+        intangible.GetComponent<IntangibleUnit>().Bind(this, rallyPoint, parkingDirectionToggle);
+        intangible.GetComponent<IntangibleUnit>().Callback(NextIntangibleCompleted);
+    }
+
+    // Callback when intangible is complete
+    private void NextIntangibleCompleted()
+    {
+        // Factory dequeue commandQueue and decrement menu item buildQueueCount
+        CommandQueueItem lastCommand = baseUnit.commandQueue.Dequeue();
+        lastCommand.conjurerArgs.buildQueueCount--;
     }
 
     public void ToggleRallyPoint(bool value)
@@ -102,7 +116,7 @@ public class Factory : UnitBuilderPlayer
     // Selected Builder gets the menu button click events
     public void TakeOverButtonListeners()
     {
-        foreach (PlayerConjurerArgs item in virtualMenu)
+        foreach (ConjurerArgs item in virtualMenu)
             item.menuButton.onClick.AddListener(delegate { QueueBuild(item, Input.mousePosition); });
     }
 

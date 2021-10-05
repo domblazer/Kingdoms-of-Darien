@@ -13,10 +13,6 @@ using DarienEngine.AI;
 */
 public class BaseUnitAI : RTSUnit
 {
-    public float patrolRange = 25.0f;
-    public int patrolPointsCount = 3;
-    private List<Vector3> patrolPoints = new List<Vector3>();
-    private int patrolIndex = 0;
     private bool enableFogOfWar;
 
     private List<Renderer> renderers = new List<Renderer>();
@@ -59,7 +55,7 @@ public class BaseUnitAI : RTSUnit
                 _Builder = GetComponent<FactoryAI>();
         }
 
-        SetPatrolPoints(transform.position, patrolRange);
+        // SetPatrolPoints(transform.position, patrolRange);
 
         // Initialize the starting state
         if (startState == StartStates.Patrolling)
@@ -80,10 +76,51 @@ public class BaseUnitAI : RTSUnit
 
         if (!isDead)
         {
-            // Set the state properly
-            // DetermineCurrentState<AIConjurerArgs>(_Builder);
+            if (!commandQueue.IsEmpty())
+            {
+                switch (currentCommand.commandType)
+                {
+                    case CommandTypes.Move:
+                        // just handle move behaviour
+                        // @TODO: Sub-CommandTypes? E.g. Attack-Move, Guard-Move, etc.?
+                        HandleMovement();
+                        break;
+                    case CommandTypes.Attack:
+                        // handle engaging target (moveTo target) and attacking behaviour
+                        HandleAttackRoutine();
+                        break;
+                    case CommandTypes.Patrol:
+                        // handle patrol behavior
+                        // If currentCommand has not yet set a patrol route, set it now
+                        if (currentCommand.patrolRoute == null)
+                            currentCommand.patrolRoute = new PatrolRoute { patrolPoints = SetPatrolPoints(transform.position, 3, 25.0f) };
+                        Patrol(true);
+                        break;
+                    case CommandTypes.Conjure:
+                        // @TODO: _Builder.handleConjuringRouting (moveTo buildSpot and conjure)
 
-            if (isKinematic)
+                        state = States.Conjuring;
+                        break;
+                    case CommandTypes.Guard:
+                        // @TODO 
+                        break;
+                    default:
+                        // Idle behavour?
+                        state = States.Standby;
+                        break;
+                }
+            }
+            else
+            {
+                // @TODO: if commandQueue is empty, just be on standby
+                state = defaultState;
+            }
+
+            // @TODO: AI should autopick attack target under most circumstances
+            if (canAttack && state.Equals(States.Standby))
+                AutoPickAttackTarget();
+
+            /* if (isKinematic)
             {
                 // @TODO: Need different way to check if this unit should patrol
                 if (state.Value == States.Patrolling.Value)
@@ -97,19 +134,20 @@ public class BaseUnitAI : RTSUnit
             {
                 HandleAttackRoutine();
                 AutoPickAttackTarget();
-            }
+            } */
         }
     }
 
-    public void SetPatrolPoints(Vector3 origin, float range = 25.0f)
+    public List<PatrolPoint> SetPatrolPoints(Vector3 origin, int pointCount = 3, float range = 25.0f)
     {
-        patrolPoints.Clear();
-        for (int i = 0; i < patrolPointsCount; i++)
+        List<PatrolPoint> patrolPoints = new List<PatrolPoint>();
+        for (int i = 0; i < pointCount; i++)
         {
             Vector3 radius = Random.insideUnitSphere;
             Vector3 randomPoint = GenerateValidRandomPoint(origin, range);
-            patrolPoints.Add(randomPoint);
+            patrolPoints.Add(new PatrolPoint { point = randomPoint });
         }
+        return patrolPoints;
     }
 
     public Vector3 GenerateValidRandomPoint(Vector3 origin, float range)
@@ -126,7 +164,7 @@ public class BaseUnitAI : RTSUnit
         TestPointInfo info;
         while (!(info = TestPoint(validPoint)).valid && currentTest < testLimit)
         {
-            Debug.Log(info.message);
+            // Debug.Log(info.message);
             // Keep trying points until TestPoint() returns true
             radius = Random.insideUnitSphere;
             validPoint = (origin + (radius * range));
@@ -188,19 +226,6 @@ public class BaseUnitAI : RTSUnit
         }
     }
 
-    // @TODO: need to move patrol behavior into commandQueue
-    void Patrol()
-    {
-        // Add extra steering while moving
-        if (IsMoving())
-            HandleFacing(_Agent.steeringTarget, 0.25f);
-        // Cycle random patrol points
-        if (!IsInRangeOf(patrolPoints[patrolIndex], 2))
-            _Agent.SetDestination(patrolPoints[patrolIndex]);
-        else if (IsInRangeOf(patrolPoints[patrolIndex], 2))
-            patrolIndex = Random.Range(0, patrolPoints.Count);
-    }
-
     void TriggerHide()
     {
         if (!alreadyHidden)
@@ -229,20 +254,29 @@ public class BaseUnitAI : RTSUnit
     void OnMouseEnter()
     {
         // Change to Attack cursor if hovering enemy AND at least one friendly unit who canAttack is selected
-        if (gameObject.tag == "Enemy" && mainPlayer.SelectedAttackUnitsCount() > 0)
-            CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Attack);
-        GameManager.Instance.SetHovering(gameObject);
+        if (!InputManager.IsMouseOverUI())
+        {
+            if (gameObject.tag == "Enemy" && mainPlayer.SelectedAttackUnitsCount() > 0 && !mainPlayer.nextCommandIsPrimed)
+                CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Attack);
+
+            GameManager.Instance.SetHovering(gameObject);
+        }
     }
 
     void OnMouseExit()
     {
-        CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Normal);
-        UIManager.Instance.unitInfoInstance.Toggle(false);
-        GameManager.Instance.ClearHovering();
+        if (!InputManager.IsMouseOverUI())
+        {
+            if (!mainPlayer.nextCommandIsPrimed)
+                CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Normal);
+            UIManager.Instance.unitInfoInstance.Toggle(false);
+            GameManager.Instance.ClearHovering();
+        }
     }
 
     private void OnMouseOver()
     {
-        UIManager.Instance.unitInfoInstance.Set(super, null, true);
+        if (!InputManager.IsMouseOverUI())
+            UIManager.Instance.unitInfoInstance.Set(super, null, true);
     }
 }

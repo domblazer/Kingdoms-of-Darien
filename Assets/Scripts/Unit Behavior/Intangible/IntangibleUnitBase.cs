@@ -5,7 +5,7 @@ using System.Linq;
 using DarienEngine;
 
 public delegate void IntangibleCompletedCallback();
-public class IntangibleUnitBase<T> : MonoBehaviour
+public class IntangibleUnitBase : MonoBehaviour
 {
     // Material fade starts with a basic mana color
     public Color manaColor = new Color(255, 255, 0);
@@ -52,7 +52,7 @@ public class IntangibleUnitBase<T> : MonoBehaviour
     }
 
     // Reference back to the Builder or Factory that spawned this intangible. Can be either an AI or player
-    public UnitBuilderBase<T> builder { get; set; }
+    public UnitBuilderBase builder { get; set; }
 
     // Control variables for transparency change
     [Range(0.1f, 1.0f)] private float rate = 1.0f;
@@ -61,7 +61,7 @@ public class IntangibleUnitBase<T> : MonoBehaviour
     protected Directions facingDir = Directions.Forward;
     protected bool parkToggle;
     protected Vector3 rallyPoint;
-    protected RTSUnit.States firstState = RTSUnit.States.Standby;
+    protected CommandQueueItem nextCommandAfterParking;
 
     protected IntangibleCompletedCallback intangibleCompletedCallback;
 
@@ -91,7 +91,7 @@ public class IntangibleUnitBase<T> : MonoBehaviour
         }
 
         // Add this intangible to the Player context (inventory and all)
-        Functions.AddIntangibleToPlayerContext<T>(this);
+        Functions.AddIntangibleToPlayerContext(this);
     }
 
     // Finalize and destroy this intangible when done
@@ -106,10 +106,10 @@ public class IntangibleUnitBase<T> : MonoBehaviour
 
         // Instantiate final new unit
         GameObject newUnit = Instantiate(finalUnitPrefab, transform.position, transform.rotation);
-        newUnit.GetComponent<RTSUnit>().Begin(facingDir, rallyPoint, parkToggle, firstState);
+        newUnit.GetComponent<RTSUnit>().Begin(facingDir, rallyPoint, parkToggle, nextCommandAfterParking);
 
         // Remove intangible from inventory/player context as well
-        Functions.RemoveIntangibleFromPlayerContext<T>(this);
+        Functions.RemoveIntangibleFromPlayerContext(this);
 
         Destroy(gameObject);
     }

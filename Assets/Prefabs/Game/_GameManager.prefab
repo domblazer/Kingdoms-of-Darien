@@ -53,8 +53,11 @@ MonoBehaviour:
   - playerNumber: 2
     team: 2
     faction: 0
-  enableFogOfWar: 1
+  enableFogOfWar: 0
   fogOfWarPlane: {fileID: 0}
+  moveCommandSticker: {fileID: 4506203142493968636, guid: b501e3e3c92ea8e4083cec1ca7d27253, type: 3}
+  guardCommandSticker: {fileID: 0}
+  patrolCommandSticker: {fileID: 4613555438997734181, guid: 0ad91aa7ad2046b408671a1d78b0d310, type: 3}
 --- !u!114 &2598857554717851823
 MonoBehaviour:
   m_ObjectHideFlags: 0

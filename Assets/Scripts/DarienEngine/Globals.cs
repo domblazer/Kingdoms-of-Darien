@@ -58,7 +58,7 @@ namespace DarienEngine
                 aiPlayer.inventory.RemoveUnit(unit);
         }
 
-        public static void AddIntangibleToPlayerContext<T>(IntangibleUnitBase<T> unit, bool addToHolder = true)
+        public static void AddIntangibleToPlayerContext(IntangibleUnitBase unit, bool addToHolder = true)
         {
             GameObject _Holder = null;
             PlayerNumbers playerNumber = unit.builder.baseUnit.playerNumber;
@@ -67,13 +67,13 @@ namespace DarienEngine
                 // Add this unit to the main (human) player context
                 MainPlayerContext mainPlayer = GameManager.Instance.PlayerMain;
                 _Holder = mainPlayer.holder;
-                mainPlayer.inventory.AddIntangible(unit as IntangibleUnitBase<PlayerConjurerArgs>);
+                mainPlayer.inventory.AddIntangible(unit);
             }
             else if (GameManager.Instance.AIPlayers.TryGetValue(playerNumber, out AIPlayerContext aiPlayer))
             {
                 // Add this unit to the AI player context
                 _Holder = aiPlayer.holder;
-                aiPlayer.inventory.AddIntangible(unit as IntangibleUnitBase<AIConjurerArgs>);
+                aiPlayer.inventory.AddIntangible(unit);
             }
             else
                 Debug.LogWarning("PlayerContextError: No player " + playerNumber + " found for " + unit.name);
@@ -81,13 +81,13 @@ namespace DarienEngine
                 unit.transform.parent = _Holder.transform;
         }
 
-        public static void RemoveIntangibleFromPlayerContext<T>(IntangibleUnitBase<T> unit)
+        public static void RemoveIntangibleFromPlayerContext(IntangibleUnitBase unit)
         {
             PlayerNumbers playerNumber = unit.builder.baseUnit.playerNumber;
             if (playerNumber == PlayerNumbers.Player1)
-                GameManager.Instance.PlayerMain.inventory.RemoveIntangible(unit as IntangibleUnitBase<PlayerConjurerArgs>);
+                GameManager.Instance.PlayerMain.inventory.RemoveIntangible(unit);
             else if (GameManager.Instance.AIPlayers.TryGetValue(playerNumber, out AIPlayerContext aiPlayer))
-                aiPlayer.inventory.RemoveIntangible(unit as IntangibleUnitBase<AIConjurerArgs>);
+                aiPlayer.inventory.RemoveIntangible(unit);
         }
 
         public static RectTransform FindBuildMenu(RTSUnit unit)

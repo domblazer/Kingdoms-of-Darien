@@ -31,8 +31,11 @@ public class Player : MonoBehaviour
     public AudioClip clickSound;
 
     // [HideInInspector]
-    public UnitBuilderBase<PlayerConjurerArgs> currentActiveBuilder;
+    public UnitBuilderBase currentActiveBuilder;
     public Inventory inventory;
+
+    public bool nextCommandIsPrimed;
+    public CommandTypes primedCommand;
 
     // Called at run-time in GameManager.Awake(), when Player component initialized
     public void Init(Inventory inv, RectTransform square, AudioClip sound)
@@ -51,7 +54,7 @@ public class Player : MonoBehaviour
     private void Instance_OnCursorChanged(object sender, CursorManager.OnCursorChangedEventArgs e)
     {
         if (e.cursorType == CursorManager.CursorType.Normal)
-            if (selectedUnits.Count > 0)
+            if (selectedUnits.Count > 0 && !nextCommandIsPrimed)
                 CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Move);
     }
 
@@ -62,7 +65,7 @@ public class Player : MonoBehaviour
 
         // @TODO: right click over build menu should dequeue though
         // Clear selection with right-click
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(1) && !InputManager.IsMouseOverUI())
             ClearAll();
     }
 
@@ -129,8 +132,19 @@ public class Player : MonoBehaviour
         }
         else if (!InputManager.IsMouseOverUI() && goodHit)
         {
-            // Handle click-to-move command here
-            HandleMoveCommand(hit);
+            // Handle click-to-action commands here
+            if (nextCommandIsPrimed)
+            {
+                if (primedCommand == CommandTypes.Move)
+                    HandleMoveCommand(hit);
+                else if (primedCommand == CommandTypes.Patrol)
+                    HandlePatrolCommand(hit);
+            }
+            else
+            {
+                // Default command is move
+                HandleMoveCommand(hit);
+            }
         }
 
         if (selectedUnits.Count == 0 && !InputManager.IsMouseOverUI())
@@ -189,6 +203,27 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void HandlePatrolCommand(RaycastHit hit)
+    {
+        // @TODO: should compare against Unit layer
+        if (!hit.collider.CompareTag("Friendly") && !hit.collider.CompareTag("Enemy"))
+        {
+            bool addToQueue = InputManager.HoldingShift();
+            // Handle group patrol
+            if (selectedUnits.Count > 1)
+            {
+                // @TODO
+            }
+            else if (selectedUnits.Count == 1)
+            {
+                BaseUnit unit = selectedUnits[0];
+                unit.SetPatrol(hit.point, addToQueue);
+                // @TODO play patrol click sound
+                // unit.AudioManager.PlayMoveSound();
+            }
+        }
+    }
+
     // Handle if a single unit was clicked
     private void HandleUnitClicked(RaycastHit hit)
     {
@@ -227,6 +262,13 @@ public class Player : MonoBehaviour
         return selectedUnits.Count;
     }
 
+    public void StopAllSelectedUnits()
+    {
+        Debug.Log("Issue bespoke stop command to selected units");
+        foreach (BaseUnit unit in selectedUnits)
+            unit.commandQueue.Clear();
+    }
+
     public void ClearAll()
     {
         // Clear selected units and release current builder
@@ -237,9 +279,11 @@ public class Player : MonoBehaviour
             UIManager.Instance.actionMenuInstance.Toggle(false);
         CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Normal);
         UIManager.Instance.unitInfoInstance.Toggle(false);
+
+        ClearPrimedCommand();
     }
 
-    public void SetActiveBuilder(UnitBuilderBase<PlayerConjurerArgs> builder)
+    public void SetActiveBuilder(UnitBuilderBase builder)
     {
         // Release the current active builder before setting new one
         if (currentActiveBuilder != null)
@@ -283,6 +327,17 @@ public class Player : MonoBehaviour
     public void RemoveUnitFromSelection(BaseUnit unit)
     {
         selectedUnits.Remove(unit);
+    }
+
+    public void SetPrimedCommand(CommandTypes commandType)
+    {
+        nextCommandIsPrimed = true;
+        primedCommand = commandType;
+    }
+
+    public void ClearPrimedCommand()
+    {
+        nextCommandIsPrimed = false;
     }
 
     // Is a unit within a polygon determined by 4 corners

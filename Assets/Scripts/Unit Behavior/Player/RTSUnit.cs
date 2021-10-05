@@ -9,6 +9,7 @@ using DarienEngine;
     This class represents core functionality for all units in the game; it must implement only the behavior that is common between
     the playable units (BaseUnit) and the NP-units (BaseUnitAI), i.e. movement/pathfinding, attack routine, etc.
 */
+public delegate void DieCallback(GameObject caller);
 [RequireComponent(typeof(UnitAudioManager))]
 public class RTSUnit : MonoBehaviour
 {
@@ -77,14 +78,14 @@ public class RTSUnit : MonoBehaviour
     public bool isDead { get; set; } = false;
     public bool isParking { get; set; } = false;
     protected bool tryParkingDirection;
-    protected States nextStateAfterParking;
+    protected CommandQueueItem nextCommandAfterParking;
     protected bool attackMove = false;
 
-    // @TODO: implement commandQueue for multi-command type queueing (attackQueue, masterBuildQueue)
-    protected Queue<CommandQueueItem> commandQueue = new Queue<CommandQueueItem>();
-    protected CommandQueueItem currentCommand
+    // CommandQueue designed to hold queue of any type of commands, e.g. move, build, attack, etc.
+    public CommandQueue commandQueue = new CommandQueue();
+    public CommandQueueItem currentCommand
     {
-        get { return commandQueue.Count > 0 ? commandQueue.Peek() : null; }
+        get { return !commandQueue.IsEmpty() ? commandQueue.Peek() : null; }
         set
         {
             // Setting current command means resetting queue
@@ -121,11 +122,14 @@ public class RTSUnit : MonoBehaviour
     protected List<GameObject> whoCanSeeMe = new List<GameObject>();
 
     protected float dieTime = 30;
+    protected int patrolIndex = 0;
+
+    private DieCallback dieCallback;
 
     private void Awake()
     {
         // Default move position, for units not instantiated with a parking location
-        currentCommand = new CommandQueueItem { commandType = CommandTypes.Move, commandPoint = transform.position };
+        // currentCommand = new CommandQueueItem { commandType = CommandTypes.Move, commandPoint = transform.position };
     }
 
     protected void Init()
@@ -189,59 +193,43 @@ public class RTSUnit : MonoBehaviour
 
     protected void HandleMovement()
     {
-        if (_Agent.enabled)
+        if (_Agent.enabled && !commandQueue.IsEmpty())
         {
-            if (commandQueue.Count > 0)
+            bool inRange = MoveToPosition(currentCommand.commandPoint);
+            if (inRange)
+                commandQueue.Dequeue();
+
+            // Parking should always be the first state of a new unit, even if it's just parking to transform.position
+            if (isParking)
             {
-                _Agent.SetDestination(currentCommand.commandPoint);
-
-                // Parking should always be the first state of a new unit, even if it's just parking to transform.position
-                if (isParking)
+                state = States.Parking;
+                isParking = !inRange;
+                // Here we can reliably say last state was Parking and now parking is done, next state set here
+                if (!isParking)
                 {
-                    isParking = !IsInRangeOf(currentCommand.commandPoint);
-                    if (!isParking)
-                    {
-                        // Here we can reliably say last state was Parking and now parking is done, next state set here
-                        state = nextStateAfterParking;
-                    }
+                    // Enqueue new command for next state
+                    commandQueue.Enqueue(nextCommandAfterParking);
                 }
-
-                if (!IsInRangeOf(currentCommand.commandPoint))
-                {
-                    // Add extra steering while moving
-                    if (IsMoving())
-                        HandleFacing(_Agent.steeringTarget, 0.25f);
-                }
-                // If unit has reached the position, dequeue it
-                else
-                    commandQueue.Dequeue();
-
-                // InflateAvoidanceRadius();
             }
-            /* else
-            {
-                // Return to being an obstacle while not moving
-                TryToggleToObstacle();
-            } */
+            else
+                state = States.Moving;
         }
     }
 
-    protected void DetermineCurrentState<T>(UnitBuilderBase<T> builder)
+    protected bool MoveToPosition(Vector3 moveTo)
     {
-        // @TODO: state should probably be determined in some way by what's in the commandQueue
-        if (isKinematic && isParking)
-            state = States.Parking;
-        else if (builder != null && builder.isBuilding)
-            state = States.Conjuring;
-        else if (IsMoving() && !IsAttacking() && !engagingTarget)
-            state = States.Moving;
-        else if (IsAttacking())
-            state = States.Attacking;
-        // @TODO: other states: guarding, patrolling, etc.
-        else if (state.Value == States.Patrolling.Value)
-            state = States.Patrolling;
-        else
-            state = States.Standby;
+        bool inRange = false;
+        if (_Agent.enabled && moveTo != null)
+        {
+            _Agent.SetDestination(moveTo);
+            // Add extra steering while moving
+            if (!(inRange = IsInRangeOf(moveTo)))
+            {
+                if (IsMoving())
+                    HandleFacing(_Agent.steeringTarget, 0.25f);
+            }
+        }
+        return inRange;
     }
 
     protected void InflateAvoidanceRadius()
@@ -272,7 +260,7 @@ public class RTSUnit : MonoBehaviour
 
     protected void HandleAttackRoutine()
     {
-        // @TODO: handle "out of range" event for non-kinematic attackers
+        state = States.Attacking;
 
         // State isAttacking when engagingTarget and not still orienting to attack position
         if (engagingTarget && (isKinematic ? !isMovingToAttack : !facing))
@@ -283,54 +271,22 @@ public class RTSUnit : MonoBehaviour
         if (attackTarget)
             rangeOffset = isMeleeAttacker ? attackTarget.GetComponent<RTSUnit>().offset.x * 0.85f : attackRange;
 
+        bool inRange = false;
         // While locked on target but not in range, keep moving to attack position
-        if (attackTarget && !IsInRangeOf(attackTarget.transform.position, rangeOffset))
+        if (attackTarget && !inRange)
         {
-            TryToggleToAgent();
-
             isMovingToAttack = true;
             isAttacking = false;
-
-            // Update or create command queue item for attacking target
-            if (commandQueue.Count > 0)
-            {
-                // Update the Vector3 position for current command with current attackTarget position
-                currentCommand.commandPoint = attackTarget.transform.position;
-                /* currentCommand = new CommandQueueItem
-                {
-                    commandType = CommandTypes.Attack,
-                    commandPoint = attackTarget.transform.position,
-                    attackInfo = new AttackInfo
-                    {
-                        attackTarget = attackTarget
-                    }
-                }; */
-            }
-            else
-            {
-                commandQueue.Enqueue(new CommandQueueItem
-                {
-                    commandType = CommandTypes.Attack,
-                    commandPoint = attackTarget.transform.position,
-                    attackInfo = new AttackInfo
-                    {
-                        attackTarget = attackTarget
-                    }
-                });
-            }
-
+            TryToggleToAgent();
+            // Move to attack target position 
+            inRange = MoveToPosition(attackTarget.transform.position);
         }
         // Once unit is in range, can stop moving
-        else if (isMovingToAttack && attackTarget && IsInRangeOf(attackTarget.transform.position, rangeOffset))
+        else if (isMovingToAttack && attackTarget && inRange)
         {
-            Debug.Log("Arrived at target");
             TryToggleToObstacle();
             isMovingToAttack = false;
         }
-
-        // @TODO: when done attacking/killed attackTarget, would be good to start like a "disperse" process 
-        // so unit groups don't pack together or just stop in place when done attacking, but instead spread out 
-        // a bit into a loose formation
 
         // Handle attacking behavior
         if (isAttacking && attackTarget != null)
@@ -339,15 +295,13 @@ public class RTSUnit : MonoBehaviour
             {
                 // If attack target has died at any point while I was attacking it, clear attack and stop attack routine
                 ClearAttack();
+                commandQueue.Dequeue();
                 return;
             }
 
             // Kinematic units do facing; @Note: stationary attack units do their own facing routine (e.g. Stronghold)
             if (isKinematic && !IsMoving())
                 facing = HandleFacing(attackTarget.transform.position, 0.5f); // Continue facing attackTarget while isAttacking
-
-            // @TODO: somewhere other than in AutoPickAttackTarget, we need to determine when the current attackTarget dies/is killed
-            // so we can ClearAttack() cuz it's not working right now
 
             // Attack interval
             if (Time.time > nextAttack)
@@ -359,6 +313,21 @@ public class RTSUnit : MonoBehaviour
             }
             else
                 nextAttackReady = false;
+        }
+    }
+
+    protected void Patrol(bool roam = false)
+    {
+        if (_Agent.enabled && !commandQueue.IsEmpty())
+        {
+            state = States.Patrolling;
+            List<PatrolPoint> patrolPoints = currentCommand.patrolRoute.patrolPoints;
+            if (patrolIndex >= patrolPoints.Count)
+                patrolIndex = 0;
+            bool inRange = MoveToPosition(patrolPoints[patrolIndex].point);
+
+            if (inRange)
+                patrolIndex = roam ? Random.Range(0, patrolPoints.Count) : patrolIndex + 1;
         }
     }
 
@@ -396,21 +365,6 @@ public class RTSUnit : MonoBehaviour
     {
         // @TODO: need to account for attacking intangible units 
 
-        // If current attackTarget has died, clear attack
-        if (attackTarget && attackTarget.GetComponent<RTSUnit>() && attackTarget.GetComponent<RTSUnit>().isDead)
-        {
-            ClearAttack();
-
-            // Toggle kinematic attacker back to movable agent
-            TryToggleToAgent();
-
-            // Stop any movement at this point until another valid target is picked
-            // @TODO: to stop movement/commands should be able to just clear commandQueue
-            // @TODO: stop unless there's another in the attackQueue
-            // commandQueue.Clear();
-            currentCommand = new CommandQueueItem { commandType = CommandTypes.Move, commandPoint = transform.position };
-        }
-
         // Find closest target
         GameObject target = null;
         target = FindClosestEnemy();
@@ -433,13 +387,14 @@ public class RTSUnit : MonoBehaviour
             HandleBumping(col.gameObject.GetComponentInParent<RTSUnit>()); // If collided object is in the "Inner Trigger" layer, we can pretty safely assume it's parent must be an RTSUnit
         // Layer 9 is "Unit" layer
         else if (col.gameObject.tag == compareTag && col.gameObject.layer == 9 && !col.isTrigger)
+        {
+            // Set a callback function to go off when the enemy unit dies to remove it from enemiesInSight
+            col.gameObject.GetComponent<RTSUnit>().CallbackOnDie((enemy) => { enemiesInSight.Remove(enemy); });
             enemiesInSight.Add(col.gameObject);
+        }
         // Layer 15 is "Fog of War" mask layer
         else if (col.gameObject.tag == compareTag && col.gameObject.layer == 15)
             whoCanSeeMe.Add(col.transform.parent.gameObject);
-
-        // @TODO: theoretically might be more efficient to send a callback to col.gameObject.RTSUnit that gets called when it dies,
-        // then the calledback function would do the remove
     }
 
     private void OnTriggerExit(Collider col)
@@ -451,6 +406,11 @@ public class RTSUnit : MonoBehaviour
             whoCanSeeMe.Remove(col.transform.parent.gameObject);
     }
 
+    public void CallbackOnDie(DieCallback callback)
+    {
+        dieCallback = callback;
+    }
+
     protected GameObject FindClosestEnemy()
     {
         GameObject closest = null;
@@ -459,6 +419,7 @@ public class RTSUnit : MonoBehaviour
         if (enemiesInSight.Count > 0)
         {
             // @TODO: need to handle intangibles too, i.e. item.GetCompontent<IngangibleUnitBase<T??>() ? isIntangible
+            // @TODO: this is also not efficient to be calling all the time. Need better way to remove nulls/dead
             enemiesInSight = enemiesInSight.Where(item => item != null && !item.GetComponent<RTSUnit>().isDead).ToList();
         }
         foreach (GameObject go in enemiesInSight)
@@ -511,11 +472,53 @@ public class RTSUnit : MonoBehaviour
         tryParkingDirection = parkingDirectionToggle;
     }
 
-    public void Begin(DarienEngine.Directions facingDir, Vector3 parkPosition, bool parkToggle, States nextState)
+    public void Begin(DarienEngine.Directions facingDir, Vector3 parkPosition, bool parkToggle, CommandQueueItem nextCmd)
     {
         // SetFacingDir(facingDir);
         SetParking(parkPosition, parkToggle);
-        nextStateAfterParking = nextState;
+        nextCommandAfterParking = nextCmd;
+    }
+
+    public void SetPatrol(Vector3 patrolPoint, bool addToQueue = false)
+    {
+        // Patrol commands maintain all patrol points within one command
+        CommandQueueItem newCommand = new CommandQueueItem
+        {
+            commandType = CommandTypes.Patrol,
+            commandPoint = patrolPoint,
+            patrolRoute = new PatrolRoute
+            {
+                // Initial patrol points if clicking single is just the transform.position when the click happened, and the click point
+                patrolPoints = new List<PatrolPoint>()
+                {
+                    new PatrolPoint { point = transform.position },
+                    new PatrolPoint { point = patrolPoint }
+                }
+            }
+        };
+        // If not holding shift, clear queue/set currentCommand as new patrol command
+        if (!addToQueue)
+            currentCommand = newCommand;
+        else
+        {
+            CommandQueueItem lastCommand = commandQueue.Last;
+            // If last command was a Patrol command, add the patrol point to that patrolRoute
+            if (lastCommand != null && lastCommand.commandType == CommandTypes.Patrol)
+            {
+                lastCommand.patrolRoute.patrolPoints.Add(new PatrolPoint
+                {
+                    point = patrolPoint,
+                    sticker = Instantiate(
+                        GameManager.Instance.patrolCommandSticker, 
+                        new Vector3(patrolPoint.x, 1.1f, patrolPoint.z), 
+                        GameManager.Instance.patrolCommandSticker.transform.rotation
+                    )
+                });
+            }
+            // Otherwise, queue a new Patrol route
+            else
+                commandQueue.Enqueue(newCommand);
+        }
     }
 
     public void TryAttack(GameObject target, bool addToQueue = false)
@@ -528,7 +531,6 @@ public class RTSUnit : MonoBehaviour
             isMovingToAttack = true;
             TryToggleToAgent();
 
-            // @TODO: handle queue of attack targets
             if (!addToQueue)
                 commandQueue.Clear();
             commandQueue.Enqueue(new CommandQueueItem
@@ -591,6 +593,10 @@ public class RTSUnit : MonoBehaviour
         // also walls don't even have an animator component
         if (_Animator)
             _Animator.SetTrigger("die");
+
+        // Call the die callback now if it was set
+        if (dieCallback != null)
+            dieCallback(gameObject);
 
         // Remove this unit from the player context
         Functions.RemoveUnitFromPlayerContext(this);

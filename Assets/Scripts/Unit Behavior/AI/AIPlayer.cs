@@ -68,7 +68,7 @@ public class AIPlayer : MonoBehaviour
             {
                 BuilderAI builderAI = builder.gameObject.GetComponent<BuilderAI>();
                 // Only queue builders who are not in a roaming interval, and not in a build routing with at least 1 unit in the queue
-                if (!builderAI.isInRoamInterval && !builderAI.isBuilding && !builderAI.baseUnit.isParking && builderAI.masterBuildQueue.Count < 1)
+                if (!builderAI.isInRoamInterval && !builderAI.isBuilding && !builderAI.baseUnit.isParking && builderAI.baseUnit.commandQueue.Count < 1)
                 {
                     GameObject unitToBuild = SelectValidUnit(builderAI.buildUnitPrefabs);
                     if (unitToBuild)

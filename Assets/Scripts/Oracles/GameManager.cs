@@ -24,6 +24,10 @@ public class GameManager : MonoBehaviour
     public bool enableFogOfWar = true;
     public GameObject fogOfWarPlane;
 
+    public GameObject moveCommandSticker;
+    public GameObject guardCommandSticker;
+    public GameObject patrolCommandSticker;
+
     public Dictionary<PlayerNumbers, AIPlayerContext> AIPlayers { get; set; } = new Dictionary<PlayerNumbers, AIPlayerContext>();
     public MainPlayerContext PlayerMain { get; set; }
     public AudioSource AudioSource { get; set; }
@@ -119,6 +123,12 @@ public class GameManager : MonoBehaviour
         return currentHovering != null;
     }
 
+    // If hovering over unit not 'compare'
+    public bool IsHoveringOther(GameObject compare)
+    {
+        return currentHovering != null && compare != currentHovering;
+    }
+
     public void PauseGame()
     {
         Time.timeScale = 0;
@@ -127,5 +137,16 @@ public class GameManager : MonoBehaviour
     public void ResumeGame()
     {
         Time.timeScale = 1;
+    }
+
+    public GameObject InstantiateHelper(GameObject obj, Vector3 position)
+    {
+        return Instantiate(obj, position, obj.transform.rotation);
+    }
+
+    public void DestroyHelper(GameObject obj)
+    {
+        if (obj != null)
+            Destroy(obj);
     }
 }

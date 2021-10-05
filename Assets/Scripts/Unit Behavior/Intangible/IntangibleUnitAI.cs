@@ -4,7 +4,7 @@ using UnityEngine;
 using DarienEngine;
 using DarienEngine.AI;
 
-public class IntangibleUnitAI : IntangibleUnitBase<AIConjurerArgs>
+public class IntangibleUnitAI : IntangibleUnitBase
 {
     // Update "Intangible Mass" color gradient until done
     void Update()
@@ -17,12 +17,12 @@ public class IntangibleUnitAI : IntangibleUnitBase<AIConjurerArgs>
     }
 
     // Bind vars for AI
-    public void Bind(UnitBuilderBase<AIConjurerArgs> bld, Transform rally, RTSUnit.States initialState, bool parkDirToggle = false, Directions dir = Directions.Forward)
+    public void Bind(UnitBuilderBase bld, Transform rally, CommandQueueItem nextCmd, bool parkDirToggle = false, Directions dir = Directions.Forward)
     {
         builder = bld;
         parkToggle = parkDirToggle;
         rallyPoint = rally ? rally.position : Vector3.zero;
-        firstState = initialState;
+        nextCommandAfterParking = nextCmd;
         SetFacingDir(dir);
     }
 }
