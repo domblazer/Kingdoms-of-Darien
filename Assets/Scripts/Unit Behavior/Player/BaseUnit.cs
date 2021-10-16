@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.EventSystems;
 using DarienEngine;
 
 public class BaseUnit : RTSUnit
@@ -84,9 +83,11 @@ public class BaseUnit : RTSUnit
                         Patrol();
                         break;
                     case CommandTypes.Conjure:
-                        // @TODO: _Builder.handleConjuringRouting (moveTo buildSpot and conjure)
-
-                        state = States.Conjuring;
+                        if (isKinematic)
+                            (_Builder as Builder).HandleConjureRoutine();
+                        else
+                            (_Builder as Factory).HandleConjureRoutine();
+                        state = RTSUnit.States.Conjuring;
                         break;
                     case CommandTypes.Guard:
                         // @TODO 
@@ -119,8 +120,7 @@ public class BaseUnit : RTSUnit
             {
                 // Update select ring color based on health when selected
                 selectRing.GetComponent<SpriteRenderer>().color = Color.Lerp(Color.red, Color.green, (health / 100));
-
-                Debug.Log(gameObject.name + " commandQueue: " + string.Join<CommandQueueItem>(", ", commandQueue.ToArray()));
+                // Debug.Log(gameObject.name + " commandQueue: " + string.Join<CommandQueueItem>(", ", commandQueue.ToArray()));
 
                 // Update the unit info UI if no other unit has focus from hovering
                 if (!GameManager.Instance.IsHoveringOther(gameObject))
@@ -193,7 +193,8 @@ public class BaseUnit : RTSUnit
                         pp.sticker.SetActive(val);
                 }
             }
-            item.commandSticker.SetActive(val);
+            if (item.commandSticker)
+                item.commandSticker.SetActive(val);
         }
     }
 
@@ -254,7 +255,7 @@ public class BaseUnit : RTSUnit
     {
         // @TODO: if mainPlayer.nextCommandIsPrimed, this should still change to Select cursor, but when moving back, should
         // go back to the primed command mouse cursor
-        if (!EventSystem.current.IsPointerOverGameObject() && selectable)
+        if (!InputManager.IsMouseOverUI() && selectable)
         {
             CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Select);
             UIManager.Instance.unitInfoInstance.Set(super, null);

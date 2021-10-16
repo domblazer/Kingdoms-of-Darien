@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 4506203142493968638}
   - component: {fileID: 4506203142493968637}
   - component: {fileID: 1020976369}
-  m_Layer: 0
+  - component: {fileID: 1602453857707747400}
+  m_Layer: 5
   m_Name: move-sticker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -109,3 +110,16 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 92acbb90b96556944ab39b86af34b88f, type: 3}
   - {fileID: 21300000, guid: 21b36e9e04354f74c8f79c925807a495, type: 3}
   frameRate: 0.1
+--- !u!65 &1602453857707747400
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4506203142493968636}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.32999998, y: 0.3300001, z: 0.1}
+  m_Center: {x: 0, y: 0, z: 0}

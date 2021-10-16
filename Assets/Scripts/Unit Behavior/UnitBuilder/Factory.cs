@@ -27,13 +27,13 @@ public class Factory : UnitBuilderPlayer
         // @TODO: ability to reposition builderRallyPoint
 
         // Keep track of master queue to know when building
-        isBuilding = !baseUnit.commandQueue.IsEmpty();
+        // isBuilding = !baseUnit.commandQueue.IsEmpty();
 
         // Only currently selected builder updates menu text
         if (isCurrentActive)
             UpdateAllButtonsText();
 
-        // While masterQueue is not empty, continue queueing up intangible prefabs
+        /* // While masterQueue is not empty, continue queueing up intangible prefabs
         if (!baseUnit.commandQueue.IsEmpty() && nextQueueReady)
         {
             // @TODO: also need to check that the spawn point is clear before moving on to next unit
@@ -48,7 +48,7 @@ public class Factory : UnitBuilderPlayer
             // (right-click) to clear. Also, as long as the condition is true, this should just keep pumping out the same unit
             // maybe something like:
             // if (mode === Modes.Infinite) {masterBuildQueue.Enqueue(map); map.buildQueue.Enqueue(map.prefab);}
-        }
+        } */
     }
 
     public void QueueBuild(ConjurerArgs item, Vector2 clickPoint)
@@ -134,5 +134,25 @@ public class Factory : UnitBuilderPlayer
         ToggleRallyPoint(false);
         ToggleBuildMenu(false); // Hide build menu
         ReleaseButtonListeners();
+    }
+
+    public void HandleConjureRoutine()
+    {
+        isBuilding = !baseUnit.commandQueue.IsEmpty();
+        // While masterQueue is not empty, continue queueing up intangible prefabs
+        if (nextQueueReady)
+        {
+            // @TODO: also need to check that the spawn point is clear before moving on to next units
+            ConjurerArgs next = baseUnit.currentCommand.conjurerArgs;
+            InstantiateNextIntangible(next);
+            // Toggle whether new unit parks towards the right or left
+            parkingDirectionToggle = !parkingDirectionToggle;
+            nextQueueReady = false;
+
+            // @TODO: handle infinite. If one unit got the infinite command, all subsequent left-clicks on that unit need to be ignored
+            // (right-click) to clear. Also, as long as the condition is true, this should just keep pumping out the same unit
+            // maybe something like:
+            // if (mode === Modes.Infinite) {masterBuildQueue.Enqueue(map); map.buildQueue.Enqueue(map.prefab);}
+        }
     }
 }

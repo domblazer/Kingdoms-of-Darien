@@ -33,22 +33,23 @@ public class BuilderAI : UnitBuilderAI
 
             // @TODO: intangible unit offset
             if (!baseUnit.IsInRangeOf(buildArgs.buildSpot, 2))
-                baseUnit.SetMove(buildArgs.buildSpot);
+                baseUnit.MoveToPosition(buildArgs.buildSpot); // baseUnit.SetMove(buildArgs.buildSpot);
             else
                 StartNextIntangible(buildArgs);
         }
         else if (!isBuilding && isInRoamInterval)
         {
             // If builderAI is not in a build routine, just have it roam around
-            baseUnit.state = RTSUnit.States.Patrolling;
+            // baseUnit.state = RTSUnit.States.Patrolling;
+            // @TODO: Enqueue(new CommandQueueItem { commandType = CommandTypes.Patrol })
         }
     }
 
     // Called once upon arrival at next build position
     private void StartNextIntangible(ConjurerArgs buildArgs)
     {
-        baseUnit.SetMove(transform.position);
-        baseUnit.state = RTSUnit.States.Conjuring;
+        // baseUnit.SetMove(transform.position);
+        // baseUnit.state = RTSUnit.States.Conjuring;
         nextQueueReady = false;
         isBuilding = true;
         baseUnit.commandQueue.Dequeue();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DarienEngine;
 
+public delegate void CommandPointClicked();
 public class CommandSticker : MonoBehaviour
 {
     private SpriteRenderer spriteRenderer;
@@ -11,6 +12,7 @@ public class CommandSticker : MonoBehaviour
     private int currentFrame = 0;
     private float frameTimer;
     private int frameCount;
+    private CommandPointClicked commandPointClickedCallback;
 
     // Start is called before the first frame update
     void Start()
@@ -33,5 +35,17 @@ public class CommandSticker : MonoBehaviour
                 spriteRenderer.sprite = spriteArray[currentFrame];
             }
         }
+    }
+
+    void OnMouseUp()
+    {
+        // If this sticker is clicked, propagate event up so it can be removed from list
+        if (commandPointClickedCallback != null)
+            commandPointClickedCallback(); 
+    }
+
+    public void OnClick(CommandPointClicked callback)
+    {
+        commandPointClickedCallback = callback;
     }
 }

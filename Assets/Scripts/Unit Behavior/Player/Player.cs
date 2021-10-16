@@ -31,7 +31,7 @@ public class Player : MonoBehaviour
     public AudioClip clickSound;
 
     // [HideInInspector]
-    public UnitBuilderBase currentActiveBuilder;
+    public UnitBuilderPlayer currentActiveBuilder;
     public Inventory inventory;
 
     public bool nextCommandIsPrimed;
@@ -130,7 +130,8 @@ public class Player : MonoBehaviour
             // Select the units
             HandleUnitsUnderSquare();
         }
-        else if (!InputManager.IsMouseOverUI() && goodHit)
+        // GoodHit, mouse not over ui, not hit "Unit" layer, and not hit "UI" layer
+        else if (!InputManager.IsMouseOverUI() && goodHit && hit.transform.gameObject.layer != 9 && hit.transform.gameObject.layer != 5)
         {
             // Handle click-to-action commands here
             if (nextCommandIsPrimed)
@@ -176,51 +177,43 @@ public class Player : MonoBehaviour
     private void HandleMoveCommand(RaycastHit hit)
     {
         // Here is where units should be told to move
-        // @TODO: should compare against Unit layer
-        if (!hit.collider.CompareTag("Friendly") && !hit.collider.CompareTag("Enemy"))
+
+        bool doAttackMove = InputManager.HoldingCtrl();
+        bool addToMoveQueue = InputManager.HoldingShift();
+
+        // Handle group movement
+        if (selectedUnits.Count > 1)
         {
-            bool doAttackMove = InputManager.HoldingCtrl();
-            bool addToMoveQueue = InputManager.HoldingShift();
-
-            // @TODO: if InputManager.HoldingShift() need to add this point to an array of positions for the unit to travel to sequentially
-            // @TODO: at this click point, need to instantiate sprite object that will show/hide depending on who is selected and holding shift
-            // so, need to queue the sprite object with the transform as well
-
-            // Handle group movement
-            if (selectedUnits.Count > 1)
-            {
-                Clusters.MoveGroup(selectedUnits, hit.point, addToMoveQueue, doAttackMove);
-            }
-            else if (selectedUnits.Count == 1)
-            {
-                // Just move the single selected unit directly to click point
-                BaseUnit unit = selectedUnits[0];
-                unit.SetMove(hit.point, addToMoveQueue, doAttackMove);
-                unit.AudioManager.PlayMoveSound();
-            }
-            // TODO: conflict with unit.PlayMoveSound()?
-            GameManager.Instance.AudioSource.PlayOneShot(clickSound);
+            Clusters.MoveGroup(selectedUnits, hit.point, addToMoveQueue, doAttackMove);
         }
+        else if (selectedUnits.Count == 1)
+        {
+            // Just move the single selected unit directly to click point
+            BaseUnit unit = selectedUnits[0];
+            // @TODO: this isn't always just SetMove, e.g. for Builder, if activeGhost is placed, that's a QueueBuild command on that guy
+            // So need a better way to handle such exceptions, where commands are being queued outside the main player script here
+            if (!(currentActiveBuilder && currentActiveBuilder.IsBuilder() && (currentActiveBuilder as Builder).activeFloatingGhost))
+                unit.SetMove(hit.point, addToMoveQueue, doAttackMove);
+            unit.AudioManager.PlayMoveSound();
+        }
+        // TODO: conflict with unit.PlayMoveSound()?
+        GameManager.Instance.AudioSource.PlayOneShot(clickSound);
     }
 
     private void HandlePatrolCommand(RaycastHit hit)
     {
-        // @TODO: should compare against Unit layer
-        if (!hit.collider.CompareTag("Friendly") && !hit.collider.CompareTag("Enemy"))
+        bool addToQueue = InputManager.HoldingShift();
+        // Handle group patrol
+        if (selectedUnits.Count > 1)
         {
-            bool addToQueue = InputManager.HoldingShift();
-            // Handle group patrol
-            if (selectedUnits.Count > 1)
-            {
-                // @TODO
-            }
-            else if (selectedUnits.Count == 1)
-            {
-                BaseUnit unit = selectedUnits[0];
-                unit.SetPatrol(hit.point, addToQueue);
-                // @TODO play patrol click sound
-                // unit.AudioManager.PlayMoveSound();
-            }
+            // @TODO
+        }
+        else if (selectedUnits.Count == 1)
+        {
+            BaseUnit unit = selectedUnits[0];
+            unit.SetPatrol(hit.point, addToQueue);
+            // @TODO play patrol click sound
+            // unit.AudioManager.PlayMoveSound();
         }
     }
 
@@ -283,7 +276,7 @@ public class Player : MonoBehaviour
         ClearPrimedCommand();
     }
 
-    public void SetActiveBuilder(UnitBuilderBase builder)
+    public void SetActiveBuilder(UnitBuilderPlayer builder)
     {
         // Release the current active builder before setting new one
         if (currentActiveBuilder != null)

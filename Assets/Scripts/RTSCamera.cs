@@ -141,7 +141,7 @@ public class RTSCamera : MonoBehaviour
             resetPos = new Vector3(transform.position.x, zoomDistanceMax, transform.position.z);
             resetRot = Quaternion.Euler(50f, 0, 0);
             transform.position = Vector3.Lerp(transform.position, resetPos, Time.deltaTime);
-            transform.rotation = Quaternion.Lerp(transform.rotation, resetRot, Time.deltaTime);
+            // transform.rotation = Quaternion.Lerp(transform.rotation, resetRot, Time.deltaTime);
         }
 
         // TODO: reclamp min and max distances

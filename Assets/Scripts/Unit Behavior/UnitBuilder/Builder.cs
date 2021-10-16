@@ -17,10 +17,10 @@ public class Builder : UnitBuilderPlayer
         InitVirtualMenu(ghostUnits);
     }
 
-    void Update()
+    /* void Update()
     {
         // Keep traveling to ghosts in the queue until empty
-        if (!baseUnit.commandQueue.IsEmpty() && nextQueueReady)
+         if (!baseUnit.commandQueue.IsEmpty() && nextQueueReady)
         {
             string dbg = "";
             foreach (CommandQueueItem cmd in baseUnit.commandQueue)
@@ -34,7 +34,9 @@ public class Builder : UnitBuilderPlayer
             // Move to next ghost in the queue
             if (nextGhost.IsSet() && !baseUnit.IsInRangeOf(nextGhost.transform.position, offsetRange.x))
             {
-                baseUnit.SetMove(nextGhost.transform.position);
+                // @TODO: shouldn't be using SetMove here
+                // baseUnit.SetMove(nextGhost.transform.position);
+                baseUnit.MoveToPosition(nextGhost.transform.position);
                 Debug.Log("Builder moving to ghost");
             }
             // When arrived at ghost, start building intangible
@@ -47,8 +49,8 @@ public class Builder : UnitBuilderPlayer
                 baseUnit.commandQueue.Dequeue();
                 nextGhost.StartBuild();
             }
-        }
-    }
+        } 
+    } */
 
     public void QueueBuild(ConjurerArgs item, Vector2 clickPoint)
     {
@@ -87,5 +89,38 @@ public class Builder : UnitBuilderPlayer
         isCurrentActive = false;
         ToggleBuildMenu(false); // Hide build menu
         ReleaseButtonListeners();
+    }
+
+    public void HandleConjureRoutine()
+    {
+        if (nextQueueReady)
+        {
+            // Builders always keep a queue of GhostUnits
+            GhostUnit nextGhost = baseUnit.currentCommand.conjurerArgs.prefab.GetComponent<GhostUnit>();
+            // @TODO: offset depends on direction, e.g. if walking along x, use x, y, y, and diagonal use mix
+            Vector3 offsetRange = nextGhost.offset;
+            // Move to next ghost in the queue
+            if (nextGhost.IsSet() && !baseUnit.IsInRangeOf(nextGhost.transform.position, offsetRange.x))
+            {
+                Debug.Log("Builder moving to ghost");
+                baseUnit.MoveToPosition(nextGhost.transform.position);
+            }
+            // When arrived at ghost, start building intangible
+            else
+            {
+                Debug.Log("Builder arrived at ghost");
+                baseUnit.MoveToPosition(transform.position);
+                nextQueueReady = false;
+                isBuilding = true;
+                // @TODO: probably shouldn't dequeue until intangible is done?
+                // baseUnit.commandQueue.Dequeue();
+                nextGhost.StartBuild(NextIntangibleCompleted);
+            }
+        }
+    }
+
+    public void NextIntangibleCompleted()
+    {
+        baseUnit.commandQueue.Dequeue();
     }
 }

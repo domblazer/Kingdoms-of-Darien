@@ -1,29 +1,57 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 using System.Collections.Generic;
 
 namespace DarienEngine
 {
-    public class CommandQueue : Queue<CommandQueueItem>
+    public class CommandQueue : List<CommandQueueItem>
     {
         public CommandQueueItem Last { get; private set; }
-        new public void Enqueue(CommandQueueItem item)
+        public bool isAI = false;
+
+        public void Enqueue(CommandQueueItem item)
         {
-            base.Enqueue(item);
+            item.OnCommandChanged += ItemChanged;
+            base.Add(item);
             Last = item;
-            item.PlaceCommandSticker();
+            if (!isAI)
+                item.PlaceCommandSticker();
         }
 
-        new public CommandQueueItem Dequeue()
+        public CommandQueueItem Dequeue()
         {
-            CommandQueueItem dq = base.Dequeue();
-            dq.RemoveCommandSticker();
+            CommandQueueItem dq = base[0];
+            base.RemoveAt(0);
+            if (!isAI)
+                dq.RemoveCommandSticker();
             return dq;
+        }
+
+        public CommandQueueItem Peek()
+        {
+            return base[0];
+        }
+
+        public void ItemChanged(object sender, CommandQueueItem.CommandChangedEventArgs changeEvent)
+        {
+            if (changeEvent.changeType == "stickerClicked")
+            {
+                changeEvent.command.RemoveCommandSticker();
+                base.Remove(changeEvent.command);
+            }
         }
     }
 
     public class CommandQueueItem
     {
+        public class CommandChangedEventArgs
+        {
+            public CommandQueueItem command;
+            public CommandTypes commandType;
+            public string changeType = "";
+        }
+        public event EventHandler<CommandChangedEventArgs> OnCommandChanged;
         public CommandTypes commandType;
         public Vector3 commandPoint;
         // type is Conjurer?: 
@@ -39,7 +67,17 @@ namespace DarienEngine
         public void PlaceCommandSticker()
         {
             if (CommandMappings.StickerMap.TryGetValue(commandType, out GameObject sticker))
+            {
                 commandSticker = GameManager.Instance.InstantiateHelper(sticker, new Vector3(commandPoint.x, commandPoint.y + 0.1f, commandPoint.z));
+                commandSticker.GetComponent<CommandSticker>().OnClick(HandlePointClicked);
+                if (!InputManager.HoldingShift())
+                    commandSticker.SetActive(false);
+            }
+        }
+
+        public void HandlePointClicked()
+        {
+            OnCommandChanged?.Invoke(this, new CommandChangedEventArgs { commandType = commandType, changeType = "stickerClicked", command = this });
         }
 
         public void RemoveCommandSticker()

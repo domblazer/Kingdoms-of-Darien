@@ -11,7 +11,7 @@ public static class ExtensionMethods
         return source.Select((item, index) => (item, index));
     }
 
-    public static bool IsEmpty<T>(this Queue<T> source)
+    public static bool IsEmpty<T>(this List<T> source)
     {
         return source.Count == 0;
     }

@@ -34,6 +34,8 @@ public class BaseUnitAI : RTSUnit
     {
         // General set-up in RTSUnit
         Init();
+        // @IMPORTANT: CommandQueue needs to know this is for AI so it won't place stickers on commandPoints
+        commandQueue.isAI = true;
 
         // Set fog-of-war based on game manager
         enableFogOfWar = GameManager.Instance.enableFogOfWar;
@@ -59,9 +61,11 @@ public class BaseUnitAI : RTSUnit
 
         // Initialize the starting state
         if (startState == StartStates.Patrolling)
-            state = defaultState = States.Patrolling;
+            currentCommand = new CommandQueueItem { commandType = CommandTypes.Patrol, patrolRoute = null };
+        // @TODO: map other states to commands 
         else if (startState == StartStates.Standby)
             state = defaultState = States.Standby;
+
     }
 
     private void Update()
@@ -97,7 +101,7 @@ public class BaseUnitAI : RTSUnit
                         Patrol(true);
                         break;
                     case CommandTypes.Conjure:
-                        // @TODO: _Builder.handleConjuringRouting (moveTo buildSpot and conjure)
+                        // @TODO: _Builder.handleConjuringRoutine (moveTo buildSpot and conjure)
 
                         state = States.Conjuring;
                         break;
@@ -112,7 +116,7 @@ public class BaseUnitAI : RTSUnit
             }
             else
             {
-                // @TODO: if commandQueue is empty, just be on standby
+                // @TODO: if commandQueue is empty, just be on standby? Or go back to default or previous state?
                 state = defaultState;
             }
 

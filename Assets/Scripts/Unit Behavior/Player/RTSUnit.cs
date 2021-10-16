@@ -193,7 +193,7 @@ public class RTSUnit : MonoBehaviour
 
     protected void HandleMovement()
     {
-        if (_Agent.enabled && !commandQueue.IsEmpty())
+        if (isKinematic && _Agent.enabled && !commandQueue.IsEmpty())
         {
             bool inRange = MoveToPosition(currentCommand.commandPoint);
             if (inRange)
@@ -216,10 +216,10 @@ public class RTSUnit : MonoBehaviour
         }
     }
 
-    protected bool MoveToPosition(Vector3 moveTo)
+    public bool MoveToPosition(Vector3 moveTo)
     {
         bool inRange = false;
-        if (_Agent.enabled && moveTo != null)
+        if (isKinematic && _Agent.enabled && moveTo != null)
         {
             _Agent.SetDestination(moveTo);
             // Add extra steering while moving
@@ -271,19 +271,19 @@ public class RTSUnit : MonoBehaviour
         if (attackTarget)
             rangeOffset = isMeleeAttacker ? attackTarget.GetComponent<RTSUnit>().offset.x * 0.85f : attackRange;
 
-        bool inRange = false;
         // While locked on target but not in range, keep moving to attack position
-        if (attackTarget && !inRange)
+        if (attackTarget && !IsInRangeOf(attackTarget.transform.position, attackRange))
         {
             isMovingToAttack = true;
             isAttacking = false;
             TryToggleToAgent();
             // Move to attack target position 
-            inRange = MoveToPosition(attackTarget.transform.position);
+            MoveToPosition(attackTarget.transform.position);
         }
         // Once unit is in range, can stop moving
-        else if (isMovingToAttack && attackTarget && inRange)
+        else if (isMovingToAttack && attackTarget && IsInRangeOf(attackTarget.transform.position, attackRange))
         {
+            MoveToPosition(transform.position);
             TryToggleToObstacle();
             isMovingToAttack = false;
         }
@@ -389,7 +389,7 @@ public class RTSUnit : MonoBehaviour
         else if (col.gameObject.tag == compareTag && col.gameObject.layer == 9 && !col.isTrigger)
         {
             // Set a callback function to go off when the enemy unit dies to remove it from enemiesInSight
-            col.gameObject.GetComponent<RTSUnit>().CallbackOnDie((enemy) => { enemiesInSight.Remove(enemy); });
+            col.gameObject.GetComponent<RTSUnit>().OnDie((enemy) => { enemiesInSight.Remove(enemy); });
             enemiesInSight.Add(col.gameObject);
         }
         // Layer 15 is "Fog of War" mask layer
@@ -406,7 +406,7 @@ public class RTSUnit : MonoBehaviour
             whoCanSeeMe.Remove(col.transform.parent.gameObject);
     }
 
-    public void CallbackOnDie(DieCallback callback)
+    public void OnDie(DieCallback callback)
     {
         dieCallback = callback;
     }
@@ -453,21 +453,18 @@ public class RTSUnit : MonoBehaviour
         attackMove = doAttackMove;
         isParking = false;
         ClearAttack();
-        state = States.Moving;
         TryToggleToAgent();
     }
 
     public void SetParking(Vector3 position)
     {
         isParking = true;
-        state = States.Parking;
         currentCommand = new CommandQueueItem { commandType = CommandTypes.Move, commandPoint = position };
     }
 
     public void SetParking(Vector3 position, bool parkingDirectionToggle)
     {
         isParking = true;
-        state = States.Parking;
         currentCommand = new CommandQueueItem { commandType = CommandTypes.Move, commandPoint = position };
         tryParkingDirection = parkingDirectionToggle;
     }
@@ -508,6 +505,7 @@ public class RTSUnit : MonoBehaviour
                 lastCommand.patrolRoute.patrolPoints.Add(new PatrolPoint
                 {
                     point = patrolPoint,
+                    // @TODO: only BaseUnit should instantiate a sticker
                     sticker = Instantiate(
                         GameManager.Instance.patrolCommandSticker, 
                         new Vector3(patrolPoint.x, 1.1f, patrolPoint.z), 

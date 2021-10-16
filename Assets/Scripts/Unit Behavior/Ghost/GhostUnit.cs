@@ -72,10 +72,12 @@ public class GhostUnit : MonoBehaviour
     }
 
     // Instantiate the intangible unit and destroy this ghost
-    public void StartBuild()
+    public void StartBuild(IntangibleCompletedCallback callback = null)
     {
         GameObject intangible = Instantiate(intangibleUnit, transform.position, intangibleUnit.transform.localRotation);
         intangible.GetComponent<IntangibleUnit>().Bind(builder, transform);
+        if (callback != null)
+            intangible.GetComponent<IntangibleUnit>().Callback(callback);
         Destroy(gameObject);
     }
 
@@ -116,11 +118,12 @@ public class GhostUnit : MonoBehaviour
         builder.placedSinceLastShift = 0;
         // Queue this self on single place
         conjurerArgs.prefab = gameObject;
-        // @TODO: clear the current queue if just placed a single
-        // @TODO: clearing queue also means removing any other set ghosts
+
+        // @TODO: need to also remove any other set ghosts
         builder.baseUnit.currentCommand = new CommandQueueItem
         {
             commandType = CommandTypes.Conjure,
+            // @TODO: commandPoint = clickPoint,
             conjurerArgs = conjurerArgs
         };
         builder.SetNextQueueReady(true);
