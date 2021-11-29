@@ -68,6 +68,7 @@ public class GameManager : MonoBehaviour
         newPlayer.Init(newInventory);
         newPlayer.playerNumber = playerConf.playerNumber;
         newPlayer.teamNumber = playerConf.team;
+        newPlayer.playerFaction = playerConf.faction;
         // Instantiate new AI player context and add it to AIPlayers dictionary
         AIPlayerContext newAI = new AIPlayerContext
         {
@@ -89,15 +90,17 @@ public class GameManager : MonoBehaviour
         PlayerConfig playerConf = Array.Find(playerConfigs, p => p.playerNumber == PlayerNumbers.Player1);
         if (playerConf == null)
             throw new System.Exception("Error: Could not find Player1 in startup config. Cannot start.");
-
         newPlayer.teamNumber = playerConf.team;
-        // @TODO: faction based path, e.g. faction == 'Taros' ? 'TaroCanvas' : faction == 'Aramon' ? 'AraCanvas'
-        RectTransform square = GameObject.Find("AraCanvas/selection-box").GetComponent<RectTransform>();
+        newPlayer.playerFaction = playerConf.faction;
+        // Get the selection box UI image
+        RectTransform selectionSquare = GameObject.Find(CanvasConfigs.GetCanvasRoot(newPlayer.playerFaction) + "/selection-box").GetComponent<RectTransform>();
+        if (selectionSquare == null)
+            Debug.LogError("GameManager Error: Could not load selection square image.");
         // Get audio clip for click sound
         AudioClip clip = Resources.Load<AudioClip>("runtime/audioclips/ara-click-01");
         if (clip == null)
             Debug.LogWarning("Warning: Could not load click sound for Player.");
-        newPlayer.Init(newInventory, square, clip);
+        newPlayer.Init(newInventory, selectionSquare, clip);
 
         PlayerMain = new MainPlayerContext
         {

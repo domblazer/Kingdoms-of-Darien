@@ -17,41 +17,6 @@ public class Builder : UnitBuilderPlayer
         InitVirtualMenu(ghostUnits);
     }
 
-    /* void Update()
-    {
-        // Keep traveling to ghosts in the queue until empty
-         if (!baseUnit.commandQueue.IsEmpty() && nextQueueReady)
-        {
-            string dbg = "";
-            foreach (CommandQueueItem cmd in baseUnit.commandQueue)
-                dbg += cmd.conjurerArgs.ToString();
-            Debug.Log("Builder.commandQueue: " + dbg);
-
-            // Builders always keep a queue of GhostUnits
-            GhostUnit nextGhost = baseUnit.currentCommand.conjurerArgs.prefab.GetComponent<GhostUnit>();
-            // @TODO: offset depends on direction, e.g. if walking along x, use x, y, y, and diagonal use mix
-            Vector3 offsetRange = nextGhost.offset;
-            // Move to next ghost in the queue
-            if (nextGhost.IsSet() && !baseUnit.IsInRangeOf(nextGhost.transform.position, offsetRange.x))
-            {
-                // @TODO: shouldn't be using SetMove here
-                // baseUnit.SetMove(nextGhost.transform.position);
-                baseUnit.MoveToPosition(nextGhost.transform.position);
-                Debug.Log("Builder moving to ghost");
-            }
-            // When arrived at ghost, start building intangible
-            else
-            {
-                Debug.Log("Arrived at ghost");
-                baseUnit.SetMove(transform.position);
-                nextQueueReady = false;
-                isBuilding = true;
-                baseUnit.commandQueue.Dequeue();
-                nextGhost.StartBuild();
-            }
-        } 
-    } */
-
     public void QueueBuild(ConjurerArgs item, Vector2 clickPoint)
     {
         // First, protect double clicks with click delay
@@ -74,7 +39,7 @@ public class Builder : UnitBuilderPlayer
     public void TakeOverButtonListeners()
     {
         foreach (ConjurerArgs item in virtualMenu)
-            item.menuButton.onClick.AddListener(delegate { QueueBuild(item, Input.mousePosition); });
+            item.clickHandler.OnLeftClick(delegate { QueueBuild(item, Input.mousePosition); });
     }
 
     public void SetCurrentActive()

@@ -28,7 +28,17 @@ public class UnitBuilderPlayer : UnitBuilderBase
         // Get all the buttons in the build menu
         Button[] menuChildren = menuRoot.GetComponentsInChildren<Button>();
         foreach (var (button, index) in menuChildren.WithIndex())
-            virtualMenu.Add(new ConjurerArgs { menuButton = button, prefab = prefabs[index] });
+        {
+            ClickableObject clicker = button.gameObject.GetComponent<ClickableObject>();
+            if (!clicker)
+                clicker = button.gameObject.AddComponent<ClickableObject>();
+            virtualMenu.Add(new ConjurerArgs
+            {
+                menuButton = button,
+                prefab = prefabs[index],
+                clickHandler = clicker
+            });
+        }
     }
 
     // Handle small click delay to prevent double clicks on menu
@@ -43,7 +53,10 @@ public class UnitBuilderPlayer : UnitBuilderBase
     public void ReleaseButtonListeners()
     {
         foreach (ConjurerArgs virtualMenuItem in virtualMenu)
-            virtualMenuItem.menuButton.onClick.RemoveAllListeners();
+        {
+            virtualMenuItem.clickHandler.RemoveAllListeners();
+            // virtualMenuItem.menuButton.onClick.RemoveAllListeners();
+        }
     }
 
     public void UpdateAllButtonsText()

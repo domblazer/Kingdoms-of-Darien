@@ -26,29 +26,9 @@ public class Factory : UnitBuilderPlayer
     {
         // @TODO: ability to reposition builderRallyPoint
 
-        // Keep track of master queue to know when building
-        // isBuilding = !baseUnit.commandQueue.IsEmpty();
-
         // Only currently selected builder updates menu text
         if (isCurrentActive)
             UpdateAllButtonsText();
-
-        /* // While masterQueue is not empty, continue queueing up intangible prefabs
-        if (!baseUnit.commandQueue.IsEmpty() && nextQueueReady)
-        {
-            // @TODO: also need to check that the spawn point is clear before moving on to next unit
-            baseUnit.state = RTSUnit.States.Conjuring;
-            ConjurerArgs next = baseUnit.currentCommand.conjurerArgs;
-            InstantiateNextIntangible(next);
-            // Toggle whether new unit parks towards the right or left
-            parkingDirectionToggle = !parkingDirectionToggle;
-            nextQueueReady = false;
-
-            // @TODO: handle infinite. If one unit got the infinite command, all subsequent left-clicks on that unit need to be ignored
-            // (right-click) to clear. Also, as long as the condition is true, this should just keep pumping out the same unit
-            // maybe something like:
-            // if (mode === Modes.Infinite) {masterBuildQueue.Enqueue(map); map.buildQueue.Enqueue(map.prefab);}
-        } */
     }
 
     public void QueueBuild(ConjurerArgs item, Vector2 clickPoint)
@@ -93,6 +73,15 @@ public class Factory : UnitBuilderPlayer
         });
     }
 
+    private void RemoveBuild(ConjurerArgs item)
+    {
+        // @TODO: holding shift should dequeue 5 at a time, ctrl clear all
+        item.buildQueueCount--;
+        // splice from commandQueue
+        baseUnit.commandQueue.RemoveAt(baseUnit.commandQueue.FindIndex(x => x.conjurerArgs == item));
+        // @TODO: if removing a command whose build is still in progress, that intangible needs to be destroyed 
+    }
+
     private void InstantiateNextIntangible(ConjurerArgs item)
     {
         GameObject intangible = Instantiate(item.prefab, spawnPoint.position, spawnPoint.rotation);
@@ -117,7 +106,10 @@ public class Factory : UnitBuilderPlayer
     public void TakeOverButtonListeners()
     {
         foreach (ConjurerArgs item in virtualMenu)
-            item.menuButton.onClick.AddListener(delegate { QueueBuild(item, Input.mousePosition); });
+        {
+            item.clickHandler.OnLeftClick(delegate { QueueBuild(item, Input.mousePosition); });
+            item.clickHandler.OnRightClick(delegate { RemoveBuild(item); });
+        }
     }
 
     public void SetCurrentActive()

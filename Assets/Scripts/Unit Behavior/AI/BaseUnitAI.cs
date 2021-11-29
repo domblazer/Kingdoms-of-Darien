@@ -273,7 +273,7 @@ public class BaseUnitAI : RTSUnit
         {
             if (!mainPlayer.nextCommandIsPrimed)
                 CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Normal);
-            UIManager.Instance.unitInfoInstance.Toggle(false);
+            UIManager.UnitInfoInstance.Toggle(false);
             GameManager.Instance.ClearHovering();
         }
     }
@@ -281,6 +281,6 @@ public class BaseUnitAI : RTSUnit
     private void OnMouseOver()
     {
         if (!InputManager.IsMouseOverUI())
-            UIManager.Instance.unitInfoInstance.Set(super, null, true);
+            UIManager.UnitInfoInstance.Set(super, null, true);
     }
 }

@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 namespace DarienEngine
 {
+    /// <summary>Class <c>MainPlayerContext</c> models high-level virtual representation of Player.</summary>
     public class MainPlayerContext
     {
         public GameObject holder;
@@ -27,5 +28,11 @@ namespace DarienEngine
         void ReleaseButtonListeners();
         void SetCurrentActive();
         void ReleaseCurrentActive();
+    }
+
+    public class SpecialAttackItem
+    {
+        public Image specialAttackIcon;
+        public string specialAttackName;
     }
 }

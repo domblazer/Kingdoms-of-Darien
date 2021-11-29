@@ -52,8 +52,8 @@ MonoBehaviour:
     faction: 0
   - playerNumber: 2
     team: 2
-    faction: 0
-  enableFogOfWar: 0
+    faction: 1
+  enableFogOfWar: 1
   fogOfWarPlane: {fileID: 0}
   moveCommandSticker: {fileID: 4506203142493968636, guid: b501e3e3c92ea8e4083cec1ca7d27253, type: 3}
   guardCommandSticker: {fileID: 0}
@@ -70,38 +70,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7577fba0bda31a04c80209a8f1e3333e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  manaProportionText: {fileID: 0}
-  manaRechargeRateText: {fileID: 0}
-  manaUsageRateText: {fileID: 0}
-  selectedUnitCountText: {fileID: 0}
-  totalUnitsCountText: {fileID: 0}
-  statisticsText: {fileID: 0}
-  debugText: {fileID: 0}
-  unitInfo:
-    primaryUnit:
-      unitIcon: {fileID: 0}
-      healthBar: {fileID: 0}
-      manaBar: {fileID: 0}
-      unitNameText: {fileID: 0}
-      statusText: {fileID: 0}
-    secondaryUnit:
-      healthBar: {fileID: 0}
-      unitNameText: {fileID: 0}
-  actionMenuDefault: {fileID: 0}
-  actionMenuButtons:
-    moveBtn: {fileID: 0}
-    patrolBtn: {fileID: 0}
-    attackBtn: {fileID: 0}
-    guardBtn: {fileID: 0}
-    repairBtn: {fileID: 0}
-    cleanBtn: {fileID: 0}
-    stopBtn: {fileID: 0}
-    specialAttackOneBtn: {fileID: 0}
-    specialAttackTwoBtn: {fileID: 0}
-    specialAttackThreeBtn: {fileID: 0}
-    offensiveBtn: {fileID: 0}
-    defensiveBtn: {fileID: 0}
-    passiveBtn: {fileID: 0}
+  battleMenuDefault: {fileID: 0}
   f4Menu: {fileID: 0}
   f2Menu: {fileID: 0}
   buildMenus:
@@ -109,7 +78,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  pauseOnStart: 0
   chrystalBallTexture: {fileID: 0}
   chrystalBallTextureArray:
   - {fileID: 21300000, guid: c7fdc63dd8f27ce4cb79cfe98dc9eec2, type: 3}
@@ -136,6 +104,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0e2a75513686f404c8ad32a6557172e7, type: 3}
   - {fileID: 21300000, guid: cda686666314f1a4590653ada7f2e301, type: 3}
   - {fileID: 21300000, guid: afb162f8d5e856342aedf461ed39bfb6, type: 3}
+  pauseOnStart: 0
 --- !u!114 &2598857554717851820
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -72,7 +72,10 @@ public class RTSUnit : MonoBehaviour
     public bool engagingTarget { get; set; } = false;
     protected bool isMovingToAttack = false;
     [HideInInspector] public bool isAttacking = false;
+
+    // @TODO: attackTarget can be an intangible enemy, in which case RTSUnit won't be present
     [HideInInspector] public GameObject attackTarget;
+
     // @TODO: check StrongholdScript; ideally BaseUnit should handle the facing routine so these vars can remain protected
     public bool facing { get; set; } = false;
     public bool isDead { get; set; } = false;
@@ -118,7 +121,7 @@ public class RTSUnit : MonoBehaviour
     protected Animator _Animator;
     public UnitAudioManager AudioManager { get; set; }
 
-    public UIManager.ActionMenuSettings.SpecialAttackItem[] specialAttacks;
+    public SpecialAttackItem[] specialAttacks;
     protected List<GameObject> whoCanSeeMe = new List<GameObject>();
 
     protected float dieTime = 30;
@@ -352,7 +355,7 @@ public class RTSUnit : MonoBehaviour
             // set up so like if units bump each other, they temporarily are set back to NavMeshAgents to allow 
             // the bumping unit through, say a large formation the agent can't discern as one large obstacle to avoid
 
-            Debug.Log(unitName + ": Whoops, sorry I bumped you while parking. I'll adjust my destination.");
+            Debug.Log(unitName + ": Whoops, sorry I bumped you (" + bumpedUnit.gameObject.name + ") while parking. I'll adjust my destination.");
 
             // If I bumped, dump the move position that led me here, then modify that position with offset then queue it back 
             Vector3 lastMove = commandQueue.Dequeue().commandPoint;
@@ -507,8 +510,8 @@ public class RTSUnit : MonoBehaviour
                     point = patrolPoint,
                     // @TODO: only BaseUnit should instantiate a sticker
                     sticker = Instantiate(
-                        GameManager.Instance.patrolCommandSticker, 
-                        new Vector3(patrolPoint.x, 1.1f, patrolPoint.z), 
+                        GameManager.Instance.patrolCommandSticker,
+                        new Vector3(patrolPoint.x, 1.1f, patrolPoint.z),
                         GameManager.Instance.patrolCommandSticker.transform.rotation
                     )
                 });

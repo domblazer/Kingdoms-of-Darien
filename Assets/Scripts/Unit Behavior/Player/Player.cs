@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
     // Human player is always Player1
     private PlayerNumbers playerNumber = PlayerNumbers.Player1;
     public TeamNumbers teamNumber;
+    public Factions playerFaction;
 
     // To determine if we are clicking with left mouse or holding down left mouse
     public float clickHoldDelay = 0.2f;
@@ -224,14 +225,14 @@ public class Player : MonoBehaviour
         {
             // Did we hit a friendly unit?
             // @TODO: intangibles are also on unit layer with friendly tag, but should not be clickable like this
-            if (hit.collider.CompareTag("Friendly"))
+            if (hit.collider.gameObject.layer == 11 && hit.collider.CompareTag("Friendly"))
             {
                 // Deselect all units when clicking single other unit, unless holding shift
                 if (!InputManager.HoldingShift())
                     ClearSelectedUnits();
 
                 BaseUnit activeUnit = hit.collider.gameObject.GetComponent<BaseUnit>();
-                if (activeUnit.selectable)
+                if (activeUnit != null && activeUnit.selectable)
                 {
                     // Play click sound
                     if (!InputManager.HoldingShift())
@@ -241,7 +242,7 @@ public class Player : MonoBehaviour
                     selectedUnits.Add(activeUnit);
                 }
             }
-            else if (hit.collider.CompareTag("Enemy"))
+            else if (hit.collider.gameObject.layer == 11 && hit.collider.CompareTag("Enemy"))
             {
                 // If we clicked an Enemy unit while at least one canAttack unit is selected, tell those/that unit to attack
                 foreach (BaseUnit unit in selectedUnits)
@@ -267,12 +268,11 @@ public class Player : MonoBehaviour
         // Clear selected units and release current builder
         ClearSelectedUnits();
         ReleaseActiveBuilder();
-        // Hide the action menus and reset cursor
-        if (UIManager.Instance.actionMenuInstance.actionMenuActive)
-            UIManager.Instance.actionMenuInstance.Toggle(false);
+        // Hide the menus and reset cursor
+        UIManager.BattleMenuInstance.Toggle(false);
+        UIManager.UnitInfoInstance.Toggle(false);
         CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Normal);
-        UIManager.Instance.unitInfoInstance.Toggle(false);
-
+        // Clear any primed command
         ClearPrimedCommand();
     }
 

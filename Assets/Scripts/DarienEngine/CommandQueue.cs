@@ -21,10 +21,14 @@ namespace DarienEngine
 
         public CommandQueueItem Dequeue()
         {
-            CommandQueueItem dq = base[0];
-            base.RemoveAt(0);
-            if (!isAI)
-                dq.RemoveCommandSticker();
+            CommandQueueItem dq = null;
+            if (base.Count > 0)
+            {
+                dq = base[0];
+                base.RemoveAt(0);
+                if (!isAI)
+                    dq.RemoveCommandSticker();
+            }
             return dq;
         }
 
@@ -99,6 +103,7 @@ namespace DarienEngine
     public class ConjurerArgs
     {
         public Button menuButton;
+        public ClickableObject clickHandler;
         public GameObject prefab;
         public Vector3 buildSpot;
         public int buildQueueCount = 0;

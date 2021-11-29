@@ -63,7 +63,7 @@ namespace DarienEngine.AI
                     [UnitCategories.BuilderTier2] = new MasterQuota.Item
                     {
                         priority = 11,
-                        limit = 5,
+                        limit = 6,
                         label = UnitCategories.BuilderTier2,
                         _inventory = inv
                     },
@@ -76,7 +76,7 @@ namespace DarienEngine.AI
                     },
                     [UnitCategories.FactoryTier1] = new MasterQuota.Item
                     {
-                        priority = 7,
+                        priority = 5,
                         limit = 8,
                         label = UnitCategories.FactoryTier1,
                         _inventory = inv
@@ -105,7 +105,7 @@ namespace DarienEngine.AI
                     [UnitCategories.InfantryTier1] = new MasterQuota.Item
                     {
                         priority = 4,
-                        limit = 100,
+                        limit = 200,
                         label = UnitCategories.InfantryTier1,
                         _inventory = inv
                     },

@@ -22,6 +22,7 @@ public class AIPlayer : MonoBehaviour
     public AIProfileTypes profileType;
     public PlayerNumbers playerNumber;
     public TeamNumbers teamNumber;
+    public Factions playerFaction;
     public InventoryAI inventory;
 
     public void Init(InventoryAI inv)
@@ -81,6 +82,7 @@ public class AIPlayer : MonoBehaviour
 
         // @TODO: if an army quota is met, assuming these units are currently roaming around base, tell them now to form up
         // and launch an attack at the average position represented by a snapshot of an opposing army 
+        
     }
 
     private GameObject SelectValidUnit(BuildUnit[] fromUnits)
@@ -156,16 +158,16 @@ public class AIPlayer : MonoBehaviour
         {
             // Scout? 
             // InfantryTier1
-            if (quotaItems.InfantryTier1.ratio < 0.7f)
+            if (quotaItems.InfantryTier1.ratio < 0.8f)
                 needs.Add(quotaItems.InfantryTier1);
             // StalwartTier1
-            if (quotaItems.StalwartTier1.ratio < 0.2f)
+            if (quotaItems.StalwartTier1.ratio < 0.5f)
                 needs.Add(quotaItems.StalwartTier1);
             // SiegeTier1
             if (quotaItems.SiegeTier1.ratio < 0.2f)
                 needs.Add(quotaItems.SiegeTier1);
             // BuilderTier1
-            if (quotaItems.BuilderTier1.ratio < 0.2)
+            if (quotaItems.BuilderTier1.ratio < 0.4)
                 needs.Add(quotaItems.BuilderTier1);
         }
 
@@ -192,7 +194,7 @@ public class AIPlayer : MonoBehaviour
         {
             return x.priority > y.priority ? 1 : -1;
         });
-        Debug.Log("All needs: " + string.Join<MasterQuota.Item>(", ", needs.ToArray()));
+        // Debug.Log("All needs: " + string.Join<MasterQuota.Item>(", ", needs.ToArray()));
         // currentNeedType = needs[0].label;
         // Debug.Log(playerNumber + " current need: " + currentNeedType);
         List<UnitCategories> flattenedNeeds = new List<UnitCategories>();

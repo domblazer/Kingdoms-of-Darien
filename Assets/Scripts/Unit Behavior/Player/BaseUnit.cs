@@ -127,7 +127,7 @@ public class BaseUnit : RTSUnit
                 {
                     // @TODO: secondary could be a "Conjuring" secondary
                     RTSUnit secondary = attackTarget ? attackTarget.GetComponent<RTSUnit>() : null;
-                    UIManager.Instance.unitInfoInstance.Set(super, secondary);
+                    UIManager.UnitInfoInstance.Set(super, secondary);
                 }
 
                 // Toggle line renderer on shift up/down for mobile units
@@ -214,7 +214,7 @@ public class BaseUnit : RTSUnit
                 else
                     mainPlayer.ReleaseActiveBuilder();
                 // Show the unit action menu
-                UIManager.Instance.actionMenuInstance.Set(isKinematic, canAttack, isBuilder, specialAttacks);
+                UIManager.BattleMenuInstance.Set(isKinematic, canAttack, isBuilder, specialAttacks);
                 AudioManager.PlaySelectSound();
             }
         }
@@ -258,7 +258,7 @@ public class BaseUnit : RTSUnit
         if (!InputManager.IsMouseOverUI() && selectable)
         {
             CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Select);
-            UIManager.Instance.unitInfoInstance.Set(super, null);
+            UIManager.UnitInfoInstance.Set(super, null);
         }
         GameManager.Instance.SetHovering(gameObject);
     }
@@ -270,7 +270,7 @@ public class BaseUnit : RTSUnit
         {
             CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Normal);
             if (!selected)
-                UIManager.Instance.unitInfoInstance.Toggle(false);
+                UIManager.UnitInfoInstance.Toggle(false);
         }
         GameManager.Instance.ClearHovering();
     }
@@ -280,7 +280,7 @@ public class BaseUnit : RTSUnit
     {
         // First check if I am already selected
         if (!selected)
-            UIManager.Instance.unitInfoInstance.Set(super, null);
+            UIManager.UnitInfoInstance.Set(super, null);
     }
 
     public void SetFacingDir(Directions dir)
