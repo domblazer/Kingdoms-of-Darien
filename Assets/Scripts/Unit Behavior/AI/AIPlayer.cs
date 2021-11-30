@@ -7,7 +7,6 @@ using DarienEngine.AI;
 
 public class AIPlayer : MonoBehaviour
 {
-    private int unitLimit = 500;
     private UnitCategories currentNeed;
     private List<UnitCategories> allCurrentNeeds;
 
@@ -25,6 +24,8 @@ public class AIPlayer : MonoBehaviour
     public Factions playerFaction;
     public InventoryAI inventory;
 
+    private string debugText = "";
+
     public void Init(InventoryAI inv)
     {
         inventory = inv;
@@ -40,10 +41,12 @@ public class AIPlayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (inventory.totalUnits.Count < unitLimit)
+        if (inventory.totalUnits.Count < inventory.unitLimit)
         {
             allCurrentNeeds = DetermineNeedState();
+            debugText += "\n All Current Needs: " + string.Join<UnitCategories>(", ", allCurrentNeeds.ToArray());
             // currentNeed = allCurrentNeeds[0];
+            UIManager.Instance.SetDebugText(debugText);
 
             List<RTSUnit> factories = inventory.GetUnitsByTypes(UnitCategories.FactoryTier1, UnitCategories.FactoryTier2);
             List<RTSUnit> builders = inventory.GetUnitsByTypes(UnitCategories.BuilderTier1, UnitCategories.BuilderTier2);
@@ -52,10 +55,13 @@ public class AIPlayer : MonoBehaviour
             foreach (BaseUnitAI factory in factories)
             {
                 FactoryAI factoryAI = factory.gameObject.GetComponent<FactoryAI>();
-                // If this builder is not already conjuring something, pick a unit that meets the current need
+                
+                // @TODO: isBuilding is not getting reset b/c in BaseUnitAI, HandleConjureRoutine() stops getting called when 
+                // conjure command gets Dequeued
                 if (!factoryAI.isBuilding)
                 {
-                    GameObject unitToBuild = SelectValidUnit(factoryAI.buildUnitPrefabs);
+                    // If this builder is not already conjuring something, pick a unit that meets the current need
+                    GameObject unitToBuild = SelectValidUnit(factoryAI);
                     if (unitToBuild)
                         factoryAI.QueueBuild(unitToBuild);
                 }
@@ -68,38 +74,34 @@ public class AIPlayer : MonoBehaviour
             foreach (BaseUnitAI builder in builders)
             {
                 BuilderAI builderAI = builder.gameObject.GetComponent<BuilderAI>();
-                // Only queue builders who are not in a roaming interval, and not in a build routing with at least 1 unit in the queue
+                // Only queue builders who are not in a roaming interval, and not in a build routine with at least 1 unit in the queue
                 if (!builderAI.isInRoamInterval && !builderAI.isBuilding && !builderAI.baseUnit.isParking && builderAI.baseUnit.commandQueue.Count < 1)
                 {
-                    GameObject unitToBuild = SelectValidUnit(builderAI.buildUnitPrefabs);
+                    GameObject unitToBuild = SelectValidUnit(builderAI);
                     if (unitToBuild)
                         builderAI.QueueBuild(unitToBuild);
                 }
             }
+
+            // @TODO: Dragon should be the only category that allows only 1 unit of that type
 
             // @TODO: AIs should avoid building gates and walls, which belong to FortTier1, also possibly scouts altogether
         }
 
         // @TODO: if an army quota is met, assuming these units are currently roaming around base, tell them now to form up
         // and launch an attack at the average position represented by a snapshot of an opposing army 
-        
+
     }
 
-    private GameObject SelectValidUnit(BuildUnit[] fromUnits)
+    private GameObject SelectValidUnit(UnitBuilderAI builderAI)
     {
-        // Get a unique list of unit categories available in buildUnitPrefabs; HashSet creates unique values
-        // @TODO: occurs to me that this should maybe be set on start in baseUnitAi
-        HashSet<UnitCategories> availableTypes = new HashSet<UnitCategories>();
-        foreach (BuildUnit cat in fromUnits)
-            availableTypes.Add(cat.unitCategory);
-
         // Factories filter out needs that don't pertain to them and return the first element from resulting sequence
-        IEnumerable<UnitCategories> adjustedNeeds = allCurrentNeeds.Intersect<UnitCategories>(availableTypes);
+        IEnumerable<UnitCategories> adjustedNeeds = allCurrentNeeds.Intersect<UnitCategories>(builderAI.availableTypes);
         if (adjustedNeeds.Count() > 0)
         {
             UnitCategories adjustedCurrentNeed = adjustedNeeds.First<UnitCategories>();
             // Get all unit prefabs that meet current need
-            BuildUnit[] opts = fromUnits.Where(x => x.unitCategory == adjustedCurrentNeed).ToArray();
+            BuildUnit[] opts = builderAI.buildUnitPrefabs.Where(x => x.unitCategory == adjustedCurrentNeed).ToArray();
             // Return a random unit prefab from this option list
             if (opts.Length > 0)
                 return opts[Random.Range(0, opts.Length)].intangiblePrefab;
@@ -116,6 +118,7 @@ public class AIPlayer : MonoBehaviour
 
         // Getting all quota items upfront eliminates 50% of unnessesary calls to GetQuotaItem()
         AllQuotaItems quotaItems = profile.GetAllQuotaItems();
+        debugText = quotaItems.ToString();
 
         // Needs that require BuilderTier1
         if (quotaItems.BuilderTier1.count > 0)
@@ -127,47 +130,57 @@ public class AIPlayer : MonoBehaviour
 
             // Maybe ratio follows lodestone ratio? Like as a reflection of mana capacity. still needs more though of course
 
-            // Lodestones Tier 1
-            if (quotaItems.LodestoneTier1.ratio < 0.2f)
+            // @TODO: ratio > idealRatio => priority up, else down
+            // maybe, sort by (idealRatio - ratio) - in theory that should sort based on disparity between current and ideal
+            // e.g. ideal is .02 but current is .5, (.02 - .5) = -.48
+
+            // Lodestones Tier 1 (10/500 = 0.02 = 2% of total population)
+            if (quotaItems.LodestoneTier1.ratio < quotaItems.LodestoneTier1.targetRatio)
                 needs.Add(quotaItems.LodestoneTier1);
-            // Factories Tier 1
-            if (quotaItems.FactoryTier1.ratio < 0.2f)
+            // Factories Tier 1 (5/500; 1%)
+            if (quotaItems.FactoryTier1.ratio < quotaItems.FactoryTier1.targetRatio)
                 needs.Add(quotaItems.FactoryTier1);
-            // Factory Tier 2
-            if (quotaItems.FactoryTier2.ratio < 0.2f)
+            // Factory Tier 2 (1%)
+            if (quotaItems.FactoryTier2.ratio < quotaItems.FactoryTier2.targetRatio)
                 needs.Add(quotaItems.FactoryTier2);
-            // Fort Tier 1
-            if (quotaItems.FortTier1.ratio < 0.2f)
+            // Fort Tier 1 (1%)
+            if (quotaItems.FortTier1.ratio < quotaItems.FortTier1.targetRatio)
                 needs.Add(quotaItems.FortTier1);
-            // Fort Tier 2
-            if (quotaItems.FortTier2.ratio < 0.2f)
+            // Fort Tier 2 (1%)
+            if (quotaItems.FortTier2.ratio < quotaItems.FortTier2.targetRatio)
                 needs.Add(quotaItems.FortTier2);
-            // Naval Tier 1
-            if (quotaItems.NavalTier1.ratio < 0.2f)
+
+            // Naval Tier 1: @TODO: depends on water area around player start position
+            if (quotaItems.NavalTier1.ratio < quotaItems.NavalTier1.targetRatio)
                 needs.Add(quotaItems.NavalTier1);
         }
         else if (quotaItems.FactoryTier1.count > 0 || quotaItems.FactoryTier2.count > 0)
         {
             // Obviously, if no builders exist, creating them takes top priority
-            quotaItems.BuilderTier1.priority = 1;
+            // quotaItems.BuilderTier1.priority = 1;
             needs.Add(quotaItems.BuilderTier1);
+        }
+        else if (quotaItems.FactoryTier1.count == 0)
+        {
+            // quotaItems.FactoryTier1.priority = 1;
+            needs.Add(quotaItems.FactoryTier1);
         }
 
         // Needs that require FactoryTier1
         if (quotaItems.FactoryTier1.count > 0)
         {
             // Scout? 
-            // InfantryTier1
-            if (quotaItems.InfantryTier1.ratio < 0.8f)
+            // InfantryTier1 (50%)
+            if (quotaItems.InfantryTier1.ratio < quotaItems.InfantryTier1.targetRatio)
                 needs.Add(quotaItems.InfantryTier1);
-            // StalwartTier1
-            if (quotaItems.StalwartTier1.ratio < 0.5f)
+            // StalwartTier1 (10%)
+            if (quotaItems.StalwartTier1.ratio < quotaItems.StalwartTier1.targetRatio)
                 needs.Add(quotaItems.StalwartTier1);
-            // SiegeTier1
-            if (quotaItems.SiegeTier1.ratio < 0.2f)
+            // SiegeTier1 (5%)
+            if (quotaItems.SiegeTier1.ratio < quotaItems.SiegeTier1.targetRatio)
                 needs.Add(quotaItems.SiegeTier1);
-            // BuilderTier1
-            if (quotaItems.BuilderTier1.ratio < 0.4)
+            // BuilderTier1 (7/500; 1.4%)
+            if (quotaItems.BuilderTier1.ratio < quotaItems.BuilderTier1.targetRatio)
                 needs.Add(quotaItems.BuilderTier1);
         }
 
@@ -192,14 +205,17 @@ public class AIPlayer : MonoBehaviour
         // Sort needs by priority and return highest priority need
         needs.Sort(delegate (MasterQuota.Item x, MasterQuota.Item y)
         {
-            return x.priority > y.priority ? 1 : -1;
+            return x.ratioDiff < y.ratioDiff ? 1 : -1;
         });
+
         // Debug.Log("All needs: " + string.Join<MasterQuota.Item>(", ", needs.ToArray()));
         // currentNeedType = needs[0].label;
         // Debug.Log(playerNumber + " current need: " + currentNeedType);
+
         List<UnitCategories> flattenedNeeds = new List<UnitCategories>();
         foreach (MasterQuota.Item need in needs)
             flattenedNeeds.Add(need.label);
+
         return flattenedNeeds;
     }
 }

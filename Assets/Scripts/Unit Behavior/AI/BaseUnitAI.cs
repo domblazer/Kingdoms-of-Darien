@@ -30,12 +30,16 @@ public class BaseUnitAI : RTSUnit
 
     private UnitBuilderAI _Builder;
 
+    private void Awake()
+    {
+        // @IMPORTANT: CommandQueue needs to know this is for AI so it won't place stickers on commandPoints
+        commandQueue.isAI = true;
+    }
+
     private void Start()
     {
         // General set-up in RTSUnit
         Init();
-        // @IMPORTANT: CommandQueue needs to know this is for AI so it won't place stickers on commandPoints
-        commandQueue.isAI = true;
 
         // Set fog-of-war based on game manager
         enableFogOfWar = GameManager.Instance.enableFogOfWar;
@@ -65,7 +69,6 @@ public class BaseUnitAI : RTSUnit
         // @TODO: map other states to commands 
         else if (startState == StartStates.Standby)
             state = defaultState = States.Standby;
-
     }
 
     private void Update()
@@ -102,7 +105,10 @@ public class BaseUnitAI : RTSUnit
                         break;
                     case CommandTypes.Conjure:
                         // @TODO: _Builder.handleConjuringRoutine (moveTo buildSpot and conjure)
-
+                        if (isKinematic)
+                            (_Builder as BuilderAI).HandleConjureRoutine();
+                        else
+                            (_Builder as FactoryAI).HandleConjureRoutine();
                         state = States.Conjuring;
                         break;
                     case CommandTypes.Guard:

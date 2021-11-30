@@ -63,6 +63,8 @@ public class IntangibleUnitBase : MonoBehaviour
     protected Vector3 rallyPoint;
     protected CommandQueueItem nextCommandAfterParking;
 
+    public Vector3 offset { get; set; } = Vector3.zero;
+
     protected IntangibleCompletedCallback intangibleCompletedCallback;
 
     void Start()
@@ -89,6 +91,8 @@ public class IntangibleUnitBase : MonoBehaviour
             t.CreateGradient(manaColor);
             materialsMap.Add(t);
         }
+
+        CalculateOffset();
 
         // Add this intangible to the Player context (inventory and all)
         Functions.AddIntangibleToPlayerContext(this);
@@ -144,6 +148,19 @@ public class IntangibleUnitBase : MonoBehaviour
         mat.DisableKeyword("_ALPHABLEND_ON");
         mat.EnableKeyword("_ALPHAPREMULTIPLY_ON");
         mat.renderQueue = 3000;
+    }
+
+    private void CalculateOffset()
+    {
+        if (finalUnit.gameObject.GetComponent<BoxCollider>())
+        {
+            offset = finalUnit.gameObject.GetComponent<BoxCollider>().size;
+        }
+        else if (finalUnit.gameObject.GetComponent<CapsuleCollider>())
+        {
+            float r = finalUnit.gameObject.GetComponent<CapsuleCollider>().radius;
+            offset = new Vector3(r, r, r);
+        }
     }
 
     private void OnDestroy()

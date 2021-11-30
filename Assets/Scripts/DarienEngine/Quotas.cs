@@ -12,15 +12,17 @@ namespace DarienEngine
         {
             public InventoryAI _inventory;
             public List<RTSUnit> units { get { return _inventory.GetUnitsByType(label); } }
-            public int priority;
+            // public int priority;
             public int count { get { return units.Count; } }
-            public int limit;
             public UnitCategories label;
-            public float ratio { get { return (float)count / (float)limit; } }
-            public bool quotaFull { get { return count == limit; } }
+            // Target ratio represents ideal distribution of units based on total unit limit
+            public float targetRatio;
+            // Ratio represents percentage Currently reflected
+            public float ratio { get { return (float)count / (float)_inventory.totalUnits.Count; } }
+            public float ratioDiff { get { return targetRatio - ratio; } }
             public override string ToString()
             {
-                return label.ToString() + " (ratio: " + ratio + ", count: " + count + ", limit: " + limit + ")";
+                return label.ToString() + " (ratio: " + ratio + ", count: " + count + ", targetRatio: " + targetRatio + ")\n";
             }
         }
 
@@ -81,6 +83,29 @@ namespace DarienEngine
         public MasterQuota.Item StalwartTier2;
         public MasterQuota.Item InfantryTier1;
         public MasterQuota.Item InfantryTier2;
+
+        public override string ToString()
+        {
+            return Monarch.ToString() +
+                LodestoneTier1.ToString() +
+                LodestoneTier2.ToString() +
+                FactoryTier1.ToString() +
+                FactoryTier2.ToString() +
+                BuilderTier1.ToString() +
+                BuilderTier2.ToString() +
+                FortTier1.ToString() +
+                FortTier2.ToString() +
+                SiegeTier1.ToString() +
+                SiegeTier2.ToString() +
+                NavalTier1.ToString() +
+                NavalTier2.ToString() +
+                Dragon.ToString() +
+                Scout.ToString() +
+                StalwartTier1.ToString() +
+                StalwartTier2.ToString() +
+                InfantryTier1.ToString() +
+                InfantryTier2;
+        }
     }
 
     // @TODO: need to have some kind of two-way binding between ArmyQuota and MasterQuota

@@ -53,137 +53,118 @@ namespace DarienEngine.AI
             {
                 quota = new Dictionary<UnitCategories, MasterQuota.Item>()
                 {
-                    [UnitCategories.BuilderTier1] = new MasterQuota.Item
-                    {
-                        priority = 3,
-                        limit = 10,
-                        label = UnitCategories.BuilderTier1,
-                        _inventory = inv
-                    },
-                    [UnitCategories.BuilderTier2] = new MasterQuota.Item
-                    {
-                        priority = 11,
-                        limit = 6,
-                        label = UnitCategories.BuilderTier2,
-                        _inventory = inv
-                    },
-                    [UnitCategories.Dragon] = new MasterQuota.Item
-                    {
-                        priority = 99,
-                        limit = 1,
-                        label = UnitCategories.Dragon,
-                        _inventory = inv
-                    },
-                    [UnitCategories.FactoryTier1] = new MasterQuota.Item
-                    {
-                        priority = 5,
-                        limit = 8,
-                        label = UnitCategories.FactoryTier1,
-                        _inventory = inv
-                    },
-                    [UnitCategories.FactoryTier2] = new MasterQuota.Item
-                    {
-                        priority = 10,
-                        limit = 6,
-                        label = UnitCategories.FactoryTier2,
-                        _inventory = inv
-                    },
-                    [UnitCategories.FortTier1] = new MasterQuota.Item
-                    {
-                        priority = 11,
-                        limit = 10,
-                        label = UnitCategories.FortTier1,
-                        _inventory = inv
-                    },
-                    [UnitCategories.FortTier2] = new MasterQuota.Item
-                    {
-                        priority = 12,
-                        limit = 10,
-                        label = UnitCategories.FortTier2,
-                        _inventory = inv
-                    },
-                    [UnitCategories.InfantryTier1] = new MasterQuota.Item
-                    {
-                        priority = 4,
-                        limit = 200,
-                        label = UnitCategories.InfantryTier1,
-                        _inventory = inv
-                    },
-                    [UnitCategories.InfantryTier2] = new MasterQuota.Item
-                    {
-                        priority = 6,
-                        limit = 100,
-                        label = UnitCategories.InfantryTier2,
-                        _inventory = inv
-                    },
                     [UnitCategories.LodestoneTier1] = new MasterQuota.Item
                     {
-                        priority = 2,
-                        limit = 12,
+                        targetRatio = 0.02f,
                         label = UnitCategories.LodestoneTier1,
                         _inventory = inv
                     },
                     [UnitCategories.LodestoneTier2] = new MasterQuota.Item
                     {
-                        priority = 5,
-                        limit = 6,
+                        targetRatio = 0.01f,
                         label = UnitCategories.LodestoneTier2,
                         _inventory = inv
                     },
-                    [UnitCategories.Monarch] = new MasterQuota.Item
+                    [UnitCategories.FactoryTier1] = new MasterQuota.Item
                     {
-                        priority = 100,
-                        limit = 1,
-                        label = UnitCategories.Monarch,
+                        targetRatio = 0.01f,
+                        label = UnitCategories.FactoryTier1,
                         _inventory = inv
                     },
-                    [UnitCategories.NavalTier1] = new MasterQuota.Item
+                    [UnitCategories.FactoryTier2] = new MasterQuota.Item
                     {
-                        priority = 20,
-                        limit = 16,
-                        label = UnitCategories.NavalTier1,
+                        targetRatio = 0.01f,
+                        label = UnitCategories.FactoryTier2,
                         _inventory = inv
                     },
-                    [UnitCategories.NavalTier2] = new MasterQuota.Item
+                    [UnitCategories.FortTier1] = new MasterQuota.Item
                     {
-                        priority = 21,
-                        limit = 8,
-                        label = UnitCategories.NavalTier2,
+                        targetRatio = 0.015f,
+                        label = UnitCategories.FortTier1,
                         _inventory = inv
                     },
-                    [UnitCategories.Scout] = new MasterQuota.Item
+                    [UnitCategories.FortTier2] = new MasterQuota.Item
                     {
-                        priority = 12,
-                        limit = 10,
-                        label = UnitCategories.Scout,
+                        targetRatio = 0.01f,
+                        label = UnitCategories.FortTier2,
                         _inventory = inv
                     },
-                    [UnitCategories.SiegeTier1] = new MasterQuota.Item
+                    [UnitCategories.InfantryTier1] = new MasterQuota.Item
                     {
-                        priority = 13,
-                        limit = 10,
-                        label = UnitCategories.SiegeTier1,
+                        targetRatio = 0.5f,
+                        label = UnitCategories.InfantryTier1,
                         _inventory = inv
                     },
-                    [UnitCategories.SiegeTier2] = new MasterQuota.Item
+                    [UnitCategories.InfantryTier2] = new MasterQuota.Item
                     {
-                        priority = 14,
-                        limit = 8,
-                        label = UnitCategories.SiegeTier2,
+                        targetRatio = 0.25f,
+                        label = UnitCategories.InfantryTier2,
+                        _inventory = inv
+                    },
+                    [UnitCategories.BuilderTier1] = new MasterQuota.Item
+                    {
+                        targetRatio = 0.014f,
+                        label = UnitCategories.BuilderTier1,
+                        _inventory = inv
+                    },
+                    [UnitCategories.BuilderTier2] = new MasterQuota.Item
+                    {
+                        targetRatio = 0.006f,
+                        label = UnitCategories.BuilderTier2,
                         _inventory = inv
                     },
                     [UnitCategories.StalwartTier1] = new MasterQuota.Item
                     {
-                        priority = 15,
-                        limit = 100,
+                        targetRatio = 0.01f,
                         label = UnitCategories.StalwartTier1,
                         _inventory = inv
                     },
                     [UnitCategories.StalwartTier2] = new MasterQuota.Item
                     {
-                        priority = 17,
-                        limit = 50,
+                        targetRatio = 0.01f,
                         label = UnitCategories.StalwartTier2,
+                        _inventory = inv
+                    },
+                    [UnitCategories.SiegeTier1] = new MasterQuota.Item
+                    {
+                        targetRatio = 0.05f,
+                        label = UnitCategories.SiegeTier1,
+                        _inventory = inv
+                    },
+                    [UnitCategories.SiegeTier2] = new MasterQuota.Item
+                    {
+                        targetRatio = 0.02f,
+                        label = UnitCategories.SiegeTier2,
+                        _inventory = inv
+                    },
+                    [UnitCategories.Dragon] = new MasterQuota.Item
+                    {
+                        targetRatio = 0.005f,
+                        label = UnitCategories.Dragon,
+                        _inventory = inv
+                    },
+                    [UnitCategories.Monarch] = new MasterQuota.Item
+                    {
+                        targetRatio = 0.005f,
+                        label = UnitCategories.Monarch,
+                        _inventory = inv
+                    },
+                    [UnitCategories.NavalTier1] = new MasterQuota.Item
+                    {
+                        targetRatio = 0.0075f,
+                        label = UnitCategories.NavalTier1,
+                        _inventory = inv
+                    },
+                    [UnitCategories.NavalTier2] = new MasterQuota.Item
+                    {
+                        targetRatio = 0.0075f,
+                        label = UnitCategories.NavalTier2,
+                        _inventory = inv
+                    },
+                    [UnitCategories.Scout] = new MasterQuota.Item
+                    {
+                        targetRatio = 0.005f,
+                        label = UnitCategories.Scout,
                         _inventory = inv
                     }
                 }

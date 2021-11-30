@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     // List of players to initialize for the game
     public PlayerConfig[] playerConfigs;
 
+    public int unitLimit = 500;
     public bool enableFogOfWar = true;
     public GameObject fogOfWarPlane;
 
@@ -65,6 +66,7 @@ public class GameManager : MonoBehaviour
         AIPlayer newPlayer = _Holder.AddComponent<AIPlayer>();
         InventoryAI newInventory = _Holder.AddComponent<InventoryAI>();
         // Set initial player vars
+        newInventory.unitLimit = unitLimit;
         newPlayer.Init(newInventory);
         newPlayer.playerNumber = playerConf.playerNumber;
         newPlayer.teamNumber = playerConf.team;
@@ -82,16 +84,21 @@ public class GameManager : MonoBehaviour
 
     private MainPlayerContext InitMainPlayer()
     {
-        GameObject _Holder = Functions.GetOrCreatePlayerHolder(PlayerNumbers.Player1);
-        // Add Inventory and UnitSelection scripts to Main Player
-        Inventory newInventory = _Holder.AddComponent<Inventory>();
-        Player newPlayer = _Holder.AddComponent<Player>();
-        // @TODO: player team number in theory should always come from the first item in playerConfigs
+        // Get the Player1 conf for main (human) player
         PlayerConfig playerConf = Array.Find(playerConfigs, p => p.playerNumber == PlayerNumbers.Player1);
         if (playerConf == null)
             throw new System.Exception("Error: Could not find Player1 in startup config. Cannot start.");
+
+        // Create the game object that represents Player1
+        GameObject _Holder = Functions.GetOrCreatePlayerHolder(PlayerNumbers.Player1);
+        // Add Inventory and UnitSelection scripts
+        Inventory newInventory = _Holder.AddComponent<Inventory>();
+        Player newPlayer = _Holder.AddComponent<Player>();
+        // Set initial vars
         newPlayer.teamNumber = playerConf.team;
         newPlayer.playerFaction = playerConf.faction;
+        newInventory.unitLimit = unitLimit;
+
         // Get the selection box UI image
         RectTransform selectionSquare = GameObject.Find(CanvasConfigs.GetCanvasRoot(newPlayer.playerFaction) + "/selection-box").GetComponent<RectTransform>();
         if (selectionSquare == null)
@@ -100,8 +107,9 @@ public class GameManager : MonoBehaviour
         AudioClip clip = Resources.Load<AudioClip>("runtime/audioclips/ara-click-01");
         if (clip == null)
             Debug.LogWarning("Warning: Could not load click sound for Player.");
+        
+        // Init the main player
         newPlayer.Init(newInventory, selectionSquare, clip);
-
         PlayerMain = new MainPlayerContext
         {
             holder = _Holder,

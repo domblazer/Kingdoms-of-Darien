@@ -11,6 +11,8 @@ public class BuilderAI : UnitBuilderAI
     public bool isInRoamInterval { get; set; } = false;
     private float timeRemaining = 0;
 
+    private Vector3 nextIntangibleOffset = Vector3.zero;
+
     private void Update()
     {
         // If isInRoamInterval, count down roamIntervalTime then set to false
@@ -18,41 +20,52 @@ public class BuilderAI : UnitBuilderAI
         {
             timeRemaining -= Time.deltaTime;
             if (timeRemaining < 0)
+            {
                 isInRoamInterval = false;
+                // When roam interval is done, dequeue the patrol command, this will satisfy the next build condition in AIPlayer
+                baseUnit.commandQueue.Dequeue();
+            }
         }
+    }
 
-        // @TODO: builder should start in patrol state after parking before starting building
-
-        if (!baseUnit.commandQueue.IsEmpty() && nextQueueReady && !isInRoamInterval)
+    public void HandleConjureRoutine()
+    {
+        if (nextQueueReady && !isInRoamInterval)
         {
             ConjurerArgs buildArgs = baseUnit.currentCommand.conjurerArgs;
-
             // Vector3.zero means buildSpot is "null"
             if (buildArgs.buildSpot == Vector3.zero)
                 buildArgs.buildSpot = FindBuildSpot(transform.position);
-
-            // @TODO: intangible unit offset
-            if (!baseUnit.IsInRangeOf(buildArgs.buildSpot, 2))
-                baseUnit.MoveToPosition(buildArgs.buildSpot); // baseUnit.SetMove(buildArgs.buildSpot);
+            // Calculate the intangible's offset once every new queue
+            if (nextIntangibleOffset == Vector3.zero)
+                nextIntangibleOffset = CalculateIntangibleOffset(buildArgs.prefab);
+            // @TODO: calculate mix of x and y offset
+            if (!baseUnit.IsInRangeOf(buildArgs.buildSpot, nextIntangibleOffset.x))
+                baseUnit.MoveToPosition(buildArgs.buildSpot);
             else
                 StartNextIntangible(buildArgs);
         }
-        else if (!isBuilding && isInRoamInterval)
+    }
+
+    private Vector3 CalculateIntangibleOffset(GameObject gameObj)
+    {
+        Vector3 offset = new Vector3();
+        if (gameObj.GetComponent<BoxCollider>())
+            offset = gameObj.GetComponent<BoxCollider>().size;
+        else if (gameObj.GetComponent<CapsuleCollider>())
         {
-            // If builderAI is not in a build routine, just have it roam around
-            // baseUnit.state = RTSUnit.States.Patrolling;
-            // @TODO: Enqueue(new CommandQueueItem { commandType = CommandTypes.Patrol })
+            float r = gameObj.GetComponent<CapsuleCollider>().radius;
+            offset = new Vector3(r, r, r);
         }
+        return offset;
     }
 
     // Called once upon arrival at next build position
     private void StartNextIntangible(ConjurerArgs buildArgs)
     {
-        // baseUnit.SetMove(transform.position);
-        // baseUnit.state = RTSUnit.States.Conjuring;
+        baseUnit.MoveToPosition(transform.position);
         nextQueueReady = false;
         isBuilding = true;
-        baseUnit.commandQueue.Dequeue();
         InstantiateNextIntangible(buildArgs.prefab, buildArgs.buildSpot);
     }
 
@@ -68,23 +81,19 @@ public class BuilderAI : UnitBuilderAI
     private void InstantiateNextIntangible(GameObject itg, Vector3 spawnPoint)
     {
         GameObject intangible = Instantiate(itg, spawnPoint, new Quaternion(0, 180, 0, 1));
-        intangible.GetComponent<IntangibleUnitAI>().Bind(this, null, new CommandQueueItem
-        {
-            commandType = CommandTypes.Patrol,
-            patrolRoute = null // @Note: AI will set random patrol (roam) points automatically when this is null
-        });
-        intangible.GetComponent<IntangibleUnitAI>().Callback(NextIntangibleCompleted);
+        intangible.GetComponent<IntangibleUnitAI>().Bind(this, null, new CommandQueueItem { commandType = CommandTypes.Patrol });
+        intangible.GetComponent<IntangibleUnitAI>().Callback(IntangibleCompleted);
     }
 
     // Called back when intangible is complete
-    private void NextIntangibleCompleted()
+    private void IntangibleCompleted()
     {
         // Builder should go into roam routine after intangible is done
         isInRoamInterval = true;
+        nextIntangibleOffset = Vector3.zero;
         // Reset timer for roaming interval
         timeRemaining = roamIntervalTime;
-        // Set new patrol points for roam
-        // @TODO: use CommandQueue to reset patrol points. New patrol route?
-        (baseUnit as BaseUnitAI).SetPatrolPoints(transform.position, 3, searchBuildRange);
+        // Clear queue and set current new patrol (roam) command. @Note: a new route will be set automatically in BaseUnitAI
+        baseUnit.currentCommand = new CommandQueueItem { commandType = CommandTypes.Patrol };
     }
 }

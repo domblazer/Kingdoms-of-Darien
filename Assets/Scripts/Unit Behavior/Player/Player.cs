@@ -224,8 +224,7 @@ public class Player : MonoBehaviour
         if (goodHit)
         {
             // Did we hit a friendly unit?
-            // @TODO: intangibles are also on unit layer with friendly tag, but should not be clickable like this
-            if (hit.collider.gameObject.layer == 11 && hit.collider.CompareTag("Friendly"))
+            if (hit.collider.gameObject.layer == 9 && hit.collider.CompareTag("Friendly"))
             {
                 // Deselect all units when clicking single other unit, unless holding shift
                 if (!InputManager.HoldingShift())
@@ -242,7 +241,7 @@ public class Player : MonoBehaviour
                     selectedUnits.Add(activeUnit);
                 }
             }
-            else if (hit.collider.gameObject.layer == 11 && hit.collider.CompareTag("Enemy"))
+            else if (hit.collider.gameObject.layer == 9 && hit.collider.CompareTag("Enemy"))
             {
                 // If we clicked an Enemy unit while at least one canAttack unit is selected, tell those/that unit to attack
                 foreach (BaseUnit unit in selectedUnits)

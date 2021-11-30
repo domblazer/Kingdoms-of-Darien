@@ -15,6 +15,8 @@ public class UIManager : MonoBehaviour
     public RectTransform f2Menu;
     public RectTransform[] buildMenus;
 
+    public Text debugText;
+
     // Chrystal ball UI elements
     public Image chrystalBallTexture;
     public Sprite[] chrystalBallTextureArray;
@@ -334,5 +336,10 @@ public class UIManager : MonoBehaviour
             textureIndex = chrystalBallTextureArray.Length - 1;
         // Debug.Log("Chrystal ball (corrected) texture indx " + textureIndex);
         chrystalBallTexture.sprite = chrystalBallTextureArray[textureIndex];
+    }
+
+    public void SetDebugText(string text)
+    {
+        debugText.text = text;
     }
 }

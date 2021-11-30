@@ -32,6 +32,8 @@ public class InventoryBase : MonoBehaviour
     public List<RTSUnit> lodestones = new List<RTSUnit>();
     public List<IntangibleUnitBase> intangibleUnits = new List<IntangibleUnitBase>();
 
+    public int unitLimit = 500;
+
     protected void UpdateMana()
     {
         // @TODO: manage all teams mana

@@ -7,6 +7,15 @@ using DarienEngine.AI;
 public class UnitBuilderAI : UnitBuilderBase
 {
     public BuildUnit[] buildUnitPrefabs;
+    public HashSet<UnitCategories> availableTypes { get; set; }
+
+    private void Start()
+    {
+        availableTypes = new HashSet<UnitCategories>();
+        // Build a unique hash set of need categories supported by this unit's build options. Used in AIPlayer
+        foreach (BuildUnit cat in buildUnitPrefabs)
+            availableTypes.Add(cat.unitCategory);
+    }
 
     public void QueueBuild(GameObject intangiblePrefab)
     {

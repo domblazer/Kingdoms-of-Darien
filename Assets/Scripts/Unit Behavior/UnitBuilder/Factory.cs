@@ -31,6 +31,26 @@ public class Factory : UnitBuilderPlayer
             UpdateAllButtonsText();
     }
 
+    public void HandleConjureRoutine()
+    {
+        isBuilding = !baseUnit.commandQueue.IsEmpty();
+        // While masterQueue is not empty, continue queueing up intangible prefabs
+        if (nextQueueReady)
+        {
+            // @TODO: also need to check that the spawn point is clear before moving on to next units
+            ConjurerArgs next = baseUnit.currentCommand.conjurerArgs;
+            InstantiateNextIntangible(next);
+            // Toggle whether new unit parks towards the right or left
+            parkingDirectionToggle = !parkingDirectionToggle;
+            nextQueueReady = false;
+
+            // @TODO: handle infinite. If one unit got the infinite command, all subsequent left-clicks on that unit need to be ignored
+            // (right-click) to clear. Also, as long as the condition is true, this should just keep pumping out the same unit
+            // maybe something like:
+            // if (mode === Modes.Infinite) {masterBuildQueue.Enqueue(map); map.buildQueue.Enqueue(map.prefab);}
+        }
+    }
+
     public void QueueBuild(ConjurerArgs item, Vector2 clickPoint)
     {
         // First, protect double clicks with click delay
@@ -86,11 +106,11 @@ public class Factory : UnitBuilderPlayer
     {
         GameObject intangible = Instantiate(item.prefab, spawnPoint.position, spawnPoint.rotation);
         intangible.GetComponent<IntangibleUnit>().Bind(this, rallyPoint, parkingDirectionToggle);
-        intangible.GetComponent<IntangibleUnit>().Callback(NextIntangibleCompleted);
+        intangible.GetComponent<IntangibleUnit>().Callback(IntangibleCompleted);
     }
 
     // Callback when intangible is complete
-    private void NextIntangibleCompleted()
+    private void IntangibleCompleted()
     {
         // Factory dequeue commandQueue and decrement menu item buildQueueCount
         CommandQueueItem lastCommand = baseUnit.commandQueue.Dequeue();
@@ -126,25 +146,5 @@ public class Factory : UnitBuilderPlayer
         ToggleRallyPoint(false);
         ToggleBuildMenu(false); // Hide build menu
         ReleaseButtonListeners();
-    }
-
-    public void HandleConjureRoutine()
-    {
-        isBuilding = !baseUnit.commandQueue.IsEmpty();
-        // While masterQueue is not empty, continue queueing up intangible prefabs
-        if (nextQueueReady)
-        {
-            // @TODO: also need to check that the spawn point is clear before moving on to next units
-            ConjurerArgs next = baseUnit.currentCommand.conjurerArgs;
-            InstantiateNextIntangible(next);
-            // Toggle whether new unit parks towards the right or left
-            parkingDirectionToggle = !parkingDirectionToggle;
-            nextQueueReady = false;
-
-            // @TODO: handle infinite. If one unit got the infinite command, all subsequent left-clicks on that unit need to be ignored
-            // (right-click) to clear. Also, as long as the condition is true, this should just keep pumping out the same unit
-            // maybe something like:
-            // if (mode === Modes.Infinite) {masterBuildQueue.Enqueue(map); map.buildQueue.Enqueue(map.prefab);}
-        }
     }
 }

@@ -129,12 +129,6 @@ public class RTSUnit : MonoBehaviour
 
     private DieCallback dieCallback;
 
-    private void Awake()
-    {
-        // Default move position, for units not instantiated with a parking location
-        // currentCommand = new CommandQueueItem { commandType = CommandTypes.Move, commandPoint = transform.position };
-    }
-
     protected void Init()
     {
         // Mock "super" variable so BaseUnit can access this parent class
@@ -475,7 +469,11 @@ public class RTSUnit : MonoBehaviour
     public void Begin(DarienEngine.Directions facingDir, Vector3 parkPosition, bool parkToggle, CommandQueueItem nextCmd)
     {
         // SetFacingDir(facingDir);
-        SetParking(parkPosition, parkToggle);
+        if (isKinematic)
+        {
+            // @TODO: can we guarantee this won't be called before Awake? Where commandQueue.isAI is set
+            SetParking(parkPosition, parkToggle);
+        }
         nextCommandAfterParking = nextCmd;
     }
 
@@ -508,7 +506,7 @@ public class RTSUnit : MonoBehaviour
                 lastCommand.patrolRoute.patrolPoints.Add(new PatrolPoint
                 {
                     point = patrolPoint,
-                    // @TODO: only BaseUnit should instantiate a sticker
+                    // @Note: only BaseUnit should instantiate a sticker
                     sticker = Instantiate(
                         GameManager.Instance.patrolCommandSticker,
                         new Vector3(patrolPoint.x, 1.1f, patrolPoint.z),

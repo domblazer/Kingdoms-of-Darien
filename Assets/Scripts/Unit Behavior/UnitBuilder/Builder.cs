@@ -66,25 +66,22 @@ public class Builder : UnitBuilderPlayer
             Vector3 offsetRange = nextGhost.offset;
             // Move to next ghost in the queue
             if (nextGhost.IsSet() && !baseUnit.IsInRangeOf(nextGhost.transform.position, offsetRange.x))
-            {
-                Debug.Log("Builder moving to ghost");
                 baseUnit.MoveToPosition(nextGhost.transform.position);
-            }
             // When arrived at ghost, start building intangible
             else
-            {
-                Debug.Log("Builder arrived at ghost");
-                baseUnit.MoveToPosition(transform.position);
-                nextQueueReady = false;
-                isBuilding = true;
-                // @TODO: probably shouldn't dequeue until intangible is done?
-                // baseUnit.commandQueue.Dequeue();
-                nextGhost.StartBuild(NextIntangibleCompleted);
-            }
+                StartNextIntangible(nextGhost);
         }
     }
 
-    public void NextIntangibleCompleted()
+    public void StartNextIntangible(GhostUnit ghost)
+    {
+        baseUnit.MoveToPosition(transform.position);
+        nextQueueReady = false;
+        isBuilding = true;
+        ghost.StartBuild(IntangibleCompleted);
+    }
+
+    public void IntangibleCompleted()
     {
         baseUnit.commandQueue.Dequeue();
     }

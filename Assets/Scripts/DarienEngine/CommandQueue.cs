@@ -8,6 +8,7 @@ namespace DarienEngine
     public class CommandQueue : List<CommandQueueItem>
     {
         public CommandQueueItem Last { get; private set; }
+        public GameObject referrer;
         public bool isAI = false;
 
         public void Enqueue(CommandQueueItem item)

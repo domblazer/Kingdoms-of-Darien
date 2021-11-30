@@ -87,7 +87,7 @@ public class BaseUnit : RTSUnit
                             (_Builder as Builder).HandleConjureRoutine();
                         else
                             (_Builder as Factory).HandleConjureRoutine();
-                        state = RTSUnit.States.Conjuring;
+                        state = States.Conjuring;
                         break;
                     case CommandTypes.Guard:
                         // @TODO 
