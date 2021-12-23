@@ -55,7 +55,7 @@ public class AIPlayer : MonoBehaviour
             foreach (BaseUnitAI factory in factories)
             {
                 FactoryAI factoryAI = factory.gameObject.GetComponent<FactoryAI>();
-                
+
                 // @TODO: isBuilding is not getting reset b/c in BaseUnitAI, HandleConjureRoutine() stops getting called when 
                 // conjure command gets Dequeued
                 if (!factoryAI.isBuilding)
@@ -78,6 +78,9 @@ public class AIPlayer : MonoBehaviour
                 if (!builderAI.isInRoamInterval && !builderAI.isBuilding && !builderAI.baseUnit.isParking && builderAI.baseUnit.commandQueue.Count < 1)
                 {
                     GameObject unitToBuild = SelectValidUnit(builderAI);
+
+                    // @TODO: if unitToBuild is a lodestone, builderAI needs to choose a mana site position near by
+
                     if (unitToBuild)
                         builderAI.QueueBuild(unitToBuild);
                 }
@@ -90,7 +93,14 @@ public class AIPlayer : MonoBehaviour
 
         // @TODO: if an army quota is met, assuming these units are currently roaming around base, tell them now to form up
         // and launch an attack at the average position represented by a snapshot of an opposing army 
-
+        MasterQuota.Item infantryTierOne = profile.GetQuotaItem(UnitCategories.InfantryTier1);
+        if (infantryTierOne.ratio > 0.2f)
+        {
+            // infantryTierOne.units => Random 80%, selectedInfrantry.push(unit.FormUp()) 
+            // if (selectedInfantry.Ready)
+            //      selectedInfantry.SetArmyObjective(Objectives.Attack, avgAttackPosition = true)
+            // ArmyObjectives { Attack, Scatter/Disperse, Retreat, Charge }
+        }
     }
 
     private GameObject SelectValidUnit(UnitBuilderAI builderAI)

@@ -7,6 +7,7 @@ TagManager:
   - Friendly
   - Enemy
   - Terrain
+  - SacredSite
   layers:
   - Default
   - TransparentFX

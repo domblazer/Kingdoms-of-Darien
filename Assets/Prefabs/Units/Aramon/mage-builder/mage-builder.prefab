@@ -1929,7 +1929,7 @@ MonoBehaviour:
   menuRoot: {fileID: 0}
   ghostUnits:
   - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 2371707195242254508, guid: feb9e4dae3f7537479a3ae470a3d15a7, type: 3}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}

@@ -24,9 +24,13 @@ public class GhostUnit : MonoBehaviour
     private Directions facingDir = Directions.Forward;
     private bool placementValid = true;
 
+    public bool isLodestone = false;
+
     void Start()
     {
-        invalidIcon.SetActive(false);
+        // Start off with invalid placement
+        SetPlacementValid(false);
+
         // Compile all renderers and materials on this model
         foreach (Transform child in transform)
         {
@@ -139,6 +143,7 @@ public class GhostUnit : MonoBehaviour
         if (Physics.Raycast(ray, out hit))
         {
             hitPos = hit.point;
+            // Debug.Log("hit.collider.tag: " + hit.collider.tag);
             // Round hitPos to nearest ints to snap
             Vector3 finalPos = new Vector3(Mathf.Round(hitPos.x), Mathf.Round(hitPos.y), Mathf.Round(hitPos.z));
             transform.position = finalPos;
@@ -222,20 +227,27 @@ public class GhostUnit : MonoBehaviour
 
     private void OnTriggerEnter(Collider col)
     {
-        if (!col.isTrigger && !isSet)
-        {
-            placementValid = false;
-            invalidIcon.SetActive(true);
-        }
+        // Lodestone ghosts only valid placement is over a SacredSite
+        // @TODO: Lodestone placement isn't valid on the edges tho, needs to be pretty much directly over the sacred site
+        Debug.Log("col.transform.position: " + col.transform.position + " \n transform.position: " + transform.position);
+        if (isLodestone && !col.isTrigger && !isSet && col.CompareTag("SacredSite") && col.transform.position == transform.position)
+            SetPlacementValid(true);
+        else if (!col.isTrigger && !isSet)
+            SetPlacementValid(false);
     }
 
     private void OnTriggerExit(Collider col)
     {
-        if (!col.isTrigger && !isSet)
-        {
-            placementValid = true;
-            invalidIcon.SetActive(false);
-        }
+        if (isLodestone && !col.isTrigger && !isSet && col.CompareTag("SacredSite"))
+            SetPlacementValid(false);
+        else if (!col.isTrigger && !isSet)
+            SetPlacementValid(true);
+    }
+
+    private void SetPlacementValid(bool val)
+    {
+        placementValid = val;
+        invalidIcon.SetActive(!val);
     }
 
     public bool IsSet()
