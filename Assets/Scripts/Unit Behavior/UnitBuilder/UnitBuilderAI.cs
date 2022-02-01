@@ -17,7 +17,7 @@ public class UnitBuilderAI : UnitBuilderBase
             availableTypes.Add(cat.unitCategory);
     }
 
-    public void QueueBuild(GameObject intangiblePrefab)
+    public void QueueBuild(BuildUnit buildUnit)
     {
         // Debug.Log("UnitBuilderAI queued: " + intangiblePrefab.GetComponent<IntangibleUnitAI>().finalUnit.unitName);
         if (baseUnit.commandQueue.IsEmpty())
@@ -26,7 +26,7 @@ public class UnitBuilderAI : UnitBuilderBase
         baseUnit.commandQueue.Enqueue(new CommandQueueItem
         {
             commandType = CommandTypes.Conjure,
-            conjurerArgs = new ConjurerArgs { prefab = intangiblePrefab }
+            conjurerArgs = new ConjurerArgs { prefab = buildUnit.intangiblePrefab, unitCategory = buildUnit.unitCategory }
         });
     }
 }

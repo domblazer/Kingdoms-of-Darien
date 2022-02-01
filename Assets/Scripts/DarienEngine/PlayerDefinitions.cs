@@ -35,4 +35,9 @@ namespace DarienEngine
         public Image specialAttackIcon;
         public string specialAttackName;
     }
+
+    public enum AttackModes
+    {
+        Offensive, Defensive, Passive
+    }
 }

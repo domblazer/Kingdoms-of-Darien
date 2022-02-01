@@ -82,7 +82,6 @@ public class RTSUnit : MonoBehaviour
     public bool isParking { get; set; } = false;
     protected bool tryParkingDirection;
     protected CommandQueueItem nextCommandAfterParking;
-    protected bool attackMove = false;
 
     // CommandQueue designed to hold queue of any type of commands, e.g. move, build, attack, etc.
     public CommandQueue commandQueue = new CommandQueue();
@@ -203,13 +202,13 @@ public class RTSUnit : MonoBehaviour
                 isParking = !inRange;
                 // Here we can reliably say last state was Parking and now parking is done, next state set here
                 if (!isParking)
-                {
-                    // Enqueue new command for next state
-                    commandQueue.Enqueue(nextCommandAfterParking);
-                }
+                    commandQueue.Enqueue(nextCommandAfterParking); // Enqueue new command for next state
             }
             else
                 state = States.Moving;
+
+            DebugNavPath();
+            // InflateAvoidanceRadius();
         }
     }
 
@@ -255,7 +254,7 @@ public class RTSUnit : MonoBehaviour
         }
     }
 
-    protected void HandleAttackRoutine()
+    protected void HandleAttackRoutine(bool autoAttackInterrupt = false)
     {
         state = States.Attacking;
 
@@ -276,6 +275,9 @@ public class RTSUnit : MonoBehaviour
             TryToggleToAgent();
             // Move to attack target position 
             MoveToPosition(attackTarget.transform.position);
+            // @TODO: AI should attack the next target that gets too close or attacks it first
+            if (autoAttackInterrupt)
+                AutoPickAttackTarget(true);
         }
         // Once unit is in range, can stop moving
         else if (isMovingToAttack && attackTarget && IsInRangeOf(attackTarget.transform.position, attackRange))
@@ -295,6 +297,9 @@ public class RTSUnit : MonoBehaviour
                 commandQueue.Dequeue();
                 return;
             }
+
+            // @TODO: if attackTarget becomes null, move back to original location unless there's another unit around to attack
+            // @TODO: if isAttacking/taking damage and health is low, AI start a retreat, player units can be set to have an auto retreat or retreat button
 
             // Kinematic units do facing; @Note: stationary attack units do their own facing routine (e.g. Stronghold)
             if (isKinematic && !IsMoving())
@@ -358,21 +363,18 @@ public class RTSUnit : MonoBehaviour
         }
     }
 
-    protected GameObject AutoPickAttackTarget()
+    protected GameObject AutoPickAttackTarget(bool insertFirst = false)
     {
-        // @TODO: need to account for attacking intangible units 
-
         // Find closest target
-        GameObject target = null;
-        target = FindClosestEnemy();
-        RTSUnit targetUnitScript = target ? target.GetComponent<RTSUnit>() : null;
-        // If a valid target exists but attackTarget has not yet been assigned, lock on to this target
-        if (target && targetUnitScript && !attackTarget)
-            TryAttack(target);
-
-        // @TODO: if attackTarget becomes null, move back to original location unless there's another unit around to attack
-        // @TODO: if isAttacking/taking damage and health is low, AI start a retreat, player units can be set to have an auto retreat or retreat button
-
+        GameObject target = FindClosestEnemy();
+        // If a valid target exists but attackTarget has not yet been assigned, lock onto this target
+        if (target && target.GetComponent<RTSUnit>() && !attackTarget)
+        {
+            if (insertFirst)
+                TryInterruptAttack(target);
+            else
+                TryAttack(target);
+        }
         return target;
     }
 
@@ -432,22 +434,21 @@ public class RTSUnit : MonoBehaviour
         return closest;
     }
 
-    /* protected void DebugNavPath()
+    protected void DebugNavPath()
     {
         var path = _Agent.path;
         for (int i = 0; i < path.corners.Length - 1; i++)
         {
             Debug.DrawLine(path.corners[i], path.corners[i + 1], Color.red);
         }
-    } */
+    }
 
-    public void SetMove(Vector3 position, bool addToQueue = false, bool doAttackMove = false)
+    public void SetMove(Vector3 position, bool addToQueue = false)
     {
         // If not holding shift on this move, clear the moveto queue and make this position first in queue
         if (!addToQueue)
             commandQueue.Clear();
         commandQueue.Enqueue(new CommandQueueItem { commandType = CommandTypes.Move, commandPoint = position });
-        attackMove = doAttackMove;
         isParking = false;
         ClearAttack();
         TryToggleToAgent();
@@ -524,26 +525,41 @@ public class RTSUnit : MonoBehaviour
     {
         if (canAttack)
         {
-            Debug.Log(gameObject.name + " trying attack on " + target.name);
-            attackTarget = target;
-            engagingTarget = true;
-            isMovingToAttack = true;
-            TryToggleToAgent();
-
+            SetAttackVars(target);
+            // Add to queue 
             if (!addToQueue)
                 commandQueue.Clear();
             commandQueue.Enqueue(new CommandQueueItem
             {
                 commandType = CommandTypes.Attack,
                 commandPoint = attackTarget.transform.position,
-                attackInfo = new AttackInfo
-                {
-                    attackTarget = attackTarget
-                }
+                attackInfo = new AttackInfo { attackTarget = attackTarget }
             });
-
-            state = States.Attacking;
         }
+    }
+
+    public void TryInterruptAttack(GameObject target)
+    {
+        if (canAttack)
+        {
+            SetAttackVars(target);
+            // Push priority command, shifting existing to the right
+            commandQueue.InsertFirst(new CommandQueueItem
+            {
+                commandType = CommandTypes.Attack,
+                commandPoint = attackTarget.transform.position,
+                attackInfo = new AttackInfo { attackTarget = attackTarget }
+            });
+        }
+    }
+
+    private void SetAttackVars(GameObject target)
+    {
+        // Debug.Log(gameObject.name + " trying attack on " + target.name);
+        attackTarget = target;
+        engagingTarget = true;
+        isMovingToAttack = true;
+        TryToggleToAgent();
     }
 
     public void ClearAttack()
@@ -640,11 +656,18 @@ public class RTSUnit : MonoBehaviour
 
     public bool IsInRangeOf(Vector3 pos)
     {
-        return (transform.position - pos).sqrMagnitude < Mathf.Pow(_Agent.stoppingDistance, 2);
+        // Shouldn't Pow fractions, results in smaller numbers
+        float rangeToUse = _Agent.stoppingDistance;
+        if (_Agent.stoppingDistance >= 1)
+            rangeToUse = Mathf.Pow(_Agent.stoppingDistance, 2);
+        return (transform.position - pos).sqrMagnitude < rangeToUse;
     }
 
     public bool IsInRangeOf(Vector3 pos, float rng)
     {
+        float rangeToUse = rng;
+        if (rng >= 1)
+            rangeToUse = Mathf.Pow(rng, 2);
         return (transform.position - pos).sqrMagnitude < Mathf.Pow(rng, 2);
     }
 }

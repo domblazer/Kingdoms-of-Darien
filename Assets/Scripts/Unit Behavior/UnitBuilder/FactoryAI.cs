@@ -13,9 +13,7 @@ public class FactoryAI : UnitBuilderAI
     {
         // Keep track of master queue to know when building
         isBuilding = !baseUnit.commandQueue.IsEmpty();
-
-        Debug.Log("FactoryAI: isBuilding: " + isBuilding + " nextQueueReady: " + nextQueueReady);
-
+        // Debug.Log("FactoryAI: isBuilding: " + isBuilding + " nextQueueReady: " + nextQueueReady);
         // While masterQueue is not empty, continue queueing up intangible prefabs
         if (nextQueueReady)
         {
@@ -43,5 +41,6 @@ public class FactoryAI : UnitBuilderAI
     {
         // Factory just needs to dequeue on intangible complete
         baseUnit.commandQueue.Dequeue();
+        isBuilding = false;
     }
 }

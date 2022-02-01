@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
         public TeamNumbers team;
         public Factions faction;
         // public FactionColor factionColor;
+        public Transform startPosition;
     }
 
     // List of players to initialize for the game
@@ -71,6 +72,7 @@ public class GameManager : MonoBehaviour
         newPlayer.playerNumber = playerConf.playerNumber;
         newPlayer.teamNumber = playerConf.team;
         newPlayer.playerFaction = playerConf.faction;
+        newPlayer.playerStartPosition = playerConf.startPosition;
         // Instantiate new AI player context and add it to AIPlayers dictionary
         AIPlayerContext newAI = new AIPlayerContext
         {
@@ -96,6 +98,7 @@ public class GameManager : MonoBehaviour
         Player newPlayer = _Holder.AddComponent<Player>();
         // Set initial vars
         newPlayer.teamNumber = playerConf.team;
+        newPlayer.playerStartPosition = playerConf.startPosition;
         newPlayer.playerFaction = playerConf.faction;
         newInventory.unitLimit = unitLimit;
 

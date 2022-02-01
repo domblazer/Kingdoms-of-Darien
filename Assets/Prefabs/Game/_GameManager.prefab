@@ -50,10 +50,13 @@ MonoBehaviour:
   - playerNumber: 1
     team: 1
     faction: 0
+    startPosition: {fileID: 0}
   - playerNumber: 2
     team: 2
     faction: 1
-  enableFogOfWar: 1
+    startPosition: {fileID: 0}
+  unitLimit: 500
+  enableFogOfWar: 0
   fogOfWarPlane: {fileID: 0}
   moveCommandSticker: {fileID: 4506203142493968636, guid: b501e3e3c92ea8e4083cec1ca7d27253, type: 3}
   guardCommandSticker: {fileID: 0}
@@ -78,6 +81,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  debugText: {fileID: 0}
   chrystalBallTexture: {fileID: 0}
   chrystalBallTextureArray:
   - {fileID: 21300000, guid: c7fdc63dd8f27ce4cb79cfe98dc9eec2, type: 3}

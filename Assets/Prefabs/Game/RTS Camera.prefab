@@ -175,12 +175,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Boundary: 25
-  zoomDistanceMax: 75
+  zoomDistanceMax: 45
   zoomDistanceMin: 15
   zoomDistance: 75
   ScrollSpeed: 30
   PanSpeed: 20
-  ZoomSpeed: 15
+  ZoomSpeed: 2
   CurrentZoom: 0
   xOrbitSpeed: 120
   yOrbitSpeed: 120

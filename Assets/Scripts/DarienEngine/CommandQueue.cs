@@ -38,6 +38,11 @@ namespace DarienEngine
             return base[0];
         }
 
+        public void InsertFirst(CommandQueueItem item)
+        {
+            base.Insert(0, item);
+        }
+
         public void ItemChanged(object sender, CommandQueueItem.CommandChangedEventArgs changeEvent)
         {
             if (changeEvent.changeType == "stickerClicked")
@@ -45,6 +50,14 @@ namespace DarienEngine
                 changeEvent.command.RemoveCommandSticker();
                 base.Remove(changeEvent.command);
             }
+        }
+
+        public override string ToString()
+        {
+            string str = "\n";
+            foreach (CommandQueueItem item in base.ToArray())
+                str += "-----------------\n" + item + "\n-----------------";
+            return str;
         }
     }
 
@@ -93,10 +106,13 @@ namespace DarienEngine
 
         public override string ToString()
         {
-            string str = "CommandType: " + commandType + "\n" + "CommandPoint: " + commandPoint;
-            str += "ConjurerArgs?: " + conjurerArgs;
-            str += "AttackInfo?: " + conjurerArgs;
-            str += "PatrolRoute?: " + patrolRoute;
+            string str = "CommandType: " + commandType + "\n" + "CommandPoint: " + commandPoint + "\n";
+            if (commandType == CommandTypes.Conjure)
+                str += "ConjurerArgs?: " + conjurerArgs;
+            else if (commandType == CommandTypes.Attack)
+                str += "AttackInfo?: " + conjurerArgs;
+            else if (commandType == CommandTypes.Patrol)
+                str += "PatrolRoute?: " + patrolRoute;
             return str;
         }
     }
@@ -106,6 +122,7 @@ namespace DarienEngine
         public Button menuButton;
         public ClickableObject clickHandler;
         public GameObject prefab;
+        public UnitCategories unitCategory;
         public Vector3 buildSpot;
         public int buildQueueCount = 0;
         public override string ToString()

@@ -3,229 +3,218 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using DarienEngine;
+using DarienEngine.Clustering;
 using DarienEngine.AI;
 
 public class AIPlayer : MonoBehaviour
 {
     private UnitCategories currentNeed;
     private List<UnitCategories> allCurrentNeeds;
-
-    // @TODO: AI player needs certain quotas to try to reach:
-    // e.g. base starting player main quota is like 7 mage builders, 100 infrantry, etc.
-    // so need conditions come from like, if 1/7 mage builders, need is high, set that to the need type 
-    // so the next time an AI builder is ready to dequeue it builds the current need condition
-    // Sub-quotas also have to exist for like armies, like a suitable size force to send when <20% builders/mana whatever
-    // is 5-7 infrantry, 1-2 siege or something, so when game is still in an early stage, the quota needed to constitute an
-    // army is smaller and increases as mana/builders/other armies increase in count
-    public MasterQuota profile;
-    public AIProfileTypes profileType;
     public PlayerNumbers playerNumber;
+    public Transform playerStartPosition;
     public TeamNumbers teamNumber;
     public Factions playerFaction;
     public InventoryAI inventory;
-
-    private string debugText = "";
+    public NeedInfo needInfo;
+    // limit 3 armies at a time
+    public List<Army> _Armies = new List<Army>();
+    public float timeSinceLastArmyOrders;
+    public float armyOrdersDelay = 100.0f;
 
     public void Init(InventoryAI inv)
     {
         inventory = inv;
+        // @TODO: move or spawn monarch or sole builder to start position
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        // Init profile
-        profile = AIProfiles.NewProfile(profileType, inventory);
-    }
-
-    // Update is called once per frame
     void Update()
     {
+        // Build units until limit reached
         if (inventory.totalUnits.Count < inventory.unitLimit)
         {
-            allCurrentNeeds = DetermineNeedState();
-            debugText += "\n All Current Needs: " + string.Join<UnitCategories>(", ", allCurrentNeeds.ToArray());
-            // currentNeed = allCurrentNeeds[0];
-            UIManager.Instance.SetDebugText(debugText);
-
-            List<RTSUnit> factories = inventory.GetUnitsByTypes(UnitCategories.FactoryTier1, UnitCategories.FactoryTier2);
-            List<RTSUnit> builders = inventory.GetUnitsByTypes(UnitCategories.BuilderTier1, UnitCategories.BuilderTier2);
-
-            // Tell factories to start building some units
-            foreach (BaseUnitAI factory in factories)
-            {
-                FactoryAI factoryAI = factory.gameObject.GetComponent<FactoryAI>();
-
-                // @TODO: isBuilding is not getting reset b/c in BaseUnitAI, HandleConjureRoutine() stops getting called when 
-                // conjure command gets Dequeued
-                if (!factoryAI.isBuilding)
-                {
-                    // If this builder is not already conjuring something, pick a unit that meets the current need
-                    GameObject unitToBuild = SelectValidUnit(factoryAI);
-                    if (unitToBuild)
-                        factoryAI.QueueBuild(unitToBuild);
-                }
-            }
-
-            // @TODO: if builders/factories are already working on some units of currentNeed, they can pick from second or third need
-            // So maybe: intangibleUnits.Contains(x => x.finalUnit.unitCategory == currentNeedType).Length > 0 ? use needs[1] or needs[2]?
-
-            // Give orders to builders
-            foreach (BaseUnitAI builder in builders)
-            {
-                BuilderAI builderAI = builder.gameObject.GetComponent<BuilderAI>();
-                // Only queue builders who are not in a roaming interval, and not in a build routine with at least 1 unit in the queue
-                if (!builderAI.isInRoamInterval && !builderAI.isBuilding && !builderAI.baseUnit.isParking && builderAI.baseUnit.commandQueue.Count < 1)
-                {
-                    GameObject unitToBuild = SelectValidUnit(builderAI);
-
-                    // @TODO: if unitToBuild is a lodestone, builderAI needs to choose a mana site position near by
-
-                    if (unitToBuild)
-                        builderAI.QueueBuild(unitToBuild);
-                }
-            }
-
-            // @TODO: Dragon should be the only category that allows only 1 unit of that type
-
-            // @TODO: AIs should avoid building gates and walls, which belong to FortTier1, also possibly scouts altogether
+            // Determine what we should be building now
+            needInfo = DetermineNeedState();
+            // Order builders and factories to construct appropriate units
+            IssueFactoryOrders(inventory.GetUnitsByTypes(UnitCategories.FactoryTier1, UnitCategories.FactoryTier2));
+            IssueBuilderOrders(inventory.GetUnitsByTypes(UnitCategories.BuilderTier1, UnitCategories.BuilderTier2));
         }
+        // Handle sending armies when they are ready
+        IssueArmyOrders();
+    }
 
-        // @TODO: if an army quota is met, assuming these units are currently roaming around base, tell them now to form up
-        // and launch an attack at the average position represented by a snapshot of an opposing army 
-        MasterQuota.Item infantryTierOne = profile.GetQuotaItem(UnitCategories.InfantryTier1);
-        if (infantryTierOne.ratio > 0.2f)
+    // Give orders to builders
+    private void IssueBuilderOrders(List<RTSUnit> builders)
+    {
+        foreach (BaseUnitAI builder in builders)
         {
-            // infantryTierOne.units => Random 80%, selectedInfrantry.push(unit.FormUp()) 
-            // if (selectedInfantry.Ready)
-            //      selectedInfantry.SetArmyObjective(Objectives.Attack, avgAttackPosition = true)
-            // ArmyObjectives { Attack, Scatter/Disperse, Retreat, Charge }
+            BuilderAI builderAI = builder.gameObject.GetComponent<BuilderAI>();
+            // Only queue builders who are not in a roaming interval, and not in a build routine with at least 1 unit in the queue
+            if (!builderAI.isInRoamInterval && !builderAI.isBuilding && !builderAI.baseUnit.isParking && builderAI.baseUnit.commandQueue.Count < 1)
+            {
+                BuildUnit[] validUnits = builderAI.buildUnitPrefabs.Where(x => x.unitCategory == needInfo.builderNeed).ToArray();
+                if (validUnits != null && validUnits.Count() > 0)
+                {
+                    // @TODO: AI builders should avoid building gates and walls, which belong to FortTier1
+                    BuildUnit unitToBuild = validUnits[Random.Range(0, validUnits.Count())];
+                    builderAI.QueueBuild(unitToBuild);
+                }
+            }
         }
     }
 
-    private GameObject SelectValidUnit(UnitBuilderAI builderAI)
+    // Tell factories to start building some units
+    private void IssueFactoryOrders(List<RTSUnit> factories)
     {
-        // Factories filter out needs that don't pertain to them and return the first element from resulting sequence
-        IEnumerable<UnitCategories> adjustedNeeds = allCurrentNeeds.Intersect<UnitCategories>(builderAI.availableTypes);
-        if (adjustedNeeds.Count() > 0)
+        foreach (BaseUnitAI factory in factories)
         {
-            UnitCategories adjustedCurrentNeed = adjustedNeeds.First<UnitCategories>();
-            // Get all unit prefabs that meet current need
-            BuildUnit[] opts = builderAI.buildUnitPrefabs.Where(x => x.unitCategory == adjustedCurrentNeed).ToArray();
-            // Return a random unit prefab from this option list
-            if (opts.Length > 0)
-                return opts[Random.Range(0, opts.Length)].intangiblePrefab;
+            FactoryAI factoryAI = factory.gameObject.GetComponent<FactoryAI>();
+            if (!factoryAI.isBuilding)
+            {
+                // If this builder is not already conjuring something, pick a unit that meets the current need
+                BuildUnit[] validUnits = factoryAI.buildUnitPrefabs.Where(x => x.unitCategory == needInfo.factoryNeed).ToArray();
+                if (validUnits != null && validUnits.Count() > 0)
+                {
+                    BuildUnit unitToBuild = validUnits[Random.Range(0, validUnits.Count())];
+                    factoryAI.QueueBuild(unitToBuild);
+                }
+            }
         }
-        return null;
     }
 
-    private List<UnitCategories> DetermineNeedState()
+    // Army attack routine
+    private void IssueArmyOrders()
     {
-        // Compile all needs in list
-        List<MasterQuota.Item> needs = new List<MasterQuota.Item>();
+        // @Note: this is only handling ground units, special Dragon, other flyers, and naval units must be handled separately
+        List<RTSUnit> groundUnits = inventory.GetUnitsByTypes(
+            UnitCategories.InfantryTier1,
+            UnitCategories.InfantryTier2,
+            UnitCategories.SiegeTier1,
+            UnitCategories.SiegeTier2,
+            UnitCategories.StalwartTier1,
+            UnitCategories.StalwartTier2
+        );
+        List<RTSUnit> armyUnits = new List<RTSUnit>();
+        foreach (Army army in _Armies)
+            armyUnits.Concat(army.units);
+        // Must pick units that are not already in an army
+        List<RTSUnit> validUnits = groundUnits.Except(armyUnits).ToList();
+
+        // @TODO: army size threshold should increase with number of lodestones/factories
+        int armySize = 7;
+        // If size threshold met, time passed since delay, and armies count less than three
+        if (validUnits.Count >= armySize && timeSinceLastArmyOrders > armyOrdersDelay && _Armies.Count < 3)
+        {
+            CreateNewArmy(validUnits, armySize);
+            // @TODO: start timer for armyOrdersDelay
+        }
+        foreach (Army army in _Armies)
+        {
+            army.HandleUpdate();
+        }
+        // Remove armies when they are broken
+        _Armies.RemoveAll(army => army.isBroken);
+
+        // @TODO: if all units in the army are killed, reset _Army = null
+    }
+
+    private void CreateNewArmy(List<RTSUnit> units, int armySize)
+    {
+        Army army = new Army(units, armySize);
+        inventory.OnUnitsChanged += army.HandleUnitChange;
+        army.PlayerConditions(playerNumber, PlayerNumbers.Player1);
+        army.FormUp();
+        army.ordersIssued = true;
+        Debug.Log("Army called upon.");
+        _Armies.Add(army);
+    }
+
+    // Return a list of need types with weighted values to pick randomly
+    public List<RandomNeed> GetInfantrySpread()
+    {
+        // This would be for Factory
+        return new List<RandomNeed>
+        {
+            new RandomNeed {categoryLabel = UnitCategories.InfantryTier1, frequency = 0.6f },
+            new RandomNeed {categoryLabel = UnitCategories.StalwartTier1, frequency = 0.2f },
+            new RandomNeed {categoryLabel = UnitCategories.SiegeTier1, frequency =  0.1f },
+            new RandomNeed {categoryLabel = UnitCategories.BuilderTier1, frequency = 0.1f}
+        };
+    }
+
+    // Builder spread with emphasis on LodestoneTier1
+    public List<RandomNeed> GetLodestoneSpread()
+    {
+        return new List<RandomNeed>
+        {
+            new RandomNeed {categoryLabel = UnitCategories.LodestoneTier1, frequency = 0.5f },
+            new RandomNeed {categoryLabel = UnitCategories.FactoryTier1, frequency = 0.3f },
+            new RandomNeed {categoryLabel = UnitCategories.FortTier1, frequency =  0.1f },
+            new RandomNeed {categoryLabel = UnitCategories.NavalTier1, frequency = 0.1f}
+        };
+    }
+
+    public UnitCategories PickRandomNeedType(List<RandomNeed> needs)
+    {
+        float slider = 0.0f;
+        // Setup frequency range to check against
+        foreach (RandomNeed need in needs)
+        {
+            need.frequencyRange = new List<float> { slider, need.frequency + slider };
+            slider = need.frequency;
+        }
+        // Pick need randomly but based on frequency, e.g. InfantryTier1 should be picked 60% of the time, over SiegeTier1 10% of the time
+        float randomBetween0And1 = Random.Range(0.0f, 1.0f);
+        foreach (RandomNeed need in needs)
+        {
+            if (randomBetween0And1 >= need.frequencyRange[0] && randomBetween0And1 <= need.frequencyRange[1])
+                return need.categoryLabel;
+        }
+        return needs[0].categoryLabel;
+    }
+
+    public class RandomNeed
+    {
+        public UnitCategories categoryLabel;
+        public float frequency;
+        public List<float> frequencyRange;
+    }
+    public class NeedInfo
+    {
+        public UnitCategories builderNeed;
+        public UnitCategories factoryNeed;
+    }
+    private NeedInfo DetermineNeedState()
+    {
+        // Compile all needs
+        needInfo = new NeedInfo();
 
         // @TODO: monarch can substitute need for builder at the beginning
 
-        // Getting all quota items upfront eliminates 50% of unnessesary calls to GetQuotaItem()
-        AllQuotaItems quotaItems = profile.GetAllQuotaItems();
-        debugText = quotaItems.ToString();
+        List<RTSUnit> factoryTier1 = inventory.GetUnitsByType(UnitCategories.FactoryTier1);
+        List<RTSUnit> builderTier1 = inventory.GetUnitsByType(UnitCategories.BuilderTier1);
 
-        // Needs that require BuilderTier1
-        if (quotaItems.BuilderTier1.count > 0)
+        // If at least one builder but no factories
+        if (factoryTier1.Count == 0 && builderTier1.Count > 0)
         {
-            // @TODO: ratios probably need to change over time so needs can alternate, like once a few lodestones are built,
-            // can go ahead and build more factories, armies, etc. but as that capacity increases, so does the lodestone need 
-            // again, so now the threshold has to bump up to like .7, repeat, then eventually all thresholds will be 1
-            // @TODO: obviously tier 2 things should start taking higher priority as more tier 1 units fill up
-
-            // Maybe ratio follows lodestone ratio? Like as a reflection of mana capacity. still needs more though of course
-
-            // @TODO: ratio > idealRatio => priority up, else down
-            // maybe, sort by (idealRatio - ratio) - in theory that should sort based on disparity between current and ideal
-            // e.g. ideal is .02 but current is .5, (.02 - .5) = -.48
-
-            // Lodestones Tier 1 (10/500 = 0.02 = 2% of total population)
-            if (quotaItems.LodestoneTier1.ratio < quotaItems.LodestoneTier1.targetRatio)
-                needs.Add(quotaItems.LodestoneTier1);
-            // Factories Tier 1 (5/500; 1%)
-            if (quotaItems.FactoryTier1.ratio < quotaItems.FactoryTier1.targetRatio)
-                needs.Add(quotaItems.FactoryTier1);
-            // Factory Tier 2 (1%)
-            if (quotaItems.FactoryTier2.ratio < quotaItems.FactoryTier2.targetRatio)
-                needs.Add(quotaItems.FactoryTier2);
-            // Fort Tier 1 (1%)
-            if (quotaItems.FortTier1.ratio < quotaItems.FortTier1.targetRatio)
-                needs.Add(quotaItems.FortTier1);
-            // Fort Tier 2 (1%)
-            if (quotaItems.FortTier2.ratio < quotaItems.FortTier2.targetRatio)
-                needs.Add(quotaItems.FortTier2);
-
-            // Naval Tier 1: @TODO: depends on water area around player start position
-            if (quotaItems.NavalTier1.ratio < quotaItems.NavalTier1.targetRatio)
-                needs.Add(quotaItems.NavalTier1);
+            // Factory takes priority
+            needInfo.builderNeed = UnitCategories.FactoryTier1;
         }
-        else if (quotaItems.FactoryTier1.count > 0 || quotaItems.FactoryTier2.count > 0)
+        // If at least one factory but no builders
+        else if (factoryTier1.Count > 0 && builderTier1.Count == 0)
         {
-            // Obviously, if no builders exist, creating them takes top priority
-            // quotaItems.BuilderTier1.priority = 1;
-            needs.Add(quotaItems.BuilderTier1);
+            // Builder takes priority
+            needInfo.factoryNeed = UnitCategories.BuilderTier1;
         }
-        else if (quotaItems.FactoryTier1.count == 0)
+        // If both builder(s) and factory(s) exist
+        else if (factoryTier1.Count > 0 && builderTier1.Count > 0)
         {
-            // quotaItems.FactoryTier1.priority = 1;
-            needs.Add(quotaItems.FactoryTier1);
+            // Infantry takes priority for Factories, also Stalwart and Siege
+            needInfo.factoryNeed = PickRandomNeedType(GetInfantrySpread());
+            // Builders should roam and build Lodestones, Factories, and Forts. 
+            // @TODO: Number of lodestones informs which takes priority
+            needInfo.builderNeed = PickRandomNeedType(GetLodestoneSpread());
         }
 
-        // Needs that require FactoryTier1
-        if (quotaItems.FactoryTier1.count > 0)
-        {
-            // Scout? 
-            // InfantryTier1 (50%)
-            if (quotaItems.InfantryTier1.ratio < quotaItems.InfantryTier1.targetRatio)
-                needs.Add(quotaItems.InfantryTier1);
-            // StalwartTier1 (10%)
-            if (quotaItems.StalwartTier1.ratio < quotaItems.StalwartTier1.targetRatio)
-                needs.Add(quotaItems.StalwartTier1);
-            // SiegeTier1 (5%)
-            if (quotaItems.SiegeTier1.ratio < quotaItems.SiegeTier1.targetRatio)
-                needs.Add(quotaItems.SiegeTier1);
-            // BuilderTier1 (7/500; 1.4%)
-            if (quotaItems.BuilderTier1.ratio < quotaItems.BuilderTier1.targetRatio)
-                needs.Add(quotaItems.BuilderTier1);
-        }
-
-        // Needs that require FactoryTier2
-        if (quotaItems.FactoryTier2.count > 0)
-        {
-            // InfantryTier2
-            // StalwartTier2
-            // SiegeTier2
-            // BuilderTier2
-            // @Note that factoriesTier2 can also build BuildersTier1
-        }
-
-        // Needs that require Builders Tier 2 (e.g. Acolyte, Dark Priest, etc)
-        if (quotaItems.BuilderTier2.count > 0)
-        {
-            // Dragon
-            // Lodestone Tier 2
-            // Special? i.e. Grenadier?
-        }
-
-        // Sort needs by priority and return highest priority need
-        needs.Sort(delegate (MasterQuota.Item x, MasterQuota.Item y)
-        {
-            return x.ratioDiff < y.ratioDiff ? 1 : -1;
-        });
-
-        // Debug.Log("All needs: " + string.Join<MasterQuota.Item>(", ", needs.ToArray()));
-        // currentNeedType = needs[0].label;
-        // Debug.Log(playerNumber + " current need: " + currentNeedType);
-
-        List<UnitCategories> flattenedNeeds = new List<UnitCategories>();
-        foreach (MasterQuota.Item need in needs)
-            flattenedNeeds.Add(need.label);
-
-        return flattenedNeeds;
+        return needInfo;
     }
 }

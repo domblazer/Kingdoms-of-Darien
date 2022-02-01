@@ -10,6 +10,7 @@ public class BaseUnit : RTSUnit
     public bool selectable = true;
     public GameObject selectRing;
     public GameObject fogOfWarMask;
+    public AttackModes attackMode = AttackModes.Offensive;
     private Directions facingDir = Directions.Forward;
     private UnitBuilderPlayer _Builder;
 
@@ -68,10 +69,13 @@ public class BaseUnit : RTSUnit
                 switch (currentCommand.commandType)
                 {
                     case CommandTypes.Move:
-                        // just handle move behaviour
-                        // @TODO: Sub-CommandTypes? E.g. Attack-Move, Guard-Move, etc.?
-                        // @TODO: state = States.Parking
                         HandleMovement();
+                        // If moving while in Offensive mode, automatically attack things coming in range
+                        if (attackMode == AttackModes.Offensive)
+                        {
+                            // Attack command will take priority then return
+                            AutoPickAttackTarget(true);
+                        }
                         break;
                     case CommandTypes.Attack:
                         // handle engaging target (moveTo target) and attacking behaviour
@@ -80,9 +84,11 @@ public class BaseUnit : RTSUnit
                     case CommandTypes.Patrol:
                         // handle patrol behavior
                         // @TODO: if patrol point not set?
+                        // @TODO: auto attack if mode is offensive
                         Patrol();
                         break;
                     case CommandTypes.Conjure:
+                        TryToggleToAgent();
                         if (isKinematic)
                             (_Builder as Builder).HandleConjureRoutine();
                         else
@@ -90,30 +96,22 @@ public class BaseUnit : RTSUnit
                         state = States.Conjuring;
                         break;
                     case CommandTypes.Guard:
-                        // @TODO 
-                        break;
-                    default:
-                        // Idle behavour?
-                        state = States.Standby;
+                        // @TODO: HandleGuardRoutine()
+                        // @TODO: attack anyone that attacks the guarding unit
                         break;
                 }
             }
             else
             {
-                // @TODO: if commandQueue is empty, just be on standby
+                // No commands, default to standby
                 state = States.Standby;
+                TryToggleToObstacle();
             }
 
-            // @TODO: Determine when to Auto pick attack targets
-            if (canAttack && state.Value == States.Standby.Value)
+            // If on standy and offensive mode, auto-attack 
+            if (canAttack && state.Value == States.Standby.Value && attackMode == AttackModes.Offensive)
             {
                 AutoPickAttackTarget();
-
-                // If any units in sight to attack, continue picking closest and engage attack
-                // @TODO: break off attack if player unit told to move while isAttacking
-                // @TODO: player unit, autopick enables attack-move by default, but should ignore if in Passive mode
-                // @TODO: also, if in Defensive mode, should not pursue enemies as aggressively, e.g. if chasing for more than 5 secs, break; 
-                // defensive unit should also only engage after enemy gets very close (like hold-your-ground type behavior)
             }
 
             if (selectable && selected)

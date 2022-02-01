@@ -33,9 +33,11 @@ public class BuilderAI : UnitBuilderAI
         if (nextQueueReady && !isInRoamInterval)
         {
             ConjurerArgs buildArgs = baseUnit.currentCommand.conjurerArgs;
+            // If build unit is lodestone, FindBuildSpot will pick nearest sacred site
+            bool isLodestone = buildArgs.unitCategory == UnitCategories.LodestoneTier1 || buildArgs.unitCategory == UnitCategories.LodestoneTier2;
             // Vector3.zero means buildSpot is "null"
             if (buildArgs.buildSpot == Vector3.zero)
-                buildArgs.buildSpot = FindBuildSpot(transform.position);
+                buildArgs.buildSpot = FindBuildSpot(transform.position, isLodestone);
             // Calculate the intangible's offset once every new queue
             if (nextIntangibleOffset == Vector3.zero)
                 nextIntangibleOffset = CalculateIntangibleOffset(buildArgs.prefab);
@@ -69,13 +71,45 @@ public class BuilderAI : UnitBuilderAI
         InstantiateNextIntangible(buildArgs.prefab, buildArgs.buildSpot);
     }
 
-    public Vector3 FindBuildSpot(Vector3 origin)
+    public class SacredStoneDetails
+    {
+        public GameObject sacredStone;
+        public float distance;
+    }
+    // Return the closest SacredSite position
+    public Vector3 FindClosestSacredSite()
+    {
+        GameObject[] sacredStones = GameObject.FindGameObjectsWithTag("SacredSite");
+        List<SacredStoneDetails> sacredStoneDetailsList = new List<SacredStoneDetails>();
+        foreach (GameObject stone in sacredStones)
+        {
+            sacredStoneDetailsList.Add(new SacredStoneDetails
+            {
+                sacredStone = stone,
+                distance = (transform.position - stone.transform.position).sqrMagnitude
+            });
+        }
+        sacredStoneDetailsList.Sort(delegate (SacredStoneDetails x, SacredStoneDetails y)
+        {
+            return x.distance > y.distance ? 1 : -1;
+        });
+        Vector3 p = sacredStoneDetailsList[0].sacredStone.transform.position;
+        Vector3 pos = new Vector3(p.x, p.y + 0.1f, p.z);
+        return pos;
+    }
+
+    public Vector3 FindBuildSpot(Vector3 origin, bool forLodestone = false)
     {
         // @TODO: GenerateValidRandomPoint will handle most validation, but still need more specific point
-        // picking for e.g. Lodestones which can only go on sacred sites. Also, can't go outside a certain bounds 
-        // from the player start position (or base position?). Also, factories should be loosely clustered and defenses
-        // built around them and near Lodestones. etc. etc.
-        return (baseUnit as BaseUnitAI).GenerateValidRandomPoint(origin, searchBuildRange);
+        // picking for e.g. can't go outside a certain bounds from the player start position (or base position?). 
+        // Also, factories should be loosely clustered and defenses built around them and near Lodestones. etc. etc.
+
+        // @TODO: need to also adjust build spot per building offset, like make sure the build spot leaves enough space away from walls,
+        // other buildings, etc. Also, can't be building factories on berms, maybe make a navmesh area?
+
+        // @TODO: also maybe take into account nav.distanceRemaining, like if the nav path is way longer than the distance between
+        // points, maybe not worth walking
+        return forLodestone ? FindClosestSacredSite() : (baseUnit as BaseUnitAI).GenerateValidRandomPoint(origin, searchBuildRange);
     }
 
     private void InstantiateNextIntangible(GameObject itg, Vector3 spawnPoint)

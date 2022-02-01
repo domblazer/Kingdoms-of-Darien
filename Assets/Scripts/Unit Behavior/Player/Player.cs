@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
 {
     // Human player is always Player1
     private PlayerNumbers playerNumber = PlayerNumbers.Player1;
+    public Transform playerStartPosition;
     public TeamNumbers teamNumber;
     public Factions playerFaction;
 
@@ -25,7 +26,7 @@ public class Player : MonoBehaviour
     // The selection squares 4 corner positions
     private Vector3 TL, TR, BL, BR;
 
-    private List<BaseUnit> selectedUnits = new List<BaseUnit>();
+    private List<RTSUnit> selectedUnits = new List<RTSUnit>();
 
     // The selection square we draw when we drag the mouse to select units
     public RectTransform selectionSquareTrans;
@@ -45,6 +46,7 @@ public class Player : MonoBehaviour
         selectionSquareTrans = square;
         clickSound = sound;
         selectionSquareTrans.gameObject.SetActive(false);
+        // @TODO: move or spawn monarch to start position
     }
 
     void Start()
@@ -178,23 +180,22 @@ public class Player : MonoBehaviour
     private void HandleMoveCommand(RaycastHit hit)
     {
         // Here is where units should be told to move
-
-        bool doAttackMove = InputManager.HoldingCtrl();
+        // bool doAttackMove = InputManager.HoldingCtrl();
         bool addToMoveQueue = InputManager.HoldingShift();
 
         // Handle group movement
         if (selectedUnits.Count > 1)
         {
-            Clusters.MoveGroup(selectedUnits, hit.point, addToMoveQueue, doAttackMove);
+            Clusters.MoveGroup(selectedUnits, hit.point, addToMoveQueue);
         }
         else if (selectedUnits.Count == 1)
         {
             // Just move the single selected unit directly to click point
-            BaseUnit unit = selectedUnits[0];
+            RTSUnit unit = selectedUnits[0];
             // @TODO: this isn't always just SetMove, e.g. for Builder, if activeGhost is placed, that's a QueueBuild command on that guy
             // So need a better way to handle such exceptions, where commands are being queued outside the main player script here
             if (!(currentActiveBuilder && currentActiveBuilder.IsBuilder() && (currentActiveBuilder as Builder).activeFloatingGhost))
-                unit.SetMove(hit.point, addToMoveQueue, doAttackMove);
+                unit.SetMove(hit.point, addToMoveQueue);
             unit.AudioManager.PlayMoveSound();
         }
         // TODO: conflict with unit.PlayMoveSound()?
@@ -211,7 +212,7 @@ public class Player : MonoBehaviour
         }
         else if (selectedUnits.Count == 1)
         {
-            BaseUnit unit = selectedUnits[0];
+            RTSUnit unit = selectedUnits[0];
             unit.SetPatrol(hit.point, addToQueue);
             // @TODO play patrol click sound
             // unit.AudioManager.PlayMoveSound();

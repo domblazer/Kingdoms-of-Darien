@@ -6,7 +6,7 @@ using DarienEngine;
 
 public class UnitBuilderPlayer : UnitBuilderBase
 {
-    public RectTransform menuRoot;
+    private RectTransform menuRoot;
     public List<ConjurerArgs> virtualMenu { get; set; } = new List<ConjurerArgs>();
     public float lastClickTime { get; set; }
     public float clickDelay { get; set; } = 0.25f;

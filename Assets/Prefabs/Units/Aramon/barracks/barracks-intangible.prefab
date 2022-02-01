@@ -952,7 +952,7 @@ ParticleSystem:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6434773541224204075}
-  serializedVersion: 6
+  serializedVersion: 7
   lengthInSec: 1.06
   simulationSpeed: 1
   stopAction: 0
@@ -4524,19 +4524,20 @@ ParticleSystem:
     range: {x: 0, y: 1}
   CollisionModule:
     enabled: 0
-    serializedVersion: 3
+    serializedVersion: 4
     type: 0
     collisionMode: 0
     colliderForce: 0
     multiplyColliderForceByParticleSize: 0
     multiplyColliderForceByParticleSpeed: 0
     multiplyColliderForceByCollisionAngle: 1
-    plane0: {fileID: 0}
-    plane1: {fileID: 0}
-    plane2: {fileID: 0}
-    plane3: {fileID: 0}
-    plane4: {fileID: 0}
-    plane5: {fileID: 0}
+    m_Planes:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
     m_Dampen:
       serializedVersion: 2
       minMaxState: 0
@@ -4710,17 +4711,20 @@ ParticleSystem:
     interiorCollisions: 0
   TriggerModule:
     enabled: 0
-    collisionShape0: {fileID: 0}
-    collisionShape1: {fileID: 0}
-    collisionShape2: {fileID: 0}
-    collisionShape3: {fileID: 0}
-    collisionShape4: {fileID: 0}
-    collisionShape5: {fileID: 0}
+    serializedVersion: 2
     inside: 1
     outside: 0
     enter: 0
     exit: 0
+    colliderQueryMode: 0
     radiusScale: 1
+    primitives:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
   SubModule:
     serializedVersion: 2
     enabled: 0
@@ -5672,7 +5676,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   manaColor: {r: 1, g: 1, b: 0, a: 1}
-  finalUnitPrefab: {fileID: 6922681298974287341, guid: c72e64b65a195614e852f838f4dfeaba, type: 3}
+  finalUnitPrefab: {fileID: 3948407666658627477, guid: c72e64b65a195614e852f838f4dfeaba, type: 3}
 --- !u!1 &6467014913108670048
 GameObject:
   m_ObjectHideFlags: 0
@@ -6100,6 +6104,10 @@ PrefabInstance:
       value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 3269448759375663406, guid: f12c3bd165ce72249b3e2e02b58f1229, type: 3}
+      propertyPath: m_RootOrder
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 3269448759375663406, guid: f12c3bd165ce72249b3e2e02b58f1229, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -6112,6 +6120,10 @@ PrefabInstance:
       value: 3.55
       objectReference: {fileID: 0}
     - target: {fileID: 3269448759375663406, guid: f12c3bd165ce72249b3e2e02b58f1229, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3269448759375663406, guid: f12c3bd165ce72249b3e2e02b58f1229, type: 3}
       propertyPath: m_LocalRotation.x
       value: -0
       objectReference: {fileID: 0}
@@ -6122,14 +6134,6 @@ PrefabInstance:
     - target: {fileID: 3269448759375663406, guid: f12c3bd165ce72249b3e2e02b58f1229, type: 3}
       propertyPath: m_LocalRotation.z
       value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3269448759375663406, guid: f12c3bd165ce72249b3e2e02b58f1229, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3269448759375663406, guid: f12c3bd165ce72249b3e2e02b58f1229, type: 3}
-      propertyPath: m_RootOrder
-      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 3269448759375663406, guid: f12c3bd165ce72249b3e2e02b58f1229, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

@@ -61,6 +61,8 @@ public class Builder : UnitBuilderPlayer
         if (nextQueueReady)
         {
             // Builders always keep a queue of GhostUnits
+            Debug.Log("Builder " + gameObject.name + " queue: " + baseUnit.commandQueue.ToString());
+
             GhostUnit nextGhost = baseUnit.currentCommand.conjurerArgs.prefab.GetComponent<GhostUnit>();
             // @TODO: offset depends on direction, e.g. if walking along x, use x, y, y, and diagonal use mix
             Vector3 offsetRange = nextGhost.offset;

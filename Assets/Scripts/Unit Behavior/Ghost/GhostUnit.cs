@@ -25,6 +25,7 @@ public class GhostUnit : MonoBehaviour
     private bool placementValid = true;
 
     public bool isLodestone = false;
+    private bool sacredSiteInRange = false;
 
     void Start()
     {
@@ -88,15 +89,20 @@ public class GhostUnit : MonoBehaviour
     // Place this ghost and make a copy
     private void PlaceAndCopy()
     {
+        // Debug.Log("Placed and copied.");
         isSet = true;
         invalidIcon.SetActive(false);
         // Increase the count of ghosts placed during this shift period
-        builder.placedSinceLastShift++;
+        builder.placedSinceLastShift++; // @TODO: replace with conjurerArgs.buildQueueCount
         // Add the activeFloatingGhost (this) to the player args and enqueue it to the commandQueue
+        Debug.Log("builder.activeFloatingGhost " + builder.activeFloatingGhost);
         conjurerArgs.prefab = builder.activeFloatingGhost;
+        bool wasEmpty = builder.baseUnit.commandQueue.IsEmpty();
+        // conjurerArgs
         builder.baseUnit.commandQueue.Enqueue(new CommandQueueItem
         {
             commandType = CommandTypes.Conjure,
+            commandPoint = hitPos,
             conjurerArgs = conjurerArgs
         });
         // Pass a copy of the player args initially passed to this ghost for the next active. (Pass-by-value will overwrite prefab)
@@ -108,8 +114,8 @@ public class GhostUnit : MonoBehaviour
         };
         // Instantiate new active floating ghost
         builder.InstantiateGhost(nextItem, hitPos + offset);
-        // Only set next ready when masterBuildQueue is empty
-        if (!builder.baseUnit.commandQueue.IsEmpty())
+        // Only set next ready when masterBuildQueue was empty before the enqueue
+        if (wasEmpty)
             builder.SetNextQueueReady(true);
     }
 
@@ -127,7 +133,7 @@ public class GhostUnit : MonoBehaviour
         builder.baseUnit.currentCommand = new CommandQueueItem
         {
             commandType = CommandTypes.Conjure,
-            // @TODO: commandPoint = clickPoint,
+            commandPoint = hitPos,
             conjurerArgs = conjurerArgs
         };
         builder.SetNextQueueReady(true);
@@ -180,7 +186,6 @@ public class GhostUnit : MonoBehaviour
         // Hide again when shift is released
         if (isSet && InputManager.ShiftReleased())
             Toggle(false);
-
         // If not set (active ghost) and shift released, only remove when placed count since last shift release greater than 0
         else if (!isSet && InputManager.ShiftReleased() && builder.placedSinceLastShift > 0)
         {
@@ -228,10 +233,8 @@ public class GhostUnit : MonoBehaviour
     private void OnTriggerEnter(Collider col)
     {
         // Lodestone ghosts only valid placement is over a SacredSite
-        // @TODO: Lodestone placement isn't valid on the edges tho, needs to be pretty much directly over the sacred site
-        Debug.Log("col.transform.position: " + col.transform.position + " \n transform.position: " + transform.position);
-        if (isLodestone && !col.isTrigger && !isSet && col.CompareTag("SacredSite") && col.transform.position == transform.position)
-            SetPlacementValid(true);
+        if (isLodestone && !col.isTrigger && !isSet && col.CompareTag("SacredSite"))
+            sacredSiteInRange = true;
         else if (!col.isTrigger && !isSet)
             SetPlacementValid(false);
     }
@@ -239,9 +242,18 @@ public class GhostUnit : MonoBehaviour
     private void OnTriggerExit(Collider col)
     {
         if (isLodestone && !col.isTrigger && !isSet && col.CompareTag("SacredSite"))
-            SetPlacementValid(false);
+            sacredSiteInRange = false;
         else if (!col.isTrigger && !isSet)
             SetPlacementValid(true);
+    }
+
+    private void OnTriggerStay(Collider col)
+    {
+        // Lodestones must be directly over the sacred site to be in valid placement position
+        if (isLodestone && sacredSiteInRange && col.transform.position == transform.position)
+            SetPlacementValid(true);
+        else if (isLodestone && sacredSiteInRange && col.transform.position != transform.position)
+            SetPlacementValid(false);
     }
 
     private void SetPlacementValid(bool val)

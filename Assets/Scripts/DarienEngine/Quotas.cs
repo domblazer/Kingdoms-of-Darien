@@ -5,7 +5,8 @@ using System.Linq;
 
 namespace DarienEngine
 {
-    public class MasterQuota
+    // @DEPRECATED
+    /* public class MasterQuota
     {
         public Dictionary<UnitCategories, Item> quota;
         public class Item
@@ -109,7 +110,7 @@ namespace DarienEngine
     }
 
     // @TODO: need to have some kind of two-way binding between ArmyQuota and MasterQuota
-    public class ArmyQuota
+    public class ArmyQuota 
     {
         public class Item
         {
@@ -130,5 +131,5 @@ namespace DarienEngine
             return infantryTier1.quotaFull && infantryTier2.quotaFull && stalwartTier1.quotaFull &&
                 stalwartTier2.quotaFull && specialInfantry.quotaFull && siegeTier1.quotaFull && siegeTier2.quotaFull;
         }
-    }
+    }*/
 }

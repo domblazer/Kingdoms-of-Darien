@@ -20,6 +20,7 @@ public class BaseUnitAI : RTSUnit
     private bool alreadyShown = false;
     private float nextSightCheck = 5.0f;
     private float sightCheckRate = 5.0f;
+    public float patrolRange = 15.0f;
 
     public enum StartStates
     {
@@ -89,22 +90,25 @@ public class BaseUnitAI : RTSUnit
                 {
                     case CommandTypes.Move:
                         // just handle move behaviour
-                        // @TODO: Sub-CommandTypes? E.g. Attack-Move, Guard-Move, etc.?
                         HandleMovement();
+                        // Auto-pick attack targets by default while moving
+                        AutoPickAttackTarget(true);
                         break;
                     case CommandTypes.Attack:
                         // handle engaging target (moveTo target) and attacking behaviour
-                        HandleAttackRoutine();
+                        HandleAttackRoutine(true);
                         break;
                     case CommandTypes.Patrol:
                         // handle patrol behavior
                         // If currentCommand has not yet set a patrol route, set it now
                         if (currentCommand.patrolRoute == null)
-                            currentCommand.patrolRoute = new PatrolRoute { patrolPoints = SetPatrolPoints(transform.position, 3, 25.0f) };
+                            currentCommand.patrolRoute = new PatrolRoute { patrolPoints = SetPatrolPoints(transform.position, 3, patrolRange) };
+                        // Roam and auto-pick attack targets
                         Patrol(true);
+                        AutoPickAttackTarget(true);
                         break;
                     case CommandTypes.Conjure:
-                        // @TODO: _Builder.handleConjuringRoutine (moveTo buildSpot and conjure)
+                        // Builder and Factory conjuring behavior
                         if (isKinematic)
                             (_Builder as BuilderAI).HandleConjureRoutine();
                         else
@@ -114,37 +118,16 @@ public class BaseUnitAI : RTSUnit
                     case CommandTypes.Guard:
                         // @TODO 
                         break;
-                    default:
-                        // Idle behavour?
-                        state = States.Standby;
-                        break;
                 }
             }
             else
             {
-                // @TODO: if commandQueue is empty, just be on standby? Or go back to default or previous state?
-                state = defaultState;
+                state = States.Standby;
             }
 
             // @TODO: AI should autopick attack target under most circumstances
-            if (canAttack && state.Equals(States.Standby))
+            if (canAttack && state.Value == States.Standby.Value)
                 AutoPickAttackTarget();
-
-            /* if (isKinematic)
-            {
-                // @TODO: Need different way to check if this unit should patrol
-                if (state.Value == States.Patrolling.Value)
-                    Patrol();
-                else
-                    HandleMovement();
-            }
-
-            // Handle attack states if can attack
-            if (canAttack)
-            {
-                HandleAttackRoutine();
-                AutoPickAttackTarget();
-            } */
         }
     }
 
@@ -160,6 +143,7 @@ public class BaseUnitAI : RTSUnit
         return patrolPoints;
     }
 
+    // Find a random world point for unit to move to
     public Vector3 GenerateValidRandomPoint(Vector3 origin, float range)
     {
         Vector3 radius = Random.insideUnitSphere;
@@ -167,15 +151,11 @@ public class BaseUnitAI : RTSUnit
         validPoint.y = origin.y;
         int testLimit = 5;
         int currentTest = 0;
-        // @TODO: seems possible units could get stuck and a bad point could get added, but
-        // we can't just run this loop forever; maybe need a routine to get out of the loop if it's run too many times
-        // and the point is still bad. Like maybe at that point, increase range? Or just find some default location and
-        // just go there without testing?
         TestPointInfo info;
+        // Keep trying points until TestPoint() returns true
         while (!(info = TestPoint(validPoint)).valid && currentTest < testLimit)
         {
             // Debug.Log(info.message);
-            // Keep trying points until TestPoint() returns true
             radius = Random.insideUnitSphere;
             validPoint = (origin + (radius * range));
             validPoint.y = origin.y;
@@ -190,6 +170,7 @@ public class BaseUnitAI : RTSUnit
         public bool valid = false;
         public string message = "N/A";
     }
+    // Test a world point to see if it is a valid point to move to
     private TestPointInfo TestPoint(Vector3 point)
     {
         bool navMeshValid = false;
@@ -203,7 +184,7 @@ public class BaseUnitAI : RTSUnit
         else
             errorReasons += "(Error: NavMesh)";
 
-        // Layer 9 is unit layer
+        // Layer 9 is unit layer, so check this point is not occupied already by another unit
         int layerMask = 1 << 9;
         Collider[] hitColliders = Physics.OverlapSphere(point, 1.5f, layerMask);
         if (hitColliders.Length > 0)
