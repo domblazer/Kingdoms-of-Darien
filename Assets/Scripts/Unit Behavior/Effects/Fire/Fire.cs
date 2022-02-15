@@ -9,7 +9,7 @@ public struct RangeOfFloats
     public float Maximum;
 }
 
-public class FireLight : MonoBehaviour
+public class Fire : MonoBehaviour
 {
     [Tooltip("Random seed for movement, 0 for no movement.")]
     public float Seed = 100.0f;
@@ -19,10 +19,9 @@ public class FireLight : MonoBehaviour
 
     public RangeOfFloats IntensityMaxRange = new RangeOfFloats { Minimum = 0.0f, Maximum = 8.0f };
 
-    private Light firePointLight;
+    public Light firePointLight { get; set; }
     private float lightIntensity;
     private float seed;
-    // private FireBaseScript fireBaseScript;
     private float baseY;
 
     private void Awake()
@@ -37,15 +36,12 @@ public class FireLight : MonoBehaviour
             baseY = firePointLight.gameObject.transform.position.y;
         }
         seed = UnityEngine.Random.value * Seed;
-        // fireBaseScript = gameObject.GetComponent<FireBaseScript>();
     }
 
     private void Update()
     {
         if (firePointLight == null)
-        {
             return;
-        }
 
         if (seed != 0)
         {

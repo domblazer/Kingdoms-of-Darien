@@ -4795,6 +4795,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6150166738506123625}
+  - component: {fileID: 7485839029101009137}
   m_Layer: 0
   m_Name: SmallFire
   m_TagString: Untagged
@@ -4819,6 +4820,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7485839029101009137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6150166738506123622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04dc4a3f92e2acd42be1d839cd6053a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Seed: 100
+  IntensityModifier: 2
+  IntensityMaxRange:
+    Minimum: 0
+    Maximum: 5
 --- !u!1 &6150166738551442010
 GameObject:
   m_ObjectHideFlags: 0
@@ -5196,8 +5214,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 1.5
-      minScalar: 1.25
+      scalar: 1.7
+      minScalar: 1.5
       maxCurve:
         serializedVersion: 2
         m_Curve:

@@ -265,10 +265,10 @@ public class RTSUnit : MonoBehaviour
         float rangeOffset = attackRange;
         // Melee attackers use a portion of the attackTarget's collider (offset) size
         if (attackTarget)
-            rangeOffset = isMeleeAttacker ? attackTarget.GetComponent<RTSUnit>().offset.x * 0.85f : attackRange;
+            rangeOffset = isMeleeAttacker ? attackTarget.GetComponent<RTSUnit>().offset.x * 0.5f : attackRange;
 
         // While locked on target but not in range, keep moving to attack position
-        if (attackTarget && !IsInRangeOf(attackTarget.transform.position, attackRange))
+        if (attackTarget && !IsInRangeOf(attackTarget.transform.position, rangeOffset))
         {
             isMovingToAttack = true;
             isAttacking = false;
@@ -280,7 +280,7 @@ public class RTSUnit : MonoBehaviour
                 AutoPickAttackTarget(true);
         }
         // Once unit is in range, can stop moving
-        else if (isMovingToAttack && attackTarget && IsInRangeOf(attackTarget.transform.position, attackRange))
+        else if (isMovingToAttack && attackTarget && IsInRangeOf(attackTarget.transform.position, rangeOffset))
         {
             MoveToPosition(transform.position);
             TryToggleToObstacle();
@@ -617,6 +617,7 @@ public class RTSUnit : MonoBehaviour
         Functions.RemoveUnitFromPlayerContext(this);
 
         // @TODO: need to figure out how to do the white ghost die thing
+        // @TODO: buildings all need to die immediately and spawn a debris model and play an explosion type particle system
         if (phaseDie)
             dieTime = 0; // Remove immediately 
     }
