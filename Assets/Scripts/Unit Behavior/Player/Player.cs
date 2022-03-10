@@ -153,6 +153,8 @@ public class Player : MonoBehaviour
 
         if (selectedUnits.Count == 0 && !InputManager.IsMouseOverUI())
             CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Normal);
+        else if (selectedUnits.Count > 0)
+            CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Move);
     }
 
     // Select units under square

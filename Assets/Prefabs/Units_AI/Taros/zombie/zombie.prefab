@@ -199,11 +199,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fe4f67068f9b6c4d8244f5807a36993, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  faction: 0
+  faction: 1
   playerNumber: 2
   unitType: 17
   unitIcon: {fileID: 21300000, guid: 94e09cbd081bba54887f98296357903b, type: 3}
   unitName: Zombie
+  bodyType: 1
   maxHealth: 3111
   healthRechargeRate: 3
   baseMana: 0
@@ -225,6 +226,7 @@ MonoBehaviour:
   isAttacking: 0
   attackTarget: {fileID: 0}
   bloodSystem: {fileID: 738280606498455322}
+  activeWeaponIndex: 0
   patrolRange: 25
   startState: 0
 --- !u!114 &738280607077118044
@@ -385,11 +387,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69a232441f881fd4a9c3a577868aa4a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weaponSoundHitClasses: 03000000
   attackSounds: []
-  hitSounds: []
-  dieSound: {fileID: 0}
-  moveSound: {fileID: 0}
-  selectSound: {fileID: 0}
+  dieSound: {fileID: 8300000, guid: 93517f650498ca649a03a8270e48e539, type: 3}
+  moveSound: {fileID: 8300000, guid: 8fc0898ce2920c44d9db038c5a8fa9d1, type: 3}
+  selectSound: {fileID: 8300000, guid: f512d2f62de6e1246a965b7b5e549c23, type: 3}
   unitPlaysAttackSounds: 1
 --- !u!1 &514252222208197532
 GameObject:

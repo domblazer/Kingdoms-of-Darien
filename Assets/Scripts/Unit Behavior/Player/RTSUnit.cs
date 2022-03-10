@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 using System.Linq;
 using DarienEngine;
 
@@ -35,6 +36,12 @@ public class RTSUnit : MonoBehaviour
     public UnitCategories unitType;
     public Sprite unitIcon;
     public string unitName;
+
+    public enum BodyTypes
+    {
+        Default, Flesh, Armor, Wood, Scale, Stone
+    }
+    public BodyTypes bodyType;
 
     // Health 
     public float maxHealth;
@@ -120,6 +127,18 @@ public class RTSUnit : MonoBehaviour
     protected Animator _Animator;
     public UnitAudioManager AudioManager { get; set; }
 
+    // @TODO: specialAttacks should become a Weapons[] with more attributes, including whether the weapon icon is a special attack 
+    // that should have its own icon
+    public class Weapon
+    {
+        public SoundHitClasses.WeaponSoundHitClasses weaponSoundClass;
+        public bool specialAttack = false;
+        public Image specialAttackIcon;
+        public string specialAttackName;
+    }
+    public Weapon[] weapons;
+    public int activeWeaponIndex = 0;
+    public Weapon activeWeapon { get { return weapons[activeWeaponIndex]; } }
     public SpecialAttackItem[] specialAttacks;
     protected List<GameObject> whoCanSeeMe = new List<GameObject>();
 
@@ -265,7 +284,7 @@ public class RTSUnit : MonoBehaviour
         float rangeOffset = attackRange;
         // Melee attackers use a portion of the attackTarget's collider (offset) size
         if (attackTarget)
-            rangeOffset = isMeleeAttacker ? attackTarget.GetComponent<RTSUnit>().offset.x * 0.5f : attackRange;
+            rangeOffset = isMeleeAttacker ? attackTarget.GetComponent<RTSUnit>().offset.x * 0.75f : attackRange;
 
         // While locked on target but not in range, keep moving to attack position
         if (attackTarget && !IsInRangeOf(attackTarget.transform.position, rangeOffset))
@@ -382,6 +401,8 @@ public class RTSUnit : MonoBehaviour
     {
         string compareTag = gameObject.tag == "Enemy" ? "Friendly" : "Enemy";
         // Layer 11 is "Inner Trigger" layer, by its nature, a child of "Unit" layer
+
+        // @TODO: also fog-of-war layer is conflicting with bumping
         if (col.isTrigger && col.gameObject.layer == 11 && col.gameObject.GetComponentInParent<RTSUnit>())
             HandleBumping(col.gameObject.GetComponentInParent<RTSUnit>()); // If collided object is in the "Inner Trigger" layer, we can pretty safely assume it's parent must be an RTSUnit
         // Layer 9 is "Unit" layer

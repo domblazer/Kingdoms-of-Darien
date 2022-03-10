@@ -6,8 +6,7 @@ public class ProjectileScript : MonoBehaviour
 {
     public float removeTime = 5.0f;
     private float damage = 1;
-    public AudioClip[] hitSounds;
-    public AudioClip[] groundHitSounds;
+    private RTSUnit whoFired;
 
     // Start is called before the first frame update
     void Start()
@@ -23,6 +22,11 @@ public class ProjectileScript : MonoBehaviour
         damage = d;
     }
 
+    public void SetWhoFired(RTSUnit baseUnit)
+    {
+        whoFired = baseUnit;
+    }
+
     void Update()
     {
         // Arrows slant towards the ground in the air
@@ -35,14 +39,15 @@ public class ProjectileScript : MonoBehaviour
         {
             Debug.Log("Got em!");
 
-            // play one shot sound
-            col.gameObject.GetComponent<BaseUnitAI>().AudioManager.PlayHitSound();
-
             // @TODO: friendly fire
-            // Presumably "Enemy" should only ever be an AI 
-            if (col.gameObject.GetComponent<BaseUnitAI>())
+            // Presumably "Enemy" should only ever be an AI
+            RTSUnit hitUnit;
+            if (hitUnit = col.gameObject.GetComponent<RTSUnit>())
             {
-                col.gameObject.GetComponent<BaseUnitAI>().ReceiveDamage(damage);
+                // play one shot sound
+                AudioClip[] clips = SoundHitClasses.GetHitSounds(whoFired.activeWeapon.weaponSoundClass, hitUnit.bodyType);
+                AudioSource.PlayClipAtPoint(clips[Random.Range(0, clips.Length - 1)], transform.position, 0.5f);
+                hitUnit.ReceiveDamage(damage);
             }
             else
             {
@@ -54,11 +59,8 @@ public class ProjectileScript : MonoBehaviour
         {
             Debug.Log("Hit ground");
             // play hit ground sound
-            if (groundHitSounds.Length > 0)
-            {
-                // @TODO: GameManager.GetAudioSource()?
-                // col.gameObject.GetComponent<BaseUnitAI>().GetAudioSource().PlayOneShot(groundHitSounds[Random.Range(0, groundHitSounds.Length)], 0.5f);
-            }
+            AudioClip groundHitSound = SoundHitClasses.GetHitSounds(whoFired.activeWeapon.weaponSoundClass, RTSUnit.BodyTypes.Default)[0];
+            AudioSource.PlayClipAtPoint(groundHitSound, transform.position, 0.5f);
             Destroy(gameObject);
         }
     }

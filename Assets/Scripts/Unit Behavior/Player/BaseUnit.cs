@@ -70,12 +70,7 @@ public class BaseUnit : RTSUnit
                 {
                     case CommandTypes.Move:
                         HandleMovement();
-                        // If moving while in Offensive mode, automatically attack things coming in range
-                        if (attackMode == AttackModes.Offensive)
-                        {
-                            // Attack command will take priority then return
-                            AutoPickAttackTarget(true);
-                        }
+                        // @TODO: if attackMove, autopick attack target
                         break;
                     case CommandTypes.Attack:
                         // handle engaging target (moveTo target) and attacking behaviour
@@ -103,15 +98,12 @@ public class BaseUnit : RTSUnit
             }
             else
             {
-                // No commands, default to standby
+                // No commands, idle
                 state = States.Standby;
                 TryToggleToObstacle();
-            }
-
-            // If on standy and offensive mode, auto-attack 
-            if (canAttack && state.Value == States.Standby.Value && attackMode == AttackModes.Offensive)
-            {
-                AutoPickAttackTarget();
+                // If idle and in offensive mode, autopick attack target
+                if (attackMode == AttackModes.Offensive)
+                    AutoPickAttackTarget();
             }
 
             if (selectable && selected)
@@ -129,6 +121,7 @@ public class BaseUnit : RTSUnit
                 }
 
                 // Toggle line renderer on shift up/down for mobile units
+                // @TODO: if selectedUnits.Count > 0, don't show lines and only show one common point with sticker
                 if (isKinematic)
                 {
                     if (InputManager.ShiftPressed())

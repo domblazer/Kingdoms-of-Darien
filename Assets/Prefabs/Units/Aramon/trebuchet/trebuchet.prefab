@@ -812,10 +812,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6529f6a288da29f458b340ec3e746e38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  faction: 0
   playerNumber: 1
   unitType: 4
   unitIcon: {fileID: 21300000, guid: e7a1f5518adf384438ce519771ce0bcf, type: 3}
   unitName: Trebuchet
+  bodyType: 0
   maxHealth: 2975
   healthRechargeRate: 3
   baseMana: 0
@@ -834,18 +836,12 @@ MonoBehaviour:
   meleeWeapons: []
   isAttacking: 0
   attackTarget: {fileID: 0}
-  fogOfWarMask: {fileID: 0}
   bloodSystem: {fileID: 0}
-  _UnitBuilderScript: {fileID: 0}
-  attackSounds:
-  - {fileID: 8300000, guid: 951c245f5352c1e4b82dcf36fcc00472, type: 3}
-  hitSounds: []
-  dieSound: {fileID: 0}
-  playAttackSounds: 1
+  activeWeaponIndex: 0
   selectable: 1
   selectRing: {fileID: 1619364473405305449}
-  moveSound: {fileID: 0}
-  selectSound: {fileID: 0}
+  fogOfWarMask: {fileID: 0}
+  attackMode: 0
 --- !u!114 &1619364474637384302
 MonoBehaviour:
   m_ObjectHideFlags: 0

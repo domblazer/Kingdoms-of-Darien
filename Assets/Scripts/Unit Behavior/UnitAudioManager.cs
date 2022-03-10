@@ -1,15 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DarienEngine;
 
 [RequireComponent(typeof(AudioSource))]
 public class UnitAudioManager : MonoBehaviour
 {
     protected AudioSource _AudioSource;
+    protected RTSUnit baseUnit;
+    public SoundHitClasses.WeaponSoundHitClasses[] weaponSoundHitClasses;
 
     // Sounds
     public AudioClip[] attackSounds;
-    public AudioClip[] hitSounds;
     public AudioClip dieSound;
     public AudioClip moveSound;
     public AudioClip selectSound;
@@ -20,6 +22,7 @@ public class UnitAudioManager : MonoBehaviour
     private void Awake()
     {
         _AudioSource = GetComponent<AudioSource>();
+        baseUnit = GetComponent<RTSUnit>();
     }
 
     public void PlayAttackSound()
@@ -37,10 +40,13 @@ public class UnitAudioManager : MonoBehaviour
             _AudioSource.PlayOneShot(dieSound, 0.5f);
     }
 
-    public void PlayHitSound()
+    public void PlayHitSound(RTSUnit.BodyTypes hitBodyType)
     {
+        // Get the appropriate sounds based on weapon type and what type of body was hit
+        // @TODO: if weaponSoundHitClasses is null, do nothing, show warning
+        AudioClip[] hitSounds = SoundHitClasses.GetHitSounds(weaponSoundHitClasses[baseUnit.activeWeaponIndex], hitBodyType);
         if (hitSounds.Length > 0)
-            _AudioSource.PlayOneShot(hitSounds[Random.Range(0, hitSounds.Length)], 0.5f);
+            _AudioSource.PlayOneShot(hitSounds[Random.Range(0, hitSounds.Length - 1)], 0.5f);
     }
 
     public void PlayMoveSound()

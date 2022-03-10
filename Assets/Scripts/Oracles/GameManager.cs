@@ -45,6 +45,9 @@ public class GameManager : MonoBehaviour
         // @TODO: playerConfigs should be set from skirmish menu. For now, set in inspector
         InitAllPlayers(playerConfigs);
 
+        // Load all the hit sounds from Resources
+        SoundHitClasses.LoadSoundHitMap();
+
         // Set initial fog-of-war plane value. BaseUnitAIs will also use this value on start
         fogOfWarPlane.SetActive(enableFogOfWar);
     }
@@ -107,10 +110,11 @@ public class GameManager : MonoBehaviour
         if (selectionSquare == null)
             Debug.LogError("GameManager Error: Could not load selection square image.");
         // Get audio clip for click sound
-        AudioClip clip = Resources.Load<AudioClip>("runtime/audioclips/ara-click-01");
+        // @TODO: get appropriate click sound per faction
+        AudioClip clip = Resources.Load<AudioClip>("runtime/audioclips/TONEARA");
         if (clip == null)
             Debug.LogWarning("Warning: Could not load click sound for Player.");
-        
+
         // Init the main player
         newPlayer.Init(newInventory, selectionSquare, clip);
         PlayerMain = new MainPlayerContext

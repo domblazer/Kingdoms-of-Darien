@@ -26,14 +26,45 @@ namespace DarienEngine.Clustering
         {
             UnitClusterMoveInfo clusterMoveInfo = CalculateSmartCenter(selectedUnits);
 
-            foreach (RTSUnit unit in selectedUnits)
+            float radius = selectedUnits[0].offset.x;
+            float deg360 = 0;
+            float counter = 0;
+            int countOffset = selectedUnits.Count;
+            List<Vector3> positions = new List<Vector3>();
+            // @TODO: small groups of units seem to need to be tightened up
+            // @TODO: need to sort units to move to the closest proposed point to them. Need to create virtual move point cluster,
+            // then sort, then move to appropriate points
+            for (int i = 0; i < selectedUnits.Count; i++)
             {
-                Vector3 offset = (unit.transform.position - clusterMoveInfo.smartCenter);
+                RTSUnit unit = selectedUnits[i];
+
+                // Distance around the circle 
+                // @TODO: tighten up the area (maybe not a circle) if only a handful of units
+                float radians = 2 * (Mathf.PI / countOffset) * i * ((unit.offset.x * 0.65f) * 2);
+                float deg = Mathf.Rad2Deg * radians;
+                // Debug.Log("deg: " + deg);
+                deg360 = deg - counter;
+                if (deg360 >= 360)
+                {
+                    radius += unit.offset.x;
+                    deg360 = 0;
+                    counter += 360;
+                    countOffset += i;
+                    // Debug.Log("circle passed one rev, up radius to " + radius);
+                }
+
+                // Get the vector direction 
+                float vertical = Mathf.Sin(radians);
+                float horizontal = Mathf.Cos(radians);
+                // Debug.Log("vertical: " + vertical + " horizontal: " + horizontal + " i: " + i);
+                Vector3 spawnDir = new Vector3(horizontal, 0, vertical);
+
+                // Calculate moveTo
+                Vector3 moveTo = hitPoint + spawnDir * radius;
+                positions.Add(moveTo);
+
+                /* Vector3 offset = (unit.transform.position - clusterMoveInfo.smartCenter);
                 Vector3 moveTo = hitPoint + offset;
-
-                // @TODO: instead of using offset to get moveTo, create a sort of spiral of move points starting directly next
-                // to the smartCenter. Also, first sort selectedUnits by closest to smartCenter
-
                 // Debug.Log("clusterMoveInfo.standardDeviation " + clusterMoveInfo.standardDeviation);
                 // If unit is outside the normal distribution, consider it outside primary cluster and must adjust move to collapse in
                 if (offset.sqrMagnitude > clusterMoveInfo.standardDeviation)
@@ -43,14 +74,40 @@ namespace DarienEngine.Clustering
                     // moveTo = hitPoint + (offset.normalized * Mathf.Sqrt(clusterMoveInfo.standardDeviation));
                     moveTo = hitPoint + (offset.normalized * Mathf.Sqrt(clusterMoveInfo.standardDeviation) / 2);
                     // Debug.Log("I " + unit.name + " am outside the primary cluster, moving to " + moveTo);
-                }
+                } */
 
                 // @TODO: also need to make sure moveTo points don't overlap or get too close to eachother
                 // @TODO // if (noPrimaryCluster) // everyone collapse in around click point naively?
 
+                // if (unit && unit.isKinematic)
+                //    unit.SetMove(moveTo, addToMoveQueue);
+            }
+
+            foreach (RTSUnit unit in selectedUnits)
+            {
+                Vector3 moveTo = FindClosestPosition(unit, positions);
+                // Once this moveTo has been picked, it should not be considered again
+                positions.Remove(moveTo);
                 if (unit && unit.isKinematic)
                     unit.SetMove(moveTo, addToMoveQueue);
             }
+        }
+
+        private static Vector3 FindClosestPosition(RTSUnit unit, List<Vector3> positions)
+        {
+            Vector3 closest = Vector3.zero;
+            float distance = Mathf.Infinity;
+            foreach (Vector3 pos in positions)
+            {
+                Vector3 dist = unit.transform.position - pos;
+                float curDistance = dist.sqrMagnitude;
+                if (curDistance < distance)
+                {
+                    closest = pos;
+                    distance = curDistance;
+                }
+            }
+            return closest;
         }
 
         public static UnitClusterMoveInfo CalculateSmartCenter(List<RTSUnit> group)

@@ -84,7 +84,7 @@ ParticleSystem:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1418828519}
-  serializedVersion: 6
+  serializedVersion: 7
   lengthInSec: 0.3
   simulationSpeed: 2
   stopAction: 0
@@ -3656,19 +3656,20 @@ ParticleSystem:
     range: {x: 0, y: 1}
   CollisionModule:
     enabled: 1
-    serializedVersion: 3
+    serializedVersion: 4
     type: 1
     collisionMode: 0
     colliderForce: 0
     multiplyColliderForceByParticleSize: 0
     multiplyColliderForceByParticleSpeed: 0
     multiplyColliderForceByCollisionAngle: 0
-    plane0: {fileID: 0}
-    plane1: {fileID: 0}
-    plane2: {fileID: 0}
-    plane3: {fileID: 0}
-    plane4: {fileID: 0}
-    plane5: {fileID: 0}
+    m_Planes:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
     m_Dampen:
       serializedVersion: 2
       minMaxState: 0
@@ -3842,17 +3843,20 @@ ParticleSystem:
     interiorCollisions: 0
   TriggerModule:
     enabled: 0
-    collisionShape0: {fileID: 0}
-    collisionShape1: {fileID: 0}
-    collisionShape2: {fileID: 0}
-    collisionShape3: {fileID: 0}
-    collisionShape4: {fileID: 0}
-    collisionShape5: {fileID: 0}
+    serializedVersion: 2
     inside: 1
     outside: 0
     enter: 0
     exit: 0
+    colliderQueryMode: 0
     radiusScale: 1
+    primitives:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
   SubModule:
     serializedVersion: 2
     enabled: 0
@@ -5302,6 +5306,7 @@ MonoBehaviour:
   unitType: 17
   unitIcon: {fileID: 21300000, guid: 8fd357a08b7b9ea4db6914acef008da7, type: 3}
   unitName: Swordsman
+  bodyType: 2
   maxHealth: 3000
   healthRechargeRate: 3
   baseMana: 0
@@ -5322,9 +5327,11 @@ MonoBehaviour:
   isAttacking: 0
   attackTarget: {fileID: 0}
   bloodSystem: {fileID: 1418828522}
+  activeWeaponIndex: 0
   selectable: 1
   selectRing: {fileID: 1770128794485609735}
   fogOfWarMask: {fileID: 938548816310989045}
+  attackMode: 0
 --- !u!195 &919132147622893407
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -5471,11 +5478,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69a232441f881fd4a9c3a577868aa4a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weaponSoundHitClasses: 01000000
   attackSounds: []
-  hitSounds: []
-  dieSound: {fileID: 0}
-  moveSound: {fileID: 0}
-  selectSound: {fileID: 0}
+  dieSound: {fileID: 8300000, guid: 4dd4cf3cdfaebc34392b3585ecd48fa6, type: 3}
+  moveSound: {fileID: 8300000, guid: a6aeee7ee17b6024e8fbbe0ab6a2b0dd, type: 3}
+  selectSound: {fileID: 8300000, guid: feeef160cda98ec43b56e3579170779c, type: 3}
   unitPlaysAttackSounds: 1
 --- !u!120 &931034316
 LineRenderer:

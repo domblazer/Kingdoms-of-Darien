@@ -26,14 +26,14 @@ public class MeleeWeaponScript : MonoBehaviour
     {
         // Only send damage when the collider makes contact while the unit is in attack mode
         if (_BaseUnit != null && _BaseUnit.IsAttacking() && _BaseUnit.animStateTime > animationClipRange.start && _BaseUnit.animStateTime < animationClipRange.end)
-        {    
+        {
             string compareTag = gameObject.tag == "Enemy" ? "Friendly" : "Enemy";
             if (col.gameObject.tag == compareTag && !col.isTrigger)
             {
                 // Debug.Log("_BaseUnit.animStateTime " + _BaseUnit.animStateTime);
-
+                RTSUnit hitUnit = col.gameObject.GetComponent<RTSUnit>();
                 // Play one shot sound
-                _BaseUnit.AudioManager.PlayHitSound();
+                _BaseUnit.AudioManager.PlayHitSound(hitUnit ? hitUnit.bodyType : RTSUnit.BodyTypes.Default);
 
                 // @TODO: friendly fire
                 if (col.gameObject.GetComponent<RTSUnit>())

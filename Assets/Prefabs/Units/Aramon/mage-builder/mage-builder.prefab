@@ -1864,6 +1864,7 @@ MonoBehaviour:
   unitType: 5
   unitIcon: {fileID: 21300000, guid: b08141e0a37fe94418a0cec2ce1bf403, type: 3}
   unitName: Mage Builder
+  bodyType: 0
   maxHealth: 1703
   healthRechargeRate: 3
   baseMana: 0
@@ -1883,9 +1884,11 @@ MonoBehaviour:
   isAttacking: 0
   attackTarget: {fileID: 0}
   bloodSystem: {fileID: 7672112254575380417}
+  activeWeaponIndex: 0
   selectable: 1
   selectRing: {fileID: 7672112254513394519}
   fogOfWarMask: {fileID: 6021291778148488087}
+  attackMode: 0
 --- !u!114 &7672112253590628151
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1926,7 +1929,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47c8f4989f284d448b15570d423f413b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  menuRoot: {fileID: 0}
   ghostUnits:
   - {fileID: 0}
   - {fileID: 2371707195242254508, guid: feb9e4dae3f7537479a3ae470a3d15a7, type: 3}
@@ -1949,11 +1951,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69a232441f881fd4a9c3a577868aa4a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weaponSoundHitClasses: 04000000
   attackSounds: []
-  hitSounds: []
-  dieSound: {fileID: 0}
-  moveSound: {fileID: 0}
-  selectSound: {fileID: 0}
+  dieSound: {fileID: 8300000, guid: 984e674cc1915b5459661f7c044a9119, type: 3}
+  moveSound: {fileID: 8300000, guid: 3deb36ed107b0df45ad961d170fdf79f, type: 3}
+  selectSound: {fileID: 8300000, guid: 7415fbeb8db7e2144b2446f414e4938f, type: 3}
   unitPlaysAttackSounds: 0
 --- !u!120 &1518953945168084090
 LineRenderer:

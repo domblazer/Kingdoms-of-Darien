@@ -45,7 +45,9 @@ public class ProjectileLauncher : MonoBehaviour
         );
 
         Rigidbody projectile = Instantiate(projectilePrefab, launchPoint.position, launchPoint.rotation) as Rigidbody;
+        projectile.GetComponent<ProjectileScript>().SetWhoFired(_BaseUnit);
         projectile.GetComponent<ProjectileScript>().SetDamage(_BaseUnit.weaponDamage);
+
         projectile.velocity = (adjustedTargetPos - launchPoint.position).normalized * projectileVelocity;
         // @DEP: point-and-shoot way: // projectile.AddForce(transform.forward * projectileVelocity, ForceMode.Impulse);
 

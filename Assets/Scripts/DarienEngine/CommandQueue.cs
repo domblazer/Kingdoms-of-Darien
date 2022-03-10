@@ -52,6 +52,14 @@ namespace DarienEngine
             }
         }
 
+        new public void Clear()
+        {
+            if (!isAI)
+                foreach (CommandQueueItem cmd in base.ToArray())
+                    cmd.RemoveCommandSticker();
+            base.Clear();
+        }
+
         public override string ToString()
         {
             string str = "\n";

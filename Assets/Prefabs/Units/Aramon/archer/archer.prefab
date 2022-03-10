@@ -2256,13 +2256,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8276149308812070748}
-  m_LocalRotation: {x: 0, y: 0.9848078, z: -0.17364816, w: 0}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0.46, y: 5.33, z: 0.93}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8453380263954966290}
   m_RootOrder: 9
-  m_LocalEulerAnglesHint: {x: 20, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &8276149309116610566
 GameObject:
   m_ObjectHideFlags: 0
@@ -2429,7 +2429,7 @@ ParticleSystem:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8276149309757412235}
-  serializedVersion: 6
+  serializedVersion: 7
   lengthInSec: 0.3
   simulationSpeed: 2
   stopAction: 0
@@ -6001,19 +6001,20 @@ ParticleSystem:
     range: {x: 0, y: 1}
   CollisionModule:
     enabled: 1
-    serializedVersion: 3
+    serializedVersion: 4
     type: 1
     collisionMode: 0
     colliderForce: 0
     multiplyColliderForceByParticleSize: 0
     multiplyColliderForceByParticleSpeed: 0
     multiplyColliderForceByCollisionAngle: 0
-    plane0: {fileID: 0}
-    plane1: {fileID: 0}
-    plane2: {fileID: 0}
-    plane3: {fileID: 0}
-    plane4: {fileID: 0}
-    plane5: {fileID: 0}
+    m_Planes:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
     m_Dampen:
       serializedVersion: 2
       minMaxState: 0
@@ -6187,17 +6188,20 @@ ParticleSystem:
     interiorCollisions: 0
   TriggerModule:
     enabled: 0
-    collisionShape0: {fileID: 0}
-    collisionShape1: {fileID: 0}
-    collisionShape2: {fileID: 0}
-    collisionShape3: {fileID: 0}
-    collisionShape4: {fileID: 0}
-    collisionShape5: {fileID: 0}
+    serializedVersion: 2
     inside: 1
     outside: 0
     enter: 0
     exit: 0
+    colliderQueryMode: 0
     radiusScale: 1
+    primitives:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
   SubModule:
     serializedVersion: 2
     enabled: 0
@@ -7738,6 +7742,7 @@ MonoBehaviour:
   unitType: 17
   unitIcon: {fileID: 21300000, guid: d9e587152e3cfb04e833672743040311, type: 3}
   unitName: Archer
+  bodyType: 1
   maxHealth: 1100
   healthRechargeRate: 5.2
   baseMana: 0
@@ -7757,9 +7762,11 @@ MonoBehaviour:
   isAttacking: 0
   attackTarget: {fileID: 0}
   bloodSystem: {fileID: 8276149309757412236}
+  activeWeaponIndex: 0
   selectable: 1
   selectRing: {fileID: 8276149309611925461}
   fogOfWarMask: {fileID: 6997183358627103113}
+  attackMode: 0
 --- !u!195 &8276149308997763324
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -7796,7 +7803,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   launchPoint: {fileID: 8276149308812070751}
   projectilePrefab: {fileID: 7254576832436681743, guid: 1d91e8acbf7ed844194956eb44653619, type: 3}
-  projectileVelocity: 12
+  projectileVelocity: 24
   animDelay: 1.5
 --- !u!82 &8276149308997763322
 AudioSource:
@@ -7922,11 +7929,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69a232441f881fd4a9c3a577868aa4a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weaponSoundHitClasses: 00000000
   attackSounds: []
-  hitSounds: []
-  dieSound: {fileID: 0}
-  moveSound: {fileID: 0}
-  selectSound: {fileID: 0}
+  dieSound: {fileID: 8300000, guid: 88be1650ac852534baa5e34b4599147c, type: 3}
+  moveSound: {fileID: 8300000, guid: f3ef590db45258c4ab1eccbfd2e79885, type: 3}
+  selectSound: {fileID: 8300000, guid: b5aeeb69e0f4760459c5efe58615c44b, type: 3}
   unitPlaysAttackSounds: 0
 --- !u!120 &-2181534081559624552
 LineRenderer:

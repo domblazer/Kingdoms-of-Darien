@@ -18,7 +18,7 @@ public class AIPlayer : MonoBehaviour
     public NeedInfo needInfo;
     // limit 3 armies at a time
     public List<Army> _Armies = new List<Army>();
-    public float timeSinceLastArmyOrders;
+    public float timeSinceLastArmyOrders = 0;
     public float armyOrdersDelay = 100.0f;
 
     public void Init(InventoryAI inv)
@@ -106,7 +106,9 @@ public class AIPlayer : MonoBehaviour
         {
             CreateNewArmy(validUnits, armySize);
             // @TODO: start timer for armyOrdersDelay
+            timeSinceLastArmyOrders = 0;
         }
+        timeSinceLastArmyOrders += Time.deltaTime;
         foreach (Army army in _Armies)
         {
             army.HandleUpdate();
