@@ -36,6 +36,8 @@ namespace DarienEngine.AI
         public bool ordersIssued = false;
         public bool doneFormingUp = false;
         private Vector3 formUpPoint;
+        private float formUpTimeLimit = 30.0f;
+        private float formUpTimeRemaining = 30.0f;
         public bool isBroken { get { return (float)units.Count / (float)originalUnitCount < 0.2f; } }
 
         public class PlayerSnapshot
@@ -69,8 +71,12 @@ namespace DarienEngine.AI
         {
             if (ordersIssued && !doneFormingUp && !isBroken)
             {
-                Debug.Log("Army is forming up...");
-                doneFormingUp = units.All(u => u.commandQueue.IsEmpty());
+                Debug.Log("Army is forming up... (" + formUpTimeRemaining + ")");
+                formUpTimeRemaining -= Time.deltaTime;
+                // Army is done forming up when all units have arrived at their move points or time limit reached
+                doneFormingUp = units.All(u => u.commandQueue.IsEmpty()) | formUpTimeRemaining < 0;
+                if (formUpTimeRemaining < 0)
+                    formUpTimeRemaining = formUpTimeLimit;
 
                 if (doneFormingUp)
                 {
@@ -122,6 +128,8 @@ namespace DarienEngine.AI
         public void FormUp()
         {
             formUpPoint = FindFormUpLocation();
+            // @TODO: this group shouldn't need to get precicely to each point, just close, and if a certain time passes, 
+            // call forming up done anyway
             Clusters.MoveGroup(units, formUpPoint, false);
         }
 
@@ -145,7 +153,7 @@ namespace DarienEngine.AI
             Debug.Log("Army attack target: " + attackTarget.gameObject.name);
             if (attackTarget != null)
                 foreach (RTSUnit armyUnit in units)
-                    armyUnit.TryAttack(attackTarget.gameObject);
+                    armyUnit._AttackBehavior.TryAttack(attackTarget.gameObject);
         }
 
         public void IssueRetreat()

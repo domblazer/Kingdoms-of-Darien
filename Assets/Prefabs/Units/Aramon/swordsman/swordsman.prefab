@@ -5189,10 +5189,11 @@ GameObject:
   - component: {fileID: 1770128795923773079}
   - component: {fileID: 1770128795923773073}
   - component: {fileID: 1770128795923773072}
-  - component: {fileID: 919132147622893407}
-  - component: {fileID: 535760188}
-  - component: {fileID: 758354469}
+  - component: {fileID: 1926485102892602018}
   - component: {fileID: 6321940543030220991}
+  - component: {fileID: 535760188}
+  - component: {fileID: 919132147622893407}
+  - component: {fileID: 758354469}
   - component: {fileID: 931034316}
   m_Layer: 9
   m_Name: swordsman
@@ -5317,43 +5318,56 @@ MonoBehaviour:
   isKinematic: 1
   isBuilder: 0
   canAttack: 1
-  attackRate: 2
-  attackRange: 1
-  weaponDamage: 360
   phaseDie: 0
-  isMeleeAttacker: 1
-  meleeWeapons:
-  - {fileID: 1130106833}
-  isAttacking: 0
-  attackTarget: {fileID: 0}
   bloodSystem: {fileID: 1418828522}
-  activeWeaponIndex: 0
   selectable: 1
   selectRing: {fileID: 1770128794485609735}
   fogOfWarMask: {fileID: 938548816310989045}
   attackMode: 0
---- !u!195 &919132147622893407
-NavMeshAgent:
+--- !u!114 &1926485102892602018
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1464139452027030493}
   m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 1.4
-  m_Speed: 1.1
-  m_Acceleration: 100
-  avoidancePriority: 55
-  m_AngularSpeed: 200
-  m_StoppingDistance: 0.2
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
-  m_AutoRepath: 1
-  m_Height: 2
-  m_BaseOffset: 0
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 3
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 632c9caf7de6afa4fb2fddd933ce5641, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weapons:
+  - weaponType: 0
+    weaponDamage: 360
+    weaponRange: 1
+    weaponReloadRate: 2
+    weaponSoundClass: 1
+    specialAttack: 0
+    specialAttackIcon: {fileID: 0}
+    specialAttackName: 
+    meleeWeapons:
+    - {fileID: 1130106833}
+  activeWeaponIndex: 0
+  isAttacking: 0
+  attackTarget: {fileID: 0}
+  enemiesInSight: []
+--- !u!114 &6321940543030220991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1464139452027030493}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69a232441f881fd4a9c3a577868aa4a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackSounds: []
+  dieSound: {fileID: 8300000, guid: 4dd4cf3cdfaebc34392b3585ecd48fa6, type: 3}
+  moveSound: {fileID: 8300000, guid: a6aeee7ee17b6024e8fbbe0ab6a2b0dd, type: 3}
+  selectSound: {fileID: 8300000, guid: feeef160cda98ec43b56e3579170779c, type: 3}
+  unitPlaysAttackSounds: 1
 --- !u!82 &535760188
 AudioSource:
   m_ObjectHideFlags: 0
@@ -5374,10 +5388,10 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 0
-  MinDistance: 2
+  MinDistance: 8
   MaxDistance: 100
   Pan2D: 0
-  rolloffMode: 1
+  rolloffMode: 0
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -5450,6 +5464,28 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!195 &919132147622893407
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1464139452027030493}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 1.4
+  m_Speed: 1.1
+  m_Acceleration: 100
+  avoidancePriority: 55
+  m_AngularSpeed: 200
+  m_StoppingDistance: 0.2
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 0
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 3
 --- !u!208 &758354469
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -5466,24 +5502,6 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 2.39, z: 0}
   m_TimeToStationary: 0.5
---- !u!114 &6321940543030220991
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1464139452027030493}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 69a232441f881fd4a9c3a577868aa4a9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weaponSoundHitClasses: 01000000
-  attackSounds: []
-  dieSound: {fileID: 8300000, guid: 4dd4cf3cdfaebc34392b3585ecd48fa6, type: 3}
-  moveSound: {fileID: 8300000, guid: a6aeee7ee17b6024e8fbbe0ab6a2b0dd, type: 3}
-  selectSound: {fileID: 8300000, guid: feeef160cda98ec43b56e3579170779c, type: 3}
-  unitPlaysAttackSounds: 1
 --- !u!120 &931034316
 LineRenderer:
   m_ObjectHideFlags: 0

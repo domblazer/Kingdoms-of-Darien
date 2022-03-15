@@ -34,7 +34,7 @@ public class HumanoidUnitAnimator : MonoBehaviour
             // @TODO: if has been idle for random between 10 - 20 seconds, play idle variant
 
             // Run attack anim on interval
-            if (_Unit.IsAttacking() && _Unit.nextAttackReady)
+            if (_Unit.IsAttacking() && _Unit._AttackBehavior.nextAttackReady)
             {
                 // Random int between 1 and 3
                 int r = Random.Range(1, 4);

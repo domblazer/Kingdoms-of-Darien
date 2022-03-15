@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using DarienEngine;
 
 public class RTSCamera : MonoBehaviour
 {
@@ -73,26 +74,26 @@ public class RTSCamera : MonoBehaviour
             if (doCameraBounding)
             {
                 // RIGHT
-                if (Input.mousePosition.x > screenWidth - Boundary || Input.GetKey(KeyCode.RightArrow))
+                if ((Input.mousePosition.x > screenWidth - Boundary || Input.GetKey(KeyCode.RightArrow))
+                    && transform.position.x < GameManager.Instance.mapInfo.mapCenter.x + GameManager.Instance.mapInfo.mapSize.x / 2)
                 {
                     transform.Translate(new Vector3(ScrollSpeed * Time.deltaTime, 0, 0));
                 }
                 // LEFT
-                if (Input.mousePosition.x < 0 + Boundary || Input.GetKey(KeyCode.LeftArrow))
+                if ((Input.mousePosition.x < 0 + Boundary || Input.GetKey(KeyCode.LeftArrow))
+                    && transform.position.x > GameManager.Instance.mapInfo.mapCenter.x - GameManager.Instance.mapInfo.mapSize.x / 2)
                 {
                     transform.Translate(new Vector3(-ScrollSpeed * Time.deltaTime, 0, 0));
                 }
                 // FORWARDS
-                if (Input.mousePosition.y > screenHeight - Boundary || Input.GetKey(KeyCode.UpArrow))
+                if ((Input.mousePosition.y > screenHeight - Boundary || Input.GetKey(KeyCode.UpArrow))
+                    && transform.position.z < GameManager.Instance.mapInfo.mapCenter.y + GameManager.Instance.mapInfo.mapSize.y / 2)
                 {
-                    //transform.Translate(new Vector3(ScrollSpeed * Time.deltaTime, 0, 0));
-
-                    //transform.position += transform.forward * ScrollSpeed * Time.deltaTime;
-
                     transform.Translate(Vector3.forward * Time.deltaTime * ScrollSpeed, Space.World);
                 }
                 // BACKWARDS
-                if (Input.mousePosition.y < 0 + Boundary || Input.GetKey(KeyCode.DownArrow))
+                if ((Input.mousePosition.y < 0 + Boundary || Input.GetKey(KeyCode.DownArrow))
+                    && transform.position.z > GameManager.Instance.mapInfo.mapCenter.y - GameManager.Instance.mapInfo.mapSize.y / 2)
                 {
                     transform.Translate(-Vector3.forward * Time.deltaTime * ScrollSpeed, Space.World);
                 }

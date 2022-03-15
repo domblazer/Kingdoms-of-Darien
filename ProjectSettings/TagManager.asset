@@ -28,7 +28,7 @@ TagManager:
   - Fog Of War Plane
   - Terrain
   - Terrain Details
-  - Wall
+  - MapEdgeMask
   - 
   - 
   - 

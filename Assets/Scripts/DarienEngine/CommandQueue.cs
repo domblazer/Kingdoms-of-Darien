@@ -79,6 +79,7 @@ namespace DarienEngine
         }
         public event EventHandler<CommandChangedEventArgs> OnCommandChanged;
         public CommandTypes commandType;
+        public bool isAttackMove;
         public Vector3 commandPoint;
         // type is Conjurer?: 
         public ConjurerArgs conjurerArgs;

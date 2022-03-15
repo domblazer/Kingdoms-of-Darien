@@ -19,7 +19,7 @@ public class NavalUnitAnimator : MonoBehaviour
         _Animator.SetBool("moving", _Unit.IsMoving());
         _Animator.SetBool("turning", _Unit.facing);
 
-        if (_Unit.IsAttacking() && _Unit.nextAttackReady)
+        if (_Unit.IsAttacking() && _Unit._AttackBehavior.nextAttackReady)
         {
             _Animator.SetTrigger("attack");
         }

@@ -138,8 +138,9 @@ public class UIManager : MonoBehaviour
             battleMenuButtons.attackBtn.onClick.AddListener(delegate { PrimeCommand(CommandTypes.Attack); });
             battleMenuButtons.guardBtn.onClick.AddListener(delegate { PrimeCommand(CommandTypes.Guard); });
 
-            // @TODO: listeners for all other action buttons
+            // @TODO: this is stopping but then units don't go back to autopicking targets
             battleMenuButtons.stopBtn.onClick.AddListener(delegate { GameManager.Instance.PlayerMain.player.StopAllSelectedUnits(); });
+            // @TODO: listeners for all other action buttons
         }
 
         // Clicking on a Battle Menu command button will ready that command to be sent to selected units
@@ -170,7 +171,7 @@ public class UIManager : MonoBehaviour
             battleMenuButtons.passiveBtn.gameObject.SetActive(value);
         }
 
-        public void Set(bool canMove, bool canAttack, bool canBuild, SpecialAttackItem[] specialAttacks)
+        public void Set(bool canMove, bool canAttack, bool canBuild, AttackBehavior.Weapon[] weapons)
         {
             battleMenuDefault.gameObject.SetActive(false);
             if (canMove)
@@ -193,26 +194,26 @@ public class UIManager : MonoBehaviour
             battleMenuButtons.defensiveBtn.gameObject.SetActive(true);
             battleMenuButtons.passiveBtn.gameObject.SetActive(true);
 
-            if (specialAttacks != null && specialAttacks.Length == 1)
+            if (weapons != null && weapons.Length == 1 && weapons[0].specialAttack)
             {
                 battleMenuButtons.specialAttackOneBtn.gameObject.SetActive(true);
-                battleMenuButtons.specialAttackOneBtn.image = specialAttacks[0].specialAttackIcon;
+                battleMenuButtons.specialAttackOneBtn.image = weapons[0].specialAttackIcon;
             }
-            else if (specialAttacks != null && specialAttacks.Length == 2)
+            else if (weapons != null && weapons.Length == 2 && weapons[0].specialAttack && weapons[1].specialAttack)
             {
                 battleMenuButtons.specialAttackOneBtn.gameObject.SetActive(true);
                 battleMenuButtons.specialAttackTwoBtn.gameObject.SetActive(true);
-                battleMenuButtons.specialAttackOneBtn.image = specialAttacks[0].specialAttackIcon;
-                battleMenuButtons.specialAttackTwoBtn.image = specialAttacks[1].specialAttackIcon;
+                battleMenuButtons.specialAttackOneBtn.image = weapons[0].specialAttackIcon;
+                battleMenuButtons.specialAttackTwoBtn.image = weapons[1].specialAttackIcon;
             }
-            else if (specialAttacks != null && specialAttacks.Length == 3)
+            else if (weapons != null && weapons.Length == 3 && weapons[0].specialAttack && weapons[1].specialAttack && weapons[2].specialAttack)
             {
                 battleMenuButtons.specialAttackOneBtn.gameObject.SetActive(true);
                 battleMenuButtons.specialAttackTwoBtn.gameObject.SetActive(true);
                 battleMenuButtons.specialAttackThreeBtn.gameObject.SetActive(true);
-                battleMenuButtons.specialAttackOneBtn.image = specialAttacks[0].specialAttackIcon;
-                battleMenuButtons.specialAttackTwoBtn.image = specialAttacks[1].specialAttackIcon;
-                battleMenuButtons.specialAttackThreeBtn.image = specialAttacks[2].specialAttackIcon;
+                battleMenuButtons.specialAttackOneBtn.image = weapons[0].specialAttackIcon;
+                battleMenuButtons.specialAttackTwoBtn.image = weapons[1].specialAttackIcon;
+                battleMenuButtons.specialAttackThreeBtn.image = weapons[2].specialAttackIcon;
             }
         }
 

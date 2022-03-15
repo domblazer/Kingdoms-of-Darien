@@ -36,7 +36,7 @@ public class FortUnitAnimatorScript : MonoBehaviour
             // m_Animator.SetBool("attacking", baseUnit.IsAttacking());
 
             // Run attack anim on interval
-            if (baseUnit.IsAttacking() && baseUnit.nextAttackReady)
+            if (baseUnit.IsAttacking() && baseUnit._AttackBehavior.nextAttackReady)
             {
                //  Debug.Log("Attack anim triggered");
                 m_Animator.SetTrigger("attack");

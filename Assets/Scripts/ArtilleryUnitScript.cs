@@ -27,10 +27,10 @@ public class ArtilleryUnitScript : MonoBehaviour
     void Update()
     {
         // While unit is still priming for attack but not attacking yet, continue facing to enemy
-        if (_BaseUnit.engagingTarget && !_BaseUnit.IsAttacking())
+        if (_BaseUnit._AttackBehavior.engagingTarget && !_BaseUnit.IsAttacking())
         {
             // Determine which direction to rotate towards
-            targetDirection = _BaseUnit.attackTarget.transform.position - transform.position;
+            targetDirection = _BaseUnit._AttackBehavior.attackTarget.transform.position - transform.position;
             targetDirection.y = 0;
             targetRotation = Quaternion.LookRotation(targetDirection, Vector3.up);
             swivle.transform.rotation = Quaternion.RotateTowards(swivle.transform.rotation, targetRotation, swivleSpeed * Time.deltaTime);

@@ -92,11 +92,13 @@ public class BaseUnitAI : RTSUnit
                         // just handle move behaviour
                         HandleMovement();
                         // Auto-pick attack targets by default while moving
-                        AutoPickAttackTarget(true);
+                        if (canAttack)
+                            _AttackBehavior.AutoPickAttackTarget(true);
                         break;
                     case CommandTypes.Attack:
                         // handle engaging target (moveTo target) and attacking behaviour
-                        HandleAttackRoutine(true);
+                        _AttackBehavior.HandleAttackRoutine(true);
+                        state = States.Attacking;
                         break;
                     case CommandTypes.Patrol:
                         // handle patrol behavior
@@ -105,7 +107,8 @@ public class BaseUnitAI : RTSUnit
                             currentCommand.patrolRoute = new PatrolRoute { patrolPoints = SetPatrolPoints(transform.position, 3, patrolRange) };
                         // Roam and auto-pick attack targets
                         Patrol(true);
-                        AutoPickAttackTarget(true);
+                        if (canAttack)
+                            _AttackBehavior.AutoPickAttackTarget(true);
                         break;
                     case CommandTypes.Conjure:
                         // Builder and Factory conjuring behavior
@@ -127,7 +130,7 @@ public class BaseUnitAI : RTSUnit
 
             // @TODO: AI should autopick attack target under most circumstances
             if (canAttack && state.Value == States.Standby.Value)
-                AutoPickAttackTarget();
+                _AttackBehavior.AutoPickAttackTarget();
         }
     }
 
@@ -177,10 +180,21 @@ public class BaseUnitAI : RTSUnit
         bool pointCollisionValid = true;
         string errorReasons = "Test point results: ";
 
+        // @TODO: PRIORITY: outside map bounds is also invalid
+
         NavMeshHit navMeshHit;
         // NavMesh check point is on "Built-in-0": "Walkable" area
         if (NavMesh.SamplePosition(point, out navMeshHit, 1f, NavMesh.AllAreas))
-            navMeshValid = true;
+        {
+            // @TODO: for builder, maybe test four corners around point based on unit offset values?
+
+            // If nav distance is much larger than distance between points, not a good point
+            bool distanceDisparity = navMeshHit.distance > (transform.position - point).sqrMagnitude * 5;
+            // If point is outside the map boundary, bad point
+            bool insideMapBounds = GameManager.Instance.mapInfo.PointInsideBounds(point.x, point.z);
+            if (!distanceDisparity && insideMapBounds)
+                navMeshValid = true;
+        }
         else
             errorReasons += "(Error: NavMesh)";
 

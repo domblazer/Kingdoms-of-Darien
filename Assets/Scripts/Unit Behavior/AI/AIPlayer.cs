@@ -104,6 +104,7 @@ public class AIPlayer : MonoBehaviour
         // If size threshold met, time passed since delay, and armies count less than three
         if (validUnits.Count >= armySize && timeSinceLastArmyOrders > armyOrdersDelay && _Armies.Count < 3)
         {
+            armySize = (_Armies.Count + 1) * 7;
             CreateNewArmy(validUnits, armySize);
             // @TODO: start timer for armyOrdersDelay
             timeSinceLastArmyOrders = 0;

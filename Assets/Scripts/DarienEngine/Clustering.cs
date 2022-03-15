@@ -22,7 +22,7 @@ namespace DarienEngine.Clustering
 
     public static class Clusters
     {
-        public static void MoveGroup(List<RTSUnit> selectedUnits, Vector3 hitPoint, bool addToMoveQueue = false)
+        public static void MoveGroup(List<RTSUnit> selectedUnits, Vector3 hitPoint, bool addToMoveQueue = false, bool doAttackMove = false)
         {
             UnitClusterMoveInfo clusterMoveInfo = CalculateSmartCenter(selectedUnits);
 
@@ -89,7 +89,7 @@ namespace DarienEngine.Clustering
                 // Once this moveTo has been picked, it should not be considered again
                 positions.Remove(moveTo);
                 if (unit && unit.isKinematic)
-                    unit.SetMove(moveTo, addToMoveQueue);
+                    unit.SetMove(moveTo, addToMoveQueue, doAttackMove);
             }
         }
 

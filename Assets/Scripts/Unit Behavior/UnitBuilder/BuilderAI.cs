@@ -79,10 +79,13 @@ public class BuilderAI : UnitBuilderAI
     // Return the closest SacredSite position
     public Vector3 FindClosestSacredSite()
     {
+        // @TODO: all sacred sites should be found and compiled at beginning of game, maybe in gamemanager?
         GameObject[] sacredStones = GameObject.FindGameObjectsWithTag("SacredSite");
         List<SacredStoneDetails> sacredStoneDetailsList = new List<SacredStoneDetails>();
         foreach (GameObject stone in sacredStones)
         {
+            // @TODO: better way to do this, also limit range so not every site is checked every time
+
             sacredStoneDetailsList.Add(new SacredStoneDetails
             {
                 sacredStone = stone,
@@ -100,15 +103,15 @@ public class BuilderAI : UnitBuilderAI
 
     public Vector3 FindBuildSpot(Vector3 origin, bool forLodestone = false)
     {
-        // @TODO: GenerateValidRandomPoint will handle most validation, but still need more specific point
-        // picking for e.g. can't go outside a certain bounds from the player start position (or base position?). 
-        // Also, factories should be loosely clustered and defenses built around them and near Lodestones. etc. etc.
-
-        // @TODO: need to also adjust build spot per building offset, like make sure the build spot leaves enough space away from walls,
-        // other buildings, etc. Also, can't be building factories on berms, maybe make a navmesh area?
-
-        // @TODO: also maybe take into account nav.distanceRemaining, like if the nav path is way longer than the distance between
-        // points, maybe not worth walking
+        // @TODO: TOP PRIORITIES:
+        // 1. builders cannot build outside the map bounds:: DONE
+        // 2. @TODO: cannot place buildings that overlap other units or obstacles
+        // 3. @TODO: builders must build factories in relatively central groupings
+        //      Idea: use Physics.OverlapBox(origin, toBuild.offset * 2, Quaternion.identity, (1 << 9) | (1 << 11));
+        //      @TODO: box cannot also cover more invalid surface area than not, i.e. if more than half the structure 
+        //      is going to sit in an invalid area, the build spot is not valid
+        // 4. @TODO: an improvement that could be made is also not testing points around the failed areas again
+        
         return forLodestone ? FindClosestSacredSite() : (baseUnit as BaseUnitAI).GenerateValidRandomPoint(origin, searchBuildRange);
     }
 

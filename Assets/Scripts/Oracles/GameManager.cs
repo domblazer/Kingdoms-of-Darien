@@ -26,6 +26,24 @@ public class GameManager : MonoBehaviour
     public bool enableFogOfWar = true;
     public GameObject fogOfWarPlane;
 
+    [System.Serializable]
+    public class MapInfo
+    {
+        public Vector2 mapSize = new Vector2(90, 80);
+        public Vector2 mapCenter = new Vector2(500, 500);
+        private Rect bounds;
+        public MapInfo()
+        {
+            bounds = new Rect(mapCenter.x + mapSize.x / 2, mapCenter.y + mapSize.y / 2, mapSize.x, mapSize.y);
+        }
+
+        public bool PointInsideBounds(float x, float y)
+        {
+            return bounds.Contains(new Vector2(x, y));
+        }
+    }
+    public MapInfo mapInfo;
+
     public GameObject moveCommandSticker;
     public GameObject guardCommandSticker;
     public GameObject patrolCommandSticker;

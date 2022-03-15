@@ -106,11 +106,12 @@ GameObject:
   - component: {fileID: 738280607077117984}
   - component: {fileID: 738280607077117985}
   - component: {fileID: 738280607077118047}
+  - component: {fileID: 4562358118496896794}
   - component: {fileID: 738280607077118044}
+  - component: {fileID: 6708135219041040190}
+  - component: {fileID: 738280607077117987}
   - component: {fileID: 738280607077118045}
   - component: {fileID: 738280607077117986}
-  - component: {fileID: 738280607077117987}
-  - component: {fileID: 6708135219041040190}
   m_Layer: 9
   m_Name: zombie
   m_TagString: Enemy
@@ -215,20 +216,38 @@ MonoBehaviour:
   isKinematic: 1
   isBuilder: 0
   canAttack: 1
-  attackRate: 2.65
-  attackRange: 1
-  weaponDamage: 175
   phaseDie: 0
-  isMeleeAttacker: 1
-  meleeWeapons:
-  - {fileID: 738280607077118042}
-  - {fileID: 738280607077118041}
-  isAttacking: 0
-  attackTarget: {fileID: 0}
   bloodSystem: {fileID: 738280606498455322}
-  activeWeaponIndex: 0
   patrolRange: 25
   startState: 0
+--- !u!114 &4562358118496896794
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 504279588120628597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 632c9caf7de6afa4fb2fddd933ce5641, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weapons:
+  - weaponType: 0
+    weaponDamage: 175
+    weaponRange: 1
+    weaponReloadRate: 1.65
+    weaponSoundClass: 3
+    specialAttack: 0
+    specialAttackIcon: {fileID: 0}
+    specialAttackName: 
+    meleeWeapons:
+    - {fileID: 738280607077118042}
+    - {fileID: 738280607077118041}
+  activeWeaponIndex: 0
+  isAttacking: 0
+  attackTarget: {fileID: 0}
+  enemiesInSight: []
 --- !u!114 &738280607077118044
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -241,44 +260,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b7e209551963094fa1e58d5f2ad9185, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!195 &738280607077118045
-NavMeshAgent:
+--- !u!114 &6708135219041040190
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 504279588120628597}
   m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 1
-  m_Speed: 0.8
-  m_Acceleration: 8
-  avoidancePriority: 55
-  m_AngularSpeed: 120
-  m_StoppingDistance: 0.1
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
-  m_AutoRepath: 1
-  m_Height: 2
-  m_BaseOffset: 0
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 3
---- !u!208 &738280607077117986
-NavMeshObstacle:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 504279588120628597}
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Shape: 0
-  m_Extents: {x: 0.99, y: 2.645, z: 0.99}
-  m_MoveThreshold: 0.1
-  m_Carve: 0
-  m_CarveOnlyStationary: 1
-  m_Center: {x: 0, y: 2.87, z: 0}
-  m_TimeToStationary: 0.5
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69a232441f881fd4a9c3a577868aa4a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackSounds: []
+  dieSound: {fileID: 8300000, guid: 93517f650498ca649a03a8270e48e539, type: 3}
+  moveSound: {fileID: 8300000, guid: 8fc0898ce2920c44d9db038c5a8fa9d1, type: 3}
+  selectSound: {fileID: 8300000, guid: f512d2f62de6e1246a965b7b5e549c23, type: 3}
+  unitPlaysAttackSounds: 1
 --- !u!82 &738280607077117987
 AudioSource:
   m_ObjectHideFlags: 0
@@ -375,24 +373,44 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &6708135219041040190
-MonoBehaviour:
+--- !u!195 &738280607077118045
+NavMeshAgent:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 504279588120628597}
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 69a232441f881fd4a9c3a577868aa4a9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weaponSoundHitClasses: 03000000
-  attackSounds: []
-  dieSound: {fileID: 8300000, guid: 93517f650498ca649a03a8270e48e539, type: 3}
-  moveSound: {fileID: 8300000, guid: 8fc0898ce2920c44d9db038c5a8fa9d1, type: 3}
-  selectSound: {fileID: 8300000, guid: f512d2f62de6e1246a965b7b5e549c23, type: 3}
-  unitPlaysAttackSounds: 1
+  m_AgentTypeID: 0
+  m_Radius: 1
+  m_Speed: 0.8
+  m_Acceleration: 8
+  avoidancePriority: 55
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0.1
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 0
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 3
+--- !u!208 &738280607077117986
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 504279588120628597}
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Shape: 0
+  m_Extents: {x: 0.99, y: 2.645, z: 0.99}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 2.87, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &514252222208197532
 GameObject:
   m_ObjectHideFlags: 0

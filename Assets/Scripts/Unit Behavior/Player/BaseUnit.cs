@@ -70,11 +70,13 @@ public class BaseUnit : RTSUnit
                 {
                     case CommandTypes.Move:
                         HandleMovement();
-                        // @TODO: if attackMove, autopick attack target
+                        if (canAttack && currentCommand.isAttackMove)
+                            _AttackBehavior.AutoPickAttackTarget();
                         break;
                     case CommandTypes.Attack:
                         // handle engaging target (moveTo target) and attacking behaviour
-                        HandleAttackRoutine();
+                        _AttackBehavior.HandleAttackRoutine();
+                        state = States.Attacking;
                         break;
                     case CommandTypes.Patrol:
                         // handle patrol behavior
@@ -102,8 +104,8 @@ public class BaseUnit : RTSUnit
                 state = States.Standby;
                 TryToggleToObstacle();
                 // If idle and in offensive mode, autopick attack target
-                if (attackMode == AttackModes.Offensive)
-                    AutoPickAttackTarget();
+                if (canAttack && attackMode == AttackModes.Offensive)
+                    _AttackBehavior.AutoPickAttackTarget();
             }
 
             if (selectable && selected)
@@ -116,7 +118,7 @@ public class BaseUnit : RTSUnit
                 if (!GameManager.Instance.IsHoveringOther(gameObject))
                 {
                     // @TODO: secondary could be a "Conjuring" secondary
-                    RTSUnit secondary = attackTarget ? attackTarget.GetComponent<RTSUnit>() : null;
+                    RTSUnit secondary = _AttackBehavior && _AttackBehavior.attackTarget ? _AttackBehavior.attackTarget.GetComponent<RTSUnit>() : null;
                     UIManager.UnitInfoInstance.Set(super, secondary);
                 }
 
@@ -205,7 +207,7 @@ public class BaseUnit : RTSUnit
                 else
                     mainPlayer.ReleaseActiveBuilder();
                 // Show the unit action menu
-                UIManager.BattleMenuInstance.Set(isKinematic, canAttack, isBuilder, specialAttacks);
+                UIManager.BattleMenuInstance.Set(isKinematic, canAttack, isBuilder, _AttackBehavior?.weapons);
                 AudioManager.PlaySelectSound();
             }
         }

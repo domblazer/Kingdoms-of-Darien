@@ -35,7 +35,7 @@ public class StrongholdScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (_BaseUnit.engagingTarget)
+        if (_BaseUnit._AttackBehavior.engagingTarget)
         {
             // @TODO: swivle -> LookRotation around y axis (side-to-side)
             /* Vector3 targetPos = _BaseUnit.attackTarget.transform.position;
@@ -51,7 +51,7 @@ public class StrongholdScript : MonoBehaviour
             } */
             
             // Determine which direction to rotate towards
-            targetDirection = _BaseUnit.attackTarget.transform.position - transform.position;
+            targetDirection = _BaseUnit._AttackBehavior.attackTarget.transform.position - transform.position;
             targetDirection.y = 0;
             targetRotation = Quaternion.LookRotation(targetDirection, Vector3.up);
             swivle.transform.rotation = Quaternion.RotateTowards(swivle.transform.rotation, targetRotation, swivleSpeed * Time.deltaTime);
@@ -59,7 +59,7 @@ public class StrongholdScript : MonoBehaviour
             // @TODO: set animation speed -1 or 1 based on look direction
 
             // Cannon look: x axis (up and down) only
-            Vector3 cannonFacingDirection = _BaseUnit.attackTarget.transform.position - cannon.transform.localPosition;
+            Vector3 cannonFacingDirection = _BaseUnit._AttackBehavior.attackTarget.transform.position - cannon.transform.localPosition;
             cannonFacingDirection.x = 0;
             Quaternion cannonTargetRotation = Quaternion.LookRotation(cannonFacingDirection, Vector3.up);
 
@@ -76,13 +76,13 @@ public class StrongholdScript : MonoBehaviour
             {
                 Debug.Log("Facing done.");
                 _BaseUnit.facing = false;
-                _BaseUnit.isAttacking = true;
+                _BaseUnit._AttackBehavior.isAttacking = true;
             }
             else
             {
                 Debug.Log("Facing...");
                 _BaseUnit.facing = true;
-                _BaseUnit.isAttacking = false;
+                _BaseUnit._AttackBehavior.isAttacking = false;
             }
 
         }

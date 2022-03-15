@@ -62,26 +62,19 @@ public class RTSUnit : MonoBehaviour
     public float buildTime = 100;
 
     // Abilities
-    public bool isKinematic = true; // Is the unit mobile
-    public bool isBuilder = false;
+    public bool isKinematic = true; // @TODO: canMove
+    public bool isBuilder = false; // @TODO: canReclaim (build & clean?)
     public bool canAttack = true;
-    public float attackRate = 2.5f;
-    public float attackRange = 1.0f;
-    public float weaponDamage = 100;
+    public bool canStop = true;
+    public bool canGuard = false;
+    public bool canPatrol = false;
+    // @TODO: more abilities
+    // public bool canFly = false;
+    // public bool canAnimate = false; // resurrection
+    // public bool cantBeStoned = true; // turn-to-stone attacks do nothing
+
+    public AttackBehavior _AttackBehavior { get; set; }
     public bool phaseDie = false; // If this unit just disappears on die
-
-    public bool isMeleeAttacker;
-    public MeleeWeaponScript[] meleeWeapons;
-    protected List<GameObject> enemiesInSight = new List<GameObject>();
-
-    private float nextAttack = 0.0f;
-    public bool nextAttackReady { get; set; } = false;
-    public bool engagingTarget { get; set; } = false;
-    protected bool isMovingToAttack = false;
-    [HideInInspector] public bool isAttacking = false;
-
-    // @TODO: attackTarget can be an intangible enemy, in which case RTSUnit won't be present
-    [HideInInspector] public GameObject attackTarget;
 
     // @TODO: check StrongholdScript; ideally BaseUnit should handle the facing routine so these vars can remain protected
     public bool facing { get; set; } = false;
@@ -127,19 +120,6 @@ public class RTSUnit : MonoBehaviour
     protected Animator _Animator;
     public UnitAudioManager AudioManager { get; set; }
 
-    // @TODO: specialAttacks should become a Weapons[] with more attributes, including whether the weapon icon is a special attack 
-    // that should have its own icon
-    public class Weapon
-    {
-        public SoundHitClasses.WeaponSoundHitClasses weaponSoundClass;
-        public bool specialAttack = false;
-        public Image specialAttackIcon;
-        public string specialAttackName;
-    }
-    public Weapon[] weapons;
-    public int activeWeaponIndex = 0;
-    public Weapon activeWeapon { get { return weapons[activeWeaponIndex]; } }
-    public SpecialAttackItem[] specialAttacks;
     protected List<GameObject> whoCanSeeMe = new List<GameObject>();
 
     protected float dieTime = 30;
@@ -147,6 +127,7 @@ public class RTSUnit : MonoBehaviour
 
     private DieCallback dieCallback;
 
+    // Init called on Start
     protected void Init()
     {
         // Mock "super" variable so BaseUnit can access this parent class
@@ -185,10 +166,13 @@ public class RTSUnit : MonoBehaviour
         AudioManager = GetComponent<UnitAudioManager>();
         _Animator = GetComponent<Animator>();
 
-        // Set up linkage with melee weapon(s) if unit is a melee attacker
-        if (isMeleeAttacker && meleeWeapons.Length > 0)
-            foreach (MeleeWeaponScript mw in meleeWeapons)
-                mw.SetLinkage(this, weaponDamage);
+        // Set up linkage with AttackBehavior component if canAttack
+        if (canAttack)
+        {
+            _AttackBehavior = GetComponent<AttackBehavior>();
+            if (_AttackBehavior == null)
+                throw new System.Exception("Error: Unit can attack but no AttackBehavior (Script) was found.");
+        }
 
         // Each unit on Start must group under appropriate player holder and add itself to virtual context
         Functions.AddUnitToPlayerContext(this);
@@ -273,70 +257,6 @@ public class RTSUnit : MonoBehaviour
         }
     }
 
-    protected void HandleAttackRoutine(bool autoAttackInterrupt = false)
-    {
-        state = States.Attacking;
-
-        // State isAttacking when engagingTarget and not still orienting to attack position
-        if (engagingTarget && (isKinematic ? !isMovingToAttack : !facing))
-            isAttacking = true;
-
-        float rangeOffset = attackRange;
-        // Melee attackers use a portion of the attackTarget's collider (offset) size
-        if (attackTarget)
-            rangeOffset = isMeleeAttacker ? attackTarget.GetComponent<RTSUnit>().offset.x * 0.75f : attackRange;
-
-        // While locked on target but not in range, keep moving to attack position
-        if (attackTarget && !IsInRangeOf(attackTarget.transform.position, rangeOffset))
-        {
-            isMovingToAttack = true;
-            isAttacking = false;
-            TryToggleToAgent();
-            // Move to attack target position 
-            MoveToPosition(attackTarget.transform.position);
-            // @TODO: AI should attack the next target that gets too close or attacks it first
-            if (autoAttackInterrupt)
-                AutoPickAttackTarget(true);
-        }
-        // Once unit is in range, can stop moving
-        else if (isMovingToAttack && attackTarget && IsInRangeOf(attackTarget.transform.position, rangeOffset))
-        {
-            MoveToPosition(transform.position);
-            TryToggleToObstacle();
-            isMovingToAttack = false;
-        }
-
-        // Handle attacking behavior
-        if (isAttacking && attackTarget != null)
-        {
-            if (attackTarget.GetComponent<RTSUnit>() && attackTarget.GetComponent<RTSUnit>().isDead)
-            {
-                // If attack target has died at any point while I was attacking it, clear attack and stop attack routine
-                ClearAttack();
-                commandQueue.Dequeue();
-                return;
-            }
-
-            // @TODO: if attackTarget becomes null, move back to original location unless there's another unit around to attack
-            // @TODO: if isAttacking/taking damage and health is low, AI start a retreat, player units can be set to have an auto retreat or retreat button
-
-            // Kinematic units do facing; @Note: stationary attack units do their own facing routine (e.g. Stronghold)
-            if (isKinematic && !IsMoving())
-                facing = HandleFacing(attackTarget.transform.position, 0.5f); // Continue facing attackTarget while isAttacking
-
-            // Attack interval
-            if (Time.time > nextAttack)
-            {
-                nextAttack = Time.time + attackRate;
-                nextAttackReady = true;
-                if (AudioManager.unitPlaysAttackSounds)
-                    AudioManager.PlayAttackSound();
-            }
-            else
-                nextAttackReady = false;
-        }
-    }
-
     protected void Patrol(bool roam = false)
     {
         if (_Agent.enabled && !commandQueue.IsEmpty())
@@ -352,7 +272,7 @@ public class RTSUnit : MonoBehaviour
         }
     }
 
-    protected bool HandleFacing(Vector3 targetPosition, float threshold = 0.01f)
+    public bool HandleFacing(Vector3 targetPosition, float threshold = 0.01f)
     {
         faceDirection = targetPosition - transform.position;
         faceDirection.y = 0; // This makes rotation only apply to y axis
@@ -382,35 +302,18 @@ public class RTSUnit : MonoBehaviour
         }
     }
 
-    protected GameObject AutoPickAttackTarget(bool insertFirst = false)
-    {
-        // Find closest target
-        GameObject target = FindClosestEnemy();
-        // If a valid target exists but attackTarget has not yet been assigned, lock onto this target
-        if (target && target.GetComponent<RTSUnit>() && !attackTarget)
-        {
-            if (insertFirst)
-                TryInterruptAttack(target);
-            else
-                TryAttack(target);
-        }
-        return target;
-    }
-
     private void OnTriggerEnter(Collider col)
     {
         string compareTag = gameObject.tag == "Enemy" ? "Friendly" : "Enemy";
         // Layer 11 is "Inner Trigger" layer, by its nature, a child of "Unit" layer
-
-        // @TODO: also fog-of-war layer is conflicting with bumping
         if (col.isTrigger && col.gameObject.layer == 11 && col.gameObject.GetComponentInParent<RTSUnit>())
             HandleBumping(col.gameObject.GetComponentInParent<RTSUnit>()); // If collided object is in the "Inner Trigger" layer, we can pretty safely assume it's parent must be an RTSUnit
         // Layer 9 is "Unit" layer
-        else if (col.gameObject.tag == compareTag && col.gameObject.layer == 9 && !col.isTrigger)
+        else if (col.gameObject.tag == compareTag && col.gameObject.layer == 9 && !col.isTrigger && canAttack)
         {
             // Set a callback function to go off when the enemy unit dies to remove it from enemiesInSight
-            col.gameObject.GetComponent<RTSUnit>().OnDie((enemy) => { enemiesInSight.Remove(enemy); });
-            enemiesInSight.Add(col.gameObject);
+            col.gameObject.GetComponent<RTSUnit>().OnDie((enemy) => { _AttackBehavior.enemiesInSight.Remove(enemy); });
+            _AttackBehavior.enemiesInSight.Add(col.gameObject);
         }
         // Layer 15 is "Fog of War" mask layer
         else if (col.gameObject.tag == compareTag && col.gameObject.layer == 15)
@@ -420,8 +323,8 @@ public class RTSUnit : MonoBehaviour
     private void OnTriggerExit(Collider col)
     {
         string compareTag = gameObject.tag == "Enemy" ? "Friendly" : "Enemy";
-        if (col.gameObject.tag == compareTag && col.gameObject.layer == 9 && !col.isTrigger)
-            enemiesInSight.Remove(col.gameObject);
+        if (col.gameObject.tag == compareTag && col.gameObject.layer == 9 && !col.isTrigger && canAttack)
+            _AttackBehavior.enemiesInSight.Remove(col.gameObject);
         else if (col.gameObject.tag == compareTag && col.gameObject.layer == 15)
             whoCanSeeMe.Remove(col.transform.parent.gameObject);
     }
@@ -429,30 +332,6 @@ public class RTSUnit : MonoBehaviour
     public void OnDie(DieCallback callback)
     {
         dieCallback = callback;
-    }
-
-    protected GameObject FindClosestEnemy()
-    {
-        GameObject closest = null;
-        float distance = Mathf.Infinity;
-        Vector3 position = transform.position;
-        if (enemiesInSight.Count > 0)
-        {
-            // @TODO: need to handle intangibles too, i.e. item.GetCompontent<IngangibleUnitBase<T??>() ? isIntangible
-            // @TODO: this is also not efficient to be calling all the time. Need better way to remove nulls/dead
-            enemiesInSight = enemiesInSight.Where(item => item != null && !item.GetComponent<RTSUnit>().isDead).ToList();
-        }
-        foreach (GameObject go in enemiesInSight)
-        {
-            Vector3 diff = go.transform.position - position;
-            float curDistance = diff.sqrMagnitude;
-            if (curDistance < distance)
-            {
-                closest = go;
-                distance = curDistance;
-            }
-        }
-        return closest;
     }
 
     protected void DebugNavPath()
@@ -464,14 +343,20 @@ public class RTSUnit : MonoBehaviour
         }
     }
 
-    public void SetMove(Vector3 position, bool addToQueue = false)
+    public void SetMove(Vector3 position, bool addToQueue = false, bool attackMove = false)
     {
         // If not holding shift on this move, clear the moveto queue and make this position first in queue
         if (!addToQueue)
             commandQueue.Clear();
-        commandQueue.Enqueue(new CommandQueueItem { commandType = CommandTypes.Move, commandPoint = position });
+        commandQueue.Enqueue(new CommandQueueItem
+        {
+            commandType = CommandTypes.Move,
+            commandPoint = position,
+            isAttackMove = attackMove
+        });
         isParking = false;
-        ClearAttack();
+        if (canAttack)
+            _AttackBehavior.ClearAttack();
         TryToggleToAgent();
     }
 
@@ -542,55 +427,6 @@ public class RTSUnit : MonoBehaviour
         }
     }
 
-    public void TryAttack(GameObject target, bool addToQueue = false)
-    {
-        if (canAttack)
-        {
-            SetAttackVars(target);
-            // Add to queue 
-            if (!addToQueue)
-                commandQueue.Clear();
-            commandQueue.Enqueue(new CommandQueueItem
-            {
-                commandType = CommandTypes.Attack,
-                commandPoint = attackTarget.transform.position,
-                attackInfo = new AttackInfo { attackTarget = attackTarget }
-            });
-        }
-    }
-
-    public void TryInterruptAttack(GameObject target)
-    {
-        if (canAttack)
-        {
-            SetAttackVars(target);
-            // Push priority command, shifting existing to the right
-            commandQueue.InsertFirst(new CommandQueueItem
-            {
-                commandType = CommandTypes.Attack,
-                commandPoint = attackTarget.transform.position,
-                attackInfo = new AttackInfo { attackTarget = attackTarget }
-            });
-        }
-    }
-
-    private void SetAttackVars(GameObject target)
-    {
-        // Debug.Log(gameObject.name + " trying attack on " + target.name);
-        attackTarget = target;
-        engagingTarget = true;
-        isMovingToAttack = true;
-        TryToggleToAgent();
-    }
-
-    public void ClearAttack()
-    {
-        nextAttackReady = false;
-        isAttacking = false;
-        engagingTarget = false;
-        attackTarget = null;
-    }
-
     public void PlusHealth(int amount)
     {
         health += amount;
@@ -614,7 +450,8 @@ public class RTSUnit : MonoBehaviour
     protected void HandleDie()
     {
         isDead = true;
-        ClearAttack();
+        if (canAttack)
+            _AttackBehavior.ClearAttack();
 
         if (_Agent)
             _Agent.enabled = false;
@@ -673,7 +510,7 @@ public class RTSUnit : MonoBehaviour
 
     public bool IsAttacking()
     {
-        return canAttack && isAttacking;
+        return canAttack && _AttackBehavior.isAttacking;
     }
 
     public bool IsInRangeOf(Vector3 pos)

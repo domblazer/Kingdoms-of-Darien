@@ -151,10 +151,18 @@ public class Player : MonoBehaviour
             }
         }
 
-        if (selectedUnits.Count == 0 && !InputManager.IsMouseOverUI())
-            CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Normal);
+        if (selectedUnits.Count == 0)
+        {
+            UIManager.BattleMenuInstance.Toggle(false);
+            if (!InputManager.IsMouseOverUI())
+                CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Normal);
+        }
         else if (selectedUnits.Count > 0)
+        {
             CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Move);
+            // @TODO: battle menu needs to look at this set of selectedUnits and find the common abilities
+            UIManager.BattleMenuInstance.Set(true, true, true, null);
+        }
     }
 
     // Select units under square
@@ -182,13 +190,13 @@ public class Player : MonoBehaviour
     private void HandleMoveCommand(RaycastHit hit)
     {
         // Here is where units should be told to move
-        // bool doAttackMove = InputManager.HoldingCtrl();
+        bool doAttackMove = InputManager.HoldingCtrl();
         bool addToMoveQueue = InputManager.HoldingShift();
 
         // Handle group movement
         if (selectedUnits.Count > 1)
         {
-            Clusters.MoveGroup(selectedUnits, hit.point, addToMoveQueue);
+            Clusters.MoveGroup(selectedUnits, hit.point, addToMoveQueue, doAttackMove);
         }
         else if (selectedUnits.Count == 1)
         {
@@ -197,7 +205,7 @@ public class Player : MonoBehaviour
             // @TODO: this isn't always just SetMove, e.g. for Builder, if activeGhost is placed, that's a QueueBuild command on that guy
             // So need a better way to handle such exceptions, where commands are being queued outside the main player script here
             if (!(currentActiveBuilder && currentActiveBuilder.IsBuilder() && (currentActiveBuilder as Builder).activeFloatingGhost))
-                unit.SetMove(hit.point, addToMoveQueue);
+                unit.SetMove(hit.point, addToMoveQueue, doAttackMove);
             unit.AudioManager.PlayMoveSound();
         }
         // TODO: conflict with unit.PlayMoveSound()?
@@ -248,7 +256,8 @@ public class Player : MonoBehaviour
             {
                 // If we clicked an Enemy unit while at least one canAttack unit is selected, tell those/that unit to attack
                 foreach (BaseUnit unit in selectedUnits)
-                    unit.TryAttack(hit.collider.gameObject);
+                    if (unit.canAttack)
+                        unit._AttackBehavior.TryAttack(hit.collider.gameObject);
             }
         }
     }
@@ -262,7 +271,11 @@ public class Player : MonoBehaviour
     {
         Debug.Log("Issue bespoke stop command to selected units");
         foreach (BaseUnit unit in selectedUnits)
+        {
             unit.commandQueue.Clear();
+            if (unit.canAttack)
+                unit._AttackBehavior.ClearAttack();
+        }
     }
 
     public void ClearAll()

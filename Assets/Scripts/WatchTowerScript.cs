@@ -30,16 +30,16 @@ public class WatchTowerScript : MonoBehaviour
     {
         if (_BaseUnit.IsAttacking())
         {
-            ArcherLookAt(archerOne, _BaseUnit.attackTarget);
-            ArcherLookAt(archerTwo, _BaseUnit.attackTarget);
+            ArcherLookAt(archerOne, _BaseUnit._AttackBehavior.attackTarget);
+            ArcherLookAt(archerTwo, _BaseUnit._AttackBehavior.attackTarget);
         }
-        if (_BaseUnit.IsAttacking() && _BaseUnit.nextAttackReady)
+        if (_BaseUnit.IsAttacking() && _BaseUnit._AttackBehavior.nextAttackReady)
         {
-            ArcherLookAt(archerOne, _BaseUnit.attackTarget);
-            ArcherLookAt(archerTwo, _BaseUnit.attackTarget);
+            ArcherLookAt(archerOne, _BaseUnit._AttackBehavior.attackTarget);
+            ArcherLookAt(archerTwo, _BaseUnit._AttackBehavior.attackTarget);
             archerOneAnimator.SetTrigger("attack_1");
             Debug.Log("Watch Tower archer 1 triggered");
-            StartCoroutine(Shoot(_BaseUnit.attackTarget, launchPointOne));
+            StartCoroutine(Shoot(_BaseUnit._AttackBehavior.attackTarget, launchPointOne));
             StartCoroutine(TriggerSecond());
         }
         // @TODO: if baseUnit.nextAttackReady, archerOne.animator.setTrigger("attack_01") & [set delay, then] archerTwo.animator.setTrigger(...)
@@ -52,7 +52,7 @@ public class WatchTowerScript : MonoBehaviour
         yield return new WaitForSeconds(0.25f);
         archerTwoAnimator.SetTrigger("attack_1");
         Debug.Log("Watch Tower archer 2 triggered");
-        StartCoroutine(Shoot(_BaseUnit.attackTarget, launchPointTwo));
+        StartCoroutine(Shoot(_BaseUnit._AttackBehavior.attackTarget, launchPointTwo));
     }
 
     IEnumerator Shoot(GameObject target, Transform launchPoint)
@@ -64,7 +64,8 @@ public class WatchTowerScript : MonoBehaviour
         Vector3 adjustedTargetPos = new Vector3(target.transform.position.x, target.transform.position.y + 2, target.transform.position.z);
 
         Rigidbody projectile = Instantiate(projectilePrefab, launchPoint.position, launchPoint.rotation) as Rigidbody;
-        projectile.GetComponent<ProjectileScript>().SetDamage(_BaseUnit.weaponDamage);
+        projectile.GetComponent<ProjectileScript>().SetWhoFired(_BaseUnit);
+        projectile.GetComponent<ProjectileScript>().SetDamage(_BaseUnit._AttackBehavior.activeWeapon.weaponDamage);
         projectile.velocity = (adjustedTargetPos - launchPoint.position).normalized * projectileVelocity;
 
         // If sounds should be played on launch, not at start of attack

@@ -6561,11 +6561,12 @@ GameObject:
   - component: {fileID: 7162712932485172810}
   - component: {fileID: 7162712932485172809}
   - component: {fileID: 7162712932485172811}
+  - component: {fileID: 2611486414824067069}
   - component: {fileID: 7162712932485172821}
-  - component: {fileID: 7162712932485172820}
-  - component: {fileID: 8325120277223378903}
-  - component: {fileID: 1196372270}
   - component: {fileID: 7217988122251717979}
+  - component: {fileID: 8325120277223378903}
+  - component: {fileID: 7162712932485172820}
+  - component: {fileID: 1196372270}
   m_Layer: 9
   m_Name: executioner
   m_TagString: Enemy
@@ -6657,7 +6658,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fe4f67068f9b6c4d8244f5807a36993, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  faction: 0
+  faction: 1
   playerNumber: 2
   unitType: 17
   unitIcon: {fileID: 21300000, guid: 356939765b11dd24d8506ec4faddc57a, type: 3}
@@ -6673,19 +6674,37 @@ MonoBehaviour:
   isKinematic: 1
   isBuilder: 0
   canAttack: 1
-  attackRate: 2
-  attackRange: 1
-  weaponDamage: 420
   phaseDie: 0
-  isMeleeAttacker: 1
-  meleeWeapons:
-  - {fileID: 7162712932485172817}
-  isAttacking: 0
-  attackTarget: {fileID: 0}
   bloodSystem: {fileID: 7162712931574828126}
-  activeWeaponIndex: 0
   patrolRange: 25
   startState: 0
+--- !u!114 &2611486414824067069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8045250445228978974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 632c9caf7de6afa4fb2fddd933ce5641, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weapons:
+  - weaponType: 0
+    weaponDamage: 420
+    weaponRange: 1
+    weaponReloadRate: 2
+    weaponSoundClass: 1
+    specialAttack: 0
+    specialAttackIcon: {fileID: 0}
+    specialAttackName: 
+    meleeWeapons:
+    - {fileID: 7162712932485172817}
+  activeWeaponIndex: 0
+  isAttacking: 0
+  attackTarget: {fileID: 0}
+  enemiesInSight: []
 --- !u!114 &7162712932485172821
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6698,28 +6717,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b7e209551963094fa1e58d5f2ad9185, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!195 &7162712932485172820
-NavMeshAgent:
+--- !u!114 &7217988122251717979
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8045250445228978974}
   m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 1.4
-  m_Speed: 1.15
-  m_Acceleration: 8
-  avoidancePriority: 55
-  m_AngularSpeed: 120
-  m_StoppingDistance: 0.1
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
-  m_AutoRepath: 1
-  m_Height: 2
-  m_BaseOffset: 0
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 3
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69a232441f881fd4a9c3a577868aa4a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackSounds: []
+  dieSound: {fileID: 8300000, guid: 7aa8dfa329538804cb0b170e36a1963a, type: 3}
+  moveSound: {fileID: 8300000, guid: 9d575c622f6659b419dfa122716d78cb, type: 3}
+  selectSound: {fileID: 8300000, guid: a2dfd2738ed8c9741b118c4c1c390f88, type: 3}
+  unitPlaysAttackSounds: 1
 --- !u!82 &8325120277223378903
 AudioSource:
   m_ObjectHideFlags: 0
@@ -6743,7 +6757,7 @@ AudioSource:
   MinDistance: 2
   MaxDistance: 100
   Pan2D: 0
-  rolloffMode: 1
+  rolloffMode: 0
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -6776,7 +6790,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.5
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -6816,6 +6830,28 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!195 &7162712932485172820
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8045250445228978974}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 1.4
+  m_Speed: 1.15
+  m_Acceleration: 8
+  avoidancePriority: 55
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0.1
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 0
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 3
 --- !u!208 &1196372270
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -6832,25 +6868,6 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 2.87, z: 0}
   m_TimeToStationary: 0.5
---- !u!114 &7217988122251717979
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8045250445228978974}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 69a232441f881fd4a9c3a577868aa4a9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weaponSoundHitClasses: 01000000
-  attackSounds: []
-  hitSounds: []
-  dieSound: {fileID: 0}
-  moveSound: {fileID: 0}
-  selectSound: {fileID: 0}
-  unitPlaysAttackSounds: 1
 --- !u!1 &8178076669230634209
 GameObject:
   m_ObjectHideFlags: 0
