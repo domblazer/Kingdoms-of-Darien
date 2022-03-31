@@ -33,14 +33,14 @@ public class BuilderAI : UnitBuilderAI
         if (nextQueueReady && !isInRoamInterval)
         {
             ConjurerArgs buildArgs = baseUnit.currentCommand.conjurerArgs;
+            // Calculate the intangible's offset once every new queue. @Note. can't ref IntangibleUnitBase b/c it hasn't been instantiated
+            if (nextIntangibleOffset == Vector3.zero)
+                nextIntangibleOffset = CalculateIntangibleOffset(buildArgs.prefab);
             // If build unit is lodestone, FindBuildSpot will pick nearest sacred site
             bool isLodestone = buildArgs.unitCategory == UnitCategories.LodestoneTier1 || buildArgs.unitCategory == UnitCategories.LodestoneTier2;
             // Vector3.zero means buildSpot is "null"
             if (buildArgs.buildSpot == Vector3.zero)
                 buildArgs.buildSpot = FindBuildSpot(transform.position, isLodestone);
-            // Calculate the intangible's offset once every new queue
-            if (nextIntangibleOffset == Vector3.zero)
-                nextIntangibleOffset = CalculateIntangibleOffset(buildArgs.prefab);
             // @TODO: calculate mix of x and y offset
             if (!baseUnit.IsInRangeOf(buildArgs.buildSpot, nextIntangibleOffset.x))
                 baseUnit.MoveToPosition(buildArgs.buildSpot);
@@ -71,32 +71,23 @@ public class BuilderAI : UnitBuilderAI
         InstantiateNextIntangible(buildArgs.prefab, buildArgs.buildSpot);
     }
 
-    public class SacredStoneDetails
-    {
-        public GameObject sacredStone;
-        public float distance;
-    }
     // Return the closest SacredSite position
     public Vector3 FindClosestSacredSite()
     {
         // @TODO: all sacred sites should be found and compiled at beginning of game, maybe in gamemanager?
         GameObject[] sacredStones = GameObject.FindGameObjectsWithTag("SacredSite");
-        List<SacredStoneDetails> sacredStoneDetailsList = new List<SacredStoneDetails>();
+        float closestDistance = Mathf.Infinity;
+        GameObject closestStone = null;
         foreach (GameObject stone in sacredStones)
         {
-            // @TODO: better way to do this, also limit range so not every site is checked every time
-
-            sacredStoneDetailsList.Add(new SacredStoneDetails
+            float distance = (transform.position - stone.transform.position).sqrMagnitude;
+            if (distance < closestDistance)
             {
-                sacredStone = stone,
-                distance = (transform.position - stone.transform.position).sqrMagnitude
-            });
+                closestDistance = distance;
+                closestStone = stone;
+            }
         }
-        sacredStoneDetailsList.Sort(delegate (SacredStoneDetails x, SacredStoneDetails y)
-        {
-            return x.distance > y.distance ? 1 : -1;
-        });
-        Vector3 p = sacredStoneDetailsList[0].sacredStone.transform.position;
+        Vector3 p = closestStone.transform.position;
         Vector3 pos = new Vector3(p.x, p.y + 0.1f, p.z);
         return pos;
     }
@@ -111,8 +102,8 @@ public class BuilderAI : UnitBuilderAI
         //      @TODO: box cannot also cover more invalid surface area than not, i.e. if more than half the structure 
         //      is going to sit in an invalid area, the build spot is not valid
         // 4. @TODO: an improvement that could be made is also not testing points around the failed areas again
-        
-        return forLodestone ? FindClosestSacredSite() : (baseUnit as BaseUnitAI).GenerateValidRandomPoint(origin, searchBuildRange);
+        return forLodestone ? FindClosestSacredSite() :
+            (baseUnit as BaseUnitAI).GenerateValidBuildPoint(origin, searchBuildRange, nextIntangibleOffset);
     }
 
     private void InstantiateNextIntangible(GameObject itg, Vector3 spawnPoint)

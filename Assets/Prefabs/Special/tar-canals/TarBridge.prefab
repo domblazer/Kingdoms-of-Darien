@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 867659818859319549}
   - component: {fileID: 3165603154216461367}
   - component: {fileID: 872003574752069980}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: TarBridge
   m_TagString: Untagged
   m_Icon: {fileID: 0}

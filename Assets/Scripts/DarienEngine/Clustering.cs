@@ -22,9 +22,14 @@ namespace DarienEngine.Clustering
 
     public static class Clusters
     {
-        public static void MoveGroup(List<RTSUnit> selectedUnits, Vector3 hitPoint, bool addToMoveQueue = false, bool doAttackMove = false)
+        public class MoveGroupInfo
         {
-            UnitClusterMoveInfo clusterMoveInfo = CalculateSmartCenter(selectedUnits);
+            public float radius;
+            public Dictionary<RTSUnit, Vector3> unitMovePositions;
+        }
+        public static MoveGroupInfo MoveGroup(List<RTSUnit> selectedUnits, Vector3 hitPoint, bool addToMoveQueue = false, bool doAttackMove = false)
+        {
+            // UnitClusterMoveInfo clusterMoveInfo = CalculateSmartCenter(selectedUnits);
 
             float radius = selectedUnits[0].offset.x;
             float deg360 = 0;
@@ -83,14 +88,19 @@ namespace DarienEngine.Clustering
                 //    unit.SetMove(moveTo, addToMoveQueue);
             }
 
+            MoveGroupInfo moveGroupInfo = new MoveGroupInfo { radius = radius, unitMovePositions = new Dictionary<RTSUnit, Vector3>() };
             foreach (RTSUnit unit in selectedUnits)
             {
                 Vector3 moveTo = FindClosestPosition(unit, positions);
                 // Once this moveTo has been picked, it should not be considered again
                 positions.Remove(moveTo);
+                moveGroupInfo.unitMovePositions.Add(unit, moveTo);
+                // @TODO: need to do TestPoint() on these positions so no units get told to move to invalid locations
                 if (unit && unit.isKinematic)
                     unit.SetMove(moveTo, addToMoveQueue, doAttackMove);
             }
+
+            return moveGroupInfo;
         }
 
         private static Vector3 FindClosestPosition(RTSUnit unit, List<Vector3> positions)
@@ -164,7 +174,7 @@ namespace DarienEngine.Clustering
             // Init clusters
             List<ClusterInfo> clusters = new List<ClusterInfo>();
             for (int i = 0; i < numClusters; i++)
-                clusters[i] = new ClusterInfo();
+                clusters.Add(new ClusterInfo());
             // Assign each unit to a cluster at random
             foreach (RTSUnit unit in units)
                 clusters[Random.Range(0, numClusters)].units.Add(unit);
@@ -198,7 +208,7 @@ namespace DarienEngine.Clustering
             // New clusters to represent proposed changes
             List<ClusterInfo> newClusters = new List<ClusterInfo>();
             for (int i = 0; i < clusters.Count; i++)
-                newClusters[i] = new ClusterInfo();
+                newClusters.Add(new ClusterInfo());
 
             bool changed = false;
             float[] distances = new float[clusters.Count];

@@ -6674,9 +6674,12 @@ MonoBehaviour:
   isKinematic: 1
   isBuilder: 0
   canAttack: 1
+  canStop: 1
+  canGuard: 0
+  canPatrol: 0
   phaseDie: 0
   bloodSystem: {fileID: 7162712931574828126}
-  patrolRange: 25
+  patrolRange: 15
   startState: 0
 --- !u!114 &2611486414824067069
 MonoBehaviour:

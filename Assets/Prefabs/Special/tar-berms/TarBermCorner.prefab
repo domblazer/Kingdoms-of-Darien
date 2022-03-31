@@ -13,12 +13,12 @@ GameObject:
   - component: {fileID: 8871126122155273408}
   - component: {fileID: 7844434464167139628}
   - component: {fileID: 7844434464167139631}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: TarBermCorner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &7734860790164821935
 Transform:

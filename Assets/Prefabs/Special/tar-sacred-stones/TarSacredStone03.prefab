@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4244145550708948401}
   - component: {fileID: 2014908756804878267}
   - component: {fileID: 8043132565852815962}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: TarSacredStone03
   m_TagString: SacredSite
   m_Icon: {fileID: 0}

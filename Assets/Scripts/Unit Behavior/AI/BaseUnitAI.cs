@@ -89,11 +89,10 @@ public class BaseUnitAI : RTSUnit
                 switch (currentCommand.commandType)
                 {
                     case CommandTypes.Move:
-                        // just handle move behaviour
-                        HandleMovement();
                         // Auto-pick attack targets by default while moving
-                        if (canAttack)
+                        if (canAttack && currentCommand.isAttackMove)
                             _AttackBehavior.AutoPickAttackTarget(true);
+                        HandleMovement();
                         break;
                     case CommandTypes.Attack:
                         // handle engaging target (moveTo target) and attacking behaviour
@@ -146,73 +145,103 @@ public class BaseUnitAI : RTSUnit
         return patrolPoints;
     }
 
-    // Find a random world point for unit to move to
+    // Find a random, valid world point for unit to move to
     public Vector3 GenerateValidRandomPoint(Vector3 origin, float range)
     {
-        Vector3 radius = Random.insideUnitSphere;
-        Vector3 validPoint = (origin + (radius * range));
-        validPoint.y = origin.y;
-        int testLimit = 5;
+        Vector3 validPoint = GenerateRandomPoint(origin, range);
+        // @TODO: testLimit may result in a bad point being used, 
+        // @TODO: if unit gets stuck, maybe should cancel current routine and try again later?
+        int testLimit = 25;
         int currentTest = 0;
-        TestPointInfo info;
         // Keep trying points until TestPoint() returns true
-        while (!(info = TestPoint(validPoint)).valid && currentTest < testLimit)
+        while (!TestPoint(validPoint) && currentTest < testLimit)
         {
-            // Debug.Log(info.message);
-            radius = Random.insideUnitSphere;
-            validPoint = (origin + (radius * range));
-            validPoint.y = origin.y;
+            validPoint = GenerateRandomPoint(origin, range);
             currentTest++;
         }
-        validPoint.y = origin.y;
+        validPoint.y = origin.y; // @TODO: terrain height issue
         return validPoint;
     }
 
-    private class TestPointInfo
+    // @TODO: Build points should probably do better than picking randomly, maybe introduce some math
+    public Vector3 GenerateValidBuildPoint(Vector3 origin, float range, Vector3 boxExtends)
     {
-        public bool valid = false;
-        public string message = "N/A";
+        Vector3 validPoint = GenerateRandomPoint(origin, range);
+        // @TODO: testLimit may result in a bad point being used, 
+        // @TODO: if unit gets stuck, maybe should cancel current routine and try again later?
+        int testLimit = 50;
+        int currentTest = 0;
+        // Keep trying points until TestPoint() returns true
+        while (!TestBuildPoint(validPoint, boxExtends) && currentTest < testLimit)
+        {
+            validPoint = GenerateRandomPoint(origin, range);
+            currentTest++;
+        }
+        validPoint.y = origin.y; // @TODO: terrain height issue
+        return validPoint;
     }
+
+    // Randomly generate a world point within range of origin
+    public Vector3 GenerateRandomPoint(Vector3 origin, float range)
+    {
+        Vector3 radius = Random.insideUnitSphere;
+        Vector3 point = (origin + (radius * range));
+        // @TODO: introducing different terrain height levels will complicate this. Will need to raycast to world to get exact y value
+        point.y = origin.y;
+        return point;
+    }
+
     // Test a world point to see if it is a valid point to move to
-    private TestPointInfo TestPoint(Vector3 point)
+    private bool TestPoint(Vector3 point)
+    {
+        return TestNavMeshPoint(point)
+            && TestPointCollision(point)
+            && GameManager.Instance.mapInfo.PointInsideBounds(point.x, point.z);
+    }
+
+    // Test a world point to see if it is valid for a factory
+    private bool TestBuildPoint(Vector3 point, Vector3 boxExtends)
+    {
+        bool one = TestNavMeshPoint(point);
+        bool two = TestPointCollision(point, boxExtends);
+        bool three = GameManager.Instance.mapInfo.PointInsideBounds(point.x, point.z);
+        // Debug.Log("TestBuildPoint results: (" + point + "):\nNavMeshPointValid: " + one + "\nPointCollisionValid: " + two + "\nPointInsideMapBounds: " + three);
+        return one
+            && two
+            && three;
+    }
+
+    // Check if a point is on the NavMesh and has reasonable distance disparity
+    public bool TestNavMeshPoint(Vector3 point)
     {
         bool navMeshValid = false;
-        bool pointCollisionValid = true;
-        string errorReasons = "Test point results: ";
-
-        // @TODO: PRIORITY: outside map bounds is also invalid
-
         NavMeshHit navMeshHit;
         // NavMesh check point is on "Built-in-0": "Walkable" area
         if (NavMesh.SamplePosition(point, out navMeshHit, 1f, NavMesh.AllAreas))
         {
-            // @TODO: for builder, maybe test four corners around point based on unit offset values?
-
-            // If nav distance is much larger than distance between points, not a good point
-            bool distanceDisparity = navMeshHit.distance > (transform.position - point).sqrMagnitude * 5;
-            // If point is outside the map boundary, bad point
-            bool insideMapBounds = GameManager.Instance.mapInfo.PointInsideBounds(point.x, point.z);
-            if (!distanceDisparity && insideMapBounds)
+            NavMeshPath path = new NavMeshPath();
+            _Agent.CalculatePath(navMeshHit.position, path);
+            if (path.status == NavMeshPathStatus.PathComplete)
                 navMeshValid = true;
+            // @TODO: test distanceDisparity: if path distance is much larger than distance between points
+            // bool distanceDisparity = (navMeshHit.distance * navMeshHit.distance) > (transform.position - point).sqrMagnitude;
         }
-        else
-            errorReasons += "(Error: NavMesh)";
+        return navMeshValid;
+    }
 
-        // Layer 9 is unit layer, so check this point is not occupied already by another unit
-        int layerMask = 1 << 9;
-        Collider[] hitColliders = Physics.OverlapSphere(point, 1.5f, layerMask);
-        if (hitColliders.Length > 0)
-        {
-            errorReasons += "(Error: PointCollision)";
-            // errorReasons += "(Error: " + gameObject.name + " PointCollision: " + string.Join<Collider>(", ", hitColliders) + ")";
-            pointCollisionValid = false;
-        }
+    // Test a small radius around point for collisions with Unit layer
+    public bool TestPointCollision(Vector3 point)
+    {
+        // @TODO: leaving out Obstacle layer check b/c units should be able to move onto berms, for example
+        return Physics.OverlapSphere(point, 1.5f, (1 << 9)).Length == 0;
+    }
 
-        return new TestPointInfo
-        {
-            valid = navMeshValid && pointCollisionValid,
-            message = errorReasons
-        };
+    // Test a box area around point for collisions with Unit or Obstacle layers
+    public bool TestPointCollision(Vector3 point, Vector3 boxExtends)
+    {
+        Collider[] cols = Physics.OverlapBox(point, boxExtends / 2, Quaternion.identity, (1 << 7) | (1 << 9));
+        // Debug.Log("TestPointCollision: cols: " + string.Join<Collider>(", ", cols.ToArray()));
+        return cols.Length == 0;
     }
 
     void UpdateFogOfWar()

@@ -25,16 +25,15 @@ public class GameManager : MonoBehaviour
     public int unitLimit = 500;
     public bool enableFogOfWar = true;
     public GameObject fogOfWarPlane;
+    public Vector2 mapSize = new Vector2(90, 80);
+    public Vector2 mapCenter = new Vector2(500, 500);
 
-    [System.Serializable]
     public class MapInfo
     {
-        public Vector2 mapSize = new Vector2(90, 80);
-        public Vector2 mapCenter = new Vector2(500, 500);
-        private Rect bounds;
-        public MapInfo()
+        public Rect bounds;
+        public MapInfo(Vector2 mapSize, Vector2 mapCenter)
         {
-            bounds = new Rect(mapCenter.x + mapSize.x / 2, mapCenter.y + mapSize.y / 2, mapSize.x, mapSize.y);
+            bounds = new Rect(mapCenter.x - mapSize.x / 2, mapCenter.y - mapSize.y / 2, mapSize.x, mapSize.y);
         }
 
         public bool PointInsideBounds(float x, float y)
@@ -42,7 +41,7 @@ public class GameManager : MonoBehaviour
             return bounds.Contains(new Vector2(x, y));
         }
     }
-    public MapInfo mapInfo;
+    public MapInfo mapInfo { get; set; }
 
     public GameObject moveCommandSticker;
     public GameObject guardCommandSticker;
@@ -68,6 +67,9 @@ public class GameManager : MonoBehaviour
 
         // Set initial fog-of-war plane value. BaseUnitAIs will also use this value on start
         fogOfWarPlane.SetActive(enableFogOfWar);
+
+        // Establish map bounds
+        mapInfo = new MapInfo(mapSize, mapCenter);
     }
 
     private void InitAllPlayers(PlayerConfig[] playerConfigs)
@@ -185,4 +187,24 @@ public class GameManager : MonoBehaviour
         if (obj != null)
             Destroy(obj);
     }
+
+    /* void OnDrawGizmos()
+    {
+        // Green
+        Gizmos.color = new Color(0.0f, 1.0f, 0.0f);
+        DrawRect(mapInfo.bounds);
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        // Orange
+        Gizmos.color = new Color(1.0f, 0.5f, 0.0f);
+        DrawRect(mapInfo.bounds);
+    }
+
+    void DrawRect(Rect rect)
+    {
+        Debug.Log("draw bounds: " + rect);
+        Gizmos.DrawWireCube(new Vector3(rect.center.x, 0.01f, rect.center.y), new Vector3(rect.size.x, 0.01f, rect.size.y));
+    } */
 }

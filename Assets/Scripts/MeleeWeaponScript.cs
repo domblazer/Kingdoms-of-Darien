@@ -38,7 +38,7 @@ public class MeleeWeaponScript : MonoBehaviour
                 // @TODO: friendly fire
                 if (col.gameObject.GetComponent<RTSUnit>())
                 {
-                    Debug.Log("I, " + _BaseUnit.unitName + ", meleed " + col.gameObject.name);
+                    // Debug.Log("I, " + _BaseUnit.unitName + ", meleed " + col.gameObject.name);
                     col.gameObject.GetComponent<RTSUnit>().ReceiveDamage(damage);
                 }
                 else

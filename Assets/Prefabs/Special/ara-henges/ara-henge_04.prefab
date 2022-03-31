@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7971870386142864575}
   - component: {fileID: 4904376855971923257}
   - component: {fileID: 7644043018133259257}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: ara-henge_04
   m_TagString: Untagged
   m_Icon: {fileID: 0}

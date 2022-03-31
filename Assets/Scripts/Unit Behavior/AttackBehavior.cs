@@ -75,25 +75,37 @@ public class AttackBehavior : MonoBehaviour
         // Melee attackers use a portion of the attackTarget's collider (offset) size
         if (attackTarget)
             rangeOffset = activeWeapon.weaponType == Weapon.WeaponTypes.Melee ?
-                attackTarget.GetComponent<RTSUnit>().offset.x * 0.75f : activeWeapon.weaponRange;
+                attackTarget.GetComponent<RTSUnit>().offset.x : activeWeapon.weaponRange;
 
         // While locked on target but not in range, keep moving to attack position
-        if (attackTarget && !baseUnit.IsInRangeOf(attackTarget.transform.position, rangeOffset))
+        bool inRange = false;
+        if (attackTarget)
+            inRange = baseUnit.IsInRangeOf(attackTarget.transform.position, rangeOffset);
+        if (attackTarget && !inRange)
         {
             isMovingToAttack = true;
             isAttacking = false;
             baseUnit.TryToggleToAgent();
             // Move to attack target position 
             baseUnit.MoveToPosition(attackTarget.transform.position);
-            // @TODO: AI should attack the next target that gets too close or attacks it first
+            // If unit should change attack target to closest in range during move
             if (autoAttackInterrupt)
-                AutoPickAttackTarget(true);
+            {
+                GameObject target = FindClosestEnemy();
+                // Find the closest enemy that is not already the target
+                if (target && target != attackTarget)
+                {
+                    ClearAttack();
+                    TryAttack(target);
+                }
+                return;
+            }
         }
         // Once unit is in range, can stop moving
-        else if (isMovingToAttack && attackTarget && baseUnit.IsInRangeOf(attackTarget.transform.position, rangeOffset))
+        else if (isMovingToAttack && attackTarget && inRange)
         {
             baseUnit.MoveToPosition(transform.position);
-            baseUnit.TryToggleToObstacle();
+            // baseUnit.TryToggleToObstacle();
             isMovingToAttack = false;
         }
 
@@ -101,7 +113,7 @@ public class AttackBehavior : MonoBehaviour
         // @TODO: if isAttacking/taking damage and health is low, AI start a retreat, player units can be set to have an auto retreat or retreat button
 
         // Handle attacking behavior
-        if (isAttacking && attackTarget != null)
+        if (isAttacking && attackTarget)
         {
             // Kinematic units do facing; @Note: stationary attack units do their own facing routine (e.g. Stronghold)
             if (baseUnit.isKinematic && !baseUnit.IsMoving())
@@ -112,7 +124,7 @@ public class AttackBehavior : MonoBehaviour
             {
                 nextAttack = Time.time + activeWeapon.weaponReloadRate;
                 nextAttackReady = true;
-                // @TODO: Only Melee weapons play attack noise from here?
+                // @TODO: should this just be default?
                 if (baseUnit.AudioManager.unitPlaysAttackSounds)
                     baseUnit.AudioManager.PlayAttackSound();
             }
@@ -176,6 +188,7 @@ public class AttackBehavior : MonoBehaviour
 
     public void TryInterruptAttack(GameObject target)
     {
+        // Debug.Log(gameObject.name + " trying attack interrupt on " + target.name);
         SetAttackVars(target);
         // Push priority command, shifting existing to the right
         baseUnit.commandQueue.InsertFirst(new CommandQueueItem

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8957597613605571756}
   - component: {fileID: 6605426983239694438}
   - component: {fileID: 2267122128293270657}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: TarBerm
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 4452489633290786126}
   - component: {fileID: 4197586601910825640}
   - component: {fileID: 8601983522973998216}
-  - component: {fileID: 5134303537752913485}
   - component: {fileID: 5552206451833852627}
+  - component: {fileID: 5134303537752913485}
   m_Layer: 9
   m_Name: lodestone-intangible
   m_TagString: Friendly
@@ -118,6 +118,20 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!114 &5552206451833852627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3927626060536500212}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66f4410b0779ebc4b9f3e3a8f21c2ba4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  manaColor: {r: 255, g: 255, b: 0, a: 1}
+  finalUnitPrefab: {fileID: 7841047519195722230, guid: 2ded4e78ce15b4d409bacb763895632c, type: 3}
 --- !u!198 &5134303537752913485
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -4836,20 +4850,6 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
---- !u!114 &5552206451833852627
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3927626060536500212}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 66f4410b0779ebc4b9f3e3a8f21c2ba4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  manaColor: {r: 255, g: 255, b: 0, a: 1}
-  finalUnitPrefab: {fileID: 7841047519195722230, guid: 2ded4e78ce15b4d409bacb763895632c, type: 3}
 --- !u!1 &4197586601217915007
 GameObject:
   m_ObjectHideFlags: 0

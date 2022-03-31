@@ -75,25 +75,25 @@ public class RTSCamera : MonoBehaviour
             {
                 // RIGHT
                 if ((Input.mousePosition.x > screenWidth - Boundary || Input.GetKey(KeyCode.RightArrow))
-                    && transform.position.x < GameManager.Instance.mapInfo.mapCenter.x + GameManager.Instance.mapInfo.mapSize.x / 2)
+                    && transform.position.x < GameManager.Instance.mapCenter.x + GameManager.Instance.mapSize.x / 2)
                 {
                     transform.Translate(new Vector3(ScrollSpeed * Time.deltaTime, 0, 0));
                 }
                 // LEFT
                 if ((Input.mousePosition.x < 0 + Boundary || Input.GetKey(KeyCode.LeftArrow))
-                    && transform.position.x > GameManager.Instance.mapInfo.mapCenter.x - GameManager.Instance.mapInfo.mapSize.x / 2)
+                    && transform.position.x > GameManager.Instance.mapCenter.x - GameManager.Instance.mapSize.x / 2)
                 {
                     transform.Translate(new Vector3(-ScrollSpeed * Time.deltaTime, 0, 0));
                 }
                 // FORWARDS
                 if ((Input.mousePosition.y > screenHeight - Boundary || Input.GetKey(KeyCode.UpArrow))
-                    && transform.position.z < GameManager.Instance.mapInfo.mapCenter.y + GameManager.Instance.mapInfo.mapSize.y / 2)
+                    && transform.position.z < GameManager.Instance.mapCenter.y + GameManager.Instance.mapSize.y / 2)
                 {
                     transform.Translate(Vector3.forward * Time.deltaTime * ScrollSpeed, Space.World);
                 }
                 // BACKWARDS
                 if ((Input.mousePosition.y < 0 + Boundary || Input.GetKey(KeyCode.DownArrow))
-                    && transform.position.z > GameManager.Instance.mapInfo.mapCenter.y - GameManager.Instance.mapInfo.mapSize.y / 2)
+                    && transform.position.z > GameManager.Instance.mapCenter.y - GameManager.Instance.mapSize.y / 2)
                 {
                     transform.Translate(-Vector3.forward * Time.deltaTime * ScrollSpeed, Space.World);
                 }

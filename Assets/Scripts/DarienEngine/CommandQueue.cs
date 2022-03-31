@@ -7,17 +7,24 @@ namespace DarienEngine
 {
     public class CommandQueue : List<CommandQueueItem>
     {
+        public class CommandQueueChangedEventArgs
+        {
+            public string changeType;
+            public CommandQueueItem command;
+        }
+        public event EventHandler<CommandQueueChangedEventArgs> OnQueueChanged;
         public CommandQueueItem Last { get; private set; }
         public GameObject referrer;
         public bool isAI = false;
 
         public void Enqueue(CommandQueueItem item)
         {
-            item.OnCommandChanged += ItemChanged;
+            item.OnCommandItemChanged += ItemChanged;
             base.Add(item);
             Last = item;
             if (!isAI)
                 item.PlaceCommandSticker();
+            OnQueueChanged?.Invoke(this, new CommandQueueChangedEventArgs { changeType = "Enqueue", command = item });
         }
 
         public CommandQueueItem Dequeue()
@@ -30,6 +37,7 @@ namespace DarienEngine
                 if (!isAI)
                     dq.RemoveCommandSticker();
             }
+            OnQueueChanged?.Invoke(this, new CommandQueueChangedEventArgs { changeType = "Dequeue", command = dq });
             return dq;
         }
 
@@ -41,9 +49,10 @@ namespace DarienEngine
         public void InsertFirst(CommandQueueItem item)
         {
             base.Insert(0, item);
+            OnQueueChanged?.Invoke(this, new CommandQueueChangedEventArgs { changeType = "InsertFirst", command = item });
         }
 
-        public void ItemChanged(object sender, CommandQueueItem.CommandChangedEventArgs changeEvent)
+        public void ItemChanged(object sender, CommandQueueItem.CommandItemChangedEventArgs changeEvent)
         {
             if (changeEvent.changeType == "stickerClicked")
             {
@@ -71,15 +80,15 @@ namespace DarienEngine
 
     public class CommandQueueItem
     {
-        public class CommandChangedEventArgs
+        public class CommandItemChangedEventArgs
         {
             public CommandQueueItem command;
             public CommandTypes commandType;
             public string changeType = "";
         }
-        public event EventHandler<CommandChangedEventArgs> OnCommandChanged;
+        public event EventHandler<CommandItemChangedEventArgs> OnCommandItemChanged;
         public CommandTypes commandType;
-        public bool isAttackMove;
+        public bool isAttackMove = false;
         public Vector3 commandPoint;
         // type is Conjurer?: 
         public ConjurerArgs conjurerArgs;
@@ -104,7 +113,7 @@ namespace DarienEngine
 
         public void HandlePointClicked()
         {
-            OnCommandChanged?.Invoke(this, new CommandChangedEventArgs { commandType = commandType, changeType = "stickerClicked", command = this });
+            OnCommandItemChanged?.Invoke(this, new CommandItemChangedEventArgs { commandType = commandType, changeType = "stickerClicked", command = this });
         }
 
         public void RemoveCommandSticker()

@@ -257,7 +257,7 @@ public class Player : MonoBehaviour
                 // If we clicked an Enemy unit while at least one canAttack unit is selected, tell those/that unit to attack
                 foreach (BaseUnit unit in selectedUnits)
                     if (unit.canAttack)
-                        unit._AttackBehavior.TryAttack(hit.collider.gameObject);
+                        unit._AttackBehavior.TryAttack(hit.collider.gameObject, InputManager.HoldingShift());
             }
         }
     }

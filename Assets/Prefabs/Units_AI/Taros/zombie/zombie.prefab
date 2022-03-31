@@ -216,9 +216,12 @@ MonoBehaviour:
   isKinematic: 1
   isBuilder: 0
   canAttack: 1
+  canStop: 1
+  canGuard: 0
+  canPatrol: 0
   phaseDie: 0
   bloodSystem: {fileID: 738280606498455322}
-  patrolRange: 25
+  patrolRange: 18
   startState: 0
 --- !u!114 &4562358118496896794
 MonoBehaviour:
@@ -5781,7 +5784,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animationClipRange:
-    start: 0
+    start: 0.45
     end: 1
 --- !u!136 &1371476058889555912
 CapsuleCollider:
@@ -6058,7 +6061,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animationClipRange:
-    start: 0
+    start: 0.45
     end: 1
 --- !u!136 &2709367737193797060
 CapsuleCollider:

@@ -803,7 +803,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7236970854029219729}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 8.69}
+  m_LocalPosition: {x: 0, y: 0, z: 7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7197979101852834752}
@@ -941,6 +941,7 @@ MonoBehaviour:
   unitType: 3
   unitIcon: {fileID: 21300000, guid: 2c1403fa677d57e4da331625c5daba7d, type: 3}
   unitName: Cabal
+  bodyType: 0
   maxHealth: 16558
   healthRechargeRate: 3
   baseMana: 0
@@ -951,14 +952,10 @@ MonoBehaviour:
   isKinematic: 0
   isBuilder: 1
   canAttack: 0
-  attackRate: 0
-  attackRange: 0
-  weaponDamage: 0
+  canStop: 1
+  canGuard: 0
+  canPatrol: 0
   phaseDie: 0
-  isMeleeAttacker: 0
-  meleeWeapons: []
-  isAttacking: 0
-  attackTarget: {fileID: 0}
   bloodSystem: {fileID: 0}
   patrolRange: 25
   startState: 0
@@ -1104,7 +1101,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackSounds: []
-  hitSounds: []
   dieSound: {fileID: 0}
   moveSound: {fileID: 0}
   selectSound: {fileID: 0}

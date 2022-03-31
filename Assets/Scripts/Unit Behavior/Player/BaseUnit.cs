@@ -69,9 +69,9 @@ public class BaseUnit : RTSUnit
                 switch (currentCommand.commandType)
                 {
                     case CommandTypes.Move:
-                        HandleMovement();
                         if (canAttack && currentCommand.isAttackMove)
                             _AttackBehavior.AutoPickAttackTarget();
+                        HandleMovement();
                         break;
                     case CommandTypes.Attack:
                         // handle engaging target (moveTo target) and attacking behaviour
@@ -102,7 +102,7 @@ public class BaseUnit : RTSUnit
             {
                 // No commands, idle
                 state = States.Standby;
-                TryToggleToObstacle();
+                // TryToggleToObstacle();
                 // If idle and in offensive mode, autopick attack target
                 if (canAttack && attackMode == AttackModes.Offensive)
                     _AttackBehavior.AutoPickAttackTarget();

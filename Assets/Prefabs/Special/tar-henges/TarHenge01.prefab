@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 492656925857947826}
   - component: {fileID: 2392171803812746360}
   - component: {fileID: 3959550508384477906}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: TarHenge01
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -29,6 +29,7 @@ public class Builder : UnitBuilderPlayer
     public GameObject InstantiateGhost(ConjurerArgs item, Vector3 clickPoint)
     {
         GameObject ghost = Instantiate(item.prefab, clickPoint, item.prefab.transform.localRotation);
+        // @TODO: builder needs to keep track of all these ghosts so they can be deleted later if a single placement happens
         ghost.GetComponent<GhostUnit>().Bind(this, item);
         // The ghost instantiated by any menu click will always become the activeFloatingGhost
         activeFloatingGhost = ghost;
@@ -61,8 +62,7 @@ public class Builder : UnitBuilderPlayer
         if (nextQueueReady)
         {
             // Builders always keep a queue of GhostUnits
-            Debug.Log("Builder " + gameObject.name + " queue: " + baseUnit.commandQueue.ToString());
-
+            // Debug.Log("Builder " + gameObject.name + " queue: " + baseUnit.commandQueue.ToString());
             GhostUnit nextGhost = baseUnit.currentCommand.conjurerArgs.prefab.GetComponent<GhostUnit>();
             // @TODO: offset depends on direction, e.g. if walking along x, use x, y, y, and diagonal use mix
             Vector3 offsetRange = nextGhost.offset;

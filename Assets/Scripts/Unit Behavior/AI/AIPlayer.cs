@@ -106,18 +106,15 @@ public class AIPlayer : MonoBehaviour
         {
             armySize = (_Armies.Count + 1) * 7;
             CreateNewArmy(validUnits, armySize);
-            // @TODO: start timer for armyOrdersDelay
             timeSinceLastArmyOrders = 0;
         }
         timeSinceLastArmyOrders += Time.deltaTime;
+        // Update Army behavior
         foreach (Army army in _Armies)
-        {
             army.HandleUpdate();
-        }
-        // Remove armies when they are broken
-        _Armies.RemoveAll(army => army.isBroken);
-
-        // @TODO: if all units in the army are killed, reset _Army = null
+        // Remove armies that have issued their retreat or have no units left
+        _Armies.RemoveAll(army => army.retreatOrdersIssued || army.units.Count == 0);
+        Debug.Log("Armies info: " + string.Join<Army>(", ", _Armies.ToArray()));
     }
 
     private void CreateNewArmy(List<RTSUnit> units, int armySize)

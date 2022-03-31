@@ -13,11 +13,11 @@ GameObject:
   - component: {fileID: 6289436957833713845}
   - component: {fileID: 4650252722491405551}
   - component: {fileID: 4650252722491405550}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: TarBermRamp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 2
+  m_NavMeshLayer: 0
   m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &5117141734412493786

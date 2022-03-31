@@ -23,9 +23,8 @@ public class GhostUnit : MonoBehaviour
 
     private Directions facingDir = Directions.Forward;
     private bool placementValid = true;
-
     public bool isLodestone = false;
-    private bool sacredSiteInRange = false;
+    private Collider[] hitColliders;
 
     void Start()
     {
@@ -47,11 +46,10 @@ public class GhostUnit : MonoBehaviour
         foreach (Material mat in materials)
             SetMaterialTransparency(mat);
 
-        // Get object offset values
         CalculateOffset();
     }
 
-    void Update()
+    private void Update()
     {
         // Active ghost follows raycast hit on terrain
         if (!isSet)
@@ -72,8 +70,35 @@ public class GhostUnit : MonoBehaviour
 
         // @TODO: when I have an active ghost, shouldn't be able to select other units, and mouse over doesn't focus them
         // @TODO: if placed over another ghost, the other ghost gets removed
-        // @TODO: don't allow build when mouse is over an intangible or base unit
         // @TODO: when there's an active ghost, the build menu goes transparent and is disabled
+    }
+
+    private void FixedUpdate()
+    {
+        // If not set (current active ghost), check collisions for valid build placement
+        if (!isSet)
+        {
+            CheckCollisions();
+            // Debug.Log("colliders: " + string.Join<Collider>(", ", hitColliders.ToArray()));
+            bool valid = false;
+            if (isLodestone && hitColliders.Length > 0)
+            {
+                // If at least one of these colliders is a SacredSite and is hovering directly over it
+                foreach (Collider col in hitColliders)
+                {
+                    if (col.tag == "SacredSite" && transform.position == col.transform.position)
+                    {
+                        valid = true;
+                        break;
+                    }
+                }
+            }
+            else if (!isLodestone && hitColliders.Length > 0)
+                valid = false;
+            else if (!isLodestone && hitColliders.Length == 0)
+                valid = true;
+            SetPlacementValid(valid);
+        }
     }
 
     // Instantiate the intangible unit and destroy this ghost
@@ -95,7 +120,7 @@ public class GhostUnit : MonoBehaviour
         // Increase the count of ghosts placed during this shift period
         builder.placedSinceLastShift++; // @TODO: replace with conjurerArgs.buildQueueCount
         // Add the activeFloatingGhost (this) to the player args and enqueue it to the commandQueue
-        Debug.Log("builder.activeFloatingGhost " + builder.activeFloatingGhost);
+        // Debug.Log("builder.activeFloatingGhost " + builder.activeFloatingGhost);
         conjurerArgs.prefab = builder.activeFloatingGhost;
         bool wasEmpty = builder.baseUnit.commandQueue.IsEmpty();
         // conjurerArgs
@@ -129,7 +154,15 @@ public class GhostUnit : MonoBehaviour
         // Queue this self on single place
         conjurerArgs.prefab = gameObject;
 
-        // @TODO: need to also remove any other set ghosts
+        // Destroy all ghosts for this builder and remove all it's other conjure commands
+        foreach (CommandQueueItem cmd in builder.baseUnit.commandQueue)
+        {
+            if (cmd.commandType == CommandTypes.Conjure)
+                Destroy(cmd.conjurerArgs.prefab);
+        }
+        builder.baseUnit.commandQueue.RemoveAll(cmd => cmd.commandType == CommandTypes.Conjure);
+
+        // Set the current command to building this ghost
         builder.baseUnit.currentCommand = new CommandQueueItem
         {
             commandType = CommandTypes.Conjure,
@@ -230,30 +263,9 @@ public class GhostUnit : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider col)
+    private void CheckCollisions()
     {
-        // Lodestone ghosts only valid placement is over a SacredSite
-        if (isLodestone && !col.isTrigger && !isSet && col.CompareTag("SacredSite"))
-            sacredSiteInRange = true;
-        else if (!col.isTrigger && !isSet)
-            SetPlacementValid(false);
-    }
-
-    private void OnTriggerExit(Collider col)
-    {
-        if (isLodestone && !col.isTrigger && !isSet && col.CompareTag("SacredSite"))
-            sacredSiteInRange = false;
-        else if (!col.isTrigger && !isSet)
-            SetPlacementValid(true);
-    }
-
-    private void OnTriggerStay(Collider col)
-    {
-        // Lodestones must be directly over the sacred site to be in valid placement position
-        if (isLodestone && sacredSiteInRange && col.transform.position == transform.position)
-            SetPlacementValid(true);
-        else if (isLodestone && sacredSiteInRange && col.transform.position != transform.position)
-            SetPlacementValid(false);
+        hitColliders = Physics.OverlapBox(gameObject.transform.position, offset / 2, Quaternion.identity, (1 << 7) | (1 << 9));
     }
 
     private void SetPlacementValid(bool val)

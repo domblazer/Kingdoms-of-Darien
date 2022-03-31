@@ -5402,7 +5402,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69a232441f881fd4a9c3a577868aa4a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponSoundHitClasses: 
   attackSounds: []
   dieSound: {fileID: 0}
   moveSound: {fileID: 0}
@@ -5436,16 +5435,11 @@ MonoBehaviour:
   isKinematic: 0
   isBuilder: 1
   canAttack: 0
-  attackRate: 2.5
-  attackRange: 1
-  weaponDamage: 100
+  canStop: 1
+  canGuard: 0
+  canPatrol: 0
   phaseDie: 0
-  isMeleeAttacker: 0
-  meleeWeapons: []
-  isAttacking: 0
-  attackTarget: {fileID: 0}
   bloodSystem: {fileID: 0}
-  activeWeaponIndex: 0
   selectable: 1
   selectRing: {fileID: 1232558660183014775}
   fogOfWarMask: {fileID: 7902845148774254051}
@@ -5511,7 +5505,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69a232441f881fd4a9c3a577868aa4a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponSoundHitClasses: 
   attackSounds: []
   dieSound: {fileID: 0}
   moveSound: {fileID: 0}
@@ -6633,7 +6626,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 269f5e4d8ee086c42b21121147d010e2, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 6.7800293
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 269f5e4d8ee086c42b21121147d010e2, type: 3}
       propertyPath: m_LocalRotation.w

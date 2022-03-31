@@ -9,6 +9,7 @@ public class IntangibleUnit : IntangibleUnitBase
     // Update "Intangible Mass" color gradient until done
     void Update()
     {
+        // TODO: if no builder is attatched to this intangible, the mana flow is reversed, draining from the intangible and adding back to main mana
         if (t < 1)
             EvalColorGradient();
         // Done

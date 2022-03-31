@@ -63,6 +63,7 @@ public class RTSUnit : MonoBehaviour
 
     // Abilities
     public bool isKinematic = true; // @TODO: canMove
+    public float maxSpeed { get; set; }
     public bool isBuilder = false; // @TODO: canReclaim (build & clean?)
     public bool canAttack = true;
     public bool canStop = true;
@@ -144,6 +145,7 @@ public class RTSUnit : MonoBehaviour
             _Obstacle.enabled = false;
             avoidanceRadius = _Agent.radius;
             doubleAvoidanceRadius = _Agent.radius * 2;
+            maxSpeed = _Agent.speed;
         }
         else
         {
@@ -204,7 +206,7 @@ public class RTSUnit : MonoBehaviour
                 state = States.Parking;
                 isParking = !inRange;
                 // Here we can reliably say last state was Parking and now parking is done, next state set here
-                if (!isParking)
+                if (!isParking && nextCommandAfterParking != null)
                     commandQueue.Enqueue(nextCommandAfterParking); // Enqueue new command for next state
             }
             else
@@ -257,6 +259,7 @@ public class RTSUnit : MonoBehaviour
         }
     }
 
+    // Handle patrolling behavior. Roam just means patrol these points at random, not in a loop
     protected void Patrol(bool roam = false)
     {
         if (_Agent.enabled && !commandQueue.IsEmpty())
@@ -292,9 +295,7 @@ public class RTSUnit : MonoBehaviour
             // @TODO: maybe like bumpedUnit.TryToggleToAgentWithTimer
             // set up so like if units bump each other, they temporarily are set back to NavMeshAgents to allow 
             // the bumping unit through, say a large formation the agent can't discern as one large obstacle to avoid
-
-            Debug.Log(unitName + ": Whoops, sorry I bumped you (" + bumpedUnit.gameObject.name + ") while parking. I'll adjust my destination.");
-
+            // Debug.Log(unitName + ": Whoops, sorry I bumped you (" + bumpedUnit.gameObject.name + ") while parking. I'll adjust my destination.");
             // If I bumped, dump the move position that led me here, then modify that position with offset then queue it back 
             Vector3 lastMove = commandQueue.Dequeue().commandPoint;
             lastMove.x += tryParkingDirection ? offset.x : -offset.x;
@@ -309,7 +310,7 @@ public class RTSUnit : MonoBehaviour
         if (col.isTrigger && col.gameObject.layer == 11 && col.gameObject.GetComponentInParent<RTSUnit>())
             HandleBumping(col.gameObject.GetComponentInParent<RTSUnit>()); // If collided object is in the "Inner Trigger" layer, we can pretty safely assume it's parent must be an RTSUnit
         // Layer 9 is "Unit" layer
-        else if (col.gameObject.tag == compareTag && col.gameObject.layer == 9 && !col.isTrigger && canAttack)
+        else if (col.gameObject.tag == compareTag && col.gameObject.layer == 9 && !col.isTrigger && canAttack && col.gameObject.GetComponent<RTSUnit>())
         {
             // Set a callback function to go off when the enemy unit dies to remove it from enemiesInSight
             col.gameObject.GetComponent<RTSUnit>().OnDie((enemy) => { _AttackBehavior.enemiesInSight.Remove(enemy); });
@@ -434,6 +435,7 @@ public class RTSUnit : MonoBehaviour
 
     public void ReceiveDamage(float amount)
     {
+        // @TODO: unit should attack back if taking damage
         if (health > 0)
         {
             currentHealth -= amount;
@@ -501,6 +503,16 @@ public class RTSUnit : MonoBehaviour
     public Vector3 GetVelocity()
     {
         return _Agent.velocity;
+    }
+
+    public void SetSpeed(float speed)
+    {
+        _Agent.speed = speed;
+    }
+
+    public void ResetMaxSpeed()
+    {
+        _Agent.speed = maxSpeed;
     }
 
     public bool IsMoving()
