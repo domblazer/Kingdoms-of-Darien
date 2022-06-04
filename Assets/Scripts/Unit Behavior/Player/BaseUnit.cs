@@ -102,7 +102,7 @@ public class BaseUnit : RTSUnit
             {
                 // No commands, idle
                 state = States.Standby;
-                // TryToggleToObstacle();
+                TryToggleToObstacle();
                 // If idle and in offensive mode, autopick attack target
                 if (canAttack && attackMode == AttackModes.Offensive)
                     _AttackBehavior.AutoPickAttackTarget();

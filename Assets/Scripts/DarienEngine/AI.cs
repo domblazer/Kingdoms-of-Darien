@@ -29,6 +29,9 @@ namespace DarienEngine.AI
         }
     }
 
+    /// <summary>
+    /// Class <c>Army</c> manages the behavior of an AI army. 
+    /// </summary>
     public class Army
     {
         public List<RTSUnit> units;
@@ -58,6 +61,9 @@ namespace DarienEngine.AI
         public PlayerSnapshot playerSnapshot;
         public PlayerSnapshot enemySnapshot;
 
+        ///
+        ///
+        /// 
         public Army(List<RTSUnit> allValidUnits, int armySize)
         {
             units = new List<RTSUnit>();

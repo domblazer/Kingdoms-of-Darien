@@ -14,7 +14,8 @@ public class MeleeWeaponScript : MonoBehaviour
         public float end = 1.0f;
     }
 
-    public AnimationClipRange animationClipRange;
+    public AnimationClipRange[] animationClipRange = new AnimationClipRange[3];
+    private int activeAttackIndex = 0;
 
     public void SetLinkage(RTSUnit baseUnit, float d)
     {
@@ -24,8 +25,10 @@ public class MeleeWeaponScript : MonoBehaviour
 
     private void OnTriggerEnter(Collider col)
     {
+        if (_BaseUnit._HumanoidUnitAnimator)
+            activeAttackIndex = _BaseUnit._HumanoidUnitAnimator.activeAttackIndex;
         // Only send damage when the collider makes contact while the unit is in attack mode
-        if (_BaseUnit != null && _BaseUnit.IsAttacking() && _BaseUnit.animStateTime > animationClipRange.start && _BaseUnit.animStateTime < animationClipRange.end)
+        if (_BaseUnit != null && _BaseUnit.IsAttacking() && _BaseUnit.animStateTime > animationClipRange[activeAttackIndex].start && _BaseUnit.animStateTime < animationClipRange[activeAttackIndex].end)
         {
             string compareTag = gameObject.tag == "Enemy" ? "Friendly" : "Enemy";
             if (col.gameObject.tag == compareTag && !col.isTrigger)

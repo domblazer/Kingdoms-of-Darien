@@ -8,6 +8,7 @@ public class HumanoidUnitAnimator : MonoBehaviour
     private Animator _Animator;
     private RTSUnit _Unit;
     private UnitBuilderBase _UnitBuilderScript;
+    public int activeAttackIndex { get; set; }
 
     void Start()
     {
@@ -37,8 +38,8 @@ public class HumanoidUnitAnimator : MonoBehaviour
             if (_Unit.IsAttacking() && _Unit._AttackBehavior.nextAttackReady)
             {
                 // Random int between 1 and 3
-                int r = Random.Range(1, 4);
-                _Animator.SetTrigger("attack_" + r);
+                activeAttackIndex = Random.Range(1, 4);
+                _Animator.SetTrigger("attack_" + activeAttackIndex);
             }
 
             if (_Unit.isBuilder)

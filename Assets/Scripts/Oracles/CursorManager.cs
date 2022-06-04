@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Class <c>CursorManager</c> handles the cursor sprites and behavior.
+/// </summary>
 public class CursorManager : MonoBehaviour
 {
     public static CursorManager Instance { get; private set; }
@@ -40,16 +43,12 @@ public class CursorManager : MonoBehaviour
 
     void Start()
     {
-        // Initialize cursor offsets
-        /* foreach (GameCursor cursor in cursors)
-        {
-            cursor.offset = new Vector2(cursor.textureArray[0].width / 2, cursor.textureArray[0].height / 2);
-        } */
         SetActiveCursorType(CursorType.Normal);
     }
 
     void Update()
     {
+        // If active cursor has a texture animation, run the frames
         if (activeCursor.textureArray.Length > 1)
         {
             frameTimer -= Time.deltaTime;

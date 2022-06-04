@@ -5173,8 +5173,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animationClipRange:
-    start: 0.2
-    end: 0.5
+  - start: 0.45
+    end: 0.7
+  - start: 0.35
+    end: 0.6
+  - start: 0.35
+    end: 0.7
 --- !u!1 &1464139452027030493
 GameObject:
   m_ObjectHideFlags: 0
@@ -5318,8 +5322,12 @@ MonoBehaviour:
   isKinematic: 1
   isBuilder: 0
   canAttack: 1
+  canStop: 1
+  canGuard: 0
+  canPatrol: 0
   phaseDie: 0
   bloodSystem: {fileID: 1418828522}
+  _HumanoidUnitAnimator: {fileID: 0}
   selectable: 1
   selectRing: {fileID: 1770128794485609735}
   fogOfWarMask: {fileID: 938548816310989045}

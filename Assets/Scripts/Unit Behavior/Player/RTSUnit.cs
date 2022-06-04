@@ -119,6 +119,7 @@ public class RTSUnit : MonoBehaviour
     protected NavMeshAgent _Agent;
     protected NavMeshObstacle _Obstacle;
     protected Animator _Animator;
+    public HumanoidUnitAnimator _HumanoidUnitAnimator;
     public UnitAudioManager AudioManager { get; set; }
 
     protected List<GameObject> whoCanSeeMe = new List<GameObject>();
@@ -167,6 +168,8 @@ public class RTSUnit : MonoBehaviour
         mainPlayer = GameManager.Instance.PlayerMain.player;
         AudioManager = GetComponent<UnitAudioManager>();
         _Animator = GetComponent<Animator>();
+        if (GetComponent<HumanoidUnitAnimator>())
+            _HumanoidUnitAnimator = GetComponent<HumanoidUnitAnimator>();
 
         // Set up linkage with AttackBehavior component if canAttack
         if (canAttack)

@@ -1,15 +1,21 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using DarienEngine;
 using DarienEngine.AI;
+using UnityEngine;
 
+/// <summary>
+/// Class <c>GameManager</c> initializes and tracks the virtual Player structures, provides global helper functions and properties of the game
+/// such as map bounds, manages the pause/resume state of the game, and provides the AudioSource used for system sounds.
+/// </summary>
 public class GameManager : MonoBehaviour
 {
+    // Static instance of the GameManager to provide static scope
     public static GameManager Instance { get; private set; }
 
     [System.Serializable]
+    // Represents the setup for a player
     public class PlayerConfig
     {
         public PlayerNumbers playerNumber;
@@ -19,15 +25,25 @@ public class GameManager : MonoBehaviour
         public Transform startPosition;
     }
 
-    // List of players to initialize for the game
+    [Tooltip("List of players in the match.")]
     public PlayerConfig[] playerConfigs;
 
+    [Tooltip("Global unit build limit.")]
     public int unitLimit = 500;
+
+    [Tooltip("Enable or disable to Fog of War.")]
     public bool enableFogOfWar = true;
+
+    [Tooltip("Scene object, FogOfWarPlane. Required if enableFogOfWar is checked.")]
     public GameObject fogOfWarPlane;
+
+    [Tooltip("Length and width of the map relative to the center point.")]
     public Vector2 mapSize = new Vector2(90, 80);
+
+    [Tooltip("Center point of the map plane.")]
     public Vector2 mapCenter = new Vector2(500, 500);
 
+    // Wrapper for map information
     public class MapInfo
     {
         public Rect bounds;
@@ -43,13 +59,22 @@ public class GameManager : MonoBehaviour
     }
     public MapInfo mapInfo { get; set; }
 
+    [Tooltip("Command sticker prefab for the Move command.")]
     public GameObject moveCommandSticker;
+
+    [Tooltip("Command sticker prefab for the Guard command.")]
     public GameObject guardCommandSticker;
+
+    [Tooltip("Command sticker prefab for the Patrol command.")]
     public GameObject patrolCommandSticker;
 
-    public Dictionary<PlayerNumbers, AIPlayerContext> AIPlayers { get; set; } = new Dictionary<PlayerNumbers, AIPlayerContext>();
+    // Player context vars
     public MainPlayerContext PlayerMain { get; set; }
+    public Dictionary<PlayerNumbers, AIPlayerContext> AIPlayers { get; set; } = new Dictionary<PlayerNumbers, AIPlayerContext>();
+
     public AudioSource AudioSource { get; set; }
+
+    // Private helper keeping track if player mouse is hovering over any unit
     private GameObject currentHovering = null;
 
     private void Awake()
@@ -72,6 +97,7 @@ public class GameManager : MonoBehaviour
         mapInfo = new MapInfo(mapSize, mapCenter);
     }
 
+    // Setup all Players
     private void InitAllPlayers(PlayerConfig[] playerConfigs)
     {
         foreach (PlayerConfig playerConf in playerConfigs)
@@ -83,12 +109,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // Creates a virtual Player structure for an AI Player
     private GameObject InitAIPlayer(PlayerConfig playerConf)
     {
-        GameObject _Holder = Functions.GetOrCreatePlayerHolder(playerConf.playerNumber);
         // Add AIPlayer and Inventory scripts to holder object
+        GameObject _Holder = Functions.GetOrCreatePlayerHolder(playerConf.playerNumber);
         AIPlayer newPlayer = _Holder.AddComponent<AIPlayer>();
         InventoryAI newInventory = _Holder.AddComponent<InventoryAI>();
+
         // Set initial player vars
         newInventory.unitLimit = unitLimit;
         newPlayer.Init(newInventory);
@@ -96,6 +124,7 @@ public class GameManager : MonoBehaviour
         newPlayer.teamNumber = playerConf.team;
         newPlayer.playerFaction = playerConf.faction;
         newPlayer.playerStartPosition = playerConf.startPosition;
+
         // Instantiate new AI player context and add it to AIPlayers dictionary
         AIPlayerContext newAI = new AIPlayerContext
         {
@@ -107,6 +136,7 @@ public class GameManager : MonoBehaviour
         return _Holder;
     }
 
+    // Initializes the human Player, a virtual structure that manages human Player behavior
     private MainPlayerContext InitMainPlayer()
     {
         // Get the Player1 conf for main (human) player
@@ -116,9 +146,11 @@ public class GameManager : MonoBehaviour
 
         // Create the game object that represents Player1
         GameObject _Holder = Functions.GetOrCreatePlayerHolder(PlayerNumbers.Player1);
+
         // Add Inventory and UnitSelection scripts
         Inventory newInventory = _Holder.AddComponent<Inventory>();
         Player newPlayer = _Holder.AddComponent<Player>();
+
         // Set initial vars
         newPlayer.teamNumber = playerConf.team;
         newPlayer.playerStartPosition = playerConf.startPosition;
@@ -129,6 +161,7 @@ public class GameManager : MonoBehaviour
         RectTransform selectionSquare = GameObject.Find(CanvasConfigs.GetCanvasRoot(newPlayer.playerFaction) + "/selection-box").GetComponent<RectTransform>();
         if (selectionSquare == null)
             Debug.LogError("GameManager Error: Could not load selection square image.");
+
         // Get audio clip for click sound
         // @TODO: get appropriate click sound per faction
         AudioClip clip = Resources.Load<AudioClip>("runtime/audioclips/TONEARA");
@@ -146,6 +179,7 @@ public class GameManager : MonoBehaviour
         return PlayerMain;
     }
 
+    // Set the unit the mouse is currently hovering over
     public void SetHovering(GameObject obj)
     {
         currentHovering = obj;
@@ -177,11 +211,13 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1;
     }
 
+    // Helper to provide Instantiate function to non-MonoBehavior classes
     public GameObject InstantiateHelper(GameObject obj, Vector3 position)
     {
         return Instantiate(obj, position, obj.transform.rotation);
     }
 
+    // Helper to provide Destroy function to non-MonoBehavior classes
     public void DestroyHelper(GameObject obj)
     {
         if (obj != null)

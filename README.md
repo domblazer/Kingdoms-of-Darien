@@ -45,3 +45,46 @@ The _GameManager object contains the GameManager, UIManager, and CursorManager s
 - Also make sure to bake a new lightmap for each scene. Window->Rendering->Lighting. 
 - Choose an existing lighting configuration, e.g. SampleSceneSettings, or create a new one. Click Environment tab, assign Sun Source as the Environment/Light object, then click Generate Lighting. *Note: it's generally best to uncheck Auto Generate, to save resources.
 
+# Code Structure
+## DarienEngine
+- The DarienEngine is a namespace encompassing a variety of classes, functions, and constants that form the backbone of the game's functionality.
+
+# Scene Setup
+
+| Hierarchy              | Inspector                 | Important Properties                                                 |
+|------------------------|---------------------------|----------------------------------------------------------------------|
+| StartPosition01        |                           |                                                                      |
+| StartPosition02        |                           |                                                                      |
+| _GameManager           | GameManager               |                                                                      |
+|                        | UIManager                 |                                                                      |
+|                        | CursorManager             |                                                                      |
+|                        | AudioSource               | Spatial blend: 2D 100%                                               |
+| Minimap Camera         | Camera                    | Culling Mask:  Minimap (layer)                                       |
+|                        |                           | Target Texture: minimap-texture (Render texture)                     |
+|                        | MinimapController         |                                                                      |
+| > RTS Camera           | Camera                    | Transform Rotation: 75                                               |
+|                        | RTSCamera                 |                                                                      |
+|                        | Post-process Layer        |                                                                      |
+|                        | Post-process Volume       |                                                                      |
+|                        | AudioSource               |                                                                      |
+|                        | AudioListener             |                                                                      |
+|  - FogOfWarPlaneCamera | Camera                    | Clear Flags: Depth only                                              |
+|                        |                           | Culling Mask: Fog Of War Plane                                       |
+| FogOfWarCamera         | Camera                    | Clear Flags: Solid color                                             |
+|                        |                           | Background: #0000FF                                                  |
+|                        |                           | Culling Mask: Fog Of War                                             |
+|                        |                           | Target Texture: FogOfWarRenderTexture                                |
+| FogOfWarPlane          | MeshRenderer              | Material: FogOfWarPlane (Material); Shader Custom/FogOfWarMaskShader |
+| Canvas                 |                           |                                                                      |
+| EventSystem            |                           |                                                                      |
+| > Environment          |                           |                                                                      |
+|  - Terrain             | Terrain; Terrain Collider |                                                                      |
+|  - Terrain details?    |                           |                                                                      |
+|  - Sky?                |                           |                                                                      |
+|  - (Water)             |                           |                                                                      |
+|  - Light               | Directional Light         |                                                                      |
+|  - WindZone            | WindZone                  |                                                                      |
+|  - MinimapCollider     | BoxCollider               |                                                                      |
+| MapEdgePlane           | (See FogOfWarPlane)       |                                                                      |
+| MapEdgeCamera          | (See FogOfWarCamera)      |                                                                      |
+| MapEdgeRevealMask      | MeshRenderer              | Material: sprite with color #00FF00                                  |
