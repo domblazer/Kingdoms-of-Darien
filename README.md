@@ -107,8 +107,9 @@ The _GameManager object contains the GameManager, UIManager, and CursorManager s
 ![Prefab types 3](/Assets/Images/Documentation/Slide3.PNG)
 
 # Inheritance Structure
+## UnitBuilder
 ![UnitBuilder inheritance](/Assets/Images/Documentation/Slide4.jpg)
-
+## RTSUnit
 ![RTSUnit inheritance](/Assets/Images/Documentation/Slide5.jpg)
-
+## Inventory
 ![Inventory inheritance](/Assets/Images/Documentation/Slide6.jpg)
