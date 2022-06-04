@@ -83,16 +83,21 @@ Tag: Friendly | Layer: Unit
 All units have different states of coming into existence within the game. When a player clicks a unit in a Mage Builder's menu, a transparent form of that unit is instantiated that represents where the player may place the unit for construction. This is called a **Ghost** unit. 
 
 Once construction begins on a Ghost, the unit becomes an "Intangible Mass" as it is conjured into existence. This type of unit is called an **Intangible** unit. All Intangibles eventually conjure into the unit's final form, which we will call the **RTSUnit**. 
+
 ## Intangibles
 Some units begin at the Intangible state, and therefore do not have a Ghost prefab associated. For example, any unit being conjured by a Factory.
-![Prefab types 3](/Assets/Images/Documentation/Slide3.PNG)
+
+<img src="/Assets/Images/Documentation/Slide3.PNG" height="300">
+
 ## Ghosts
 Units queued from Builders begin in the Ghost state, so the player can place the unit where desired.
-![Prefab types 1](/Assets/Images/Documentation/Slide1.PNG)
+
+<img src="/Assets/Images/Documentation/Slide1.PNG" height="300">
+
 ## Debris/Deads
 Factories and other stationary defensive units, such as Strongholds, use an extra prefab for the Debris that is instantiated after the RTSUnit is destroyed.
 
-![Prefab types 2](/Assets/Images/Documentation/Slide2.PNG)
+<img src="/Assets/Images/Documentation/Slide2.PNG">
 
 # Code Structure
 ## DarienEngine
@@ -101,12 +106,15 @@ Factories and other stationary defensive units, such as Strongholds, use an extr
 # Inheritance Structure
 ## RTSUnit
 Most unit behavior is derived from RTSUnit. However, player units and AI units have distinct functionalities. Unit prefabs utilize either the BaseUnit or BaseUnitAI scipts to enable their behavior in the RTS engine.
-![RTSUnit inheritance](/Assets/Images/Documentation/Slide5.jpg)
+
+<img src="/Assets/Images/Documentation/Slide5.jpg" height="300">
 
 ## UnitBuilder
 Build behavior is separated logically between the Factory/Builder classes and AI/Player classes. Because multiple inheritance is not supported in C#, four separate classes model the different types of builders, and each derive from a parent encapsulating common functionality. For clarity of nomenclature, Factories are considered builders that are stationary and Builders are considered units that can move and can build.
-![UnitBuilder inheritance](/Assets/Images/Documentation/Slide4.jpg)
+
+<img src="/Assets/Images/Documentation/Slide4.jpg" height="300">
 
 ## Inventory
 Inventory is also handled differently between players and AIs.
-![Inventory inheritance](/Assets/Images/Documentation/Slide6.jpg)
+
+<img src="/Assets/Images/Documentation/Slide6.jpg" height="300">
