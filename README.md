@@ -68,7 +68,7 @@ The _GameManager object contains the GameManager, UIManager, and CursorManager s
 |                        | Post-process Volume       |                                                                      |
 |                        | AudioSource               |                                                                      |
 |                        | AudioListener             |                                                                      |
-|  - FogOfWarPlaneCamera | Camera                    | Clear Flags: Depth only                                              |
+| - FogOfWarPlaneCamera  | Camera                    | Clear Flags: Depth only                                              |
 |                        |                           | Culling Mask: Fog Of War Plane                                       |
 | FogOfWarCamera         | Camera                    | Clear Flags: Solid color                                             |
 |                        |                           | Background: #0000FF                                                  |
@@ -78,13 +78,13 @@ The _GameManager object contains the GameManager, UIManager, and CursorManager s
 | Canvas                 |                           |                                                                      |
 | EventSystem            |                           |                                                                      |
 | > Environment          |                           |                                                                      |
-|  - Terrain             | Terrain; Terrain Collider |                                                                      |
-|  - Terrain details?    |                           |                                                                      |
-|  - Sky?                |                           |                                                                      |
-|  - (Water)             |                           |                                                                      |
-|  - Light               | Directional Light         |                                                                      |
-|  - WindZone            | WindZone                  |                                                                      |
-|  - MinimapCollider     | BoxCollider               |                                                                      |
+| - Terrain              | Terrain; Terrain Collider |                                                                      |
+| - Terrain details?     |                           |                                                                      |
+| - Sky?                 |                           |                                                                      |
+| - (Water)              |                           |                                                                      |
+| - Light                | Directional Light         |                                                                      |
+| - WindZone             | WindZone                  |                                                                      |
+| - MinimapCollider      | BoxCollider               |                                                                      |
 | MapEdgePlane           | (See FogOfWarPlane)       |                                                                      |
 | MapEdgeCamera          | (See FogOfWarCamera)      |                                                                      |
 | MapEdgeRevealMask      | MeshRenderer              | Material: sprite with color #00FF00                                  |
