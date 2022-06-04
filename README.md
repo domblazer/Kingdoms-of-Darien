@@ -88,10 +88,11 @@ Some units begin at the Intangible state, and therefore do not have a Ghost pref
 ![Prefab types 3](/Assets/Images/Documentation/Slide3.PNG)
 ## Ghosts
 Units queued from Builders begin in the Ghost state, so the player can place the unit where desired.
-![Prefab types 2](/Assets/Images/Documentation/Slide2.PNG)
+![Prefab types 1](/Assets/Images/Documentation/Slide1.PNG)
 ## Debris/Deads
 Factories and other stationary defensive units, such as Strongholds, use an extra prefab for the Debris that is instantiated after the RTSUnit is destroyed.
-![Prefab types 1](/Assets/Images/Documentation/Slide1.PNG)
+
+![Prefab types 2](/Assets/Images/Documentation/Slide2.PNG)
 
 # Code Structure
 ## DarienEngine
