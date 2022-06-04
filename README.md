@@ -1,9 +1,9 @@
 # Kingdoms-Reborn
  Unity files for Kingdoms Reborn
 
-# Scene Setup
+# Anatomy of a Scene
 
-This is the anatomy of a basic scene. Prefabs are bolded. Find these prefabs in Assets/Prefabs/Game. The ">" character here represents a prefab with at least one child object. The following "-" characters represent the children themselves. 
+This is the anatomy of a basic scene. Prefabs are bolded. Find these prefabs in Assets/Prefabs/Game. The ">" character here represents a prefab with at least one child object. The following "-" characters represent the children themselves. Note, every object is assumed to have a Transform component.
 
 | Hierarchy              | Inspector                 | Important Properties                                                 |
 |------------------------|---------------------------|----------------------------------------------------------------------|
@@ -43,10 +43,34 @@ This is the anatomy of a basic scene. Prefabs are bolded. Find these prefabs in 
 | - WindZone             | WindZone                  |                                                                      |
 | - MinimapCollider      | BoxCollider               |                                                                      |
 
-Note the non-prefabed objects: the start positions and the environment. Obviously prefabbing start positions is not necessary, and the environment cannot be prefabed because every scene (map) is distinct in it's environment setup. So, for example, a new Terrain object is needed for each scene, so as not to write to the same Terrain data from different scenes.
+Note the non-prefabbed objects: the start positions and the environment. Obviously prefabbing start positions is not necessary, and the environment cannot be prefabed because every scene (map) is distinct in it's environment setup. So, for example, a new Terrain object is needed for each scene, so as not to write to the same Terrain data from different scenes.
 
 Canvases for different player factions are denoted by a faction prefix to the Canvas name, e.g. "AraCanvas", "TaroCanvas", "VeruCanvas", and "ZhonCanvas".
 The Canvas prefab will also not automatically create an EventSystem object, so you will need to create that manually as well. 
+
+# Anatomy of a Unit
+
+E.g. components of Archer prefab:
+Tag: Friendly | Layer: Unit
+- Animator
+- RigidBody
+    - All units require a RigidBody with Is Kinematic checked.
+- CapsuleCollider
+    - All units require a Collider with Is Trigger unchecked.
+- BaseUnit (Script)
+    - Primary controller of the Unit. Inherits RTSUnit (Script). 
+- Builder (Script)
+- AttackBehavior (Script)
+- ProjectileLauncher (Script)
+    - Special attack behavior for projectile weapon. Works with AttackBehavior. 
+- HumanoidUnitAnimator (Script)
+    - Controls the Animator Controller. 
+- UnitAudioManager (Script)
+- AudioSource 
+    - Spatial blend: 3D sound 100%, logarithmic rolloff. 
+- NavMeshAgent
+- NavMeshObstacle
+- LineRenderer
 
 ## _GameManager setup
 The _GameManager object contains the GameManager, UIManager, and CursorManager scripts. 
