@@ -99,4 +99,16 @@ The _GameManager object contains the GameManager, UIManager, and CursorManager s
 ## DarienEngine
 - The DarienEngine is a namespace encompassing a variety of classes, functions, and constants that form the backbone of the game's functionality.
 
-![Slide1 alt text](/Assets/Images/Documentation/Slide1.PNG)
+# Types of Prefabs
+![Prefab types 1](/Assets/Images/Documentation/Slide1.PNG)
+
+![Prefab types 2](/Assets/Images/Documentation/Slide2.PNG)
+
+![Prefab types 3](/Assets/Images/Documentation/Slide3.PNG)
+
+# Inheritance Structure
+![UnitBuilder inheritance](/Assets/Images/Documentation/Slide4.jpg)
+
+![RTSUnit inheritance](/Assets/Images/Documentation/Slide5.jpg)
+
+![Inventory inheritance](/Assets/Images/Documentation/Slide6.jpg)
