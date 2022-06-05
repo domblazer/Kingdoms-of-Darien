@@ -4,9 +4,11 @@ using UnityEngine;
 using DarienEngine;
 using DarienEngine.AI;
 
+/// <summary>
+/// Class <c>UnitBuilderBase</c> models the most common and basic functionality needed for builders.
+/// </summary>
 public class UnitBuilderBase : MonoBehaviour
 {
-    // public Queue<T> masterBuildQueue = new Queue<T>();
     public bool isBuilding { get; set; }
     public bool nextQueueReady { get; set; } = false;
     public RTSUnit baseUnit { get; set; }
@@ -33,9 +35,4 @@ public class UnitBuilderBase : MonoBehaviour
     {
         return baseUnit.isKinematic;
     }
-
-    /* public bool IsAI()
-    {
-        return typeof(T).IsAssignableFrom(typeof(AIConjurerArgs));
-    } */
 }

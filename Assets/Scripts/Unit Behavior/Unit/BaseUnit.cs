@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.AI;
 using DarienEngine;
 
+/// <summary>
+/// Class <c>BaseUnit</c> derives from class <c>RTSUnit</c> and implements unit behavior specific to playable units.
+/// </summary>
 public class BaseUnit : RTSUnit
 {
     private bool selected;
@@ -66,37 +69,7 @@ public class BaseUnit : RTSUnit
             // @TODO: handle behaviour by what's in the commandQueue
             if (!commandQueue.IsEmpty())
             {
-                switch (currentCommand.commandType)
-                {
-                    case CommandTypes.Move:
-                        if (canAttack && currentCommand.isAttackMove)
-                            _AttackBehavior.AutoPickAttackTarget();
-                        HandleMovement();
-                        break;
-                    case CommandTypes.Attack:
-                        // handle engaging target (moveTo target) and attacking behaviour
-                        _AttackBehavior.HandleAttackRoutine();
-                        state = States.Attacking;
-                        break;
-                    case CommandTypes.Patrol:
-                        // handle patrol behavior
-                        // @TODO: if patrol point not set?
-                        // @TODO: auto attack if mode is offensive
-                        Patrol();
-                        break;
-                    case CommandTypes.Conjure:
-                        TryToggleToAgent();
-                        if (isKinematic)
-                            (_Builder as Builder).HandleConjureRoutine();
-                        else
-                            (_Builder as Factory).HandleConjureRoutine();
-                        state = States.Conjuring;
-                        break;
-                    case CommandTypes.Guard:
-                        // @TODO: HandleGuardRoutine()
-                        // @TODO: attack anyone that attacks the guarding unit
-                        break;
-                }
+                HandleCurrentCommand();
             }
             else
             {
@@ -137,6 +110,41 @@ public class BaseUnit : RTSUnit
 
             // if (isKinematic && _Agent.enabled)
             //    DebugNavPath();
+        }
+    }
+
+    private void HandleCurrentCommand()
+    {
+        switch (currentCommand.commandType)
+        {
+            case CommandTypes.Move:
+                if (canAttack && currentCommand.isAttackMove)
+                    _AttackBehavior.AutoPickAttackTarget();
+                HandleMovement();
+                break;
+            case CommandTypes.Attack:
+                // handle engaging target (moveTo target) and attacking behaviour
+                _AttackBehavior.HandleAttackRoutine();
+                state = States.Attacking;
+                break;
+            case CommandTypes.Patrol:
+                // handle patrol behavior
+                // @TODO: if patrol point not set?
+                // @TODO: auto attack if mode is offensive
+                Patrol();
+                break;
+            case CommandTypes.Conjure:
+                TryToggleToAgent();
+                if (isKinematic)
+                    (_Builder as Builder).HandleConjureRoutine();
+                else
+                    (_Builder as Factory).HandleConjureRoutine();
+                state = States.Conjuring;
+                break;
+            case CommandTypes.Guard:
+                // @TODO: HandleGuardRoutine()
+                // @TODO: attack anyone that attacks the guarding unit
+                break;
         }
     }
 

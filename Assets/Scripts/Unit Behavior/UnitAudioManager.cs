@@ -4,6 +4,9 @@ using UnityEngine;
 using DarienEngine;
 
 [RequireComponent(typeof(AudioSource))]
+/// <summary>
+/// Class <c>UnitAudioManager</c> handles the various sounds played by a unit.
+/// </summary>
 public class UnitAudioManager : MonoBehaviour
 {
     protected AudioSource _AudioSource;

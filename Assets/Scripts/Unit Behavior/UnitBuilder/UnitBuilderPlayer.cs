@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using DarienEngine;
 
+/// <summary>
+/// Class <c>UnitBuilderPlayer</c> implements functionality shared amongst playable Builders and Factories.
+/// </summary>
 public class UnitBuilderPlayer : UnitBuilderBase
 {
     private RectTransform menuRoot;

@@ -6,11 +6,11 @@ using System.Linq;
 using DarienEngine;
 using DarienEngine.AI;
 
-/* 
-    This class inherits RTSUnit to derive common behavior for all units, AI or otherwise, (e.g. pathfinding, attack routine, etc).
-    BaseUnit must, however, implement the Unity game methods Awake(), Start(), and Update() since "super" is not a thing in C#,
-    so RTSUnit class can't implement any common functionality that happens in those methods.
-*/
+/// <summary>
+/// Class <c>BaseUnitAI</c> inherits RTSUnit to derive common behavior for all units, AI or otherwise, (e.g. pathfinding, attack routine, etc).
+/// BaseUnit must, however, implement the Unity game methods Awake(), Start(), and Update() since "super" is not a thing in C#,
+/// so RTSUnit class can't implement any common functionality that happens in those methods.
+/// </summary>
 public class BaseUnitAI : RTSUnit
 {
     private bool enableFogOfWar;
@@ -86,41 +86,7 @@ public class BaseUnitAI : RTSUnit
         {
             if (!commandQueue.IsEmpty())
             {
-                switch (currentCommand.commandType)
-                {
-                    case CommandTypes.Move:
-                        // Auto-pick attack targets by default while moving
-                        if (canAttack && currentCommand.isAttackMove)
-                            _AttackBehavior.AutoPickAttackTarget(true);
-                        HandleMovement();
-                        break;
-                    case CommandTypes.Attack:
-                        // handle engaging target (moveTo target) and attacking behaviour
-                        _AttackBehavior.HandleAttackRoutine(true);
-                        state = States.Attacking;
-                        break;
-                    case CommandTypes.Patrol:
-                        // handle patrol behavior
-                        // If currentCommand has not yet set a patrol route, set it now
-                        if (currentCommand.patrolRoute == null)
-                            currentCommand.patrolRoute = new PatrolRoute { patrolPoints = SetPatrolPoints(transform.position, 3, patrolRange) };
-                        // Roam and auto-pick attack targets
-                        Patrol(true);
-                        if (canAttack)
-                            _AttackBehavior.AutoPickAttackTarget(true);
-                        break;
-                    case CommandTypes.Conjure:
-                        // Builder and Factory conjuring behavior
-                        if (isKinematic)
-                            (_Builder as BuilderAI).HandleConjureRoutine();
-                        else
-                            (_Builder as FactoryAI).HandleConjureRoutine();
-                        state = States.Conjuring;
-                        break;
-                    case CommandTypes.Guard:
-                        // @TODO 
-                        break;
-                }
+                HandleCurrentCommand();
             }
             else
             {
@@ -130,6 +96,48 @@ public class BaseUnitAI : RTSUnit
             // @TODO: AI should autopick attack target under most circumstances
             if (canAttack && state.Value == States.Standby.Value)
                 _AttackBehavior.AutoPickAttackTarget();
+        }
+    }
+
+    /// <summary> 
+    /// This method determines which behavior routines to run given the current command.
+    /// </summary>
+    private void HandleCurrentCommand()
+    {
+        switch (currentCommand.commandType)
+        {
+            case CommandTypes.Move:
+                // Auto-pick attack targets by default while moving
+                if (canAttack && currentCommand.isAttackMove)
+                    _AttackBehavior.AutoPickAttackTarget(true);
+                HandleMovement();
+                break;
+            case CommandTypes.Attack:
+                // handle engaging target (moveTo target) and attacking behaviour
+                _AttackBehavior.HandleAttackRoutine(true);
+                state = States.Attacking;
+                break;
+            case CommandTypes.Patrol:
+                // handle patrol behavior
+                // If currentCommand has not yet set a patrol route, set it now
+                if (currentCommand.patrolRoute == null)
+                    currentCommand.patrolRoute = new PatrolRoute { patrolPoints = SetPatrolPoints(transform.position, 3, patrolRange) };
+                // Roam and auto-pick attack targets
+                Patrol(true);
+                if (canAttack)
+                    _AttackBehavior.AutoPickAttackTarget(true);
+                break;
+            case CommandTypes.Conjure:
+                // Builder and Factory conjuring behavior
+                if (isKinematic)
+                    (_Builder as BuilderAI).HandleConjureRoutine();
+                else
+                    (_Builder as FactoryAI).HandleConjureRoutine();
+                state = States.Conjuring;
+                break;
+            case CommandTypes.Guard:
+                // @TODO 
+                break;
         }
     }
 

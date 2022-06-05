@@ -4,6 +4,9 @@ using UnityEngine;
 using DarienEngine;
 using DarienEngine.AI;
 
+/// <summary>
+/// Class <c>BuilderAI</c> represents an AI unit that can build and can move.
+/// </summary>
 public class BuilderAI : UnitBuilderAI
 {
     private float searchBuildRange = 15.0f;

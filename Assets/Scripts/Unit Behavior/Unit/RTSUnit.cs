@@ -6,14 +6,19 @@ using UnityEngine.UI;
 using System.Linq;
 using DarienEngine;
 
-/*
-    This class represents core functionality for all units in the game; it must implement only the behavior that is common between
-    the playable units (BaseUnit) and the NP-units (BaseUnitAI), i.e. movement/pathfinding, attack routine, etc.
-*/
 public delegate void DieCallback(GameObject caller);
+
 [RequireComponent(typeof(UnitAudioManager))]
+/// <summary>
+/// Class <c>RTSUnit</c> represents core functionality for all units in the game. Implements common behavior 
+/// between the playable units (BaseUnit) and the NP-units (BaseUnitAI), e.g. movement/pathfinding, attack routine, etc.
+/// </summary>
 public class RTSUnit : MonoBehaviour
 {
+    /// <summary>
+    /// Class <c>RTSUnit.States</c> models the various states a unit may be in. Wraps static members for object reference
+    /// and extension for string reference as States(...).Value.
+    /// </summary>
     public class States
     {
         private States(string value) { Value = value; }
@@ -31,6 +36,7 @@ public class RTSUnit : MonoBehaviour
     }
     public States state { get; set; } = States.Standby;
 
+    // Basic initializing info
     public Factions faction;
     public PlayerNumbers playerNumber = PlayerNumbers.Player1;
     public UnitCategories unitType;
@@ -41,6 +47,8 @@ public class RTSUnit : MonoBehaviour
     {
         Default, Flesh, Armor, Wood, Scale, Stone
     }
+
+    [Tooltip("Type of material this unit should model for hit sounds.")]
     public BodyTypes bodyType;
 
     // Health 

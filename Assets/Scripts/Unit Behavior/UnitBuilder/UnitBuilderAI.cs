@@ -4,6 +4,9 @@ using UnityEngine;
 using DarienEngine;
 using DarienEngine.AI;
 
+/// <summary>
+/// Class <c>UnitBuilderAI</c> implements functionality shared between AI Builders and AI Factories.
+/// </summary>
 public class UnitBuilderAI : UnitBuilderBase
 {
     public BuildUnit[] buildUnitPrefabs;

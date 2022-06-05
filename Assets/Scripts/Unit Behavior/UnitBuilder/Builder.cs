@@ -4,7 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using DarienEngine;
 
-// Builder is defined as canMove && canBuild && !isAI
+/// <summary>
+/// Class <c>Builder</c> represents a playable unit that can build and can move. Extends class <c>UnitBuilderPlayer</c> to inherit
+/// common functionality shared with class <c>Factory</c>.
+/// </summary>
 public class Builder : UnitBuilderPlayer
 {
     public GameObject[] ghostUnits;

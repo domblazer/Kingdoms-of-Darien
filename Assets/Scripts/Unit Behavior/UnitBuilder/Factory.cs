@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using DarienEngine;
 
+/// <summary>
+/// Class <c>Factory</c> represents a playable unit that can build but cannot move.
+/// </summary>
 public class Factory : UnitBuilderPlayer
 {
     public Transform spawnPoint;

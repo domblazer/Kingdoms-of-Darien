@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using DarienEngine;
 
+/// <summary>
+/// Class <c>FactoryAI</c> represents an AI unit that can build but cannot move.
+/// </summary>
 public class FactoryAI : UnitBuilderAI
 {
     public Transform spawnPoint;
