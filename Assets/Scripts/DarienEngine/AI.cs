@@ -197,7 +197,8 @@ namespace DarienEngine.AI
             formUpPoint = FindFormUpLocation();
             // @Note: attackMove so units can still attack if engaged while forming up
             // @TODO: still problem though that these units will get interrupted and need to return to these army orders 
-            moveGroupInfo = Clusters.MoveGroup(units, formUpPoint, false, true);
+            // @TODO: point for skyFormUpPoint
+            moveGroupInfo = Clusters.MoveGroup(units, formUpPoint, formUpPoint, false, true);
         }
 
         // Find a "quarter" point between this player's start position and the enemy's, towards player's position
@@ -245,7 +246,8 @@ namespace DarienEngine.AI
                 unit.commandQueue.OnQueueChanged += UnitReturnToPatrol;
             }
             // @TODO: units should only need to get within range of the retreat point before dequeueing
-            moveGroupInfo = Clusters.MoveGroup(units, retreatPoint, false);
+            // @TODO: point for skyFormUpPoint
+            moveGroupInfo = Clusters.MoveGroup(units, retreatPoint, retreatPoint, false);
         }
 
         public RTSUnit FindTarget(Vector3 fromOrigin)

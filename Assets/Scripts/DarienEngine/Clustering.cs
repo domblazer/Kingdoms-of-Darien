@@ -27,7 +27,7 @@ namespace DarienEngine.Clustering
             public float radius;
             public Dictionary<RTSUnit, Vector3> unitMovePositions;
         }
-        public static MoveGroupInfo MoveGroup(List<RTSUnit> selectedUnits, Vector3 hitPoint, bool addToMoveQueue = false, bool doAttackMove = false)
+        public static MoveGroupInfo MoveGroup(List<RTSUnit> selectedUnits, Vector3 groundHitPoint, Vector3 skyHitPoint, bool addToMoveQueue = false, bool doAttackMove = false)
         {
             // UnitClusterMoveInfo clusterMoveInfo = CalculateSmartCenter(selectedUnits);
 
@@ -65,7 +65,7 @@ namespace DarienEngine.Clustering
                 Vector3 spawnDir = new Vector3(horizontal, 0, vertical);
 
                 // Calculate moveTo
-                Vector3 moveTo = hitPoint + spawnDir * radius;
+                Vector3 moveTo = groundHitPoint + spawnDir * radius;
                 positions.Add(moveTo);
 
                 /* Vector3 offset = (unit.transform.position - clusterMoveInfo.smartCenter);
@@ -96,8 +96,16 @@ namespace DarienEngine.Clustering
                 positions.Remove(moveTo);
                 moveGroupInfo.unitMovePositions.Add(unit, moveTo);
                 // @TODO: need to do TestPoint() on these positions so no units get told to move to invalid locations
+                // @TODO: SetMove for flying units
                 if (unit && unit.isKinematic)
+                {
+                    if (unit.canFly)
+                    {
+                        unit._FlyingUnit.lastCorrespondingGroundPoint = groundHitPoint;
+                    }
+                    // @TODO: adjustedMoveTo for flying units
                     unit.SetMove(moveTo, addToMoveQueue, doAttackMove);
+                }
             }
 
             return moveGroupInfo;

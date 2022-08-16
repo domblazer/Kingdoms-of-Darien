@@ -8,6 +8,7 @@ TagManager:
   - Enemy
   - Terrain
   - SacredSite
+  - Fire
   layers:
   - Default
   - TransparentFX
@@ -29,7 +30,7 @@ TagManager:
   - Terrain
   - Terrain Details
   - MapEdgeMask
-  - 
+  - Sky
   - 
   - 
   - 

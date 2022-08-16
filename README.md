@@ -72,10 +72,23 @@ Tag: Friendly | Layer: Unit
 - NavMeshObstacle
 - LineRenderer
 
-## NavMesh configuration
+## Unit children structure
+- Unit
+    - select-ring
+    - minimap-icon: Layer (Minimap)
+    - launch-point (only with ProjectileLauncher)
+    - inner-trigger: Layer (Inner Trigger). Used to determine collisions with other units (bumping)
+    - radar-trigger: Layer (Radar Trigger). Used to determine what units are within this unit's radar range
+    - blood-system
+    - fog-of-war-mask: Layer (Fog Of War)
+    - MeleeWeaponScript on bone representing melee weapon: Layer (MeleeWeapon)
+
+<img src="/Assets/Images/Documentation/melee-weapon-placement.PNG" height="300">
+
+# NavMesh configuration
 - Make sure to also bake a new NavMesh for each scene. Window->AI->Navigation->Bake.
 
-## Lighting configuration
+# Lighting configuration
 - Also make sure to bake a new lightmap for each scene. Window->Rendering->Lighting. 
 - Choose an existing lighting configuration, e.g. SampleSceneSettings, or create a new one. Click Environment tab, assign Sun Source as the Environment/Light object, then click Generate Lighting. *Note: it's generally best to uncheck Auto Generate, to save resources.
 

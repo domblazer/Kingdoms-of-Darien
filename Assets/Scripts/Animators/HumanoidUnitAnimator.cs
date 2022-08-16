@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using DarienEngine;
 
+// @TODO: rename to KinematicUnitAnimator
+/// <summary>
+/// Class <c>KinematicUnitAnimator</c> controls the Animator component for units that can move. Includes naval and flying units.
+/// </summary>
 public class HumanoidUnitAnimator : MonoBehaviour
 {
     private Animator _Animator;
@@ -28,7 +32,7 @@ public class HumanoidUnitAnimator : MonoBehaviour
             {
                 //  _Animator.speed = _Unit.GetVelocity() ;
             }
-            _Animator.SetBool("walking", _Unit.IsMoving());
+            _Animator.SetBool("walking", _Unit.IsMoving() || (_Unit.canFly && _Unit._FlyingUnit.changingPlanes));
             // @TODO: running
             _Animator.SetBool("attacking", _Unit.IsAttacking());
 

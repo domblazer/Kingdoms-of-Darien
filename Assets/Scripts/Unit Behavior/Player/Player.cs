@@ -78,20 +78,25 @@ public class Player : MonoBehaviour
         isClicking = false;
         isHoldingDown = false;
 
-        goodHit = Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit);
+        // Get all hits from click
+        HitsMap hitsMap = RaycastAllHits();
+        goodHit = hitsMap.goodHit;
 
         // Click the mouse button
         if (Input.GetMouseButtonDown(0) && !InputManager.IsMouseOverUI())
         {
             clickTime = Time.time;
             // We dont yet know if we are drawing a square, but we need the first coordinate in case we do draw a square
+            // @TODO: square should be drawn on GroundMesh, ignore Sky mesh hit
             if (goodHit)
-                squareStartPos = hit.point; // The corner position of the square
+                squareStartPos = hitsMap.groundMeshHit.point; // The corner position of the square
         }
 
         // Release the mouse button
         if (Input.GetMouseButtonUp(0))
-            HandleMouseRelease(hit);
+        {
+            HandleMouseRelease(hitsMap.groundMeshHit, hitsMap.skyMeshHit);
+        }
 
         // Holding down the mouse button
         if (Input.GetMouseButton(0) && !InputManager.IsMouseOverUI())
@@ -99,12 +104,11 @@ public class Player : MonoBehaviour
                 isHoldingDown = true;
 
         // Select one unit with left mouse and deselect all units with left mouse by clicking on what's not a unit
-        if (isClicking)
-            HandleUnitClicked(hit);
+        if (isClicking && hitsMap.unitWasHit)
+            HandleUnitClicked(hitsMap.unitHit);
 
         // If holding down and mouse has been dragged, select all units within the square
-        // Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit movedPosition);
-        if (isHoldingDown && goodHit && squareStartPos != hit.point)
+        if (isHoldingDown && goodHit && squareStartPos != hitsMap.groundMeshHit.point)
         {
             // Display the selection UI image
             DisplaySquare();
@@ -114,10 +118,14 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void HandleMouseRelease(RaycastHit hit)
+    private void HandleMouseRelease(RaycastHit groundHit, RaycastHit skyHit)
     {
         if (Time.time - clickTime <= clickHoldDelay)
             isClicking = true;
+
+        // Check the click did not hit the Unit or UI layer
+        bool clearGroundClick = groundHit.collider.gameObject.layer != LayerMask.NameToLayer("Unit") && groundHit.collider.gameObject.layer != LayerMask.NameToLayer("UI");
+        bool clearSkyClick = skyHit.collider.gameObject.layer != LayerMask.NameToLayer("Unit") && skyHit.collider.gameObject.layer != LayerMask.NameToLayer("UI");
 
         // Select all units within the square if we have created a square
         if (hasCreatedSquare)
@@ -133,21 +141,21 @@ public class Player : MonoBehaviour
             // Select the units
             HandleUnitsUnderSquare();
         }
-        // GoodHit, mouse not over ui, not hit "Unit" layer, and not hit "UI" layer
-        else if (!InputManager.IsMouseOverUI() && goodHit && hit.transform.gameObject.layer != 9 && hit.transform.gameObject.layer != 5)
+        else if (!InputManager.IsMouseOverUI() && goodHit && clearGroundClick && clearSkyClick)
         {
             // Handle click-to-action commands here
             if (nextCommandIsPrimed)
             {
                 if (primedCommand == CommandTypes.Move)
-                    HandleMoveCommand(hit);
+                    HandleMoveCommand(groundHit, skyHit);
+                // @TODO: handle commands on skyHit
                 else if (primedCommand == CommandTypes.Patrol)
-                    HandlePatrolCommand(hit);
+                    HandlePatrolCommand(groundHit);
             }
             else
             {
                 // Default command is move
-                HandleMoveCommand(hit);
+                HandleMoveCommand(groundHit, skyHit);
             }
         }
 
@@ -171,6 +179,7 @@ public class Player : MonoBehaviour
         foreach (BaseUnit currentUnit in inventory.totalUnits)
         {
             // Is this unit within the square
+            // @TODO: separate handling for sky units
             if (currentUnit.selectable && IsWithinPolygon(currentUnit.transform.position))
             {
                 currentUnit.Select();
@@ -187,7 +196,7 @@ public class Player : MonoBehaviour
     }
 
     // Handle click-to-move command for selected, kinematic units
-    private void HandleMoveCommand(RaycastHit hit)
+    private void HandleMoveCommand(RaycastHit groundHit, RaycastHit skyHit)
     {
         // Here is where units should be told to move
         bool doAttackMove = InputManager.HoldingCtrl();
@@ -196,16 +205,25 @@ public class Player : MonoBehaviour
         // Handle group movement
         if (selectedUnits.Count > 1)
         {
-            Clusters.MoveGroup(selectedUnits, hit.point, addToMoveQueue, doAttackMove);
+            Clusters.MoveGroup(selectedUnits, groundHit.point, skyHit.point, addToMoveQueue, doAttackMove);
         }
         else if (selectedUnits.Count == 1)
         {
             // Just move the single selected unit directly to click point
             RTSUnit unit = selectedUnits[0];
             // @TODO: this isn't always just SetMove, e.g. for Builder, if activeGhost is placed, that's a QueueBuild command on that guy
-            // So need a better way to handle such exceptions, where commands are being queued outside the main player script here
-            if (!(currentActiveBuilder && currentActiveBuilder.IsBuilder() && (currentActiveBuilder as Builder).activeFloatingGhost))
-                unit.SetMove(hit.point, addToMoveQueue, doAttackMove);
+            // so need a better way to handle such exceptions, where commands are being queued outside the main player script here
+            if (unit.isKinematic && !(currentActiveBuilder && currentActiveBuilder.IsBuilder() && (currentActiveBuilder as Builder).activeFloatingGhost))
+            {
+                RaycastHit pointToUse = groundHit;
+                if (unit.canFly)
+                {
+                    pointToUse = skyHit;
+                    // Set the corresponding ground point for the flying unit to land
+                    unit._FlyingUnit.lastCorrespondingGroundPoint = groundHit.point;
+                }
+                unit.SetMove(pointToUse.point, addToMoveQueue, doAttackMove);
+            }
             unit.AudioManager.PlayMoveSound();
         }
         // TODO: conflict with unit.PlayMoveSound()?
@@ -260,6 +278,61 @@ public class Player : MonoBehaviour
                         unit._AttackBehavior.TryAttack(hit.collider.gameObject, InputManager.HoldingShift());
             }
         }
+    }
+
+    // Class representing all relevant hits from RaycastAll
+    public class HitsMap
+    {
+        public bool goodHit = false;
+        public RaycastHit unitHit = new RaycastHit();
+        public bool unitWasHit = false;
+        public RaycastHit skyMeshHit = new RaycastHit();
+        public bool skyWasHit = false;
+        public RaycastHit groundMeshHit = new RaycastHit();
+        public bool groundWasHit = false;
+
+        public override string ToString()
+        {
+            string hitsDebug = "";
+            if (unitWasHit)
+                hitsDebug += unitHit.collider + " (" + unitHit.collider.gameObject.layer + "), ";
+            if (skyWasHit)
+                hitsDebug += skyMeshHit.collider + " (" + skyMeshHit.collider.gameObject.layer + "), ";
+            if (groundWasHit)
+                hitsDebug += groundMeshHit.collider + " (" + groundMeshHit.collider.gameObject.layer + ") ";
+            return hitsDebug;
+        }
+    }
+
+    // RaycastAll to detect all layer hits on click
+    public HitsMap RaycastAllHits()
+    {
+        HitsMap hitsMap = new HitsMap();
+        // Exclude the following layers from detection
+        int layerMask = ~((1 << LayerMask.NameToLayer("MapEdgeMask")) | (1 << LayerMask.NameToLayer("Default")));
+        RaycastHit[] hits = Physics.RaycastAll(Camera.main.ScreenPointToRay(Input.mousePosition), Mathf.Infinity, layerMask);
+        hitsMap.goodHit = hits.Length > 0;
+
+        foreach (RaycastHit currentHit in hits)
+        {
+            if (currentHit.collider.gameObject.layer == LayerMask.NameToLayer("Unit"))
+            {
+                hitsMap.unitWasHit = true;
+                hitsMap.unitHit = currentHit;
+            }
+            else if (currentHit.transform.gameObject.layer == LayerMask.NameToLayer("Terrain"))
+            {
+                hitsMap.groundWasHit = true;
+                hitsMap.groundMeshHit = currentHit;
+            }
+            else if (currentHit.collider.gameObject.layer == LayerMask.NameToLayer("Sky"))
+            {
+                hitsMap.skyWasHit = true;
+                hitsMap.skyMeshHit = currentHit;
+            }
+        }
+
+        return hitsMap;
     }
 
     public int SelectedUnitsCount()
@@ -411,22 +484,25 @@ public class Player : MonoBehaviour
 
         RaycastHit hit;
         int i = 0;
-        if (Physics.Raycast(Camera.main.ScreenPointToRay(TL), out hit))
+        // Ignore the hit on Sky layer, selection box must use ground hit
+        // @TODO: units in the sky, however, should be captured using the Sky hit
+        int layerMask = ~(1 << LayerMask.NameToLayer("Sky"));
+        if (Physics.Raycast(Camera.main.ScreenPointToRay(TL), out hit, Mathf.Infinity, layerMask))
         {
             TL = hit.point;
             i++;
         }
-        if (Physics.Raycast(Camera.main.ScreenPointToRay(TR), out hit))
+        if (Physics.Raycast(Camera.main.ScreenPointToRay(TR), out hit, Mathf.Infinity, layerMask))
         {
             TR = hit.point;
             i++;
         }
-        if (Physics.Raycast(Camera.main.ScreenPointToRay(BL), out hit))
+        if (Physics.Raycast(Camera.main.ScreenPointToRay(BL), out hit, Mathf.Infinity, layerMask))
         {
             BL = hit.point;
             i++;
         }
-        if (Physics.Raycast(Camera.main.ScreenPointToRay(BR), out hit))
+        if (Physics.Raycast(Camera.main.ScreenPointToRay(BR), out hit, Mathf.Infinity, layerMask))
         {
             BR = hit.point;
             i++;

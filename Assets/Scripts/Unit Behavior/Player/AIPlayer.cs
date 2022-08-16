@@ -114,7 +114,7 @@ public class AIPlayer : MonoBehaviour
             army.HandleUpdate();
         // Remove armies that have issued their retreat or have no units left
         _Armies.RemoveAll(army => army.retreatOrdersIssued || army.units.Count == 0);
-        Debug.Log("Armies info: " + string.Join<Army>(", ", _Armies.ToArray()));
+        // Debug.Log("Armies info: " + string.Join<Army>(", ", _Armies.ToArray()));
     }
 
     private void CreateNewArmy(List<RTSUnit> units, int armySize)

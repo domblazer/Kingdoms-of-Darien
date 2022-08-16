@@ -70,19 +70,20 @@ public class RTSUnit : MonoBehaviour
     public float buildTime = 100;
 
     // Abilities
-    public bool isKinematic = true; // @TODO: canMove
+    public bool isKinematic = true; // @TODO: rename: canMove
     public float maxSpeed { get; set; }
-    public bool isBuilder = false; // @TODO: canReclaim (build & clean?)
+    public bool isBuilder = false; // @TODO: rename: canReclaim (build & clean?)
     public bool canAttack = true;
     public bool canStop = true;
     public bool canGuard = false;
     public bool canPatrol = false;
+    public bool canFly = false;
     // @TODO: more abilities
-    // public bool canFly = false;
     // public bool canAnimate = false; // resurrection
     // public bool cantBeStoned = true; // turn-to-stone attacks do nothing
 
     public AttackBehavior _AttackBehavior { get; set; }
+    public FlyingUnit _FlyingUnit { get; set; }
     public bool phaseDie = false; // If this unit just disappears on die
 
     // @TODO: check StrongholdScript; ideally BaseUnit should handle the facing routine so these vars can remain protected
@@ -124,10 +125,10 @@ public class RTSUnit : MonoBehaviour
 
     // Components
     protected Player mainPlayer;
-    protected NavMeshAgent _Agent;
-    protected NavMeshObstacle _Obstacle;
+    public NavMeshAgent _Agent { get; set; }
+    public NavMeshObstacle _Obstacle { get; set; }
     protected Animator _Animator;
-    public HumanoidUnitAnimator _HumanoidUnitAnimator;
+    public HumanoidUnitAnimator _HumanoidUnitAnimator { get; set; }
     public UnitAudioManager AudioManager { get; set; }
 
     protected List<GameObject> whoCanSeeMe = new List<GameObject>();
@@ -187,6 +188,14 @@ public class RTSUnit : MonoBehaviour
                 throw new System.Exception("Error: Unit can attack but no AttackBehavior (Script) was found.");
         }
 
+        // Set up FlyingUnit linkage
+        if (canFly)
+        {
+            _FlyingUnit = GetComponent<FlyingUnit>();
+            if (_FlyingUnit == null)
+                throw new System.Exception("Error: Unit can fly but no FlyingUnit (Script) was found.");
+        }
+
         // Each unit on Start must group under appropriate player holder and add itself to virtual context
         Functions.AddUnitToPlayerContext(this);
     }
@@ -234,10 +243,11 @@ public class RTSUnit : MonoBehaviour
         if (isKinematic && _Agent.enabled && moveTo != null)
         {
             _Agent.SetDestination(moveTo);
-            // Add extra steering while moving
+
             if (!(inRange = IsInRangeOf(moveTo)))
             {
-                if (IsMoving())
+                // Add extra steering while moving, except for certain flying units
+                if ((IsMoving() && !canFly) || (IsMoving() && canFly && _FlyingUnit.doQuickFacing))
                     HandleFacing(_Agent.steeringTarget, 0.25f);
             }
         }
@@ -507,7 +517,9 @@ public class RTSUnit : MonoBehaviour
         if (isKinematic && !_Obstacle.enabled)
         {
             _Agent.enabled = false;
-            _Obstacle.enabled = true;
+            // @TODO: flying units should only become obstacles when they are touching ground
+            if (!canFly)
+                _Obstacle.enabled = true;
         }
     }
 
