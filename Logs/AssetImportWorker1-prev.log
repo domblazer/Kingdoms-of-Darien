@@ -1,10 +1,10 @@
 Using pre-set license
-Built from '2020.3/staging' branch; Version is '2020.3.20f1 (41c4e627c95f) revision 4310246'; Using compiler version '192528614'; Build Type 'Release'
-OS: 'Windows 10 Pro; OS build 19043.1826; Version 2009; 64bit' Language: 'en' Physical Memory: 16299 MB
-BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1, IsPro: 0
+Built from '2021.3/staging' branch; Version is '2021.3.6f1 (7da38d85baf6) revision 8233869'; Using compiler version '192829333'; Build Type 'Release'
+OS: 'Windows 10  (10.0.19043) 64bit Professional' Language: 'en' Physical Memory: 16299 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1, IsPro: 1
 
 COMMAND LINE ARGUMENTS:
-C:\Program Files\Unity\Hub\Editor\2020.3.20f1\Editor\Unity.exe
+C:\Program Files\Unity\Hub\Editor\2021.3.6f1\Editor\Unity.exe
 -adb2
 -batchMode
 -noUpm
@@ -15,343 +15,90 @@ E:/Unity/Kingdoms Reborn
 -logFile
 Logs/AssetImportWorker1.log
 -srvPort
-16161
+3945
 Successfully changed project path to: E:/Unity/Kingdoms Reborn
 E:/Unity/Kingdoms Reborn
-Using Asset Import Pipeline V2.
-Refreshing native plugins compatible for Editor in 54.76 ms, found 3 plugins.
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gfx=262144"
+Refreshing native plugins compatible for Editor in 53.49 ms, found 3 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Initialize engine version: 2020.3.20f1 (41c4e627c95f)
-[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/2020.3.20f1/Editor/Data/Resources/UnitySubsystems
+Initialize engine version: 2021.3.6f1 (7da38d85baf6)
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/2021.3.6f1/Editor/Data/Resources/UnitySubsystems
 [Subsystems] Discovering subsystems at path E:/Unity/Kingdoms Reborn/Assets
-GfxDevice: creating device client; threaded=0
+GfxDevice: creating device client; threaded=0; jobified=0
 Direct3D:
     Version:  Direct3D 11.0 [level 11.1]
     Renderer: NVIDIA GeForce RTX 3080 Ti (ID=0x2208)
-    Vendor:   
+    Vendor:   NVIDIA
     VRAM:     12108 MB
 Shader 'Custom/AdditiveTintable': fallback shader 'Particles/Additive (Soft)' not found
 Initialize mono
-Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/2020.3.20f1/Editor/Data/Managed'
-Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/2020.3.20f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit'
-Mono config path = 'C:/Program Files/Unity/Hub/Editor/2020.3.20f1/Editor/Data/MonoBleedingEdge/etc'
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56676
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/2021.3.6f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/2021.3.6f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/2021.3.6f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56208
 Begin MonoManager ReloadAssembly
 Registering precompiled unity dll's ...
-Register platform support module: C:/Program Files/Unity/Hub/Editor/2020.3.20f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
-Registered in 0.011962 seconds.
+Register platform support module: C:/Program Files/Unity/Hub/Editor/2021.3.6f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Registered in 0.165234 seconds.
 Native extension for WindowsStandalone target not found
-Refreshing native plugins compatible for Editor in 56.19 ms, found 3 plugins.
+Refreshing native plugins compatible for Editor in 45.20 ms, found 3 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Mono: successfully reloaded assembly
-- Completed reload, in  1.284 seconds
+- Completed reload, in  4.667 seconds
 Domain Reload Profiling:
-	ReloadAssembly (1284ms)
-		BeginReloadAssembly (139ms)
+	ReloadAssembly (4667ms)
+		BeginReloadAssembly (3240ms)
 			ExecutionOrderSort (0ms)
 			DisableScriptedObjects (0ms)
 			BackupInstance (0ms)
 			ReleaseScriptingObjects (0ms)
 			CreateAndSetChildDomain (1ms)
-		EndReloadAssembly (517ms)
-			LoadAssemblies (128ms)
+		EndReloadAssembly (866ms)
+			LoadAssemblies (3228ms)
 			RebuildTransferFunctionScriptingTraits (0ms)
-			SetupTypeCache (174ms)
+			SetupTypeCache (485ms)
 			ReleaseScriptCaches (0ms)
-			RebuildScriptCaches (28ms)
-			SetupLoadedEditorAssemblies (204ms)
+			RebuildScriptCaches (25ms)
+			SetupLoadedEditorAssemblies (274ms)
 				LogAssemblyErrors (0ms)
-				InitializePlatformSupportModulesInManaged (5ms)
+				InitializePlatformSupportModulesInManaged (20ms)
 				SetLoadedEditorAssemblies (0ms)
-				RefreshPlugins (56ms)
-				BeforeProcessingInitializeOnLoad (15ms)
-				ProcessInitializeOnLoadAttributes (87ms)
-				ProcessInitializeOnLoadMethodAttributes (40ms)
+				RefreshPlugins (45ms)
+				BeforeProcessingInitializeOnLoad (1ms)
+				ProcessInitializeOnLoadAttributes (139ms)
+				ProcessInitializeOnLoadMethodAttributes (69ms)
 				AfterProcessingInitializeOnLoad (0ms)
 				EditorAssembliesLoaded (0ms)
 			ExecutionOrderSort2 (0ms)
 			AwakeInstancesAfterBackupRestoration (0ms)
 Platform modules already initialized, skipping
 Registering precompiled user dll's ...
-Registered in 0.006111 seconds.
-Begin MonoManager ReloadAssembly
-Native extension for WindowsStandalone target not found
-Refreshing native plugins compatible for Editor in 50.97 ms, found 3 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Mono: successfully reloaded assembly
-- Completed reload, in  4.279 seconds
-Domain Reload Profiling:
-	ReloadAssembly (4280ms)
-		BeginReloadAssembly (209ms)
-			ExecutionOrderSort (0ms)
-			DisableScriptedObjects (4ms)
-			BackupInstance (0ms)
-			ReleaseScriptingObjects (0ms)
-			CreateAndSetChildDomain (17ms)
-		EndReloadAssembly (3968ms)
-			LoadAssemblies (2407ms)
-			RebuildTransferFunctionScriptingTraits (0ms)
-			SetupTypeCache (860ms)
-			ReleaseScriptCaches (0ms)
-			RebuildScriptCaches (41ms)
-			SetupLoadedEditorAssemblies (547ms)
-				LogAssemblyErrors (0ms)
-				InitializePlatformSupportModulesInManaged (4ms)
-				SetLoadedEditorAssemblies (0ms)
-				RefreshPlugins (51ms)
-				BeforeProcessingInitializeOnLoad (93ms)
-				ProcessInitializeOnLoadAttributes (356ms)
-				ProcessInitializeOnLoadMethodAttributes (4ms)
-				AfterProcessingInitializeOnLoad (38ms)
-				EditorAssembliesLoaded (0ms)
-			ExecutionOrderSort2 (0ms)
-			AwakeInstancesAfterBackupRestoration (6ms)
-Platform modules already initialized, skipping
-========================================================================
-Worker process is ready to serve import requests
-Shader 'Custom/AdditiveTintable': fallback shader 'Particles/Additive (Soft)' not found
-Launched and connected shader compiler UnityShaderCompiler.exe after 0.08 seconds
-Refreshing native plugins compatible for Editor in 0.70 ms, found 3 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 1678 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 105.2 MB.
-System memory in use after: 104.8 MB.
-
-Unloading 22 unused Assets to reduce memory usage. Loaded Objects now: 2138.
-Total: 3.855500 ms (FindLiveObjects: 0.192000 ms CreateObjectMapping: 0.074300 ms MarkObjects: 3.041600 ms  DeleteObjects: 0.546300 ms)
-
-AssetImportParameters requested are different than current active one (requested -> active):
-  custom:framework-win-MediaFoundation: 216162199b28c13a410421893ffa2e32 -> 
-  custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
-  custom:container-muxer-webm: aa71ff27fc2769a1b78a27578f13a17b -> 
-  custom:container-demuxer-webm: 4f35f7cbe854078d1ac9338744f61a02 -> 
-  custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
-  custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
-  custom:video-codec-MediaFoundation-h265: 746d11721c4dcdbdad8f713fa42b33f4 -> 
-  custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
-  custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
-  custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
-========================================================================
-Received Import Request.
-  path: Assets/Images/UI/ara-ui/units/araarch.jpg
-  artifactKey: Guid(5b8209701bbc5144d98c31bab5797106) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Images/UI/ara-ui/units/araarch.jpg using Guid(5b8209701bbc5144d98c31bab5797106) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '3e8d2af51ec9d1f560b8c8e1a56d673e') in 0.425472 seconds 
-  Import took 0.462302 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000740 seconds.
-  path: Assets/Images/UI/ara-ui/units/arabow.jpg
-  artifactKey: Guid(dc44c7b8f359bd94dae669d0b1a63e86) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Images/UI/ara-ui/units/arabow.jpg using Guid(dc44c7b8f359bd94dae669d0b1a63e86) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e4d723f9d28923d286bc3cd7cc3627a2') in 0.051022 seconds 
-  Import took 0.106006 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000168 seconds.
-  path: Assets/Images/UI/ara-ui/units/aracastl.jpg
-  artifactKey: Guid(1127fbe556c73484190397ce3c4c9ebf) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Images/UI/ara-ui/units/aracastl.jpg using Guid(1127fbe556c73484190397ce3c4c9ebf) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'bca62d6d1b4bd61db9b9ef979606f093') in 0.028865 seconds 
-  Import took 0.069002 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000307 seconds.
-  path: Assets/Images/UI/ara-ui/units/aratre.jpg
-  artifactKey: Guid(c27843f772219784c935b7dea2930244) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Images/UI/ara-ui/units/aratre.jpg using Guid(c27843f772219784c935b7dea2930244) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '15a517972672a0983e88adef9b84a6e5') in 0.043159 seconds 
-  Import took 0.067713 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000185 seconds.
-  path: Assets/Images/UI/ara-ui/units/arasmith.jpg
-  artifactKey: Guid(babd6b7882297f34fbde109523ceb450) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Images/UI/ara-ui/units/arasmith.jpg using Guid(babd6b7882297f34fbde109523ceb450) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9735ca2e2e6ab902fe0be40e87e0710a') in 0.069413 seconds 
-  Import took 0.087100 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000209 seconds.
-  path: Assets/Images/UI/ara-ui/units/araknigh.jpg
-  artifactKey: Guid(42f22309a59d863408acc9f5c31491af) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Images/UI/ara-ui/units/araknigh.jpg using Guid(42f22309a59d863408acc9f5c31491af) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'bf8e3baef548bd5cf2a5ecd4d206fc27') in 0.048293 seconds 
-  Import took 0.063121 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000160 seconds.
-  path: Assets/Images/UI/ara-ui/units/arawall.jpg
-  artifactKey: Guid(3f04cc896a2d4fb4999768bc6780d887) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Images/UI/ara-ui/units/arawall.jpg using Guid(3f04cc896a2d4fb4999768bc6780d887) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '8e98ef71fb10e56dc89b00ee66628644') in 0.026906 seconds 
-  Import took 0.030646 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000165 seconds.
-  path: Assets/Images/UI/ara-ui/units/arasword.jpg
-  artifactKey: Guid(1b42aa97259e2fe4d8a11e620341e89f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Images/UI/ara-ui/units/arasword.jpg using Guid(1b42aa97259e2fe4d8a11e620341e89f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f0f61862a922b4d176b587311125460d') in 0.102318 seconds 
-  Import took 0.122194 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000385 seconds.
-  path: Assets/Images/UI/ara-ui/units/arapal.jpg
-  artifactKey: Guid(cef4839e3006f364c84583606fcefb2c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Images/UI/ara-ui/units/arapal.jpg using Guid(cef4839e3006f364c84583606fcefb2c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '2876e8f7016952d36e69cef1e3bf9e74') in 0.052320 seconds 
-  Import took 0.058156 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000229 seconds.
-  path: Assets/Images/UI/ara-ui/units/araat.jpg
-  artifactKey: Guid(54e61ee412572fc46824fa6acc58d253) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Images/UI/ara-ui/units/araat.jpg using Guid(54e61ee412572fc46824fa6acc58d253) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9595cc09f1a4bc9991e64e5515cdce65') in 0.046232 seconds 
-  Import took 0.063948 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000159 seconds.
-  path: Assets/Images/UI/ara-ui/units/aracan.jpg
-  artifactKey: Guid(2a37ed325af39794db1d17eade6b8c77) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Images/UI/ara-ui/units/aracan.jpg using Guid(2a37ed325af39794db1d17eade6b8c77) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '3e293f92d96e5b3963b635a82b25a595') in 0.026797 seconds 
-  Import took 0.047013 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000142 seconds.
-  path: Assets/Images/UI/ara-ui/units/aralode.jpg
-  artifactKey: Guid(f04f8a029bf48dc4eba07372f0ffb9b0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Images/UI/ara-ui/units/aralode.jpg using Guid(f04f8a029bf48dc4eba07372f0ffb9b0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '3d53841cc73baa6d8cb188b96e74209e') in 0.040169 seconds 
-  Import took 0.056921 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000155 seconds.
-  path: Assets/Images/UI/ara-ui/units/arapries.jpg
-  artifactKey: Guid(b3853d11492c0d7448b46cdad961b3e7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Images/UI/ara-ui/units/arapries.jpg using Guid(b3853d11492c0d7448b46cdad961b3e7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '006c3e05a55ee51647a43038818e6c20') in 0.032238 seconds 
-  Import took 0.072587 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000184 seconds.
-  path: Assets/Images/UI/ara-ui/units/aragod.jpg
-  artifactKey: Guid(d496df32286e3c941a49a2da00994624) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Images/UI/ara-ui/units/aragod.jpg using Guid(d496df32286e3c941a49a2da00994624) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b111ed7d7d2dea46bd00cf5ec0bf04b4') in 0.046323 seconds 
-  Import took 0.108902 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000157 seconds.
-  path: Assets/Images/UI/ara-ui/units/arafast.jpg
-  artifactKey: Guid(5a80d71bd66b82345a45a2b4cc4ef3ad) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Images/UI/ara-ui/units/arafast.jpg using Guid(5a80d71bd66b82345a45a2b4cc4ef3ad) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '50791ecac784f6a890698a8835531469') in 0.048039 seconds 
-  Import took 0.084171 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000333 seconds.
-  path: Assets/Images/UI/ara-ui/units/arapult.jpg
-  artifactKey: Guid(aeaf96c51415a994488fdac88d376761) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Images/UI/ara-ui/units/arapult.jpg using Guid(aeaf96c51415a994488fdac88d376761) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '32bf5834eaed960f624fc2da286cd4fe') in 0.044572 seconds 
-  Import took 0.151073 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000453 seconds.
-  path: Assets/Images/UI/ara-ui/units/araprie2.jpg
-  artifactKey: Guid(476ae58a0a0c8c449874cc83dde035a3) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Images/UI/ara-ui/units/araprie2.jpg using Guid(476ae58a0a0c8c449874cc83dde035a3) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '4f71e0fb30a8d6f78dc2089508f4ae9b') in 0.046771 seconds 
-  Import took 0.052682 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000202 seconds.
-  path: Assets/Images/UI/ara-ui/units/arakeep.jpg
-  artifactKey: Guid(f69d5480bb29037439ba3208a6dc3f95) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Images/UI/ara-ui/units/arakeep.jpg using Guid(f69d5480bb29037439ba3208a6dc3f95) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a2535bcd529363af9b5be2e270a47140') in 0.107331 seconds 
-  Import took 0.171057 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000189 seconds.
-  path: Assets/Images/UI/ara-ui/units/aradrag.jpg
-  artifactKey: Guid(b698d31be28311545bc0f5a520515dbd) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Images/UI/ara-ui/units/aradrag.jpg using Guid(b698d31be28311545bc0f5a520515dbd) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '2c5872e894b0987eff6c707cdacc8c41') in 0.045331 seconds 
-  Import took 0.115904 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000536 seconds.
-  path: Assets/Images/UI/ara-ui/units/araegate.jpg
-  artifactKey: Guid(dbf319fabdfd2644c91d38181c7598e0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Images/UI/ara-ui/units/araegate.jpg using Guid(dbf319fabdfd2644c91d38181c7598e0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e50ae3505da3951132899cbd7437e3bc') in 0.045926 seconds 
-  Import took 0.124690 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000464 seconds.
-  path: Assets/Images/UI/ara-ui/units/araking.jpg
-  artifactKey: Guid(018b51ccac8f34845b0788748c780020) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Images/UI/ara-ui/units/araking.jpg using Guid(018b51ccac8f34845b0788748c780020) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e10d68123038437e227d292b10c28999') in 0.055363 seconds 
-  Import took 0.123901 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000252 seconds.
-  path: Assets/Images/UI/ara-ui/units/arassh.jpg
-  artifactKey: Guid(94c00ccdf975db847884ea5696918fce) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Images/UI/ara-ui/units/arassh.jpg using Guid(94c00ccdf975db847884ea5696918fce) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '8c8ec52f8c1d808810e2da3c43a6796f') in 0.037346 seconds 
-  Import took 0.124701 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000511 seconds.
-  path: Assets/Images/UI/ara-ui/units/arawar.jpg
-  artifactKey: Guid(9abe8370544548743b30a7f4f2c3b826) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Images/UI/ara-ui/units/arawar.jpg using Guid(9abe8370544548743b30a7f4f2c3b826) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '569ca1ae83ba6fa13c4429c5ab1658a1') in 0.108501 seconds 
-  Import took 0.130135 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000236 seconds.
-  path: Assets/Images/UI/ara-ui/units/arangate.jpg
-  artifactKey: Guid(8decd1739290f1e4faa6c06108e5b286) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Images/UI/ara-ui/units/arangate.jpg using Guid(8decd1739290f1e4faa6c06108e5b286) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '00b298a182b43b5e77061c367d5fa71a') in 0.032148 seconds 
-  Import took 0.090765 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000972 seconds.
-  path: Assets/Images/UI/ara-ui/units/araspy.jpg
-  artifactKey: Guid(997211347a3b63a428ef164a554daa43) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Images/UI/ara-ui/units/araspy.jpg using Guid(997211347a3b63a428ef164a554daa43) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '350d55868c379c20b2e5feb65ffca74a') in 0.037100 seconds 
-  Import took 0.042308 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000211 seconds.
-  path: Assets/Images/UI/ara-ui/units/arabuild.jpg
-  artifactKey: Guid(b08141e0a37fe94418a0cec2ce1bf403) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Images/UI/ara-ui/units/arabuild.jpg using Guid(b08141e0a37fe94418a0cec2ce1bf403) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '729aa2852ad772cd2c765a54acb8a1d1') in 0.075506 seconds 
-  Import took 0.092297 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000163 seconds.
-  path: Assets/Images/UI/ara-ui/units/aramana.jpg
-  artifactKey: Guid(2044e8bab09155444a796972e3b62c4f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Images/UI/ara-ui/units/aramana.jpg using Guid(2044e8bab09155444a796972e3b62c4f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '1392ddf82819882ddd0df811b897d262') in 0.027235 seconds 
-  Import took 0.042909 seconds .
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000148 seconds.
-  path: Assets/Images/UI/ara-ui/units/arabroad.jpg
-  artifactKey: Guid(ede6e05873e4aa547b2e983f18698e5c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Images/UI/ara-ui/units/arabroad.jpg using Guid(ede6e05873e4aa547b2e983f18698e5c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6ca88eace2ce646b8cacdde60a84e78e') in 0.038346 seconds 
-  Import took 0.053385 seconds .
-
-AssetImportWorkerClient::OnTransportError - code=2 error=End of file
+Registered in 0.004412 seconds.

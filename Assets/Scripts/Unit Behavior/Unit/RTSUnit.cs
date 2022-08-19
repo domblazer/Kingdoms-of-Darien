@@ -36,6 +36,9 @@ public class RTSUnit : MonoBehaviour
     }
     public States state { get; set; } = States.Standby;
 
+    // Every RTSUnit will need a unique identifier
+    public System.Guid uuid { get; set; } = System.Guid.NewGuid();
+
     // Basic initializing info
     public Factions faction;
     public PlayerNumbers playerNumber = PlayerNumbers.Player1;

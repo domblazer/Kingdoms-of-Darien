@@ -1,5 +1,6 @@
 using UnityEngine;
 using DarienEngine.AI;
+using System.Collections.Generic;
 
 namespace DarienEngine
 {
@@ -42,7 +43,7 @@ namespace DarienEngine
             {
                 // Add this unit to the AI player context
                 _Holder = aiPlayer.holder;
-                aiPlayer.inventory.AddUnit(unit);
+                GameManager.Instance.AIPlayers[unit.playerNumber].inventory.AddUnit(unit);
             }
             else
                 Debug.LogWarning("PlayerContextError: No player " + unit.playerNumber + " found for " + unit.unitName);
@@ -55,7 +56,7 @@ namespace DarienEngine
             if (unit.playerNumber == PlayerNumbers.Player1)
                 GameManager.Instance.PlayerMain.inventory.RemoveUnit(unit);
             else if (GameManager.Instance.AIPlayers.TryGetValue(unit.playerNumber, out AIPlayerContext aiPlayer))
-                aiPlayer.inventory.RemoveUnit(unit);
+                GameManager.Instance.AIPlayers[unit.playerNumber].inventory.RemoveUnit(unit);
         }
 
         public static void AddIntangibleToPlayerContext(IntangibleUnitBase unit, bool addToHolder = true)
@@ -73,7 +74,7 @@ namespace DarienEngine
             {
                 // Add this unit to the AI player context
                 _Holder = aiPlayer.holder;
-                aiPlayer.inventory.AddIntangible(unit);
+                GameManager.Instance.AIPlayers[playerNumber].inventory.AddIntangible(unit);
             }
             else
                 Debug.LogWarning("PlayerContextError: No player " + playerNumber + " found for " + unit.name);
@@ -87,7 +88,7 @@ namespace DarienEngine
             if (playerNumber == PlayerNumbers.Player1)
                 GameManager.Instance.PlayerMain.inventory.RemoveIntangible(unit);
             else if (GameManager.Instance.AIPlayers.TryGetValue(playerNumber, out AIPlayerContext aiPlayer))
-                aiPlayer.inventory.RemoveIntangible(unit);
+                GameManager.Instance.AIPlayers[playerNumber].inventory.RemoveIntangible(unit);
         }
 
         public static RectTransform FindBuildMenu(RTSUnit unit)
@@ -104,6 +105,32 @@ namespace DarienEngine
             else if (unit.unitName == "Cabal")
                 searchPath = "TaroCanvas/BuildMenus/CabalMenu";
             return GameObject.Find(searchPath).GetComponent<RectTransform>();
+        }
+    }
+
+    public class RTSUnitComparer : IEqualityComparer<RTSUnit>
+    {
+        // Products are equal if their names and product numbers are equal.
+        public bool Equals(RTSUnit x, RTSUnit y)
+        {
+            // Check whether the compared objects reference the same data.
+            if (Object.ReferenceEquals(x, y)) return true;
+
+            // Check whether any of the compared objects is null.
+            if (Object.ReferenceEquals(x, null) || Object.ReferenceEquals(y, null))
+                return false;
+
+            // Check whether the products' properties are equal.
+            return x.uuid == y.uuid;
+        }
+
+        public int GetHashCode(RTSUnit unit)
+        {
+            // Check whether the object is null
+            if (Object.ReferenceEquals(unit, null)) return 0;
+
+            // Calculate the hash code for the unique field
+            return unit.uuid.GetHashCode();
         }
     }
 }

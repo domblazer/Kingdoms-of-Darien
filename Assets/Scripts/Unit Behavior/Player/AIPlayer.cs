@@ -95,9 +95,10 @@ public class AIPlayer : MonoBehaviour
         );
         List<RTSUnit> armyUnits = new List<RTSUnit>();
         foreach (Army army in _Armies)
-            armyUnits.Concat(army.units);
+            armyUnits.AddRange(army.units);
+
         // Must pick units that are not already in an army
-        List<RTSUnit> validUnits = groundUnits.Except(armyUnits).ToList();
+        List<RTSUnit> validUnits = groundUnits.Except(armyUnits, new RTSUnitComparer()).ToList();
 
         // @TODO: army size threshold should increase with number of lodestones/factories
         int armySize = 7;
@@ -114,7 +115,33 @@ public class AIPlayer : MonoBehaviour
             army.HandleUpdate();
         // Remove armies that have issued their retreat or have no units left
         _Armies.RemoveAll(army => army.retreatOrdersIssued || army.units.Count == 0);
-        // Debug.Log("Armies info: " + string.Join<Army>(", ", _Armies.ToArray()));
+
+        string groupedUnitsDebug = "";
+        foreach (KeyValuePair<UnitCategories, List<RTSUnit>> entry in inventory.groupedUnits)
+        {
+            groupedUnitsDebug += "[" + entry.Key + ", " + entry.Value.Count + "] \n";
+        }
+        string allValidUnitNames = "";
+        foreach (RTSUnit unit in validUnits)
+            allValidUnitNames += "  " + unit.uuid + ", \n";
+
+        string allGroundUnitNames = "";
+        foreach (RTSUnit unit in groundUnits)
+            allGroundUnitNames += "  " + unit.uuid + ", \n";
+
+        string debugText = "";
+        debugText += "Total Units Created: " + inventory.totalUnitsCreated + "\n";
+        debugText += "Units Lost: " + inventory.unitsLost + "\n\n";
+        debugText += "Total Ground Units: " + groundUnits.Count + "\n";
+        // debugText += allGroundUnitNames + "\n";
+        debugText += "Units in Army: " + armyUnits.Count + "\n";
+        debugText += "Ground Units Ready: " + validUnits.Count + "\n\n";
+        // debugText += allValidUnitNames + "\n";
+        debugText += "Total Units: " + inventory.totalUnits.Count + "\n";
+        debugText += "Units by Group: \n" + groupedUnitsDebug + "\n";
+        debugText += "Armies: \n";
+        debugText += string.Join<Army>(", \n", _Armies.ToArray());
+        UIManager.Instance.SetDebugText(debugText);
     }
 
     private void CreateNewArmy(List<RTSUnit> units, int armySize)

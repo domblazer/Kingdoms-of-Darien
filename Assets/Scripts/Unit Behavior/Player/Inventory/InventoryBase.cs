@@ -33,6 +33,8 @@ public class InventoryBase : MonoBehaviour
     public List<IntangibleUnitBase> intangibleUnits = new List<IntangibleUnitBase>();
 
     public int unitLimit = 500;
+    public int totalUnitsCreated = 0;
+    public int unitsLost = 0;
 
     protected void UpdateMana()
     {
@@ -123,9 +125,9 @@ public class InventoryBase : MonoBehaviour
         if (groupedUnits.TryGetValue(unit.unitType, out List<RTSUnit> units))
         {
             // Initialize a new list for this key, if not already
-            if (units == null)
-                units = new List<RTSUnit>();
-            units.Add(unit);
+            if (groupedUnits[unit.unitType] == null)
+                groupedUnits[unit.unitType] = new List<RTSUnit>();
+            groupedUnits[unit.unitType].Add(unit);
         }
         else
         {
@@ -134,6 +136,7 @@ public class InventoryBase : MonoBehaviour
             // If a unit is added whose type is not yet in the dictionary, assume to add new key-value for it
             groupedUnits.Add(unit.unitType, newUnits);
         }
+        totalUnitsCreated++;
         // Fire unit added change event
         OnUnitsChanged?.Invoke(this, new OnInventoryChangedEventArgs
         {
@@ -149,12 +152,15 @@ public class InventoryBase : MonoBehaviour
         // Remove lodestone 
         if (unit.unitType == UnitCategories.LodestoneTier1 || unit.unitType == UnitCategories.LodestoneTier2)
             RemoveLodestone(unit);
+
         // Remove from totalUnits and groupedUnits
         totalUnits.Remove(unit);
         if (groupedUnits.TryGetValue(unit.unitType, out List<RTSUnit> units))
-            units.Remove(unit);
-        else
-            Debug.LogWarning("Error removing unit from grouped inventory.");
+        {
+            // Remove unit from direct list object reference
+            groupedUnits[unit.unitType].Remove(unit);
+        }
+        unitsLost++;
         // Fire unit removed change event
         OnUnitsChanged?.Invoke(this, new OnInventoryChangedEventArgs
         {

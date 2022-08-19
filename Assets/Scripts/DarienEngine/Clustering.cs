@@ -31,6 +31,8 @@ namespace DarienEngine.Clustering
         {
             // UnitClusterMoveInfo clusterMoveInfo = CalculateSmartCenter(selectedUnits);
 
+            // @TODO: AI retreating but last unit dead? Makes [0] throw index out of bounds
+
             float radius = selectedUnits[0].offset.x;
             float deg360 = 0;
             float counter = 0;
@@ -91,10 +93,13 @@ namespace DarienEngine.Clustering
             MoveGroupInfo moveGroupInfo = new MoveGroupInfo { radius = radius, unitMovePositions = new Dictionary<RTSUnit, Vector3>() };
             foreach (RTSUnit unit in selectedUnits)
             {
+                // Pick the closest position to this unit and don't consider it again
                 Vector3 moveTo = FindClosestPosition(unit, positions);
-                // Once this moveTo has been picked, it should not be considered again
                 positions.Remove(moveTo);
-                moveGroupInfo.unitMovePositions.Add(unit, moveTo);
+
+                // @TODO: this doesn't make sense, RTSUnit->Vector3 is one-to-one key-value; this throws "item with the same key has already been added"
+                // moveGroupInfo.unitMovePositions.Add(unit, moveTo);
+
                 // @TODO: need to do TestPoint() on these positions so no units get told to move to invalid locations
                 // @TODO: SetMove for flying units
                 if (unit && unit.isKinematic)

@@ -75,7 +75,7 @@ public class AttackBehavior : MonoBehaviour
         // Melee attackers use a portion of the attackTarget's collider (offset) size
         if (attackTarget)
             rangeOffset = activeWeapon.weaponType == Weapon.WeaponTypes.Melee ?
-                attackTarget.GetComponent<RTSUnit>().offset.x : activeWeapon.weaponRange;
+                attackTarget.GetComponent<RTSUnit>().offset.x * 0.85f : activeWeapon.weaponRange;
 
         // While locked on target but not in range, keep moving to attack position
         bool inRange = false;

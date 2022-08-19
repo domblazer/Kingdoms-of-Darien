@@ -18,6 +18,7 @@ public class Player : MonoBehaviour
     private bool isHoldingDown = false;
     private bool isClicking = false;
     private bool goodHit = false;
+    private HitsMap hitsMap;
 
     // The start and end coordinates of the square we are making
     private Vector3 squareStartPos;
@@ -78,16 +79,14 @@ public class Player : MonoBehaviour
         isClicking = false;
         isHoldingDown = false;
 
-        // Get all hits from click
-        HitsMap hitsMap = RaycastAllHits();
-        goodHit = hitsMap.goodHit;
-
         // Click the mouse button
         if (Input.GetMouseButtonDown(0) && !InputManager.IsMouseOverUI())
         {
+            hitsMap = RaycastAllHits();
+            goodHit = hitsMap.goodHit;
+            // Debug.Log("hitsMap: " + hitsMap);
             clickTime = Time.time;
             // We dont yet know if we are drawing a square, but we need the first coordinate in case we do draw a square
-            // @TODO: square should be drawn on GroundMesh, ignore Sky mesh hit
             if (goodHit)
                 squareStartPos = hitsMap.groundMeshHit.point; // The corner position of the square
         }
@@ -95,7 +94,9 @@ public class Player : MonoBehaviour
         // Release the mouse button
         if (Input.GetMouseButtonUp(0))
         {
-            HandleMouseRelease(hitsMap.groundMeshHit, hitsMap.skyMeshHit);
+            hitsMap = RaycastAllHits();
+            goodHit = hitsMap.goodHit;
+            HandleMouseRelease(hitsMap);
         }
 
         // Holding down the mouse button
@@ -108,24 +109,25 @@ public class Player : MonoBehaviour
             HandleUnitClicked(hitsMap.unitHit);
 
         // If holding down and mouse has been dragged, select all units within the square
-        if (isHoldingDown && goodHit && squareStartPos != hitsMap.groundMeshHit.point)
+        if (isHoldingDown)
         {
-            // Display the selection UI image
-            DisplaySquare();
-            // Highlight the units within the selection square, but don't select the units
-            if (hasCreatedSquare)
-                HandleUnitsUnderSquare(true);
+            hitsMap = RaycastAllHits();
+            goodHit = hitsMap.goodHit;
+            if (goodHit && squareStartPos != hitsMap.groundMeshHit.point)
+            {
+                // Display the selection UI image
+                DisplaySquare();
+                // Highlight the units within the selection square, but don't select the units
+                if (hasCreatedSquare)
+                    HandleUnitsUnderSquare(true);
+            }
         }
     }
 
-    private void HandleMouseRelease(RaycastHit groundHit, RaycastHit skyHit)
+    private void HandleMouseRelease(HitsMap hitsMap)
     {
         if (Time.time - clickTime <= clickHoldDelay)
             isClicking = true;
-
-        // Check the click did not hit the Unit or UI layer
-        bool clearGroundClick = groundHit.collider.gameObject.layer != LayerMask.NameToLayer("Unit") && groundHit.collider.gameObject.layer != LayerMask.NameToLayer("UI");
-        bool clearSkyClick = skyHit.collider.gameObject.layer != LayerMask.NameToLayer("Unit") && skyHit.collider.gameObject.layer != LayerMask.NameToLayer("UI");
 
         // Select all units within the square if we have created a square
         if (hasCreatedSquare)
@@ -141,21 +143,21 @@ public class Player : MonoBehaviour
             // Select the units
             HandleUnitsUnderSquare();
         }
-        else if (!InputManager.IsMouseOverUI() && goodHit && clearGroundClick && clearSkyClick)
+        else if (!InputManager.IsMouseOverUI() && goodHit && !hitsMap.unitWasHit && !hitsMap.uiWasHit)
         {
             // Handle click-to-action commands here
             if (nextCommandIsPrimed)
             {
                 if (primedCommand == CommandTypes.Move)
-                    HandleMoveCommand(groundHit, skyHit);
+                    HandleMoveCommand(hitsMap.groundMeshHit, hitsMap.skyMeshHit);
                 // @TODO: handle commands on skyHit
                 else if (primedCommand == CommandTypes.Patrol)
-                    HandlePatrolCommand(groundHit);
+                    HandlePatrolCommand(hitsMap.groundMeshHit);
             }
             else
             {
                 // Default command is move
-                HandleMoveCommand(groundHit, skyHit);
+                HandleMoveCommand(hitsMap.groundMeshHit, hitsMap.skyMeshHit);
             }
         }
 
@@ -290,17 +292,12 @@ public class Player : MonoBehaviour
         public bool skyWasHit = false;
         public RaycastHit groundMeshHit = new RaycastHit();
         public bool groundWasHit = false;
+        public bool uiWasHit = false;
+        public string debugText = "";
 
         public override string ToString()
         {
-            string hitsDebug = "";
-            if (unitWasHit)
-                hitsDebug += unitHit.collider + " (" + unitHit.collider.gameObject.layer + "), ";
-            if (skyWasHit)
-                hitsDebug += skyMeshHit.collider + " (" + skyMeshHit.collider.gameObject.layer + "), ";
-            if (groundWasHit)
-                hitsDebug += groundMeshHit.collider + " (" + groundMeshHit.collider.gameObject.layer + ") ";
-            return hitsDebug;
+            return debugText;
         }
     }
 
@@ -313,15 +310,18 @@ public class Player : MonoBehaviour
         RaycastHit[] hits = Physics.RaycastAll(Camera.main.ScreenPointToRay(Input.mousePosition), Mathf.Infinity, layerMask);
         hitsMap.goodHit = hits.Length > 0;
 
+        string debugText = "";
         foreach (RaycastHit currentHit in hits)
         {
+            debugText += currentHit.collider + " (" + currentHit.transform.gameObject.layer + "), ";
             if (currentHit.collider.gameObject.layer == LayerMask.NameToLayer("Unit"))
             {
                 hitsMap.unitWasHit = true;
                 hitsMap.unitHit = currentHit;
             }
-            else if (currentHit.transform.gameObject.layer == LayerMask.NameToLayer("Terrain"))
+            else if (currentHit.transform.gameObject.layer == LayerMask.NameToLayer("Terrain") || currentHit.transform.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
             {
+                // @TODO: this could be an obstacle, like a berm. Need to detect obstacle layer
                 hitsMap.groundWasHit = true;
                 hitsMap.groundMeshHit = currentHit;
             }
@@ -330,7 +330,12 @@ public class Player : MonoBehaviour
                 hitsMap.skyWasHit = true;
                 hitsMap.skyMeshHit = currentHit;
             }
+            else if (currentHit.collider.gameObject.layer == LayerMask.NameToLayer("UI"))
+            {
+                hitsMap.uiWasHit = true;
+            }
         }
+        hitsMap.debugText = debugText;
 
         return hitsMap;
     }

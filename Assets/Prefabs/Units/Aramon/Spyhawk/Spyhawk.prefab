@@ -5692,7 +5692,7 @@ GameObject:
   - component: {fileID: 5866666020272159709}
   m_Layer: 9
   m_Name: Spyhawk
-  m_TagString: Untagged
+  m_TagString: Friendly
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -25,28 +25,33 @@ public class MeleeWeaponScript : MonoBehaviour
 
     private void OnTriggerEnter(Collider col)
     {
-        if (_BaseUnit._HumanoidUnitAnimator)
-            activeAttackIndex = _BaseUnit._HumanoidUnitAnimator.activeAttackIndex;
-        // Only send damage when the collider makes contact while the unit is in attack mode
-        if (_BaseUnit != null && _BaseUnit.IsAttacking() && _BaseUnit.animStateTime > animationClipRange[activeAttackIndex].start && _BaseUnit.animStateTime < animationClipRange[activeAttackIndex].end)
+        // Melee weapon must be attached to an RTSUnit with a HumanoidUnitAnimator
+        if (_BaseUnit != null && _BaseUnit._HumanoidUnitAnimator)
         {
-            string compareTag = gameObject.tag == "Enemy" ? "Friendly" : "Enemy";
-            if (col.gameObject.tag == compareTag && !col.isTrigger)
-            {
-                // Debug.Log("_BaseUnit.animStateTime " + _BaseUnit.animStateTime);
-                RTSUnit hitUnit = col.gameObject.GetComponent<RTSUnit>();
-                // Play one shot sound
-                _BaseUnit.AudioManager.PlayMeleeHitSound(hitUnit ? hitUnit.bodyType : RTSUnit.BodyTypes.Default);
+            // activeAttackIndex numbers 1-3, so minus 1 for array index
+            activeAttackIndex = _BaseUnit._HumanoidUnitAnimator.activeAttackIndex - 1;
 
-                // @TODO: friendly fire
-                if (col.gameObject.GetComponent<RTSUnit>())
+            // Only send damage when the collider makes contact while the unit is in attack mode
+            if (_BaseUnit.IsAttacking() && _BaseUnit.animStateTime > animationClipRange[activeAttackIndex].start && _BaseUnit.animStateTime < animationClipRange[activeAttackIndex].end)
+            {
+                string compareTag = gameObject.tag == "Enemy" ? "Friendly" : "Enemy";
+                if (col.gameObject.tag == compareTag && !col.isTrigger)
                 {
-                    // Debug.Log("I, " + _BaseUnit.unitName + ", meleed " + col.gameObject.name);
-                    col.gameObject.GetComponent<RTSUnit>().ReceiveDamage(damage);
-                }
-                else
-                {
-                    Debug.Log("problem sending damage");
+                    // Debug.Log("_BaseUnit.animStateTime " + _BaseUnit.animStateTime);
+                    RTSUnit hitUnit = col.gameObject.GetComponent<RTSUnit>();
+                    // Play one shot sound
+                    _BaseUnit.AudioManager.PlayMeleeHitSound(hitUnit ? hitUnit.bodyType : RTSUnit.BodyTypes.Default);
+
+                    // @TODO: friendly fire
+                    if (col.gameObject.GetComponent<RTSUnit>())
+                    {
+                        // Debug.Log("I, " + _BaseUnit.unitName + ", meleed " + col.gameObject.name);
+                        col.gameObject.GetComponent<RTSUnit>().ReceiveDamage(damage);
+                    }
+                    else
+                    {
+                        Debug.Log("problem sending damage");
+                    }
                 }
             }
         }

@@ -61,9 +61,6 @@ namespace DarienEngine.AI
         public PlayerSnapshot playerSnapshot;
         public PlayerSnapshot enemySnapshot;
 
-        ///
-        ///
-        /// 
         public Army(List<RTSUnit> allValidUnits, int armySize)
         {
             units = new List<RTSUnit>();
@@ -110,7 +107,7 @@ namespace DarienEngine.AI
                     originalUnitCount = newUnits.Count;
                     units = newUnits;
                     // Units booted from the army in this check go back to patrolling
-                    RTSUnit[] exceptUnits = units.Except<RTSUnit>(newUnits).ToArray();
+                    RTSUnit[] exceptUnits = units.Except<RTSUnit>(newUnits, new RTSUnitComparer()).ToArray();
                     foreach (RTSUnit exUnit in exceptUnits)
                         exUnit.currentCommand = new CommandQueueItem { commandType = CommandTypes.Patrol, patrolRoute = null };
                     // @TODO: take another Army.PlayerSnapshot here? To accurately reflect enemy status when attack orders given
@@ -194,6 +191,8 @@ namespace DarienEngine.AI
 
         public void FormUp()
         {
+            // @TODO: think the form up strategy should be more like, find the main cluster of units, expand selection out until you reach your
+            // army quota, take that new selection, find the mean point between them, then that's your formUpPoint
             formUpPoint = FindFormUpLocation();
             // @Note: attackMove so units can still attack if engaged while forming up
             // @TODO: still problem though that these units will get interrupted and need to return to these army orders 
@@ -247,7 +246,8 @@ namespace DarienEngine.AI
             }
             // @TODO: units should only need to get within range of the retreat point before dequeueing
             // @TODO: point for skyFormUpPoint
-            moveGroupInfo = Clusters.MoveGroup(units, retreatPoint, retreatPoint, false);
+            if (units.Count > 0)
+                moveGroupInfo = Clusters.MoveGroup(units, retreatPoint, retreatPoint, false);
         }
 
         public RTSUnit FindTarget(Vector3 fromOrigin)

@@ -179,7 +179,7 @@ public class GhostUnit : MonoBehaviour
     {
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, ~(1 << LayerMask.NameToLayer("Sky"))))
         {
             hitPos = hit.point;
             // Debug.Log("hit.collider.tag: " + hit.collider.tag);

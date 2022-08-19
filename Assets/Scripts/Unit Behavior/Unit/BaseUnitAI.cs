@@ -262,7 +262,7 @@ public class BaseUnitAI : RTSUnit
             if (Time.time > nextSightCheck)
             {
                 nextSightCheck = Time.time + sightCheckRate;
-                whoCanSeeMe = whoCanSeeMe.Where(item => item != null && !item.GetComponent<RTSUnit>().isDead).ToList();
+                whoCanSeeMe = whoCanSeeMe.Where(item => item && item.GetComponent<RTSUnit>() && !item.GetComponent<RTSUnit>().isDead).ToList();
             }
             TriggerShow();
         }
@@ -289,6 +289,7 @@ public class BaseUnitAI : RTSUnit
     private IEnumerator Die()
     {
         HandleDie();
+        // @TODO: if this AI unit is part of an Army, it must be removed from the Army as well
         yield return new WaitForSeconds(dieTime);
         Destroy(gameObject);
     }

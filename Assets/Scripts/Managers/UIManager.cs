@@ -15,6 +15,7 @@ public class UIManager : MonoBehaviour
     public RectTransform f2Menu;
     public RectTransform[] buildMenus;
 
+    public RectTransform debugMenu;
     public Text debugText;
 
     // Chrystal ball UI elements
@@ -48,6 +49,9 @@ public class UIManager : MonoBehaviour
         // Deactivate all menus on start. @Note: by default, the canvas prefab should have menus set in "active" state
         ToggleF4Menu(false);
         ToggleF2InfoMenu(pauseOnStart);
+
+        ToggleDebugMenu(false);
+
         BattleMenuInstance.Toggle(false);
         UnitInfoInstance.Toggle(false);
         foreach (RectTransform buildMenu in buildMenus)
@@ -61,6 +65,10 @@ public class UIManager : MonoBehaviour
             ToggleF2InfoMenu(!f2Menu.gameObject.activeInHierarchy);
         if (Input.GetKeyDown(KeyCode.F4))
             ToggleF4Menu(!f4Menu.gameObject.activeInHierarchy);
+
+        // Use F5 to trigger debug menu for now. @TODO
+        if (Input.GetKeyDown(KeyCode.F5))
+            ToggleDebugMenu(!debugMenu.gameObject.activeInHierarchy);
     }
 
     public void ToggleF4Menu(bool value)
@@ -75,6 +83,11 @@ public class UIManager : MonoBehaviour
         else
             GameManager.Instance.ResumeGame();
         f2Menu.gameObject.SetActive(value);
+    }
+
+    public void ToggleDebugMenu(bool value)
+    {
+        debugMenu.gameObject.SetActive(value);
     }
 
     /// <summary>Class <c>BattleMenu</c> is a virtual representation of the right-side game menu.</summary>

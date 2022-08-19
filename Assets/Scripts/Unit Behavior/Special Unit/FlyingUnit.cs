@@ -39,7 +39,10 @@ public class FlyingUnit : MonoBehaviour
                     isAdjusting = true;
                 }
             }
+            // @TODO: if you get another command during landing, need to interrupt and takeoff again
         }
+
+        // @TODO: spyhawk not revealing ground units b/c radar trigger shape/size? Should make radar triggers capsules?
 
         // @TODO: landing not working on group move
         if (changingPlanes)
