@@ -54,6 +54,7 @@ public class BuilderAI : UnitBuilderAI
 
     private Vector3 CalculateIntangibleOffset(GameObject gameObj)
     {
+        // @TODO: need to separate the collider that determines build size vs the collider that picks up hits
         Vector3 offset = new Vector3();
         if (gameObj.GetComponent<BoxCollider>())
             offset = gameObj.GetComponent<BoxCollider>().size;

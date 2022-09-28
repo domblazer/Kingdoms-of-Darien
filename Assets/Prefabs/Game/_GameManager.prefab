@@ -30,6 +30,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 542.7444, y: -1.8187246, z: 266.51776}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -83,6 +84,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  debugMenu: {fileID: 0}
   debugText: {fileID: 0}
   chrystalBallTexture: {fileID: 0}
   chrystalBallTextureArray:
@@ -111,6 +113,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: cda686666314f1a4590653ada7f2e301, type: 3}
   - {fileID: 21300000, guid: afb162f8d5e856342aedf461ed39bfb6, type: 3}
   pauseOnStart: 0
+  specialMoveTexturePrefab: {fileID: 7240995782939768487, guid: c7816d8043826c249863b01e19d11301, type: 3}
 --- !u!114 &2598857554717851820
 MonoBehaviour:
   m_ObjectHideFlags: 0

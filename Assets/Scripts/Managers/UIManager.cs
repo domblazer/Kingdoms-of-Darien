@@ -31,6 +31,9 @@ public class UIManager : MonoBehaviour
 
     // Hierarchical path of Canvas, e.g. "/AraCanvas"
     private string canvasRootPath;
+    public Canvas canvasRoot { get; set; }
+
+    public GameObject specialMoveTexturePrefab;
 
     private void Awake()
     {
@@ -41,6 +44,8 @@ public class UIManager : MonoBehaviour
     {
         // Get canvas root path from Player faction
         canvasRootPath = CanvasConfigs.GetCanvasRoot(GameManager.Instance.PlayerMain.player.playerFaction);
+        canvasRoot = GameObject.Find(canvasRootPath).GetComponent<Canvas>();
+
         // Instantiate virtual menus from Canvas
         BattleMenuInstance = new BattleMenu(battleMenuDefault, canvasRootPath);
         UnitInfoInstance = new UnitInfoMenu(canvasRootPath);
@@ -66,7 +71,7 @@ public class UIManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F4))
             ToggleF4Menu(!f4Menu.gameObject.activeInHierarchy);
 
-        // Use F5 to trigger debug menu for now. @TODO
+        // @TODO: remove later: Use F5 to trigger debug menu for now. 
         if (Input.GetKeyDown(KeyCode.F5))
             ToggleDebugMenu(!debugMenu.gameObject.activeInHierarchy);
     }

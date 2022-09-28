@@ -146,10 +146,47 @@ public class AIPlayer : MonoBehaviour
 
     private void CreateNewArmy(List<RTSUnit> units, int armySize)
     {
-        Army army = new Army(units, armySize);
+        // @TODO: think the form up strategy should be more like, find the main cluster of units, expand selection out until you reach your
+        // army quota, take that new selection, find the mean point between them, then that's your formUpPoint
+        List<ClusterInfo> clusters = Clusters.Cluster(units, 3);
+        clusters.Sort((ClusterInfo x, ClusterInfo y) => x.units.Count < y.units.Count ? 1 : -1);
+        ClusterInfo largestCluster = clusters[0];
+
+        foreach (ClusterInfo cluster in clusters)
+        {
+            Debug.Log("units in cluster: " + string.Join<RTSUnit>(", \n", cluster.units.ToArray()));
+        }
+
+        // Not enough units to make up army, add some more
+        if (largestCluster.units.Count < armySize)
+        {
+
+        }
+        // Too many units in cluster for army, shed some 
+        else if (largestCluster.units.Count > armySize)
+        {
+
+        }
+        // Just right, ready to lauch
+        else
+        {
+
+        }
+
+        // @TODO: the formUpPoint can't be somewhere that's going to block a building, or be really near or on an obstacle
+        // Still need to find a formUpPoint that units can get to but is also smart, like slightly towards the enemy's position
+
+        Army army = new Army(largestCluster.units);
         inventory.OnUnitsChanged += army.HandleUnitChange;
         army.PlayerConditions(playerNumber, PlayerNumbers.Player1);
-        army.FormUp();
+
+        Vector3 formUpPoint = army.FormUp();
+
+        // @DEBUG: Place an icon to let us know where the form up point is
+        Instantiate(UIManager.Instance.specialMoveTexturePrefab,
+            new Vector3(formUpPoint.x, formUpPoint.y + 0.15f, formUpPoint.z),
+            UIManager.Instance.specialMoveTexturePrefab.transform.rotation);
+
         army.ordersIssued = true;
         Debug.Log("Army called upon.");
         _Armies.Add(army);

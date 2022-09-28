@@ -115,6 +115,7 @@ GameObject:
   - component: {fileID: 738280607077117987}
   - component: {fileID: 738280607077118045}
   - component: {fileID: 738280607077117986}
+  - component: {fileID: 8287940303504885754}
   m_Layer: 9
   m_Name: zombie
   m_TagString: Enemy
@@ -420,6 +421,20 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 2.87, z: 0}
   m_TimeToStationary: 0.5
+--- !u!114 &8287940303504885754
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 504279588120628597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efb425fe17e9d44429332de47588800d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tooltipPanelPrefab: {fileID: 6938777300191431284, guid: 583176d5c6ddf2c42a1590a605cb9794, type: 3}
+  tooltipOffset: {x: 1.5, y: 1.5, z: 1.5}
 --- !u!1 &514252222208197532
 GameObject:
   m_ObjectHideFlags: 0

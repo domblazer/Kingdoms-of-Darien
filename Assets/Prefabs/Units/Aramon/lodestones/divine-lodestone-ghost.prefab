@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4776127244603922560}
   - component: {fileID: 8470763014385234761}
   - component: {fileID: 9025730387268319650}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: inner-stone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28,6 +28,7 @@ Transform:
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8571117355799734090}
   m_RootOrder: 1
@@ -51,6 +52,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -92,7 +94,7 @@ GameObject:
   - component: {fileID: 220617426271287647}
   - component: {fileID: 5008752538573181811}
   - component: {fileID: 6781309463198094922}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: divine-lodestone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -109,6 +111,7 @@ Transform:
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8571117355799734090}
   m_RootOrder: 0
@@ -132,6 +135,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -173,8 +177,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8571117355799734090}
-  - component: {fileID: 4252182856203550002}
-  m_Layer: 9
+  - component: {fileID: 1832364115132390453}
+  - component: {fileID: 3783990892263292394}
+  m_Layer: 13
   m_Name: divine-lodestone-ghost
   m_TagString: Friendly
   m_Icon: {fileID: 0}
@@ -191,13 +196,14 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 552.6802, y: 1.0071425, z: 267.1112}
   m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 220617426271287647}
   - {fileID: 4776127244603922560}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4252182856203550002
+--- !u!114 &1832364115132390453
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -206,8 +212,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 9059388116696088048}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c56643d26760734792773ffefd9b795, type: 3}
+  m_Script: {fileID: 11500000, guid: 91c051192d2d84a45b19171a8e589761, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  intangibleUnit: {fileID: 3961518305979166696, guid: c4e5fd681ef11214fa10a139c7297b6e, type: 3}
-  offset: {x: 0, y: 0, z: 0}
+  intangibleUnit: {fileID: 0}
+  invalidIcon: {fileID: 0}
+  isLodestone: 0
+--- !u!136 &3783990892263292394
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9059388116696088048}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 1
+  m_Height: 4.5
+  m_Direction: 1
+  m_Center: {x: 0, y: 1.62, z: 0}

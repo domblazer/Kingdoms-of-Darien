@@ -30,6 +30,8 @@ public class BaseUnitAI : RTSUnit
     private States defaultState;
 
     private UnitBuilderAI _Builder;
+    public TooltipManager _TooltipManager { get; set; }
+    public Army _Army { get; set; }
 
     private void Awake()
     {
@@ -70,6 +72,10 @@ public class BaseUnitAI : RTSUnit
         // @TODO: map other states to commands 
         else if (startState == StartStates.Standby)
             state = defaultState = States.Standby;
+
+        // Create a tooltip for this unit
+        _TooltipManager = GetComponent<TooltipManager>();
+        _TooltipManager.CreateNewTooltip();
     }
 
     private void Update()
@@ -85,18 +91,26 @@ public class BaseUnitAI : RTSUnit
         if (!isDead)
         {
             if (!commandQueue.IsEmpty())
-            {
                 HandleCurrentCommand();
-            }
             else
-            {
                 state = States.Standby;
-            }
 
             // @TODO: AI should autopick attack target under most circumstances
             if (canAttack && state.Value == States.Standby.Value)
                 _AttackBehavior.AutoPickAttackTarget();
         }
+
+        string tooltipText = state.Value + "\n";
+        if (_Army != null)
+        {
+            tooltipText += "In army. \n";
+            if (canAttack && _AttackBehavior.attackTarget)
+                tooltipText += "Attack target? " + _AttackBehavior.attackTarget.name;
+            // @TODO: want to also see:
+            // - cluster numbers
+        }
+        if (_TooltipManager)
+            _TooltipManager.SetTooltipText(tooltipText);
     }
 
     /// <summary> 

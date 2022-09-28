@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6258484800012685014}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: door.R_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -26,6 +26,7 @@ Transform:
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0, y: 0.0032130098, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5491339165957449892}
   m_RootOrder: 0
@@ -41,7 +42,7 @@ GameObject:
   - component: {fileID: 1714083396752696413}
   - component: {fileID: 786978866604273048}
   - component: {fileID: 6922256654786419784}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: flag
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -58,6 +59,7 @@ Transform:
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -2.2956238, y: 4.839592, z: 0.07088076}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8769434624827872848}
   m_RootOrder: 6
@@ -81,6 +83,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -124,7 +127,7 @@ GameObject:
   - component: {fileID: 8585124369313010347}
   - component: {fileID: 5613906843560821626}
   - component: {fileID: 5165532861423230572}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: chimney-2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -141,6 +144,7 @@ Transform:
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -2.2821324, y: 1, z: -0.7195189}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8769434624827872848}
   m_RootOrder: 4
@@ -164,6 +168,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -205,7 +210,7 @@ GameObject:
   - component: {fileID: 4706620747762585460}
   - component: {fileID: 4131309951636180698}
   - component: {fileID: 6169801881720622673}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: chimney-1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -222,6 +227,7 @@ Transform:
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 2.7407851, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8769434624827872848}
   m_RootOrder: 3
@@ -245,6 +251,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -284,7 +291,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1188507140471176487}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: trapdoor_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -301,6 +308,7 @@ Transform:
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0, y: 0.0075206277, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5980500859867484741}
   m_RootOrder: 0
@@ -316,7 +324,7 @@ GameObject:
   - component: {fileID: 2632890126734338343}
   - component: {fileID: 1949829761918365732}
   - component: {fileID: 6340984096125828460}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: walls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -333,6 +341,7 @@ Transform:
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8769434624827872848}
   m_RootOrder: 10
@@ -356,6 +365,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -395,7 +405,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6021879377961413040}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: barracks-armature
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -412,6 +422,7 @@ Transform:
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
   m_LocalPosition: {x: 0.1671144, y: 0.1709125, z: -0.0000000058500857}
   m_LocalScale: {x: 100, y: 100, z: 100}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1452522282153298390}
   - {fileID: 5491339165957449892}
@@ -431,7 +442,7 @@ GameObject:
   - component: {fileID: 4974856863171972606}
   - component: {fileID: 4017511774354713313}
   - component: {fileID: 9200980623905445182}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: back-doors
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -448,6 +459,7 @@ Transform:
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8769434624827872848}
   m_RootOrder: 0
@@ -471,6 +483,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -510,7 +523,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1452522282153298390}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: door.L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -527,6 +540,7 @@ Transform:
   m_LocalRotation: {x: -0.5, y: -0.5, z: -0.49999994, w: 0.50000006}
   m_LocalPosition: {x: -0.00521373, y: -0.017300291, z: 0.005}
   m_LocalScale: {x: 1, y: 0.99999994, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5297187044144863067}
   m_Father: {fileID: 6021879377961413040}
@@ -541,7 +555,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5297187044144863067}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: door.L_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -558,6 +572,7 @@ Transform:
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0, y: 0.0032050002, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1452522282153298390}
   m_RootOrder: 0
@@ -571,7 +586,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2110370770778674450}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: lodestone_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -588,6 +603,7 @@ Transform:
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0, y: 0.005418837, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9085748359256492509}
   m_RootOrder: 0
@@ -601,7 +617,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5491339165957449892}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: door.R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -618,6 +634,7 @@ Transform:
   m_LocalRotation: {x: 0.5, y: -0.5, z: 0.49999994, w: 0.50000006}
   m_LocalPosition: {x: 0.0019076237, y: -0.017300291, z: 0.005}
   m_LocalScale: {x: 0.9999999, y: 0.9999998, z: 0.99999994}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6258484800012685014}
   m_Father: {fileID: 6021879377961413040}
@@ -632,7 +649,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5980500859867484741}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: trapdoor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -649,6 +666,7 @@ Transform:
   m_LocalRotation: {x: 0.5, y: -0.5, z: 0.49999994, w: 0.50000006}
   m_LocalPosition: {x: -0.02078723, y: 0.0070880894, z: 0.04574625}
   m_LocalScale: {x: 0.9999999, y: 0.9999998, z: 0.99999994}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1188507140471176487}
   m_Father: {fileID: 6021879377961413040}
@@ -681,6 +699,7 @@ Transform:
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8769434624827872848}
   m_RootOrder: 12
@@ -696,6 +715,7 @@ SpriteRenderer:
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -746,7 +766,7 @@ GameObject:
   m_Component:
   - component: {fileID: 703972902925158668}
   - component: {fileID: 1276349568471169626}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: doors
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -763,6 +783,7 @@ Transform:
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8769434624827872848}
   m_RootOrder: 5
@@ -778,6 +799,7 @@ SkinnedMeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -833,7 +855,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6425820271835569430}
   - component: {fileID: 5587772560392853679}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: trap-door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -850,6 +872,7 @@ Transform:
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -2.2821324, y: 4.7740107, z: -0.7195189}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8769434624827872848}
   m_RootOrder: 9
@@ -865,6 +888,7 @@ SkinnedMeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -920,7 +944,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1557526909567265316}
   - component: {fileID: 6828862734082950674}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: mana-stone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -937,6 +961,7 @@ Transform:
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -2.29791, y: 3.7338016, z: -0.7076743}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8769434624827872848}
   m_RootOrder: 8
@@ -952,6 +977,7 @@ SkinnedMeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -1007,7 +1033,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9085748359256492509}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: lodestone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1024,6 +1050,7 @@ Transform:
   m_LocalRotation: {x: 0.7071068, y: -0.00000008429372, z: -0.0000000842937, w: 0.7071067}
   m_LocalPosition: {x: -0.024623543, y: 0.0070264093, z: 0.032993596}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2110370770778674450}
   m_Father: {fileID: 6021879377961413040}
@@ -1040,7 +1067,7 @@ GameObject:
   - component: {fileID: 4126428233346178753}
   - component: {fileID: 8227011314941987136}
   - component: {fileID: 3437458663327362490}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: flag.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1057,6 +1084,7 @@ Transform:
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 1.4907904, y: 1.5507209, z: 1.8600546}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8769434624827872848}
   m_RootOrder: 7
@@ -1080,6 +1108,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -1123,7 +1152,7 @@ GameObject:
   - component: {fileID: 2914268848347666409}
   - component: {fileID: 5947443269103316495}
   - component: {fileID: 8711778024468819142}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: barracks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1140,6 +1169,7 @@ Transform:
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8769434624827872848}
   m_RootOrder: 1
@@ -1163,6 +1193,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -1208,7 +1239,7 @@ GameObject:
   - component: {fileID: 3410182045620341802}
   - component: {fileID: 9095568281269252541}
   - component: {fileID: 4723962861850086266}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: barracks-ghost
   m_TagString: Friendly
   m_Icon: {fileID: 0}
@@ -1225,6 +1256,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 550.09, y: 1.007144, z: 254.82}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4974856863171972606}
   - {fileID: 2914268848347666409}
@@ -1244,7 +1276,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!95 &3410182045620341802
 Animator:
-  serializedVersion: 3
+  serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1257,6 +1289,7 @@ Animator:
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
@@ -1272,8 +1305,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 6, y: 4.2, z: 3.74}
-  m_Center: {x: 0, y: 2, z: 0}
+  m_Size: {x: 6, y: 4.2, z: 7}
+  m_Center: {x: 0, y: 2, z: 1.5}
 --- !u!114 &4723962861850086266
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1302,7 +1335,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3269448759375663402, guid: f12c3bd165ce72249b3e2e02b58f1229, type: 3}
       propertyPath: m_Layer
-      value: 9
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 3269448759375663406, guid: f12c3bd165ce72249b3e2e02b58f1229, type: 3}
       propertyPath: m_RootOrder

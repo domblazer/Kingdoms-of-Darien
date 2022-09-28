@@ -28,8 +28,8 @@ public class GhostUnit : MonoBehaviour
 
     void Start()
     {
-        // Start off with invalid placement
-        SetPlacementValid(false);
+        // Start off with valid placement
+        SetPlacementValid(true);
 
         // Compile all renderers and materials on this model
         foreach (Transform child in transform)
@@ -73,32 +73,20 @@ public class GhostUnit : MonoBehaviour
         // @TODO: when there's an active ghost, the build menu goes transparent and is disabled
     }
 
-    private void FixedUpdate()
+    private void OnTriggerStay(Collider col)
     {
-        // If not set (current active ghost), check collisions for valid build placement
-        if (!isSet)
-        {
-            CheckCollisions();
-            // Debug.Log("colliders: " + string.Join<Collider>(", ", hitColliders.ToArray()));
-            bool valid = false;
-            if (isLodestone && hitColliders.Length > 0)
-            {
-                // If at least one of these colliders is a SacredSite and is hovering directly over it
-                foreach (Collider col in hitColliders)
-                {
-                    if (col.tag == "SacredSite" && transform.position == col.transform.position)
-                    {
-                        valid = true;
-                        break;
-                    }
-                }
-            }
-            else if (!isLodestone && hitColliders.Length > 0)
-                valid = false;
-            else if (!isLodestone && hitColliders.Length == 0)
-                valid = true;
-            SetPlacementValid(valid);
-        }
+        bool valid = false;
+        if (isLodestone && col.tag == "SacredSite" && transform.position == col.transform.position)
+            valid = true;
+        else if (!isLodestone)
+            valid = false;
+        SetPlacementValid(valid);
+    }
+
+    private void OnTriggerExit()
+    {
+        if (!isLodestone)
+            SetPlacementValid(true);
     }
 
     // Instantiate the intangible unit and destroy this ghost
@@ -179,6 +167,7 @@ public class GhostUnit : MonoBehaviour
     {
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        // Ignore the Sky layer
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, ~(1 << LayerMask.NameToLayer("Sky"))))
         {
             hitPos = hit.point;
@@ -261,11 +250,6 @@ public class GhostUnit : MonoBehaviour
             float r = gameObject.GetComponent<CapsuleCollider>().radius;
             offset = new Vector3(r, r, r);
         }
-    }
-
-    private void CheckCollisions()
-    {
-        hitColliders = Physics.OverlapBox(gameObject.transform.position, offset / 2, Quaternion.identity, (1 << 7) | (1 << 9));
     }
 
     private void SetPlacementValid(bool val)

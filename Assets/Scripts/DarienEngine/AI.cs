@@ -61,16 +61,12 @@ namespace DarienEngine.AI
         public PlayerSnapshot playerSnapshot;
         public PlayerSnapshot enemySnapshot;
 
-        public Army(List<RTSUnit> allValidUnits, int armySize)
+        public Army(List<RTSUnit> armyUnits)
         {
-            units = new List<RTSUnit>();
-            for (int i = 0; i < armySize; i++)
-            {
-                // Collect this army from a random selection of valid units
-                int rand = Random.Range(0, allValidUnits.Count);
-                units.Add(allValidUnits[rand]);
-            }
-            originalUnitCount = armySize;
+            foreach (BaseUnitAI unit in armyUnits)
+                unit._Army = this;
+            units = armyUnits;
+            originalUnitCount = units.Count;
         }
 
         public override string ToString()
@@ -86,7 +82,7 @@ namespace DarienEngine.AI
             if (ordersIssued && !doneFormingUp && !inRetreat)
             {
                 statusText = "Forming up";
-                Debug.Log("Army is forming up...");
+                // Debug.Log("Army is forming up...");
                 formUpTimeRemaining -= Time.deltaTime;
                 // Army is done forming up when all units have arrived at their move points or time limit reached
                 doneFormingUp = units.All(u => u.commandQueue.IsEmpty()) | formUpTimeRemaining < 0;
@@ -119,7 +115,7 @@ namespace DarienEngine.AI
                 // @TODO: units in an Army should keep trying to attack as long as they are not broken, so once an attack interrupt has
                 // happened, they need to go back to picking another target with FindTarget()
                 statusText = "Engaging enemy";
-                Debug.Log("Army is now engaging target...");
+                // Debug.Log("Army is now engaging target...");
 
                 foreach (RTSUnit unit in units)
                 {
@@ -189,15 +185,15 @@ namespace DarienEngine.AI
             return pSnap;
         }
 
-        public void FormUp()
+        public Vector3 FormUp()
         {
-            // @TODO: think the form up strategy should be more like, find the main cluster of units, expand selection out until you reach your
-            // army quota, take that new selection, find the mean point between them, then that's your formUpPoint
             formUpPoint = FindFormUpLocation();
+
             // @Note: attackMove so units can still attack if engaged while forming up
             // @TODO: still problem though that these units will get interrupted and need to return to these army orders 
             // @TODO: point for skyFormUpPoint
             moveGroupInfo = Clusters.MoveGroup(units, formUpPoint, formUpPoint, false, true);
+            return formUpPoint;
         }
 
         // Find a "quarter" point between this player's start position and the enemy's, towards player's position
