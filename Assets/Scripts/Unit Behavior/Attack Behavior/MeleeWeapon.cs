@@ -2,19 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MeleeWeaponScript : MonoBehaviour
+/// <summary>
+/// Class <c>MeleeWeapon</c> represents behavior of the melee weapon a unit carries. AnimationEvents are required on every melee animation
+/// to set _BaseUnit.isStriking, in order to accurately determine when a unit attack should register.
+/// </summary>
+public class MeleeWeapon : MonoBehaviour
 {
     private float damage = 100;
     private RTSUnit _BaseUnit;
-
-    [System.Serializable]
-    public class AnimationClipRange
-    {
-        public float start = 0;
-        public float end = 1.0f;
-    }
-
-    public AnimationClipRange[] animationClipRange = new AnimationClipRange[3];
     private int activeAttackIndex = 0;
 
     public void SetLinkage(RTSUnit baseUnit, float d)
@@ -31,8 +26,8 @@ public class MeleeWeaponScript : MonoBehaviour
             // activeAttackIndex numbers 1-3, so minus 1 for array index
             activeAttackIndex = _BaseUnit._HumanoidUnitAnimator.activeAttackIndex - 1;
 
-            // Only send damage when the collider makes contact while the unit is in attack mode
-            if (_BaseUnit.IsAttacking() && _BaseUnit.animStateTime > animationClipRange[activeAttackIndex].start && _BaseUnit.animStateTime < animationClipRange[activeAttackIndex].end)
+            // Only send damage when the collider makes contact while the unit is mid-strike
+            if (_BaseUnit.IsAttacking() && _BaseUnit.isStriking)
             {
                 string compareTag = gameObject.tag == "Enemy" ? "Friendly" : "Enemy";
                 if (col.gameObject.tag == compareTag && !col.isTrigger)

@@ -189,8 +189,16 @@ namespace DarienEngine.Clustering
             for (int i = 0; i < numClusters; i++)
                 clusters.Add(new ClusterInfo());
             // Assign each unit to a cluster at random
+            // @TODO: ensure each cluster gets at least one unit
             foreach (RTSUnit unit in units)
-                clusters[Random.Range(0, numClusters)].units.Add(unit);
+            {
+                int clusterNum = Random.Range(0, numClusters);
+                unit.clusterNum = clusterNum;
+                clusters[clusterNum].units.Add(unit);
+            }
+            Debug.Log("initial cluster 1 size: " + clusters[0].units.Count + "\n"
+                + "initial cluster 2 size: " + clusters[1].units.Count + "\n"
+                + "initial cluster 3 size: " + clusters[2].units.Count + "\n");
 
             bool changed = true; // was there a change in at least one cluster assignment?
             bool success = true; // were all means able to be computed? (no zero-count clusters)
@@ -199,24 +207,34 @@ namespace DarienEngine.Clustering
             int ct = 0;
             while (changed == true && success == true && ct < maxCount)
             {
-                ++ct; // k-means typically converges very quickly
-                success = UpdateMeans(clusters); // compute new cluster means if possible. no effect if fail
-                changed = UpdateClustering(units, clusters); // (re)assign tuples to clusters. no effect if fail
+
+                ct++;
+                // Pass the clusters variable by reference to compute the new cluster means
+                success = UpdateMeans(ref clusters);
+                // (re)assign tuples to clusters. no effect if fail
+                changed = UpdateClustering(ref units, ref clusters);
             }
+            Debug.Log("final cluster 1 size: " + clusters[0].units.Count + "\n"
+                + "final cluster 2 size: " + clusters[1].units.Count + "\n"
+                + "final cluster 3 size: " + clusters[2].units.Count + "\n"
+                + "final update count: " + ct);
             return clusters;
         }
 
-        private static bool UpdateMeans(List<ClusterInfo> clusters)
+        private static bool UpdateMeans(ref List<ClusterInfo> clusters)
         {
             // If any cluster has no points, bad clustering no change to means
             if (clusters.Any(x => x.units.Count == 0))
                 return false;
             foreach (ClusterInfo cluster in clusters)
                 cluster.Mean();
+            Debug.Log("updated cluster 1 size: " + clusters[0].units.Count + "\n"
+                + "updated cluster 2 size: " + clusters[1].units.Count + "\n"
+                + "updated cluster 3 size: " + clusters[2].units.Count + "\n");
             return true;
         }
 
-        private static bool UpdateClustering(List<RTSUnit> units, List<ClusterInfo> clusters)
+        private static bool UpdateClustering(ref List<RTSUnit> units, ref List<ClusterInfo> clusters)
         {
             // New clusters to represent proposed changes
             List<ClusterInfo> newClusters = new List<ClusterInfo>();
@@ -229,22 +247,36 @@ namespace DarienEngine.Clustering
             for (int i = 0; i < units.Count; i++)
             {
                 // Distances indices correspond to cluster indices
-                for (int j = 0; i < clusters.Count; i++)
+                for (int j = 0; j < clusters.Count; j++)
                     distances[j] = SqrDistance(units[i].transform.position, clusters[j].mean);
+                int currentClusterIndex = units[i].clusterNum;
                 // Find index of nearest mean 
                 int newClusterIndex = MinIndex(distances);
                 // If the new index is not the current cluster index, it is a change
-                if (newClusterIndex != i)
+                if (newClusterIndex != currentClusterIndex)
                 {
                     changed = true;
+                    units[i].clusterNum = newClusterIndex;
                     newClusters[newClusterIndex].units.Add(units[i]);
                 }
+                // Else, re-add the unit to it's same current cluster
+                else
+                {
+                    newClusters[currentClusterIndex].units.Add(units[i]);
+                }
             }
+            Debug.Log("changed? " + changed);
+            Debug.Log("new cluster 1 size: " + newClusters[0].units.Count + "\n"
+                + "new cluster 2 size: " + newClusters[1].units.Count + "\n"
+                + "new cluster 3 size: " + newClusters[2].units.Count + "\n");
+
+            // @TODO: seems generally this often results in one cluster having 0 units, need to really figure out how to improve/work around edge cases
+            // Make the change
+            clusters = newClusters;
             // If nothing was changed or a new cluster has no units, bad result, no changes
             if (!changed || newClusters.Any(x => x.units.Count == 0))
                 return false;
-            // Make the change
-            clusters = newClusters;
+
             return true;
         }
 

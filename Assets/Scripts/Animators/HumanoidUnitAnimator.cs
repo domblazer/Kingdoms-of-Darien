@@ -27,13 +27,10 @@ public class HumanoidUnitAnimator : MonoBehaviour
     {
         if (!_Unit.isDead)
         {
-            // @TODO
-            if (_Unit.IsMoving())
-            {
-                //  _Animator.speed = _Unit.GetVelocity() ;
-            }
-            _Animator.SetBool("walking", _Unit.IsMoving() || (_Unit.canFly && _Unit._FlyingUnit.changingPlanes));
-            // @TODO: running
+            // @TODO: flyers should maybe use their own animator?
+            float velocityMagnitude = _Unit.GetVelocity().sqrMagnitude;
+            _Animator.SetBool("walking", (_Unit.IsMoving() && velocityMagnitude < 1.5f) || (_Unit.canFly && _Unit._FlyingUnit.changingPlanes));
+            _Animator.SetBool("running", (_Unit.IsMoving() && velocityMagnitude >= 1.5f));
             _Animator.SetBool("attacking", _Unit.IsAttacking());
 
             // @TODO: if has been idle for random between 10 - 20 seconds, play idle variant
@@ -49,11 +46,6 @@ public class HumanoidUnitAnimator : MonoBehaviour
             if (_Unit.isBuilder)
             {
                 _Animator.SetBool("conjuring", _UnitBuilderScript.isBuilding);
-            }
-
-            if (_Unit.IsAttacking())
-            {
-                _Unit.animStateTime = _Animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
             }
         }
     }

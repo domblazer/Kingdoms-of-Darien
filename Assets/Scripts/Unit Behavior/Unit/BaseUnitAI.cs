@@ -75,11 +75,23 @@ public class BaseUnitAI : RTSUnit
 
         // Create a tooltip for this unit
         _TooltipManager = GetComponent<TooltipManager>();
-        _TooltipManager.CreateNewTooltip();
+        if (_TooltipManager != null)
+        {
+            _TooltipManager.CreateNewTooltip();
+            _TooltipManager.SetTooltipActive(UIManager.Instance.tooltipActive);
+        }
+        else
+            Debug.LogWarning("Note: No TooltipManager found for " + gameObject);
     }
 
     private void Update()
     {
+        // @TODO: Tilda key is usually used to toggle the health bars, for now toggling the army debug panels
+        if (Input.GetKeyDown(KeyCode.BackQuote) && _TooltipManager != null)
+        {
+            _TooltipManager.ToggleTooltip();
+        }
+
         // Update health
         if (!isDead && UpdateHealth() <= 0)
             StartCoroutine(Die());
@@ -100,17 +112,19 @@ public class BaseUnitAI : RTSUnit
                 _AttackBehavior.AutoPickAttackTarget();
         }
 
-        string tooltipText = state.Value + "\n";
-        if (_Army != null)
+        if (_TooltipManager != null && _TooltipManager.IsActive())
         {
-            tooltipText += "In army. \n";
-            if (canAttack && _AttackBehavior.attackTarget)
-                tooltipText += "Attack target? " + _AttackBehavior.attackTarget.name;
-            // @TODO: want to also see:
-            // - cluster numbers
+            string tooltipText = state.Value + "\n";
+            if (_Army != null)
+            {
+                tooltipText += "In army. \n";
+                if (canAttack && _AttackBehavior.attackTarget)
+                    tooltipText += "Attack target? " + _AttackBehavior.attackTarget.name;
+            }
+            tooltipText += "cluster: " + clusterNum;
+            if (_TooltipManager)
+                _TooltipManager.SetTooltipText(tooltipText);
         }
-        if (_TooltipManager)
-            _TooltipManager.SetTooltipText(tooltipText);
     }
 
     /// <summary> 
@@ -303,6 +317,13 @@ public class BaseUnitAI : RTSUnit
     private IEnumerator Die()
     {
         HandleDie();
+
+        if (_TooltipManager)
+        {
+            _TooltipManager.RemoveTooltip();
+            _TooltipManager = null;
+        }
+
         // @TODO: if this AI unit is part of an Army, it must be removed from the Army as well
         yield return new WaitForSeconds(dieTime);
         Destroy(gameObject);

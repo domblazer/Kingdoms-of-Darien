@@ -106,6 +106,31 @@ namespace DarienEngine
                 searchPath = "TaroCanvas/BuildMenus/CabalMenu";
             return GameObject.Find(searchPath).GetComponent<RectTransform>();
         }
+
+        // Rotate a vector 3 clockwise, ignoring y rotation
+        public static Vector3 Rotate90CW(Vector3 aDir)
+        {
+            return new Vector3(aDir.z, 0, -aDir.x);
+        }
+
+        // Rotate a vector 3 counter-clockwise, ignoring y rotation
+        public static Vector3 Rotate90CCW(Vector3 aDir)
+        {
+            return new Vector3(-aDir.z, 0, aDir.x);
+        }
+
+        public static float AngleDir(Vector3 fwd, Vector3 targetDir, Vector3 up)
+        {
+            Vector3 perp = Vector3.Cross(fwd, targetDir);
+            float dir = Vector3.Dot(perp, up);
+
+            if (dir > 0.5f)
+                return 1f;
+            else if (dir < -0.5f)
+                return -1f;
+            else
+                return 0f;
+        }
     }
 
     public class RTSUnitComparer : IEqualityComparer<RTSUnit>

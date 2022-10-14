@@ -116,32 +116,8 @@ public class AIPlayer : MonoBehaviour
         // Remove armies that have issued their retreat or have no units left
         _Armies.RemoveAll(army => army.retreatOrdersIssued || army.units.Count == 0);
 
-        string groupedUnitsDebug = "";
-        foreach (KeyValuePair<UnitCategories, List<RTSUnit>> entry in inventory.groupedUnits)
-        {
-            groupedUnitsDebug += "[" + entry.Key + ", " + entry.Value.Count + "] \n";
-        }
-        string allValidUnitNames = "";
-        foreach (RTSUnit unit in validUnits)
-            allValidUnitNames += "  " + unit.uuid + ", \n";
-
-        string allGroundUnitNames = "";
-        foreach (RTSUnit unit in groundUnits)
-            allGroundUnitNames += "  " + unit.uuid + ", \n";
-
-        string debugText = "";
-        debugText += "Total Units Created: " + inventory.totalUnitsCreated + "\n";
-        debugText += "Units Lost: " + inventory.unitsLost + "\n\n";
-        debugText += "Total Ground Units: " + groundUnits.Count + "\n";
-        // debugText += allGroundUnitNames + "\n";
-        debugText += "Units in Army: " + armyUnits.Count + "\n";
-        debugText += "Ground Units Ready: " + validUnits.Count + "\n\n";
-        // debugText += allValidUnitNames + "\n";
-        debugText += "Total Units: " + inventory.totalUnits.Count + "\n";
-        debugText += "Units by Group: \n" + groupedUnitsDebug + "\n";
-        debugText += "Armies: \n";
-        debugText += string.Join<Army>(", \n", _Armies.ToArray());
-        UIManager.Instance.SetDebugText(debugText);
+        // Debug text
+        SetArmyDebugText(groundUnits, armyUnits, validUnits);
     }
 
     private void CreateNewArmy(List<RTSUnit> units, int armySize)
@@ -152,26 +128,21 @@ public class AIPlayer : MonoBehaviour
         clusters.Sort((ClusterInfo x, ClusterInfo y) => x.units.Count < y.units.Count ? 1 : -1);
         ClusterInfo largestCluster = clusters[0];
 
-        foreach (ClusterInfo cluster in clusters)
-        {
-            Debug.Log("units in cluster: " + string.Join<RTSUnit>(", \n", cluster.units.ToArray()));
-        }
-
         // Not enough units to make up army, add some more
-        if (largestCluster.units.Count < armySize)
+        /* if (largestCluster.units.Count < armySize)
         {
-
+            // @TODO
         }
         // Too many units in cluster for army, shed some 
         else if (largestCluster.units.Count > armySize)
         {
-
+            // @TODO
         }
         // Just right, ready to lauch
         else
         {
-
-        }
+            // @TODO
+        } */
 
         // @TODO: the formUpPoint can't be somewhere that's going to block a building, or be really near or on an obstacle
         // Still need to find a formUpPoint that units can get to but is also smart, like slightly towards the enemy's position
@@ -180,14 +151,8 @@ public class AIPlayer : MonoBehaviour
         inventory.OnUnitsChanged += army.HandleUnitChange;
         army.PlayerConditions(playerNumber, PlayerNumbers.Player1);
 
-        Vector3 formUpPoint = army.FormUp();
-
-        // @DEBUG: Place an icon to let us know where the form up point is
-        Instantiate(UIManager.Instance.specialMoveTexturePrefab,
-            new Vector3(formUpPoint.x, formUpPoint.y + 0.15f, formUpPoint.z),
-            UIManager.Instance.specialMoveTexturePrefab.transform.rotation);
-
-        army.ordersIssued = true;
+        // Just launch immediately
+        army.BeginAttack();
         Debug.Log("Army called upon.");
         _Armies.Add(army);
     }
@@ -280,5 +245,35 @@ public class AIPlayer : MonoBehaviour
         }
 
         return needInfo;
+    }
+
+    private void SetArmyDebugText(List<RTSUnit> groundUnits, List<RTSUnit> armyUnits, List<RTSUnit> validUnits)
+    {
+        string groupedUnitsDebug = "";
+        foreach (KeyValuePair<UnitCategories, List<RTSUnit>> entry in inventory.groupedUnits)
+        {
+            groupedUnitsDebug += "[" + entry.Key + ", " + entry.Value.Count + "] \n";
+        }
+        string allValidUnitNames = "";
+        foreach (RTSUnit unit in validUnits)
+            allValidUnitNames += "  " + unit.uuid + ", \n";
+
+        string allGroundUnitNames = "";
+        foreach (RTSUnit unit in groundUnits)
+            allGroundUnitNames += "  " + unit.uuid + ", \n";
+
+        string debugText = "";
+        debugText += "Total Units Created: " + inventory.totalUnitsCreated + "\n";
+        debugText += "Units Lost: " + inventory.unitsLost + "\n\n";
+        debugText += "Total Ground Units: " + groundUnits.Count + "\n";
+        // debugText += allGroundUnitNames + "\n";
+        debugText += "Units in Army: " + armyUnits.Count + "\n";
+        debugText += "Ground Units Ready: " + validUnits.Count + "\n\n";
+        // debugText += allValidUnitNames + "\n";
+        debugText += "Total Units: " + inventory.totalUnits.Count + "\n";
+        debugText += "Units by Group: \n" + groupedUnitsDebug + "\n";
+        debugText += "Armies: \n";
+        debugText += string.Join<Army>(", \n", _Armies.ToArray());
+        UIManager.Instance.SetDebugText(debugText);
     }
 }

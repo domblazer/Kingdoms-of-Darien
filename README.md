@@ -81,7 +81,7 @@ Tag: Friendly | Layer: Unit
     - radar-trigger: Layer (Radar Trigger). Used to determine what units are within this unit's radar range
     - blood-system
     - fog-of-war-mask: Layer (Fog Of War)
-    - MeleeWeaponScript on bone representing melee weapon: Layer (MeleeWeapon)
+    - MeleeWeapon on bone representing melee weapon: Layer (MeleeWeapon)
 
 <img src="/Assets/Images/Documentation/melee-weapon-placement.PNG" height="300">
 
@@ -131,3 +131,6 @@ Build behavior is separated logically between the Factory/Builder classes and AI
 Inventory is also handled differently between players and AIs.
 
 <img src="/Assets/Images/Documentation/Slide6.jpg" height="300">
+
+## Melee Weapon
+MeleeWeapon class represents the behavior of melee weapons. Every melee animation requires AnimationEvents that fire when the melee swing should be considered "potent", that is, should register a hit. Consider the Zombie, when it's hand is moving up, the collider may hit a unit, but that should not send damage since the attack is on an upswing. Only the downswing should be registered. AnimationEvents ensure the accuracy of frames. AnimationState.normalizedTime does not cut it.

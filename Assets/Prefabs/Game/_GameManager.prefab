@@ -113,7 +113,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: cda686666314f1a4590653ada7f2e301, type: 3}
   - {fileID: 21300000, guid: afb162f8d5e856342aedf461ed39bfb6, type: 3}
   pauseOnStart: 0
-  specialMoveTexturePrefab: {fileID: 7240995782939768487, guid: c7816d8043826c249863b01e19d11301, type: 3}
+  tooltipActive: 0
 --- !u!114 &2598857554717851820
 MonoBehaviour:
   m_ObjectHideFlags: 0

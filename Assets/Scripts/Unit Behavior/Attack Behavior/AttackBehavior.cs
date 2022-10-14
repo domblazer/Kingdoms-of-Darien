@@ -24,7 +24,7 @@ public class AttackBehavior : MonoBehaviour
         public bool specialAttack = false;
         public Image specialAttackIcon;
         public string specialAttackName;
-        public MeleeWeaponScript[] meleeWeapons;
+        public MeleeWeapon[] meleeWeapons;
     }
     public Weapon[] weapons;
     public int activeWeaponIndex = 0;
@@ -51,7 +51,7 @@ public class AttackBehavior : MonoBehaviour
         {
             // @TODO: presumably if this is a melee attacker, weapons.Length will be 1
             if (wp.weaponType == Weapon.WeaponTypes.Melee && wp.meleeWeapons.Length > 0)
-                foreach (MeleeWeaponScript mw in wp.meleeWeapons)
+                foreach (MeleeWeapon mw in wp.meleeWeapons)
                     mw.SetLinkage(baseUnit, wp.weaponDamage);
         }
     }

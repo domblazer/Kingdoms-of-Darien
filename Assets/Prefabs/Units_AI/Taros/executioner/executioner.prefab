@@ -531,7 +531,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.0012
+  m_Radius: 0.0015
   m_Height: 0.01
   m_Direction: 1
   m_Center: {x: 0, y: 0.022, z: 0}
@@ -544,7 +544,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3435560288976561949}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1dc114027dcf30c4e8f652e5629839cc, type: 3}
+  m_Script: {fileID: 11500000, guid: cc2b6bac21f00d546a1f85c79a8a34a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   animationClipRange:
@@ -6722,7 +6722,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tooltipPanelPrefab: {fileID: 6938777300191431284, guid: 583176d5c6ddf2c42a1590a605cb9794, type: 3}
-  tooltipOffset: 1
+  tooltipOffset: {x: 1.5, y: 1.5, z: 1.5}
 --- !u!114 &7162712932485172811
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6757,6 +6757,7 @@ MonoBehaviour:
   canFly: 0
   phaseDie: 0
   bloodSystem: {fileID: 7162712931574828126}
+  isStriking: 0
   patrolRange: 15
   startState: 0
 --- !u!114 &2611486414824067069

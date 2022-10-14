@@ -33,7 +33,7 @@ public class UIManager : MonoBehaviour
     private string canvasRootPath;
     public Canvas canvasRoot { get; set; }
 
-    public GameObject specialMoveTexturePrefab;
+    public bool tooltipActive = false;
 
     private void Awake()
     {
@@ -74,6 +74,11 @@ public class UIManager : MonoBehaviour
         // @TODO: remove later: Use F5 to trigger debug menu for now. 
         if (Input.GetKeyDown(KeyCode.F5))
             ToggleDebugMenu(!debugMenu.gameObject.activeInHierarchy);
+
+        // @TODO: Tilda key is usually used to toggle the health bars, for now toggling the army debug panels
+        // @TODO: it's also not ideal this input is captured both here and in BaseUnitAI
+        if (Input.GetKeyDown(KeyCode.BackQuote))
+            UIManager.Instance.tooltipActive = !UIManager.Instance.tooltipActive;
     }
 
     public void ToggleF4Menu(bool value)

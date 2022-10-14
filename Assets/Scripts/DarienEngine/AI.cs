@@ -46,6 +46,7 @@ namespace DarienEngine.AI
         private float avgVelocity;
         private string statusText = "";
         private Clusters.MoveGroupInfo moveGroupInfo;
+        private RTSUnit attackTarget;
 
         public class PlayerSnapshot
         {
@@ -79,38 +80,11 @@ namespace DarienEngine.AI
 
         public void HandleUpdate()
         {
-            if (ordersIssued && !doneFormingUp && !inRetreat)
-            {
-                statusText = "Forming up";
-                // Debug.Log("Army is forming up...");
-                formUpTimeRemaining -= Time.deltaTime;
-                // Army is done forming up when all units have arrived at their move points or time limit reached
-                doneFormingUp = units.All(u => u.commandQueue.IsEmpty()) | formUpTimeRemaining < 0;
-                if (formUpTimeRemaining < 0)
-                    formUpTimeRemaining = formUpTimeLimit;
+            // @TODO: army groups need to move together and not split if there is some obstacle that causes some to go one path and the rest another
+            // @TODO: it probably still is a good idea to use a form up point to make sure the cluster clumps together before launching;
+            // moreover, it's good to use the form up point as the retreat point as opposed to maybe just using a random point within the base or the start point or something
 
-                if (doneFormingUp)
-                {
-                    Debug.Log("Army is formed up, now launching attack.");
-                    // Take the distance of each unit and discard any outside certain radius
-                    List<RTSUnit> newUnits = new List<RTSUnit>();
-                    foreach (RTSUnit unit in units)
-                    {
-                        float sqrDist = (formUpPoint - unit.transform.position).sqrMagnitude;
-                        if (sqrDist < Mathf.Pow(moveGroupInfo.radius, 2))
-                            newUnits.Add(unit);
-                    }
-                    originalUnitCount = newUnits.Count;
-                    units = newUnits;
-                    // Units booted from the army in this check go back to patrolling
-                    RTSUnit[] exceptUnits = units.Except<RTSUnit>(newUnits, new RTSUnitComparer()).ToArray();
-                    foreach (RTSUnit exUnit in exceptUnits)
-                        exUnit.currentCommand = new CommandQueueItem { commandType = CommandTypes.Patrol, patrolRoute = null };
-                    // @TODO: take another Army.PlayerSnapshot here? To accurately reflect enemy status when attack orders given
-                    BeginAttack();
-                }
-            }
-            else if (ordersIssued && doneFormingUp && !inRetreat)
+            if (ordersIssued && !inRetreat)
             {
                 // @TODO: units in an Army should keep trying to attack as long as they are not broken, so once an attack interrupt has
                 // happened, they need to go back to picking another target with FindTarget()
@@ -122,11 +96,8 @@ namespace DarienEngine.AI
                     // If this unit has no attack target and no enemies nearby to attack, find new target
                     if (unit._AttackBehavior.attackTarget == null && unit._AttackBehavior.enemiesInSight.Count == 0)
                     {
-                        // @TODO: probably shouldn't call FindTarget many times since it does K-means
-                        // should probably only do k-means every so often and store the cluster info as a static var
-                        RTSUnit target = FindTarget(unit.transform.position);
-                        if (target)
-                            unit._AttackBehavior.TryAttack(target.gameObject);
+                        if (attackTarget)
+                            unit._AttackBehavior.TryAttack(attackTarget.gameObject);
                     }
                 }
             }
@@ -185,7 +156,7 @@ namespace DarienEngine.AI
             return pSnap;
         }
 
-        public Vector3 FormUp()
+        /* public Vector3 FormUp()
         {
             formUpPoint = FindFormUpLocation();
 
@@ -194,7 +165,7 @@ namespace DarienEngine.AI
             // @TODO: point for skyFormUpPoint
             moveGroupInfo = Clusters.MoveGroup(units, formUpPoint, formUpPoint, false, true);
             return formUpPoint;
-        }
+        } 
 
         // Find a "quarter" point between this player's start position and the enemy's, towards player's position
         public Vector3 FindFormUpLocation()
@@ -208,11 +179,11 @@ namespace DarienEngine.AI
         private Vector3 MidPoint(Vector3 startPoint, Vector3 endPoint)
         {
             return startPoint - ((startPoint - endPoint) / 2);
-        }
+        }*/
 
         public void BeginAttack()
         {
-            RTSUnit attackTarget = FindTarget(formUpPoint);
+            attackTarget = FindTarget(formUpPoint);
             Debug.Log("Army attack target: " + attackTarget.gameObject.name);
             if (attackTarget != null)
             {
@@ -228,6 +199,8 @@ namespace DarienEngine.AI
                 // Normalize the move speed of this army based on average
                 foreach (RTSUnit unit in units)
                     unit.SetSpeed(avgVelocity);
+
+                ordersIssued = true;
             }
         }
 
@@ -238,6 +211,7 @@ namespace DarienEngine.AI
             foreach (RTSUnit unit in units)
             {
                 unit.ResetMaxSpeed();
+                (unit as BaseUnitAI)._Army = null;
                 unit.commandQueue.OnQueueChanged += UnitReturnToPatrol;
             }
             // @TODO: units should only need to get within range of the retreat point before dequeueing

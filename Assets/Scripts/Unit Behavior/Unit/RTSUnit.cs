@@ -118,7 +118,6 @@ public class RTSUnit : MonoBehaviour
 
     // Misc
     protected int expPoints = 10;
-    public float animStateTime { get; set; } = 0;
     private float avoidanceRadius;
     private float doubleAvoidanceRadius;
     private static float avoidanceTickerTo = 0.0f;
@@ -140,6 +139,9 @@ public class RTSUnit : MonoBehaviour
     protected int patrolIndex = 0;
 
     private DieCallback dieCallback;
+
+    public int clusterNum { get; set; } = -1;
+    public bool isStriking = false;
 
     // Init called on Start
     protected void Init()
@@ -312,45 +314,77 @@ public class RTSUnit : MonoBehaviour
 
     protected void HandleBumping(RTSUnit bumpedUnit)
     {
-        // Debug.Log(unitName + ": Hello, " + bumpedUnit.unitName + ".");
-        // If I am parking and bumped into someone who is not moving, adjust my moveToPosition with offset
-        if (isParking && !bumpedUnit.IsMoving())
+        // If I bumped into someone who is not moving or doing anything else
+        if (bumpedUnit.commandQueue.IsEmpty())
         {
-            // @TODO: maybe like bumpedUnit.TryToggleToAgentWithTimer
-            // set up so like if units bump each other, they temporarily are set back to NavMeshAgents to allow 
-            // the bumping unit through, say a large formation the agent can't discern as one large obstacle to avoid
-            // Debug.Log(unitName + ": Whoops, sorry I bumped you (" + bumpedUnit.gameObject.name + ") while parking. I'll adjust my destination.");
-            // If I bumped, dump the move position that led me here, then modify that position with offset then queue it back 
-            Vector3 lastMove = commandQueue.Dequeue().commandPoint;
-            lastMove.x += tryParkingDirection ? offset.x : -offset.x;
-            commandQueue.Enqueue(new CommandQueueItem { commandType = CommandTypes.Move, commandPoint = lastMove });
+            float dir = Functions.AngleDir(transform.forward, bumpedUnit.transform.position - transform.position, transform.up);
+            Debug.Log("bumped unit dir: " + dir);
+            bool clockwise = true;
+            /* if (dir == 0 && transform.position.x < bumpedUnit.transform.position.x)
+            {
+                // clockwise = true
+            }
+            else  */
+            if (dir == 0 && transform.position.x > bumpedUnit.transform.position.x)
+            {
+                clockwise = false;
+            }/* 
+            else if ((dir == 1) && transform.position.z > bumpedUnit.transform.position.z)
+            {
+                // clockwise = true
+            } */
+            else if ((dir == 1 || dir == -1) && transform.position.z < bumpedUnit.transform.position.z)
+            {
+                clockwise = false;
+            }
+
+            // Move the bumped unit perpendicular to the way I am traveling 
+            bumpedUnit.MoveOutOfTheWay(this, clockwise);
         }
+    }
+
+    public void MoveOutOfTheWay(RTSUnit sendingUnit, bool dirToggle)
+    {
+        // @TODO: like where this is going, but some major improvements needed to make this truly effective
+        // 1) If the unit that bumped me's axis does not align right on, calculate whether the unit is coming in more to my left or right
+        //    or whatever, and move me in the opposite direction. That is, don't make me get in that unit's way. Improve the toggle logic, not just using a bouncing bool
+        // 2) When bumping propagates through a group, some units get to stepping on each other's toes. More logic is needed to ensure
+        //    where I am moving does not end up creating a jumbled mess with conflicting points. E.g. test if point is already occupied, 
+        //    test if the area around me has many units, etc.
+
+        Vector3 dirToMove;
+        if (dirToggle)
+            dirToMove = Functions.Rotate90CW(transform.position - sendingUnit.transform.position).normalized;
+        else
+            dirToMove = Functions.Rotate90CCW(transform.position - sendingUnit.transform.position).normalized;
+
+        SetMove(transform.position + (dirToMove * _Agent.radius));
     }
 
     private void OnTriggerEnter(Collider col)
     {
         string compareTag = gameObject.tag == "Enemy" ? "Friendly" : "Enemy";
-        // Layer 11 is "Inner Trigger" layer, by its nature, a child of "Unit" layer
-        if (col.isTrigger && col.gameObject.layer == 11 && col.gameObject.GetComponentInParent<RTSUnit>())
-            HandleBumping(col.gameObject.GetComponentInParent<RTSUnit>()); // If collided object is in the "Inner Trigger" layer, we can pretty safely assume it's parent must be an RTSUnit
-        // Layer 9 is "Unit" layer
-        else if (col.gameObject.tag == compareTag && col.gameObject.layer == 9 && !col.isTrigger && canAttack && col.gameObject.GetComponent<RTSUnit>())
+        // Handle bumping behavior when unit bumps inner trigger
+        if (col.isTrigger && col.gameObject.layer == LayerMask.NameToLayer("Inner Trigger") && col.gameObject.GetComponentInParent<RTSUnit>())
+            HandleBumping(col.gameObject.GetComponentInParent<RTSUnit>());
+        // Add collided unit to enemiesInSight
+        else if (col.gameObject.tag == compareTag && col.gameObject.layer == LayerMask.NameToLayer("Unit") && !col.isTrigger && canAttack && col.gameObject.GetComponent<RTSUnit>())
         {
             // Set a callback function to go off when the enemy unit dies to remove it from enemiesInSight
             col.gameObject.GetComponent<RTSUnit>().OnDie((enemy) => { _AttackBehavior.enemiesInSight.Remove(enemy); });
             _AttackBehavior.enemiesInSight.Add(col.gameObject);
         }
-        // Layer 15 is "Fog of War" mask layer
-        else if (col.gameObject.tag == compareTag && col.gameObject.layer == 15)
+        // Update whoCanSeeMe based on "Fog of War" mask layer trigger
+        else if (col.gameObject.tag == compareTag && col.gameObject.layer == LayerMask.NameToLayer("Fog of War"))
             whoCanSeeMe.Add(col.transform.parent.gameObject);
     }
 
     private void OnTriggerExit(Collider col)
     {
         string compareTag = gameObject.tag == "Enemy" ? "Friendly" : "Enemy";
-        if (col.gameObject.tag == compareTag && col.gameObject.layer == 9 && !col.isTrigger && canAttack)
+        if (col.gameObject.tag == compareTag && col.gameObject.layer == LayerMask.NameToLayer("Unit") && !col.isTrigger && canAttack)
             _AttackBehavior.enemiesInSight.Remove(col.gameObject);
-        else if (col.gameObject.tag == compareTag && col.gameObject.layer == 15)
+        else if (col.gameObject.tag == compareTag && col.gameObject.layer == LayerMask.NameToLayer("Fog of War"))
             whoCanSeeMe.Remove(col.transform.parent.gameObject);
     }
 
@@ -549,6 +583,12 @@ public class RTSUnit : MonoBehaviour
     public bool IsAttacking()
     {
         return canAttack && _AttackBehavior.isAttacking;
+    }
+
+    // Important: called by AnimationEvents set on all melee animations in order to accurately determine when a melee strike should register
+    public void SetStriking(int val)
+    {
+        isStriking = val == 1 ? true : false;
     }
 
     public bool IsInRangeOf(Vector3 pos)

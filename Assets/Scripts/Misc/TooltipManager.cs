@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class TooltipManager : MonoBehaviour
 {
     public GameObject tooltipPanelPrefab;
-    private GameObject tooltip;
+    public GameObject tooltip { get; set; }
     private Text tooltipText;
     public Vector3 tooltipOffset = new Vector3(1.5f, 1.5f, 1.5f);
 
@@ -41,8 +41,23 @@ public class TooltipManager : MonoBehaviour
             ShowTooltip();
     }
 
+    public void SetTooltipActive(bool val)
+    {
+        tooltip.SetActive(val);
+    }
+
+    public bool IsActive()
+    {
+        return tooltip.activeInHierarchy;
+    }
+
     public void SetTooltipText(string text)
     {
         tooltipText.text = text;
+    }
+
+    public void RemoveTooltip()
+    {
+        Destroy(tooltip);
     }
 }
