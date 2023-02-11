@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: 2226a89481b2b164fb3716631cea1c31
 ModelImporter:
-  serializedVersion: 20101
+  serializedVersion: 21300
   internalIDToNameTable:
   - first:
       74: -8283301520922324524
@@ -32,6 +32,7 @@ ModelImporter:
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
     motionNodeName: 
     rigImportErrors: 
     rigImportWarnings: 
@@ -74,9 +75,103 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events: []
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
+      transformMask:
+      - path: 
+        weight: 1
+      - path: body
+        weight: 1
+      - path: zombie-rig
+        weight: 1
+      - path: zombie-rig/control
+        weight: 1
+      - path: zombie-rig/control/arm.IK.L
+        weight: 1
+      - path: zombie-rig/control/arm.IK.L/arm.IK.L_end
+        weight: 1
+      - path: zombie-rig/control/arm.IK.R
+        weight: 1
+      - path: zombie-rig/control/arm.IK.R/arm.IK.R_end
+        weight: 1
+      - path: zombie-rig/control/elbow.L
+        weight: 1
+      - path: zombie-rig/control/elbow.L/elbow.L_end
+        weight: 1
+      - path: zombie-rig/control/elbow.R
+        weight: 1
+      - path: zombie-rig/control/elbow.R/elbow.R_end
+        weight: 1
+      - path: zombie-rig/control/knee.L
+        weight: 1
+      - path: zombie-rig/control/knee.L/knee.L_end
+        weight: 1
+      - path: zombie-rig/control/knee.R
+        weight: 1
+      - path: zombie-rig/control/knee.R/knee.R_end
+        weight: 1
+      - path: zombie-rig/control/leg.IK.L
+        weight: 0
+      - path: zombie-rig/control/leg.IK.L/foot.L
+        weight: 0
+      - path: zombie-rig/control/leg.IK.L/foot.L/toe.L
+        weight: 0
+      - path: zombie-rig/control/leg.IK.L/foot.L/toe.L/toe.L_end
+        weight: 0
+      - path: zombie-rig/control/leg.IK.R
+        weight: 0
+      - path: zombie-rig/control/leg.IK.R/foot.R
+        weight: 0
+      - path: zombie-rig/control/leg.IK.R/foot.R/toe.R
+        weight: 0
+      - path: zombie-rig/control/leg.IK.R/foot.R/toe.R/toe.R_end
+        weight: 0
+      - path: zombie-rig/control/spine
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L/hand.L
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L/hand.L/hand.L_end
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R/hand.R
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R/hand.R/hand.R_end
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/spine.004
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/spine.004/spine.005
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/spine.004/spine.005/spine.005_end
+        weight: 1
+      - path: zombie-rig/control/spine/thigh.L
+        weight: 0
+      - path: zombie-rig/control/spine/thigh.L/shin.L
+        weight: 0
+      - path: zombie-rig/control/spine/thigh.L/shin.L/shin.L_end
+        weight: 0
+      - path: zombie-rig/control/spine/thigh.R
+        weight: 0
+      - path: zombie-rig/control/spine/thigh.R/shin.R
+        weight: 0
+      - path: zombie-rig/control/spine/thigh.R/shin.R/shin.R_end
+        weight: 0
+      maskType: 1
+      maskSource: {fileID: 31900000, guid: 7c7d63bf7525a004596b5f3662cfe278, type: 2}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
       name: zombie-rig|attack_02
@@ -103,9 +198,103 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events: []
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
+      transformMask:
+      - path: 
+        weight: 1
+      - path: body
+        weight: 1
+      - path: zombie-rig
+        weight: 1
+      - path: zombie-rig/control
+        weight: 1
+      - path: zombie-rig/control/arm.IK.L
+        weight: 1
+      - path: zombie-rig/control/arm.IK.L/arm.IK.L_end
+        weight: 1
+      - path: zombie-rig/control/arm.IK.R
+        weight: 1
+      - path: zombie-rig/control/arm.IK.R/arm.IK.R_end
+        weight: 1
+      - path: zombie-rig/control/elbow.L
+        weight: 1
+      - path: zombie-rig/control/elbow.L/elbow.L_end
+        weight: 1
+      - path: zombie-rig/control/elbow.R
+        weight: 1
+      - path: zombie-rig/control/elbow.R/elbow.R_end
+        weight: 1
+      - path: zombie-rig/control/knee.L
+        weight: 1
+      - path: zombie-rig/control/knee.L/knee.L_end
+        weight: 1
+      - path: zombie-rig/control/knee.R
+        weight: 1
+      - path: zombie-rig/control/knee.R/knee.R_end
+        weight: 1
+      - path: zombie-rig/control/leg.IK.L
+        weight: 0
+      - path: zombie-rig/control/leg.IK.L/foot.L
+        weight: 0
+      - path: zombie-rig/control/leg.IK.L/foot.L/toe.L
+        weight: 0
+      - path: zombie-rig/control/leg.IK.L/foot.L/toe.L/toe.L_end
+        weight: 0
+      - path: zombie-rig/control/leg.IK.R
+        weight: 0
+      - path: zombie-rig/control/leg.IK.R/foot.R
+        weight: 0
+      - path: zombie-rig/control/leg.IK.R/foot.R/toe.R
+        weight: 0
+      - path: zombie-rig/control/leg.IK.R/foot.R/toe.R/toe.R_end
+        weight: 0
+      - path: zombie-rig/control/spine
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L/hand.L
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L/hand.L/hand.L_end
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R/hand.R
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R/hand.R/hand.R_end
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/spine.004
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/spine.004/spine.005
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/spine.004/spine.005/spine.005_end
+        weight: 1
+      - path: zombie-rig/control/spine/thigh.L
+        weight: 0
+      - path: zombie-rig/control/spine/thigh.L/shin.L
+        weight: 0
+      - path: zombie-rig/control/spine/thigh.L/shin.L/shin.L_end
+        weight: 0
+      - path: zombie-rig/control/spine/thigh.R
+        weight: 0
+      - path: zombie-rig/control/spine/thigh.R/shin.R
+        weight: 0
+      - path: zombie-rig/control/spine/thigh.R/shin.R/shin.R_end
+        weight: 0
+      maskType: 1
+      maskSource: {fileID: 31900000, guid: 7c7d63bf7525a004596b5f3662cfe278, type: 2}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
       name: zombie-rig|attack_03
@@ -132,9 +321,103 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events: []
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
+      transformMask:
+      - path: 
+        weight: 1
+      - path: body
+        weight: 1
+      - path: zombie-rig
+        weight: 1
+      - path: zombie-rig/control
+        weight: 1
+      - path: zombie-rig/control/arm.IK.L
+        weight: 1
+      - path: zombie-rig/control/arm.IK.L/arm.IK.L_end
+        weight: 1
+      - path: zombie-rig/control/arm.IK.R
+        weight: 1
+      - path: zombie-rig/control/arm.IK.R/arm.IK.R_end
+        weight: 1
+      - path: zombie-rig/control/elbow.L
+        weight: 1
+      - path: zombie-rig/control/elbow.L/elbow.L_end
+        weight: 1
+      - path: zombie-rig/control/elbow.R
+        weight: 1
+      - path: zombie-rig/control/elbow.R/elbow.R_end
+        weight: 1
+      - path: zombie-rig/control/knee.L
+        weight: 1
+      - path: zombie-rig/control/knee.L/knee.L_end
+        weight: 1
+      - path: zombie-rig/control/knee.R
+        weight: 1
+      - path: zombie-rig/control/knee.R/knee.R_end
+        weight: 1
+      - path: zombie-rig/control/leg.IK.L
+        weight: 0
+      - path: zombie-rig/control/leg.IK.L/foot.L
+        weight: 0
+      - path: zombie-rig/control/leg.IK.L/foot.L/toe.L
+        weight: 0
+      - path: zombie-rig/control/leg.IK.L/foot.L/toe.L/toe.L_end
+        weight: 0
+      - path: zombie-rig/control/leg.IK.R
+        weight: 0
+      - path: zombie-rig/control/leg.IK.R/foot.R
+        weight: 0
+      - path: zombie-rig/control/leg.IK.R/foot.R/toe.R
+        weight: 0
+      - path: zombie-rig/control/leg.IK.R/foot.R/toe.R/toe.R_end
+        weight: 0
+      - path: zombie-rig/control/spine
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L/hand.L
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L/hand.L/hand.L_end
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R/hand.R
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R/hand.R/hand.R_end
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/spine.004
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/spine.004/spine.005
+        weight: 1
+      - path: zombie-rig/control/spine/spine.001/spine.002/spine.003/spine.004/spine.005/spine.005_end
+        weight: 1
+      - path: zombie-rig/control/spine/thigh.L
+        weight: 0
+      - path: zombie-rig/control/spine/thigh.L/shin.L
+        weight: 0
+      - path: zombie-rig/control/spine/thigh.L/shin.L/shin.L_end
+        weight: 0
+      - path: zombie-rig/control/spine/thigh.R
+        weight: 0
+      - path: zombie-rig/control/spine/thigh.R/shin.R
+        weight: 0
+      - path: zombie-rig/control/spine/thigh.R/shin.R/shin.R_end
+        weight: 0
+      maskType: 1
+      maskSource: {fileID: 31900000, guid: 7c7d63bf7525a004596b5f3662cfe278, type: 2}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
       name: zombie-rig|die
@@ -235,6 +518,7 @@ ModelImporter:
     importBlendShapes: 1
     importCameras: 1
     importLights: 1
+    nodeNameCollisionStrategy: 0
     fileIdsGeneration: 2
     swapUVChannels: 0
     generateSecondaryUV: 0
@@ -246,6 +530,7 @@ ModelImporter:
     skinWeightsMode: 0
     maxBonesPerVertex: 4
     minBoneWeight: 0.001
+    optimizeBones: 1
     meshOptimizationFlags: -1
     indexFormat: 0
     secondaryUVAngleDistortion: 8
@@ -287,6 +572,8 @@ ModelImporter:
   animationType: 2
   humanoidOversampling: 1
   avatarSetup: 1
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
   assetBundleName: 

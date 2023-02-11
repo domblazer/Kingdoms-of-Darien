@@ -11283,6 +11283,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: UnitDebugTooltip
       objectReference: {fileID: 0}
+    - target: {fileID: 6938777300191431284, guid: 583176d5c6ddf2c42a1590a605cb9794, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 583176d5c6ddf2c42a1590a605cb9794, type: 3}
 --- !u!224 &686850028 stripped

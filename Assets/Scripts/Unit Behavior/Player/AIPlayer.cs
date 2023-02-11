@@ -128,6 +128,8 @@ public class AIPlayer : MonoBehaviour
         clusters.Sort((ClusterInfo x, ClusterInfo y) => x.units.Count < y.units.Count ? 1 : -1);
         ClusterInfo largestCluster = clusters[0];
 
+        // @TODO: might be good to recluster again the largest cluster, some clusters are separated by berms, do not travel together
+
         // Not enough units to make up army, add some more
         /* if (largestCluster.units.Count < armySize)
         {
@@ -151,8 +153,9 @@ public class AIPlayer : MonoBehaviour
         inventory.OnUnitsChanged += army.HandleUnitChange;
         army.PlayerConditions(playerNumber, PlayerNumbers.Player1);
 
-        // Just launch immediately
-        army.BeginAttack();
+        // Form up at the mean point of the cluster, then begin attack
+        army.FormUpAndAttack(largestCluster.Mean());
+
         Debug.Log("Army called upon.");
         _Armies.Add(army);
     }

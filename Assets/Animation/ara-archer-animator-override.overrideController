@@ -9,12 +9,6 @@ AnimatorOverrideController:
   m_Name: ara-archer-animator-override
   m_Controller: {fileID: 9100000, guid: 70a96d84c6e79d240b1ea158bd79c03e, type: 2}
   m_Clips:
-  - m_OriginalClip: {fileID: 297581478455914248, guid: e9ef3520237c940468a8f40368609a62, type: 3}
-    m_OverrideClip: {fileID: -5863605805681344560, guid: a9e7cc72acd4880469d0ba8692450063, type: 3}
-  - m_OriginalClip: {fileID: -5297689657612824425, guid: e9ef3520237c940468a8f40368609a62, type: 3}
-    m_OverrideClip: {fileID: -5863605805681344560, guid: a9e7cc72acd4880469d0ba8692450063, type: 3}
-  - m_OriginalClip: {fileID: -508642561913968957, guid: e9ef3520237c940468a8f40368609a62, type: 3}
-    m_OverrideClip: {fileID: -5863605805681344560, guid: a9e7cc72acd4880469d0ba8692450063, type: 3}
   - m_OriginalClip: {fileID: -341010069335778699, guid: e9ef3520237c940468a8f40368609a62, type: 3}
     m_OverrideClip: {fileID: -7478030145533559023, guid: a9e7cc72acd4880469d0ba8692450063, type: 3}
   - m_OriginalClip: {fileID: 1264242932248749314, guid: e9ef3520237c940468a8f40368609a62, type: 3}
@@ -25,3 +19,9 @@ AnimatorOverrideController:
     m_OverrideClip: {fileID: 1388112382984498982, guid: a9e7cc72acd4880469d0ba8692450063, type: 3}
   - m_OriginalClip: {fileID: -3568871459448589476, guid: e9ef3520237c940468a8f40368609a62, type: 3}
     m_OverrideClip: {fileID: -90448097787619819, guid: a9e7cc72acd4880469d0ba8692450063, type: 3}
+  - m_OriginalClip: {fileID: 7400000, guid: 496199a56e164104c87f2a96aa485a74, type: 2}
+    m_OverrideClip: {fileID: -5863605805681344560, guid: a9e7cc72acd4880469d0ba8692450063, type: 3}
+  - m_OriginalClip: {fileID: 7400000, guid: 339933396428b444cac83b62cb05828c, type: 2}
+    m_OverrideClip: {fileID: -5863605805681344560, guid: a9e7cc72acd4880469d0ba8692450063, type: 3}
+  - m_OriginalClip: {fileID: 7400000, guid: 2ebcb1b566e9ec6449105c78b81a5dc1, type: 2}
+    m_OverrideClip: {fileID: -5863605805681344560, guid: a9e7cc72acd4880469d0ba8692450063, type: 3}

@@ -240,6 +240,7 @@ public class BaseUnitAI : RTSUnit
     {
         bool one = TestNavMeshPoint(point);
         bool two = TestPointCollision(point, boxExtends);
+        // @TODO: buildings can't be lain like half way out of map bounds, need to adjust padding
         bool three = GameManager.Instance.mapInfo.PointInsideBounds(point.x, point.z);
         // Debug.Log("TestBuildPoint results: (" + point + "):\nNavMeshPointValid: " + one + "\nPointCollisionValid: " + two + "\nPointInsideMapBounds: " + three);
         return one

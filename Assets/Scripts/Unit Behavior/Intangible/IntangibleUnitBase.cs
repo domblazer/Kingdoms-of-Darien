@@ -55,6 +55,7 @@ public class IntangibleUnitBase : MonoBehaviour
     public UnitBuilderBase builder { get; set; }
 
     // Control variables for transparency change
+    // @TODO: change rate based on how much mana you have
     [Range(0.1f, 1.0f)] private float rate = 1.0f;
     protected float t = 0;
     // Other state variables

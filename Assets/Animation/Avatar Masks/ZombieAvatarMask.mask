@@ -1,0 +1,105 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!319 &31900000
+AvatarMask:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: ZombieAvatarMask
+  m_Mask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+  m_Elements:
+  - m_Path: 
+    m_Weight: 1
+  - m_Path: body
+    m_Weight: 1
+  - m_Path: zombie-rig
+    m_Weight: 1
+  - m_Path: zombie-rig/control
+    m_Weight: 1
+  - m_Path: zombie-rig/control/arm.IK.L
+    m_Weight: 1
+  - m_Path: zombie-rig/control/arm.IK.L/arm.IK.L_end
+    m_Weight: 1
+  - m_Path: zombie-rig/control/arm.IK.R
+    m_Weight: 1
+  - m_Path: zombie-rig/control/arm.IK.R/arm.IK.R_end
+    m_Weight: 1
+  - m_Path: zombie-rig/control/elbow.L
+    m_Weight: 1
+  - m_Path: zombie-rig/control/elbow.L/elbow.L_end
+    m_Weight: 1
+  - m_Path: zombie-rig/control/elbow.R
+    m_Weight: 1
+  - m_Path: zombie-rig/control/elbow.R/elbow.R_end
+    m_Weight: 1
+  - m_Path: zombie-rig/control/knee.L
+    m_Weight: 1
+  - m_Path: zombie-rig/control/knee.L/knee.L_end
+    m_Weight: 1
+  - m_Path: zombie-rig/control/knee.R
+    m_Weight: 1
+  - m_Path: zombie-rig/control/knee.R/knee.R_end
+    m_Weight: 1
+  - m_Path: zombie-rig/control/leg.IK.L
+    m_Weight: 0
+  - m_Path: zombie-rig/control/leg.IK.L/foot.L
+    m_Weight: 0
+  - m_Path: zombie-rig/control/leg.IK.L/foot.L/toe.L
+    m_Weight: 0
+  - m_Path: zombie-rig/control/leg.IK.L/foot.L/toe.L/toe.L_end
+    m_Weight: 0
+  - m_Path: zombie-rig/control/leg.IK.R
+    m_Weight: 0
+  - m_Path: zombie-rig/control/leg.IK.R/foot.R
+    m_Weight: 0
+  - m_Path: zombie-rig/control/leg.IK.R/foot.R/toe.R
+    m_Weight: 0
+  - m_Path: zombie-rig/control/leg.IK.R/foot.R/toe.R/toe.R_end
+    m_Weight: 0
+  - m_Path: zombie-rig/control/spine
+    m_Weight: 1
+  - m_Path: zombie-rig/control/spine/spine.001
+    m_Weight: 1
+  - m_Path: zombie-rig/control/spine/spine.001/spine.002
+    m_Weight: 1
+  - m_Path: zombie-rig/control/spine/spine.001/spine.002/spine.003
+    m_Weight: 1
+  - m_Path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L
+    m_Weight: 1
+  - m_Path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L
+    m_Weight: 1
+  - m_Path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L
+    m_Weight: 1
+  - m_Path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L/hand.L
+    m_Weight: 1
+  - m_Path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L/hand.L/hand.L_end
+    m_Weight: 1
+  - m_Path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R
+    m_Weight: 1
+  - m_Path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R
+    m_Weight: 1
+  - m_Path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R
+    m_Weight: 1
+  - m_Path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R/hand.R
+    m_Weight: 1
+  - m_Path: zombie-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R/hand.R/hand.R_end
+    m_Weight: 1
+  - m_Path: zombie-rig/control/spine/spine.001/spine.002/spine.003/spine.004
+    m_Weight: 1
+  - m_Path: zombie-rig/control/spine/spine.001/spine.002/spine.003/spine.004/spine.005
+    m_Weight: 1
+  - m_Path: zombie-rig/control/spine/spine.001/spine.002/spine.003/spine.004/spine.005/spine.005_end
+    m_Weight: 1
+  - m_Path: zombie-rig/control/spine/thigh.L
+    m_Weight: 0
+  - m_Path: zombie-rig/control/spine/thigh.L/shin.L
+    m_Weight: 0
+  - m_Path: zombie-rig/control/spine/thigh.L/shin.L/shin.L_end
+    m_Weight: 0
+  - m_Path: zombie-rig/control/spine/thigh.R
+    m_Weight: 0
+  - m_Path: zombie-rig/control/spine/thigh.R/shin.R
+    m_Weight: 0
+  - m_Path: zombie-rig/control/spine/thigh.R/shin.R/shin.R_end
+    m_Weight: 0

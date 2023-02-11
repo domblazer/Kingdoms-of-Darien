@@ -143,7 +143,7 @@ public class Player : MonoBehaviour
             // Select the units
             HandleUnitsUnderSquare();
         }
-        else if (!InputManager.IsMouseOverUI() && goodHit && !hitsMap.unitWasHit && !hitsMap.uiWasHit)
+        else if (goodHit && !hitsMap.unitWasHit && !hitsMap.uiWasHit)
         {
             // Handle click-to-action commands here
             if (nextCommandIsPrimed)
@@ -164,7 +164,7 @@ public class Player : MonoBehaviour
         if (selectedUnits.Count == 0)
         {
             UIManager.BattleMenuInstance.Toggle(false);
-            if (!InputManager.IsMouseOverUI())
+            if (!hitsMap.uiWasHit)
                 CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Normal);
         }
         else if (selectedUnits.Count > 0)
@@ -321,7 +321,6 @@ public class Player : MonoBehaviour
             }
             else if (currentHit.transform.gameObject.layer == LayerMask.NameToLayer("Terrain") || currentHit.transform.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
             {
-                // @TODO: this could be an obstacle, like a berm. Need to detect obstacle layer
                 hitsMap.groundWasHit = true;
                 hitsMap.groundMeshHit = currentHit;
             }

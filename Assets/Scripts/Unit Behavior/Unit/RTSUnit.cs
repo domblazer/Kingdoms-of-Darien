@@ -259,7 +259,7 @@ public class RTSUnit : MonoBehaviour
         return inRange;
     }
 
-    protected void InflateAvoidanceRadius()
+    /* protected void InflateAvoidanceRadius()
     {
         if (!IsInRangeOf(currentCommand.commandPoint, 4))
         {
@@ -283,7 +283,7 @@ public class RTSUnit : MonoBehaviour
             }
             avoidanceTickerTo = 0;
         }
-    }
+    } */
 
     // Handle patrolling behavior. Roam just means patrol these points at random, not in a loop
     protected void Patrol(bool roam = false)
@@ -317,47 +317,48 @@ public class RTSUnit : MonoBehaviour
         // If I bumped into someone who is not moving or doing anything else
         if (bumpedUnit.commandQueue.IsEmpty())
         {
-            float dir = Functions.AngleDir(transform.forward, bumpedUnit.transform.position - transform.position, transform.up);
-            Debug.Log("bumped unit dir: " + dir);
-            bool clockwise = true;
-            /* if (dir == 0 && transform.position.x < bumpedUnit.transform.position.x)
-            {
-                // clockwise = true
-            }
-            else  */
-            if (dir == 0 && transform.position.x > bumpedUnit.transform.position.x)
-            {
-                clockwise = false;
-            }/* 
-            else if ((dir == 1) && transform.position.z > bumpedUnit.transform.position.z)
-            {
-                // clockwise = true
-            } */
-            else if ((dir == 1 || dir == -1) && transform.position.z < bumpedUnit.transform.position.z)
-            {
-                clockwise = false;
-            }
+            // Get my heading
+            Vector3 forward = transform.forward;
+            forward.y = 0;
+            float headingAngle = Quaternion.LookRotation(forward).eulerAngles.y;
+            
+            // Determine my general direction of movement by angle
+            int dir = 0;
+            // Right
+            if (headingAngle > 45 && headingAngle < 135)
+                dir = 1;
+            // Down
+            else if (headingAngle > 135 && headingAngle < 225)
+                dir = 2;
+            // Left
+            else if (headingAngle > 225 && headingAngle < 315)
+                dir = -1;
+            // Up
+            else if (headingAngle > 315 && headingAngle < 360)
+                dir = 0;
+
+            // Determine whether the bumped unit should move clockwise or counter clockwise
+            bool CClockwise = false;
+            Vector3 a = transform.position;
+            Vector3 b = bumpedUnit.transform.position;
+            CClockwise = (dir == 1 && a.z < b.z) || (dir == -1 && a.z > b.z) || (dir == 0 && a.x > b.x) || (dir == 2 && a.x < b.x);
 
             // Move the bumped unit perpendicular to the way I am traveling 
-            bumpedUnit.MoveOutOfTheWay(this, clockwise);
+            bumpedUnit.MoveOutOfTheWay(this, CClockwise);
         }
     }
 
-    public void MoveOutOfTheWay(RTSUnit sendingUnit, bool dirToggle)
+    public void MoveOutOfTheWay(RTSUnit sendingUnit, bool turnCClockwise)
     {
-        // @TODO: like where this is going, but some major improvements needed to make this truly effective
-        // 1) If the unit that bumped me's axis does not align right on, calculate whether the unit is coming in more to my left or right
-        //    or whatever, and move me in the opposite direction. That is, don't make me get in that unit's way. Improve the toggle logic, not just using a bouncing bool
         // 2) When bumping propagates through a group, some units get to stepping on each other's toes. More logic is needed to ensure
         //    where I am moving does not end up creating a jumbled mess with conflicting points. E.g. test if point is already occupied, 
         //    test if the area around me has many units, etc.
 
         Vector3 dirToMove;
-        if (dirToggle)
-            dirToMove = Functions.Rotate90CW(transform.position - sendingUnit.transform.position).normalized;
-        else
+        if (turnCClockwise)
             dirToMove = Functions.Rotate90CCW(transform.position - sendingUnit.transform.position).normalized;
-
+        else
+            dirToMove = Functions.Rotate90CW(transform.position - sendingUnit.transform.position).normalized;
         SetMove(transform.position + (dirToMove * _Agent.radius));
     }
 
@@ -577,7 +578,7 @@ public class RTSUnit : MonoBehaviour
 
     public bool IsMoving()
     {
-        return isKinematic && _Agent.enabled && (_Agent.velocity - Vector3.zero).sqrMagnitude > 0.15f;
+        return isKinematic && _Agent.enabled && (_Agent.velocity - Vector3.zero).sqrMagnitude > 0f;
     }
 
     public bool IsAttacking()

@@ -33,14 +33,18 @@ namespace DarienEngine.Clustering
 
             // @TODO: AI retreating but last unit dead? Makes [0] throw index out of bounds
 
+            // @TODO: groups should stick together while moving, not be split by obstacles like a berm
+            // @TODO: group corner rounding could be made better too, instead of each unit getting in a line and snaking the corner
+            // @TODO: every point needs to be tested and reset if not valid
+            // @TODO: need better strategy for picking points. Need to create virtual move point cluster, then sort, then move to appropriate points
+
+            // @TODO: obviously the offset for each unit is going to be different, e.g. catapult needs more space in a group formation
             float radius = selectedUnits[0].offset.x;
             float deg360 = 0;
             float counter = 0;
             int countOffset = selectedUnits.Count;
             List<Vector3> positions = new List<Vector3>();
-            // @TODO: small groups of units seem to need to be tightened up
-            // @TODO: need to sort units to move to the closest proposed point to them. Need to create virtual move point cluster,
-            // then sort, then move to appropriate points
+            
             for (int i = 0; i < selectedUnits.Count; i++)
             {
                 RTSUnit unit = selectedUnits[i];
@@ -133,6 +137,7 @@ namespace DarienEngine.Clustering
             return closest;
         }
 
+        // @DEPRECATED?
         public static UnitClusterMoveInfo CalculateSmartCenter(List<RTSUnit> group)
         {
             // Calculate "SmartCenter" of the selected units

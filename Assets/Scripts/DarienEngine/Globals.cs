@@ -118,19 +118,6 @@ namespace DarienEngine
         {
             return new Vector3(-aDir.z, 0, aDir.x);
         }
-
-        public static float AngleDir(Vector3 fwd, Vector3 targetDir, Vector3 up)
-        {
-            Vector3 perp = Vector3.Cross(fwd, targetDir);
-            float dir = Vector3.Dot(perp, up);
-
-            if (dir > 0.5f)
-                return 1f;
-            else if (dir < -0.5f)
-                return -1f;
-            else
-                return 0f;
-        }
     }
 
     public class RTSUnitComparer : IEqualityComparer<RTSUnit>

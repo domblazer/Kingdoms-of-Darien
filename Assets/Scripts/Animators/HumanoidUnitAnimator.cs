@@ -28,9 +28,10 @@ public class HumanoidUnitAnimator : MonoBehaviour
         if (!_Unit.isDead)
         {
             // @TODO: flyers should maybe use their own animator?
-            float velocityMagnitude = _Unit.GetVelocity().sqrMagnitude;
-            _Animator.SetBool("walking", (_Unit.IsMoving() && velocityMagnitude < 1.5f) || (_Unit.canFly && _Unit._FlyingUnit.changingPlanes));
-            _Animator.SetBool("running", (_Unit.IsMoving() && velocityMagnitude >= 1.5f));
+            //_Animator.SetBool("flying", (_Unit.canFly && _Unit._FlyingUnit.changingPlanes));
+
+            _Animator.SetBool("moving", _Unit.IsMoving());
+            _Animator.SetFloat("speed", _Unit.GetVelocity().sqrMagnitude / (_Unit.maxSpeed * 2));
             _Animator.SetBool("attacking", _Unit.IsAttacking());
 
             // @TODO: if has been idle for random between 10 - 20 seconds, play idle variant

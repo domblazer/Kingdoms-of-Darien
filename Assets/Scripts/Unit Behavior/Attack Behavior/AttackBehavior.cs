@@ -84,7 +84,8 @@ public class AttackBehavior : MonoBehaviour
         if (attackTarget && !inRange)
         {
             isMovingToAttack = true;
-            isAttacking = false;
+            // Melee attackers can swing and move at the same time, if fairly close enough to target
+            isAttacking = activeWeapon.weaponType == Weapon.WeaponTypes.Melee && baseUnit.IsMoving() && baseUnit.IsInRangeOf(attackTarget.transform.position, rangeOffset * 2);
             baseUnit.TryToggleToAgent();
             // Move to attack target position 
             baseUnit.MoveToPosition(attackTarget.transform.position);
@@ -105,7 +106,7 @@ public class AttackBehavior : MonoBehaviour
         else if (isMovingToAttack && attackTarget && inRange)
         {
             baseUnit.MoveToPosition(transform.position);
-            // baseUnit.TryToggleToObstacle();
+            baseUnit.TryToggleToObstacle();
             isMovingToAttack = false;
         }
 

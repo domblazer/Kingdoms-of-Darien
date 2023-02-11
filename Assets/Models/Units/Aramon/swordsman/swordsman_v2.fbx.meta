@@ -93,12 +93,120 @@ ModelImporter:
       keepOriginalPositionXZ: 0
       heightFromFeet: 0
       mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      bodyMask: 00000000010000000100000000000000000000000100000001000000010000000100000000000000000000000100000001000000
       curves: []
       events: []
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
+      transformMask:
+      - path: 
+        weight: 1
+      - path: belt_03
+        weight: 1
+      - path: body
+        weight: 1
+      - path: helmet_01
+        weight: 1
+      - path: light_sword_2
+        weight: 1
+      - path: shield_03
+        weight: 1
+      - path: swordsman-rig
+        weight: 1
+      - path: swordsman-rig/control
+        weight: 1
+      - path: swordsman-rig/control/arm.IK.L
+        weight: 1
+      - path: swordsman-rig/control/arm.IK.L/arm.IK.L_end
+        weight: 1
+      - path: swordsman-rig/control/arm.IK.R
+        weight: 1
+      - path: swordsman-rig/control/arm.IK.R/arm.IK.R_end
+        weight: 1
+      - path: swordsman-rig/control/elbow.L
+        weight: 1
+      - path: swordsman-rig/control/elbow.L/elbow.L_end
+        weight: 1
+      - path: swordsman-rig/control/elbow.R
+        weight: 1
+      - path: swordsman-rig/control/elbow.R/elbow.R_end
+        weight: 1
+      - path: swordsman-rig/control/knee.L
+        weight: 0
+      - path: swordsman-rig/control/knee.L/knee.L_end
+        weight: 0
+      - path: swordsman-rig/control/knee.R
+        weight: 0
+      - path: swordsman-rig/control/knee.R/knee.R_end
+        weight: 0
+      - path: swordsman-rig/control/leg.IK.L
+        weight: 0
+      - path: swordsman-rig/control/leg.IK.L/foot.L
+        weight: 0
+      - path: swordsman-rig/control/leg.IK.L/foot.L/toe.L
+        weight: 0
+      - path: swordsman-rig/control/leg.IK.L/foot.L/toe.L/toe.L_end
+        weight: 0
+      - path: swordsman-rig/control/leg.IK.R
+        weight: 0
+      - path: swordsman-rig/control/leg.IK.R/foot.R
+        weight: 0
+      - path: swordsman-rig/control/leg.IK.R/foot.R/toe.R
+        weight: 0
+      - path: swordsman-rig/control/leg.IK.R/foot.R/toe.R/toe.R_end
+        weight: 0
+      - path: swordsman-rig/control/spine
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L/hand.L
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L/hand.L/shield
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L/hand.L/shield/shield_end
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R/hand.R
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R/hand.R/sword
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R/hand.R/sword/sword_end
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/spine.004
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/spine.004/spine.005
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/spine.004/spine.005/spine.005_end
+        weight: 1
+      - path: swordsman-rig/control/spine/thigh.L
+        weight: 0
+      - path: swordsman-rig/control/spine/thigh.L/shin.L
+        weight: 0
+      - path: swordsman-rig/control/spine/thigh.L/shin.L/shin.L_end
+        weight: 0
+      - path: swordsman-rig/control/spine/thigh.R
+        weight: 0
+      - path: swordsman-rig/control/spine/thigh.R/shin.R
+        weight: 0
+      - path: swordsman-rig/control/spine/thigh.R/shin.R/shin.R_end
+        weight: 0
+      - path: tunic_03
+        weight: 1
+      maskType: 1
+      maskSource: {fileID: 31900000, guid: 6f54dbbd12e47304194bb52e124dd231, type: 2}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
       name: swordsman-rig|attack_02
@@ -122,12 +230,120 @@ ModelImporter:
       keepOriginalPositionXZ: 0
       heightFromFeet: 0
       mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      bodyMask: 00000000010000000100000000000000000000000100000001000000010000000100000000000000000000000100000001000000
       curves: []
       events: []
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
+      transformMask:
+      - path: 
+        weight: 1
+      - path: belt_03
+        weight: 1
+      - path: body
+        weight: 1
+      - path: helmet_01
+        weight: 1
+      - path: light_sword_2
+        weight: 1
+      - path: shield_03
+        weight: 1
+      - path: swordsman-rig
+        weight: 1
+      - path: swordsman-rig/control
+        weight: 1
+      - path: swordsman-rig/control/arm.IK.L
+        weight: 1
+      - path: swordsman-rig/control/arm.IK.L/arm.IK.L_end
+        weight: 1
+      - path: swordsman-rig/control/arm.IK.R
+        weight: 1
+      - path: swordsman-rig/control/arm.IK.R/arm.IK.R_end
+        weight: 1
+      - path: swordsman-rig/control/elbow.L
+        weight: 1
+      - path: swordsman-rig/control/elbow.L/elbow.L_end
+        weight: 1
+      - path: swordsman-rig/control/elbow.R
+        weight: 1
+      - path: swordsman-rig/control/elbow.R/elbow.R_end
+        weight: 1
+      - path: swordsman-rig/control/knee.L
+        weight: 0
+      - path: swordsman-rig/control/knee.L/knee.L_end
+        weight: 0
+      - path: swordsman-rig/control/knee.R
+        weight: 0
+      - path: swordsman-rig/control/knee.R/knee.R_end
+        weight: 0
+      - path: swordsman-rig/control/leg.IK.L
+        weight: 0
+      - path: swordsman-rig/control/leg.IK.L/foot.L
+        weight: 0
+      - path: swordsman-rig/control/leg.IK.L/foot.L/toe.L
+        weight: 0
+      - path: swordsman-rig/control/leg.IK.L/foot.L/toe.L/toe.L_end
+        weight: 0
+      - path: swordsman-rig/control/leg.IK.R
+        weight: 0
+      - path: swordsman-rig/control/leg.IK.R/foot.R
+        weight: 0
+      - path: swordsman-rig/control/leg.IK.R/foot.R/toe.R
+        weight: 0
+      - path: swordsman-rig/control/leg.IK.R/foot.R/toe.R/toe.R_end
+        weight: 0
+      - path: swordsman-rig/control/spine
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L/hand.L
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L/hand.L/shield
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L/hand.L/shield/shield_end
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R/hand.R
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R/hand.R/sword
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R/hand.R/sword/sword_end
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/spine.004
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/spine.004/spine.005
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/spine.004/spine.005/spine.005_end
+        weight: 1
+      - path: swordsman-rig/control/spine/thigh.L
+        weight: 0
+      - path: swordsman-rig/control/spine/thigh.L/shin.L
+        weight: 0
+      - path: swordsman-rig/control/spine/thigh.L/shin.L/shin.L_end
+        weight: 0
+      - path: swordsman-rig/control/spine/thigh.R
+        weight: 0
+      - path: swordsman-rig/control/spine/thigh.R/shin.R
+        weight: 0
+      - path: swordsman-rig/control/spine/thigh.R/shin.R/shin.R_end
+        weight: 0
+      - path: tunic_03
+        weight: 1
+      maskType: 1
+      maskSource: {fileID: 31900000, guid: 6f54dbbd12e47304194bb52e124dd231, type: 2}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
       name: swordsman-rig|attack_03
@@ -151,12 +367,120 @@ ModelImporter:
       keepOriginalPositionXZ: 0
       heightFromFeet: 0
       mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      bodyMask: 00000000010000000100000000000000000000000100000001000000010000000100000000000000000000000100000001000000
       curves: []
       events: []
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
+      transformMask:
+      - path: 
+        weight: 1
+      - path: belt_03
+        weight: 1
+      - path: body
+        weight: 1
+      - path: helmet_01
+        weight: 1
+      - path: light_sword_2
+        weight: 1
+      - path: shield_03
+        weight: 1
+      - path: swordsman-rig
+        weight: 1
+      - path: swordsman-rig/control
+        weight: 1
+      - path: swordsman-rig/control/arm.IK.L
+        weight: 1
+      - path: swordsman-rig/control/arm.IK.L/arm.IK.L_end
+        weight: 1
+      - path: swordsman-rig/control/arm.IK.R
+        weight: 1
+      - path: swordsman-rig/control/arm.IK.R/arm.IK.R_end
+        weight: 1
+      - path: swordsman-rig/control/elbow.L
+        weight: 1
+      - path: swordsman-rig/control/elbow.L/elbow.L_end
+        weight: 1
+      - path: swordsman-rig/control/elbow.R
+        weight: 1
+      - path: swordsman-rig/control/elbow.R/elbow.R_end
+        weight: 1
+      - path: swordsman-rig/control/knee.L
+        weight: 0
+      - path: swordsman-rig/control/knee.L/knee.L_end
+        weight: 0
+      - path: swordsman-rig/control/knee.R
+        weight: 0
+      - path: swordsman-rig/control/knee.R/knee.R_end
+        weight: 0
+      - path: swordsman-rig/control/leg.IK.L
+        weight: 0
+      - path: swordsman-rig/control/leg.IK.L/foot.L
+        weight: 0
+      - path: swordsman-rig/control/leg.IK.L/foot.L/toe.L
+        weight: 0
+      - path: swordsman-rig/control/leg.IK.L/foot.L/toe.L/toe.L_end
+        weight: 0
+      - path: swordsman-rig/control/leg.IK.R
+        weight: 0
+      - path: swordsman-rig/control/leg.IK.R/foot.R
+        weight: 0
+      - path: swordsman-rig/control/leg.IK.R/foot.R/toe.R
+        weight: 0
+      - path: swordsman-rig/control/leg.IK.R/foot.R/toe.R/toe.R_end
+        weight: 0
+      - path: swordsman-rig/control/spine
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L/hand.L
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L/hand.L/shield
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L/hand.L/shield/shield_end
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R/hand.R
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R/hand.R/sword
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R/hand.R/sword/sword_end
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/spine.004
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/spine.004/spine.005
+        weight: 1
+      - path: swordsman-rig/control/spine/spine.001/spine.002/spine.003/spine.004/spine.005/spine.005_end
+        weight: 1
+      - path: swordsman-rig/control/spine/thigh.L
+        weight: 0
+      - path: swordsman-rig/control/spine/thigh.L/shin.L
+        weight: 0
+      - path: swordsman-rig/control/spine/thigh.L/shin.L/shin.L_end
+        weight: 0
+      - path: swordsman-rig/control/spine/thigh.R
+        weight: 0
+      - path: swordsman-rig/control/spine/thigh.R/shin.R
+        weight: 0
+      - path: swordsman-rig/control/spine/thigh.R/shin.R/shin.R_end
+        weight: 0
+      - path: tunic_03
+        weight: 1
+      maskType: 1
+      maskSource: {fileID: 31900000, guid: 6f54dbbd12e47304194bb52e124dd231, type: 2}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
       name: swordsman-rig|die

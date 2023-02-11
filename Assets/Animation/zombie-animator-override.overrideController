@@ -9,12 +9,6 @@ AnimatorOverrideController:
   m_Name: zombie-animator-override
   m_Controller: {fileID: 9100000, guid: 70a96d84c6e79d240b1ea158bd79c03e, type: 2}
   m_Clips:
-  - m_OriginalClip: {fileID: 297581478455914248, guid: e9ef3520237c940468a8f40368609a62, type: 3}
-    m_OverrideClip: {fileID: 7400000, guid: 725f5fb727fd35443a6cf98d1420c7c2, type: 2}
-  - m_OriginalClip: {fileID: -5297689657612824425, guid: e9ef3520237c940468a8f40368609a62, type: 3}
-    m_OverrideClip: {fileID: 7400000, guid: 784411f8f0d9c0a4e8a06bf600092c01, type: 2}
-  - m_OriginalClip: {fileID: -508642561913968957, guid: e9ef3520237c940468a8f40368609a62, type: 3}
-    m_OverrideClip: {fileID: 7400000, guid: c45f8b8f4f98dcd45b06481818cf1742, type: 2}
   - m_OriginalClip: {fileID: -3568871459448589476, guid: e9ef3520237c940468a8f40368609a62, type: 3}
     m_OverrideClip: {fileID: -292078061566783181, guid: 2226a89481b2b164fb3716631cea1c31, type: 3}
   - m_OriginalClip: {fileID: -341010069335778699, guid: e9ef3520237c940468a8f40368609a62, type: 3}
@@ -25,3 +19,11 @@ AnimatorOverrideController:
     m_OverrideClip: {fileID: -6182892566642057805, guid: 2226a89481b2b164fb3716631cea1c31, type: 3}
   - m_OriginalClip: {fileID: -9068916444995893023, guid: e9ef3520237c940468a8f40368609a62, type: 3}
     m_OverrideClip: {fileID: -6182892566642057805, guid: 2226a89481b2b164fb3716631cea1c31, type: 3}
+  - m_OriginalClip: {fileID: 1849882085204117522, guid: 2c952f5790cb6f241abc44bfc82c666d, type: 3}
+    m_OverrideClip: {fileID: 7400000, guid: 3ea980c092742d946bc2038247bfcfa3, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 71b836b359500fd42a03823b59e846a4, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 3ea980c092742d946bc2038247bfcfa3, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: f2a2013b743233f428e0b7b03d6ad14f, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: a6701b9f9dd28bc41b00d3394c49b7c0, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: e77f1a5d8a77f7f448eebba891359108, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 84f1dcc5bedc43b48a42dcb4a9642984, type: 2}

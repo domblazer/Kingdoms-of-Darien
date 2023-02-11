@@ -99,12 +99,7 @@ public class BuilderAI : UnitBuilderAI
     public Vector3 FindBuildSpot(Vector3 origin, bool forLodestone = false)
     {
         // @TODO: TOP PRIORITIES:
-        // 1. builders cannot build outside the map bounds:: DONE
-        // 2. @TODO: cannot place buildings that overlap other units or obstacles
         // 3. @TODO: builders must build factories in relatively central groupings
-        //      Idea: use Physics.OverlapBox(origin, toBuild.offset * 2, Quaternion.identity, (1 << 9) | (1 << 11));
-        //      @TODO: box cannot also cover more invalid surface area than not, i.e. if more than half the structure 
-        //      is going to sit in an invalid area, the build spot is not valid
         // 4. @TODO: an improvement that could be made is also not testing points around the failed areas again
         return forLodestone ? FindClosestSacredSite() :
             (baseUnit as BaseUnitAI).GenerateValidBuildPoint(origin, searchBuildRange, nextIntangibleOffset);
