@@ -75,7 +75,7 @@ public class BaseUnit : RTSUnit
             {
                 // No commands, idle
                 state = States.Standby;
-                // TryToggleToObstacle();
+                TryToggleToObstacle();
                 // If idle and in offensive mode, autopick attack target
                 if (canAttack && attackMode == AttackModes.Offensive)
                     _AttackBehavior.AutoPickAttackTarget();
@@ -91,7 +91,12 @@ public class BaseUnit : RTSUnit
                 if (!GameManager.Instance.IsHoveringOther(gameObject))
                 {
                     // @TODO: secondary could be a "Conjuring" secondary
-                    RTSUnit secondary = _AttackBehavior && _AttackBehavior.attackTarget ? _AttackBehavior.attackTarget.GetComponent<RTSUnit>() : null;
+                    // RTSUnit secondary = _AttackBehavior && _AttackBehavior.attackTarget ? _AttackBehavior.attackTarget.GetComponent<RTSUnit>() : null;
+                    RTSUnit secondary = null;
+                    if (_AttackBehavior && _AttackBehavior.attackTarget)
+                        secondary = _AttackBehavior.attackTarget.GetComponent<RTSUnit>();
+                    /* else if (_Builder && _Builder.currentIntangible)
+                        secondary = _Builder.currentIntangible; */
                     UIManager.UnitInfoInstance.Set(super, secondary);
                 }
 
@@ -233,6 +238,10 @@ public class BaseUnit : RTSUnit
     private IEnumerator Die()
     {
         HandleDie();
+
+        // @TODO: If builder, clear any current build
+        // if (isBuilder)
+        //    _Builder.ClearBuild();
 
         DeSelect();
         selectable = false;

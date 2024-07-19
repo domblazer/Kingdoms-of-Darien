@@ -13,7 +13,7 @@ public class IntangibleUnitBase : MonoBehaviour
     public RTSUnit finalUnit { get { return finalUnitPrefab.GetComponent<RTSUnit>(); } }
     public float buildCost { get { return finalUnit.buildCost; } }
     public float buildTime { get { return finalUnit.buildTime; } }
-    public int drainRate { get { return Mathf.RoundToInt((buildCost / buildTime) * 10); } }
+    public float drainRate { get { return buildCost / buildTime * 10; } }
 
     // Keep track of model materials to create "Intangible Mass" effect
     private List<Material> materials = new List<Material>();
@@ -52,11 +52,12 @@ public class IntangibleUnitBase : MonoBehaviour
     }
 
     // Reference back to the Builder or Factory that spawned this intangible. Can be either an AI or player
+    // @TODO: If this unit is being spawned by a kinematic builder, multiple builders can be on it, affecting the rate of progress
     public UnitBuilderBase builder { get; set; }
 
     // Control variables for transparency change
     // @TODO: change rate based on how much mana you have
-    [Range(0.1f, 1.0f)] private float rate = 1.0f;
+    [Range(0.1f, 1.0f)] public float lagRate = 1.0f;
     protected float t = 0;
     // Other state variables
     protected Directions facingDir = Directions.Forward;
@@ -67,6 +68,9 @@ public class IntangibleUnitBase : MonoBehaviour
     // public Vector3 offset { get; set; } = Vector3.zero;
 
     protected IntangibleCompletedCallback intangibleCompletedCallback;
+
+    protected GameObject sparkleParticlesObj;
+    protected ParticleSystem sparkleParticles;
 
     void Start()
     {
@@ -80,7 +84,7 @@ public class IntangibleUnitBase : MonoBehaviour
             if (child.GetComponent<Renderer>())
             {
                 List<Material> temp = child.GetComponent<Renderer>().materials.ToList();
-                materials = materials.Concat<Material>(temp).ToList();
+                materials = materials.Concat(temp).ToList();
             }
         }
 
@@ -88,10 +92,14 @@ public class IntangibleUnitBase : MonoBehaviour
         foreach (Material mat in materials)
         {
             SetMaterialTransparency(mat);
-            MaterialsMap t = new MaterialsMap(mat, mat.color);
+            MaterialsMap t = new(mat, mat.color);
             t.CreateGradient(manaColor);
             materialsMap.Add(t);
         }
+
+        // Every intangible should have a "sparkle-particles" child object that holds the sparkles particle system
+        sparkleParticlesObj = transform.Find("sparkle-particles").gameObject;
+        sparkleParticles = sparkleParticlesObj.GetComponent<ParticleSystem>();
 
         // Add this intangible to the Player context (inventory and all)
         Functions.AddIntangibleToPlayerContext(this);
@@ -101,19 +109,26 @@ public class IntangibleUnitBase : MonoBehaviour
     protected void FinishIntangible()
     {
         // If any callback function was set, call it now
-        if (intangibleCompletedCallback != null)
-            intangibleCompletedCallback();
+        intangibleCompletedCallback?.Invoke();
 
         // Every builder gets nextQueueReady = true
         builder.SetNextQueueReady(true);
 
         // Instantiate final new unit
         GameObject newUnit = Instantiate(finalUnitPrefab, transform.position, transform.rotation);
-        newUnit.GetComponent<RTSUnit>().Begin(facingDir, rallyPoint, parkToggle, nextCommandAfterParking);
+        // Move the sparkle particles child object over to the RTSUnit for fade out and disposal
+        sparkleParticlesObj.transform.parent = newUnit.transform;
+        newUnit.GetComponent<RTSUnit>().Begin(facingDir, rallyPoint, parkToggle, nextCommandAfterParking, sparkleParticlesObj);
 
         // Remove intangible from inventory/player context as well
         Functions.RemoveIntangibleFromPlayerContext(this);
+        Destroy(gameObject);
+    }
 
+    protected void CancelIntangible() {
+        // @TODO: Where do particles go to finish if an intangible is cancelled?
+        // Remove intangible from inventory/player context as well
+        Functions.RemoveIntangibleFromPlayerContext(this);
         Destroy(gameObject);
     }
 
@@ -128,7 +143,7 @@ public class IntangibleUnitBase : MonoBehaviour
     {
         foreach (MaterialsMap map in materialsMap)
             map.material.color = map.gradient.Evaluate(t);
-        t += (Time.deltaTime / (buildTime / 10)) * rate;
+        t += Time.deltaTime / (buildTime / 10) * lagRate;
     }
 
     protected void SetFacingDir(Directions dir)

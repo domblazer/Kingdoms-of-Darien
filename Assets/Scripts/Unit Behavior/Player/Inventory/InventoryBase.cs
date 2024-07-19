@@ -7,12 +7,9 @@ using DarienEngine;
 public class InventoryBase : MonoBehaviour
 {
     public int totalManaIncome = 0;
-    public int totalManaStorage = 10;
+    public int totalManaStorage = 0;
     public int currentMana = 0;
-    public int manaDrainRate = 0;
-
-    private float manaRechargeRate = 0.1f;
-    private float nextManaRecharge = 0;
+    public float totalManaDrainPerSecond = 0;
 
     // Event emitter for inventory change (add/remove units)
     public event EventHandler<OnInventoryChangedEventArgs> OnUnitsChanged;
@@ -25,100 +22,70 @@ public class InventoryBase : MonoBehaviour
     }
 
     // Maintain totalUnits list and groupedUnits dictionary 
-    public List<RTSUnit> totalUnits = new List<RTSUnit>();
-    public Dictionary<UnitCategories, List<RTSUnit>> groupedUnits = new Dictionary<UnitCategories, List<RTSUnit>>();
+    public List<RTSUnit> totalUnits = new();
+    public Dictionary<UnitCategories, List<RTSUnit>> groupedUnits = new();
 
     // Separate lists to maintain lodestones and intangibles
-    public List<RTSUnit> lodestones = new List<RTSUnit>();
-    public List<IntangibleUnitBase> intangibleUnits = new List<IntangibleUnitBase>();
+    public List<RTSUnit> lodestones = new();
+    public List<IntangibleUnitBase> intangibleUnits = new();
 
     public int unitLimit = 500;
     public int totalUnitsCreated = 0;
     public int unitsLost = 0;
-
-    protected void UpdateMana()
+    private float rateOfChange = 0;
+    private int increment = 1;
+    private float nextManaChange = 0;
+    protected void UpdateMana(bool log = false)
     {
-        // @TODO: manage all teams mana
-        // @TODO: if mana is taking any amount of drain, need to noramalize that into the rate change with some formula I need to figure out,
-        // like if drainRate surpasses rechargeRate, just drain at a slower pace, else recharge at a slower pace, type thing
-        if (lodestones.Count > 0 && currentMana <= totalManaStorage && currentMana >= 0)
+        if (totalManaIncome > 0 && currentMana <= totalManaStorage && currentMana >= 0)
         {
-            // Every 1/10th of a second, add the totalManaIncome to currentMana
-            if (Time.time > nextManaRecharge)
+            // Rate of change is function of income and drain per second
+            rateOfChange = 1 / (totalManaIncome - totalManaDrainPerSecond);
+            if (rateOfChange < 0)
+                increment = -1;
+            else if (rateOfChange > 0)
+                increment = 1;
+            else
+                increment = 0;
+
+            if (log)
             {
-                currentMana += GetManaChangeRate();
-
-                if (currentMana > totalManaStorage)
-                    currentMana = totalManaStorage;
-                else if (currentMana < 0)
-                    currentMana = 0;
-
-                nextManaRecharge = Time.time + manaRechargeRate;
+                string str = "rateOfChange: " + rateOfChange + " \n" +
+                "increment: " + increment;
+                Debug.Log(str);
             }
+
+            if (Time.time > nextManaChange && Mathf.Abs(rateOfChange) > 0)
+            {
+                currentMana += increment;
+                nextManaChange = Time.time + rateOfChange;
+            }
+
+            // Ensure currentMana stays in bounds
+            if (currentMana >= totalManaStorage)
+                currentMana = totalManaStorage;
+            else if (currentMana <= 0)
+                currentMana = 0;
         }
-    }
-
-    public void PlusTotalMana(int mana)
-    {
-        totalManaStorage += mana;
-    }
-
-    public void MinusTotalMana(int mana)
-    {
-        totalManaStorage -= mana;
-    }
-
-    public void PlusCurrentMana(int mana)
-    {
-        currentMana += mana;
-    }
-
-    public void MinusCurrentMana(int mana)
-    {
-        // @TODO: add this to the sum/rechargeRate
-        if (currentMana >= 0)
-        {
-            currentMana -= mana;
-        }
-
     }
 
     public void AddIntangible(IntangibleUnitBase unit)
     {
-        manaDrainRate += unit.drainRate;
+        totalManaDrainPerSecond += unit.drainRate;
         intangibleUnits.Add(unit);
     }
 
     public void RemoveIntangible(IntangibleUnitBase unit)
     {
-        manaDrainRate -= unit.drainRate;
+        totalManaDrainPerSecond -= unit.drainRate;
         intangibleUnits.Remove(unit);
-    }
-
-    protected void AddLodestone(RTSUnit lodeUnit)
-    {
-        totalManaStorage += lodeUnit.manaStorage;
-        totalManaIncome += lodeUnit.manaIncome;
-        lodestones.Add(lodeUnit);
-    }
-
-    protected void RemoveLodestone(RTSUnit lodeUnit)
-    {
-        totalManaStorage -= lodeUnit.manaStorage;
-        totalManaIncome -= lodeUnit.manaIncome;
-        lodestones.Remove(lodeUnit);
-    }
-
-    public int GetManaChangeRate()
-    {
-        return totalManaIncome - manaDrainRate;
     }
 
     public void AddUnit(RTSUnit unit)
     {
-        // Special Add for Lodestones
-        if (unit.unitType == UnitCategories.LodestoneTier1 || unit.unitType == UnitCategories.LodestoneTier2)
-            AddLodestone(unit);
+        // Sum up mana storage and mana income from all units
+        totalManaStorage += unit.manaStorage;
+        totalManaIncome += unit.manaIncome;
 
         totalUnits.Add(unit);
         // Try if unitType exists in groupedUnits dictionary
@@ -131,8 +98,7 @@ public class InventoryBase : MonoBehaviour
         }
         else
         {
-            List<RTSUnit> newUnits = new List<RTSUnit>();
-            newUnits.Add(unit);
+            List<RTSUnit> newUnits = new() { unit };
             // If a unit is added whose type is not yet in the dictionary, assume to add new key-value for it
             groupedUnits.Add(unit.unitType, newUnits);
         }
@@ -149,9 +115,9 @@ public class InventoryBase : MonoBehaviour
 
     public void RemoveUnit(RTSUnit unit)
     {
-        // Remove lodestone 
-        if (unit.unitType == UnitCategories.LodestoneTier1 || unit.unitType == UnitCategories.LodestoneTier2)
-            RemoveLodestone(unit);
+        // Subtract mana storage and income values from removed units
+        totalManaStorage -= unit.manaStorage;
+        totalManaIncome -= unit.manaIncome;
 
         // Remove from totalUnits and groupedUnits
         totalUnits.Remove(unit);
@@ -180,7 +146,7 @@ public class InventoryBase : MonoBehaviour
 
     public List<RTSUnit> GetUnitsByTypes(params UnitCategories[] types)
     {
-        List<RTSUnit> units = new List<RTSUnit>();
+        List<RTSUnit> units = new();
         foreach (UnitCategories category in types)
             if (groupedUnits.TryGetValue(category, out List<RTSUnit> grouped))
                 units.AddRange(grouped);

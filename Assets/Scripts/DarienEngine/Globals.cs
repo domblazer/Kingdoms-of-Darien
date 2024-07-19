@@ -62,7 +62,7 @@ namespace DarienEngine
         public static void AddIntangibleToPlayerContext(IntangibleUnitBase unit, bool addToHolder = true)
         {
             GameObject _Holder = null;
-            PlayerNumbers playerNumber = unit.builder.baseUnit.playerNumber;
+            PlayerNumbers playerNumber = unit.builder.BaseUnit.playerNumber;
             if (playerNumber == PlayerNumbers.Player1)
             {
                 // Add this unit to the main (human) player context
@@ -84,7 +84,7 @@ namespace DarienEngine
 
         public static void RemoveIntangibleFromPlayerContext(IntangibleUnitBase unit)
         {
-            PlayerNumbers playerNumber = unit.builder.baseUnit.playerNumber;
+            PlayerNumbers playerNumber = unit.builder.BaseUnit.playerNumber;
             if (playerNumber == PlayerNumbers.Player1)
                 GameManager.Instance.PlayerMain.inventory.RemoveIntangible(unit);
             else if (GameManager.Instance.AIPlayers.TryGetValue(playerNumber, out AIPlayerContext aiPlayer))

@@ -36,16 +36,16 @@ public class Factory : UnitBuilderPlayer
 
     public void HandleConjureRoutine()
     {
-        isBuilding = !baseUnit.commandQueue.IsEmpty();
+        IsBuilding = !BaseUnit.commandQueue.IsEmpty();
         // While masterQueue is not empty, continue queueing up intangible prefabs
-        if (nextQueueReady)
+        if (NextQueueReady)
         {
             // @TODO: also need to check that the spawn point is clear before moving on to next units
-            ConjurerArgs next = baseUnit.currentCommand.conjurerArgs;
+            ConjurerArgs next = BaseUnit.currentCommand.conjurerArgs;
             InstantiateNextIntangible(next);
             // Toggle whether new unit parks towards the right or left
             parkingDirectionToggle = !parkingDirectionToggle;
-            nextQueueReady = false;
+            NextQueueReady = false;
 
             // @TODO: handle infinite. If one unit got the infinite command, all subsequent left-clicks on that unit need to be ignored
             // (right-click) to clear. Also, as long as the condition is true, this should just keep pumping out the same unit
@@ -83,12 +83,12 @@ public class Factory : UnitBuilderPlayer
     private void QueueUnit(ConjurerArgs item)
     {
         // Instantiate first immediately
-        if (baseUnit.commandQueue.IsEmpty())
-            nextQueueReady = true;
+        if (BaseUnit.commandQueue.IsEmpty())
+            NextQueueReady = true;
         // Increment individual unit queue count
         item.buildQueueCount++;
         // New conjure command
-        baseUnit.commandQueue.Enqueue(new CommandQueueItem
+        BaseUnit.commandQueue.Enqueue(new CommandQueueItem
         {
             commandType = CommandTypes.Conjure,
             // commandPoint = item // @TODO: commandPoint not needed here?
@@ -101,7 +101,7 @@ public class Factory : UnitBuilderPlayer
         // @TODO: holding shift should dequeue 5 at a time, ctrl clear all
         item.buildQueueCount--;
         // splice from commandQueue
-        baseUnit.commandQueue.RemoveAt(baseUnit.commandQueue.FindIndex(x => x.conjurerArgs == item));
+        BaseUnit.commandQueue.RemoveAt(BaseUnit.commandQueue.FindIndex(x => x.conjurerArgs == item));
         // @TODO: if removing a command whose build is still in progress, that intangible needs to be destroyed 
     }
 
@@ -116,7 +116,7 @@ public class Factory : UnitBuilderPlayer
     private void IntangibleCompleted()
     {
         // Factory dequeue commandQueue and decrement menu item buildQueueCount
-        CommandQueueItem lastCommand = baseUnit.commandQueue.Dequeue();
+        CommandQueueItem lastCommand = BaseUnit.commandQueue.Dequeue();
         lastCommand.conjurerArgs.buildQueueCount--;
     }
 

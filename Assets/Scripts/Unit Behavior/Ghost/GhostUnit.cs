@@ -110,9 +110,9 @@ public class GhostUnit : MonoBehaviour
         // Add the activeFloatingGhost (this) to the player args and enqueue it to the commandQueue
         // Debug.Log("builder.activeFloatingGhost " + builder.activeFloatingGhost);
         conjurerArgs.prefab = builder.activeFloatingGhost;
-        bool wasEmpty = builder.baseUnit.commandQueue.IsEmpty();
+        bool wasEmpty = builder.BaseUnit.commandQueue.IsEmpty();
         // conjurerArgs
-        builder.baseUnit.commandQueue.Enqueue(new CommandQueueItem
+        builder.BaseUnit.commandQueue.Enqueue(new CommandQueueItem
         {
             commandType = CommandTypes.Conjure,
             commandPoint = hitPos,
@@ -143,15 +143,15 @@ public class GhostUnit : MonoBehaviour
         conjurerArgs.prefab = gameObject;
 
         // Destroy all ghosts for this builder and remove all it's other conjure commands
-        foreach (CommandQueueItem cmd in builder.baseUnit.commandQueue)
+        foreach (CommandQueueItem cmd in builder.BaseUnit.commandQueue)
         {
             if (cmd.commandType == CommandTypes.Conjure)
                 Destroy(cmd.conjurerArgs.prefab);
         }
-        builder.baseUnit.commandQueue.RemoveAll(cmd => cmd.commandType == CommandTypes.Conjure);
+        builder.BaseUnit.commandQueue.RemoveAll(cmd => cmd.commandType == CommandTypes.Conjure);
 
         // Set the current command to building this ghost
-        builder.baseUnit.currentCommand = new CommandQueueItem
+        builder.BaseUnit.currentCommand = new CommandQueueItem
         {
             commandType = CommandTypes.Conjure,
             commandPoint = hitPos,

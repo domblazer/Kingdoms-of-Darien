@@ -1,9 +1,9 @@
 {
   "dependencies": {
     "com.unity.2d.sprite": {
-      "version": "file:C:/Program Files/Unity/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.2d.sprite",
+      "version": "1.0.0",
       "depth": 0,
-      "source": "local",
+      "source": "builtin",
       "dependencies": {}
     },
     "com.unity.collab-proxy": {

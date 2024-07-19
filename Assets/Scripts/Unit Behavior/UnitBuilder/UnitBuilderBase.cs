@@ -9,30 +9,36 @@ using DarienEngine.AI;
 /// </summary>
 public class UnitBuilderBase : MonoBehaviour
 {
-    public bool isBuilding { get; set; }
-    public bool nextQueueReady { get; set; } = false;
-    public RTSUnit baseUnit { get; set; }
+    public bool IsBuilding { get; set; }
+    public bool NextQueueReady { get; set; } = false;
+    public RTSUnit BaseUnit { get; set; }
 
     private void Awake()
     {
-        baseUnit = GetComponent<RTSUnit>();
+        BaseUnit = GetComponent<RTSUnit>();
+        BaseUnit.commandQueue.OnQueueChanged += CancelBuild;
     }
 
     public void SetNextQueueReady(bool val)
     {
-        nextQueueReady = val;
+        NextQueueReady = val;
         // Reset isBuilding for kinematic builders since once one intangible is done, builder must re-enter move routine before starting another
         if (IsBuilder())
-            isBuilding = false;
+            IsBuilding = false;
     }
 
     public bool IsFactory()
     {
-        return !baseUnit.isKinematic;
+        return !BaseUnit.isKinematic;
     }
 
     public bool IsBuilder()
     {
-        return baseUnit.isKinematic;
+        return BaseUnit.isKinematic;
+    }
+
+    public void CancelBuild(object sender, CommandQueue.CommandQueueChangedEventArgs changeEvent)
+    {
+
     }
 }

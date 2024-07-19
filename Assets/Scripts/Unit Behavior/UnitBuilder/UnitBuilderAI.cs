@@ -23,10 +23,10 @@ public class UnitBuilderAI : UnitBuilderBase
     public void QueueBuild(BuildUnit buildUnit)
     {
         // Debug.Log("UnitBuilderAI queued: " + intangiblePrefab.GetComponent<IntangibleUnitAI>().finalUnit.unitName);
-        if (baseUnit.commandQueue.IsEmpty())
-            nextQueueReady = true;
+        if (BaseUnit.commandQueue.IsEmpty())
+            NextQueueReady = true;
         // Enqueue master queue to keep track of build order and total queue
-        baseUnit.commandQueue.Enqueue(new CommandQueueItem
+        BaseUnit.commandQueue.Enqueue(new CommandQueueItem
         {
             commandType = CommandTypes.Conjure,
             conjurerArgs = new ConjurerArgs { prefab = buildUnit.intangiblePrefab, unitCategory = buildUnit.unitCategory }

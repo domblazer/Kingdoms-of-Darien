@@ -63,14 +63,14 @@ public class RTSUnit : MonoBehaviour
     private float lastHitRechargeDelay = 5.0f;
 
     // Mana
-    public int baseMana;
+    // public int baseMana; // @TODO: Commenting this out b/c it's not being used and idk what it is for
     public int mana { get; set; } = 0;
     protected float manaRechargeRate = 0.5f;
     protected float nextManaRecharge;
     public int manaIncome;
     public int manaStorage;
     public int buildCost;
-    public float buildTime = 100;
+    public float buildTime = 100; // buildTime / 10 = time in seconds
 
     // Abilities
     public bool isKinematic = true; // @TODO: rename: canMove
@@ -321,7 +321,7 @@ public class RTSUnit : MonoBehaviour
             Vector3 forward = transform.forward;
             forward.y = 0;
             float headingAngle = Quaternion.LookRotation(forward).eulerAngles.y;
-            
+
             // Determine my general direction of movement by angle
             int dir = 0;
             // Right
@@ -350,9 +350,9 @@ public class RTSUnit : MonoBehaviour
 
     public void MoveOutOfTheWay(RTSUnit sendingUnit, bool turnCClockwise)
     {
-        // 2) When bumping propagates through a group, some units get to stepping on each other's toes. More logic is needed to ensure
-        //    where I am moving does not end up creating a jumbled mess with conflicting points. E.g. test if point is already occupied, 
-        //    test if the area around me has many units, etc.
+        // @TODO: When bumping propagates through a group, some units get to stepping on each other's toes. More logic is needed to ensure
+        // where I am moving does not end up creating a jumbled mess with conflicting points. E.g. test if point is already occupied, 
+        // test if the area around me has many units, etc.
 
         Vector3 dirToMove;
         if (turnCClockwise)
@@ -433,8 +433,16 @@ public class RTSUnit : MonoBehaviour
         tryParkingDirection = parkingDirectionToggle;
     }
 
-    public void Begin(DarienEngine.Directions facingDir, Vector3 parkPosition, bool parkToggle, CommandQueueItem nextCmd)
+    public void Begin(Directions facingDir, Vector3 parkPosition, bool parkToggle, CommandQueueItem nextCmd, GameObject particlesObj = null)
     {
+        // If there is an intangible's sparkle particles passed to this unit, stop the animation now and destroy the object after some time
+        if (particlesObj)
+        {
+            particlesObj.GetComponent<ParticleSystem>().Stop();
+            StartCoroutine(RemoveObject(particlesObj, 100));
+        }
+
+        // @TODO: set facing direction?
         // SetFacingDir(facingDir);
         if (isKinematic)
         {
@@ -442,6 +450,13 @@ public class RTSUnit : MonoBehaviour
             SetParking(parkPosition, parkToggle);
         }
         nextCommandAfterParking = nextCmd;
+    }
+
+    // Generic helper function for removing objects
+    private IEnumerator RemoveObject(GameObject obj, float delayTime)
+    {
+        yield return new WaitForSeconds(delayTime);
+        Destroy(obj);
     }
 
     public void SetPatrol(Vector3 patrolPoint, bool addToQueue = false)

@@ -9,12 +9,54 @@ public class IntangibleUnit : IntangibleUnitBase
     // Update "Intangible Mass" color gradient until done
     void Update()
     {
-        // TODO: if no builder is attatched to this intangible, the mana flow is reversed, draining from the intangible and adding back to main mana
-        if (t < 1)
+        if (t < 1 && builder)
+        {
+            // @TODO: Ideally, the call to get the player context should be to an instance var in this class, but that may require creating a super class
+            // for the MainPlayerContext and AIPlayerContext classes and returning that from the AddToPlayerContext function.
+
+            // If currentMana is empty, all building slows down by half
+            if (GameManager.Instance.PlayerMain.inventory.currentMana == 0)
+                lagRate = 0.5f;
+            else
+                lagRate = 1;
+
+            // Restart particles if they were stopped
+            if (sparkleParticles.isStopped)
+            {
+                sparkleParticles.Play();
+            }
+
             EvalColorGradient();
+        }
+        else if (t < 1 && builder == null)
+        {
+            // @TODO: State: Intangible has made progress but has lost its builder
+            // @TODO: builders may be a list if this intangible is spawned by a kinematic builder - in that case, builders.Count == 0 
+            // 1) turn off the sparkle particles
+            // 2) reverse the change rate and add the drainRate to the rechargeRate
+
+            if (sparkleParticles.isPlaying)
+            {
+                sparkleParticles.Stop();
+                lagRate = -1.0f;
+                // @TODO: reverse the drainRate and re-sum with Inventory.totalManaDrainPerSecond and add with totalManaIncome
+            }
+        }
+        else if (t == 0 && builder == null)
+        {
+            // @TODO: destroy this intanbile since it has no builder and has gone back to 0 progress
+            // 1) A builder that might have this unit in its buildQueue must handle that it no longer exists: "Failed to conjure..." or something
+            // 2) remove the temp mana recharge
+
+            CancelIntangible();
+        }
         // Done
-        else
+        else if (t == 1 && builder)
+        {
             FinishIntangible();
+        }
+
+        // @TODO: If builder is reassigned while t > 0 && t < 1, restart the sparkle particles, reset the mana drain
     }
 
     // Bind vars from referring builder/factory

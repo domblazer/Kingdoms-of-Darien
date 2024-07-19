@@ -745,7 +745,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 6
+      scalar: 16
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -4420,7 +4420,7 @@ ParticleSystem:
     radiusScale: 1
     collidesWith:
       serializedVersion: 2
-      m_Bits: 1335
+      m_Bits: 394551
     maxCollisionShapes: 1
     quality: 0
     voxelSize: 0.5
@@ -5829,13 +5829,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc2b6bac21f00d546a1f85c79a8a34a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animationClipRange:
-  - start: 0
-    end: 1
-  - start: 0
-    end: 1
-  - start: 0
-    end: 1
 --- !u!136 &1371476058889555912
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -6118,13 +6111,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc2b6bac21f00d546a1f85c79a8a34a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animationClipRange:
-  - start: 0
-    end: 1
-  - start: 0
-    end: 1
-  - start: 0
-    end: 1
 --- !u!136 &2709367737193797060
 CapsuleCollider:
   m_ObjectHideFlags: 0

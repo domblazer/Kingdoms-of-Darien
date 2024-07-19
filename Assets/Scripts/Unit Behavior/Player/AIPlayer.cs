@@ -49,7 +49,7 @@ public class AIPlayer : MonoBehaviour
         {
             BuilderAI builderAI = builder.gameObject.GetComponent<BuilderAI>();
             // Only queue builders who are not in a roaming interval, and not in a build routine with at least 1 unit in the queue
-            if (!builderAI.isInRoamInterval && !builderAI.isBuilding && !builderAI.baseUnit.isParking && builderAI.baseUnit.commandQueue.Count < 1)
+            if (!builderAI.isInRoamInterval && !builderAI.IsBuilding && !builderAI.BaseUnit.isParking && builderAI.BaseUnit.commandQueue.Count < 1)
             {
                 BuildUnit[] validUnits = builderAI.buildUnitPrefabs.Where(x => x.unitCategory == needInfo.builderNeed).ToArray();
                 if (validUnits != null && validUnits.Count() > 0)
@@ -68,7 +68,7 @@ public class AIPlayer : MonoBehaviour
         foreach (BaseUnitAI factory in factories)
         {
             FactoryAI factoryAI = factory.gameObject.GetComponent<FactoryAI>();
-            if (!factoryAI.isBuilding)
+            if (!factoryAI.IsBuilding)
             {
                 // If this builder is not already conjuring something, pick a unit that meets the current need
                 BuildUnit[] validUnits = factoryAI.buildUnitPrefabs.Where(x => x.unitCategory == needInfo.factoryNeed).ToArray();

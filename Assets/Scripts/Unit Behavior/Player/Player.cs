@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DarienEngine;
 using DarienEngine.Clustering;
+using System.Linq;
 
 public class Player : MonoBehaviour
 {
@@ -275,7 +276,7 @@ public class Player : MonoBehaviour
             else if (hit.collider.gameObject.layer == 9 && hit.collider.CompareTag("Enemy"))
             {
                 // If we clicked an Enemy unit while at least one canAttack unit is selected, tell those/that unit to attack
-                foreach (BaseUnit unit in selectedUnits)
+                foreach (BaseUnit unit in selectedUnits.Cast<BaseUnit>())
                     if (unit.canAttack)
                         unit._AttackBehavior.TryAttack(hit.collider.gameObject, InputManager.HoldingShift());
             }
@@ -395,7 +396,7 @@ public class Player : MonoBehaviour
 
     public void ClearSelectedUnits()
     {
-        foreach (BaseUnit unit in selectedUnits)
+        foreach (BaseUnit unit in selectedUnits.Cast<BaseUnit>())
             unit.DeSelect();
         selectedUnits.Clear();
     }
@@ -403,7 +404,7 @@ public class Player : MonoBehaviour
     public int SelectedAttackUnitsCount()
     {
         int count = 0;
-        foreach (BaseUnit unit in selectedUnits)
+        foreach (BaseUnit unit in selectedUnits.Cast<BaseUnit>())
             if (unit.canAttack)
                 count++;
         return count;

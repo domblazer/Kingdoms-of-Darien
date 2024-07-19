@@ -62,16 +62,16 @@ public class Builder : UnitBuilderPlayer
 
     public void HandleConjureRoutine()
     {
-        if (nextQueueReady)
+        if (NextQueueReady)
         {
             // Builders always keep a queue of GhostUnits
             // Debug.Log("Builder " + gameObject.name + " queue: " + baseUnit.commandQueue.ToString());
-            GhostUnit nextGhost = baseUnit.currentCommand.conjurerArgs.prefab.GetComponent<GhostUnit>();
+            GhostUnit nextGhost = BaseUnit.currentCommand.conjurerArgs.prefab.GetComponent<GhostUnit>();
             // @TODO: offset depends on direction, e.g. if walking along x, use x, y, y, and diagonal use mix
             Vector3 offsetRange = nextGhost.offset;
             // Move to next ghost in the queue
-            if (nextGhost.IsSet() && !baseUnit.IsInRangeOf(nextGhost.transform.position, offsetRange.x))
-                baseUnit.MoveToPosition(nextGhost.transform.position);
+            if (nextGhost.IsSet() && !BaseUnit.IsInRangeOf(nextGhost.transform.position, offsetRange.x))
+                BaseUnit.MoveToPosition(nextGhost.transform.position);
             // When arrived at ghost, start building intangible
             else
                 StartNextIntangible(nextGhost);
@@ -80,14 +80,14 @@ public class Builder : UnitBuilderPlayer
 
     public void StartNextIntangible(GhostUnit ghost)
     {
-        baseUnit.MoveToPosition(transform.position);
-        nextQueueReady = false;
-        isBuilding = true;
+        BaseUnit.MoveToPosition(transform.position);
+        NextQueueReady = false;
+        IsBuilding = true;
         ghost.StartBuild(IntangibleCompleted);
     }
 
     public void IntangibleCompleted()
     {
-        baseUnit.commandQueue.Dequeue();
+        BaseUnit.commandQueue.Dequeue();
     }
 }

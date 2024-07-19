@@ -27,7 +27,7 @@ public class HumanoidUnitAnimator : MonoBehaviour
     {
         if (!_Unit.isDead)
         {
-            // @TODO: flyers should maybe use their own animator?
+            // @TODO: flyers should maybe use their own animator to handle takeoff and landing states?
             //_Animator.SetBool("flying", (_Unit.canFly && _Unit._FlyingUnit.changingPlanes));
 
             _Animator.SetBool("moving", _Unit.IsMoving());
@@ -46,7 +46,7 @@ public class HumanoidUnitAnimator : MonoBehaviour
 
             if (_Unit.isBuilder)
             {
-                _Animator.SetBool("conjuring", _UnitBuilderScript.isBuilding);
+                _Animator.SetBool("conjuring", _UnitBuilderScript.IsBuilding);
             }
         }
     }

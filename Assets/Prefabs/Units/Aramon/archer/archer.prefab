@@ -6246,7 +6246,7 @@ ParticleSystem:
     radiusScale: 1
     collidesWith:
       serializedVersion: 2
-      m_Bits: 1335
+      m_Bits: 394551
     maxCollisionShapes: 1
     quality: 0
     voxelSize: 0.5
@@ -7845,6 +7845,7 @@ MonoBehaviour:
   canFly: 0
   phaseDie: 0
   bloodSystem: {fileID: 8276149309757412236}
+  isStriking: 0
   selectable: 1
   selectRing: {fileID: 8276149309611925461}
   fogOfWarMask: {fileID: 6997183358627103113}

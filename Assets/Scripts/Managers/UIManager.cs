@@ -244,7 +244,7 @@ public class UIManager : MonoBehaviour
         {
             manaProportionText.text = inv.currentMana + "/" + inv.totalManaStorage;
             manaRechargeRateText.text = "+" + inv.totalManaIncome;
-            manaDrainRateText.text = "-" + inv.manaDrainRate;
+            manaDrainRateText.text = "-" + Mathf.RoundToInt(inv.totalManaDrainPerSecond);
         }
     }
 

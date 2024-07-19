@@ -26,16 +26,16 @@ public class BuilderAI : UnitBuilderAI
             {
                 isInRoamInterval = false;
                 // When roam interval is done, dequeue the patrol command, this will satisfy the next build condition in AIPlayer
-                baseUnit.commandQueue.Dequeue();
+                BaseUnit.commandQueue.Dequeue();
             }
         }
     }
 
     public void HandleConjureRoutine()
     {
-        if (nextQueueReady && !isInRoamInterval)
+        if (NextQueueReady && !isInRoamInterval)
         {
-            ConjurerArgs buildArgs = baseUnit.currentCommand.conjurerArgs;
+            ConjurerArgs buildArgs = BaseUnit.currentCommand.conjurerArgs;
             // Calculate the intangible's offset once every new queue. @Note. can't ref IntangibleUnitBase b/c it hasn't been instantiated
             if (nextIntangibleOffset == Vector3.zero)
                 nextIntangibleOffset = CalculateIntangibleOffset(buildArgs.prefab);
@@ -45,8 +45,8 @@ public class BuilderAI : UnitBuilderAI
             if (buildArgs.buildSpot == Vector3.zero)
                 buildArgs.buildSpot = FindBuildSpot(transform.position, isLodestone);
             // @TODO: calculate mix of x and y offset
-            if (!baseUnit.IsInRangeOf(buildArgs.buildSpot, nextIntangibleOffset.x))
-                baseUnit.MoveToPosition(buildArgs.buildSpot);
+            if (!BaseUnit.IsInRangeOf(buildArgs.buildSpot, nextIntangibleOffset.x))
+                BaseUnit.MoveToPosition(buildArgs.buildSpot);
             else
                 StartNextIntangible(buildArgs);
         }
@@ -69,9 +69,9 @@ public class BuilderAI : UnitBuilderAI
     // Called once upon arrival at next build position
     private void StartNextIntangible(ConjurerArgs buildArgs)
     {
-        baseUnit.MoveToPosition(transform.position);
-        nextQueueReady = false;
-        isBuilding = true;
+        BaseUnit.MoveToPosition(transform.position);
+        NextQueueReady = false;
+        IsBuilding = true;
         InstantiateNextIntangible(buildArgs.prefab, buildArgs.buildSpot);
     }
 
@@ -102,7 +102,7 @@ public class BuilderAI : UnitBuilderAI
         // 3. @TODO: builders must build factories in relatively central groupings
         // 4. @TODO: an improvement that could be made is also not testing points around the failed areas again
         return forLodestone ? FindClosestSacredSite() :
-            (baseUnit as BaseUnitAI).GenerateValidBuildPoint(origin, searchBuildRange, nextIntangibleOffset);
+            (BaseUnit as BaseUnitAI).GenerateValidBuildPoint(origin, searchBuildRange, nextIntangibleOffset);
     }
 
     private void InstantiateNextIntangible(GameObject itg, Vector3 spawnPoint)
@@ -121,6 +121,6 @@ public class BuilderAI : UnitBuilderAI
         // Reset timer for roaming interval
         timeRemaining = roamIntervalTime;
         // Clear queue and set current new patrol (roam) command. @Note: a new route will be set automatically in BaseUnitAI
-        baseUnit.currentCommand = new CommandQueueItem { commandType = CommandTypes.Patrol };
+        BaseUnit.currentCommand = new CommandQueueItem { commandType = CommandTypes.Patrol };
     }
 }
