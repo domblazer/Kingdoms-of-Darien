@@ -20,29 +20,19 @@ public class IntangibleUnit : IntangibleUnitBase
             else
                 lagRate = 1;
 
-            // Restart particles if they were stopped
-            if (sparkleParticles.isStopped)
-            {
-                sparkleParticles.Play();
-            }
-
             EvalColorGradient();
         }
-        else if (t < 1 && builder == null)
+        else if (t > 0 && t < 1 && builder == null)
         {
             // @TODO: State: Intangible has made progress but has lost its builder
             // @TODO: builders may be a list if this intangible is spawned by a kinematic builder - in that case, builders.Count == 0 
             // 1) turn off the sparkle particles
             // 2) reverse the change rate and add the drainRate to the rechargeRate
-
-            if (sparkleParticles.isPlaying)
-            {
-                sparkleParticles.Stop();
-                lagRate = -1.0f;
-                // @TODO: reverse the drainRate and re-sum with Inventory.totalManaDrainPerSecond and add with totalManaIncome
-            }
+            Debug.Log("intangible has no builder - t: " + t);
+            lagRate = -1.0f;
+            EvalColorGradient();
         }
-        else if (t == 0 && builder == null)
+        else if (t <= 0 && builder == null)
         {
             // @TODO: destroy this intanbile since it has no builder and has gone back to 0 progress
             // 1) A builder that might have this unit in its buildQueue must handle that it no longer exists: "Failed to conjure..." or something
@@ -51,7 +41,7 @@ public class IntangibleUnit : IntangibleUnitBase
             CancelIntangible();
         }
         // Done
-        else if (t == 1 && builder)
+        else if (t >= 1 && builder)
         {
             FinishIntangible();
         }
@@ -63,6 +53,8 @@ public class IntangibleUnit : IntangibleUnitBase
     public void Bind(UnitBuilderBase bld, Directions dir = Directions.Forward)
     {
         builder = bld;
+        // Restart particles if Builder binds to this intangible
+        sparkleParticles?.Play();
         rallyPoint = transform.position;
         SetFacingDir(dir);
     }
@@ -70,6 +62,9 @@ public class IntangibleUnit : IntangibleUnitBase
     public void Bind(UnitBuilderBase bld, Transform rally, bool parkDirToggle = false, Directions dir = Directions.Forward)
     {
         builder = bld;
+        // Restart particles if Builder binds to this intangible
+        sparkleParticles?.Play();
+        builder.currentIntangible = this;
         parkToggle = parkDirToggle;
         rallyPoint = rally.position;
         SetFacingDir(dir);

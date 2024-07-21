@@ -20,7 +20,7 @@ namespace DarienEngine
         public void Enqueue(CommandQueueItem item)
         {
             item.OnCommandItemChanged += ItemChanged;
-            base.Add(item);
+            Add(item);
             Last = item;
             if (!isAI)
                 item.PlaceCommandSticker();
@@ -30,10 +30,10 @@ namespace DarienEngine
         public CommandQueueItem Dequeue()
         {
             CommandQueueItem dq = null;
-            if (base.Count > 0)
+            if (Count > 0)
             {
                 dq = base[0];
-                base.RemoveAt(0);
+                RemoveAt(0);
                 if (!isAI)
                     dq.RemoveCommandSticker();
             }
@@ -67,6 +67,7 @@ namespace DarienEngine
                 foreach (CommandQueueItem cmd in base.ToArray())
                     cmd.RemoveCommandSticker();
             base.Clear();
+            OnQueueChanged?.Invoke(this, new CommandQueueChangedEventArgs { changeType = "Clear", command = null });
         }
 
         public override string ToString()

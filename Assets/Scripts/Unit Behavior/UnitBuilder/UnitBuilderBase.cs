@@ -12,11 +12,12 @@ public class UnitBuilderBase : MonoBehaviour
     public bool IsBuilding { get; set; }
     public bool NextQueueReady { get; set; } = false;
     public RTSUnit BaseUnit { get; set; }
+    public IntangibleUnitBase currentIntangible;
 
     private void Awake()
     {
         BaseUnit = GetComponent<RTSUnit>();
-        BaseUnit.commandQueue.OnQueueChanged += CancelBuild;
+        BaseUnit.commandQueue.OnQueueChanged += Interrupt;
     }
 
     public void SetNextQueueReady(bool val)
@@ -37,8 +38,22 @@ public class UnitBuilderBase : MonoBehaviour
         return BaseUnit.isKinematic;
     }
 
-    public void CancelBuild(object sender, CommandQueue.CommandQueueChangedEventArgs changeEvent)
+    public void Interrupt(object sender, CommandQueue.CommandQueueChangedEventArgs changeEvent)
     {
+        Debug.Log("Builder commandQueue was changed.");
+        if (changeEvent.changeType == "Clear")
+        {
+            Debug.Log("Builder queue was cleared.");
+            // @TODO: Would probably like to detect also that the previous current command of the Builder was a Conjure task
+            if (currentIntangible)
+                CancelBuild();
+        }
+    }
 
+    public void CancelBuild()
+    {   
+        // @TODO: reset builder conjuring animation
+        Debug.Log("Cancel current build; disconnect intangible " + currentIntangible.gameObject.name);
+        currentIntangible.DetachBuilder();
     }
 }

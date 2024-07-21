@@ -35,6 +35,12 @@ public class InventoryBase : MonoBehaviour
     private float rateOfChange = 0;
     private int increment = 1;
     private float nextManaChange = 0;
+
+    private void Start()
+    {
+        // @TODO: need to find a way to get the total mana storage at start so we can set currentMana = totalManaStorage in the beginning
+    }
+
     protected void UpdateMana(bool log = false)
     {
         if (totalManaIncome > 0 && currentMana <= totalManaStorage && currentMana >= 0)
@@ -55,10 +61,11 @@ public class InventoryBase : MonoBehaviour
                 Debug.Log(str);
             }
 
-            if (Time.time > nextManaChange && Mathf.Abs(rateOfChange) > 0)
+            float rateAbs = Mathf.Abs(rateOfChange);
+            if (Time.time > nextManaChange && rateAbs > 0)
             {
                 currentMana += increment;
-                nextManaChange = Time.time + rateOfChange;
+                nextManaChange = Time.time + rateAbs;
             }
 
             // Ensure currentMana stays in bounds
@@ -75,12 +82,21 @@ public class InventoryBase : MonoBehaviour
         intangibleUnits.Add(unit);
     }
 
-    public void RemoveIntangible(IntangibleUnitBase unit)
+    public void RemoveIntangible(IntangibleUnitBase unit, float flip = 1.0f)
     {
-        totalManaDrainPerSecond -= unit.drainRate;
+        if (flip < 0)
+            totalManaIncome -= Mathf.RoundToInt(unit.drainRate);
+        else
+            totalManaDrainPerSecond -= unit.drainRate;
+
         intangibleUnits.Remove(unit);
     }
 
+    public void UpdateManaValues(int newIncome, int newDrain)
+    {
+        totalManaDrainPerSecond += newDrain;
+        totalManaIncome += Mathf.RoundToInt(newIncome);
+    }
     public void AddUnit(RTSUnit unit)
     {
         // Sum up mana storage and mana income from all units

@@ -32,6 +32,8 @@ public class IntangibleUnitAI : IntangibleUnitBase
     public void Bind(UnitBuilderBase bld, Transform rally, CommandQueueItem nextCmd, bool parkDirToggle = false, Directions dir = Directions.Forward)
     {
         builder = bld;
+        // Restart particles if Builder binds to this intangible
+        sparkleParticles?.Play();
         parkToggle = parkDirToggle;
         rallyPoint = rally ? rally.position : Vector3.zero;
         nextCommandAfterParking = nextCmd;

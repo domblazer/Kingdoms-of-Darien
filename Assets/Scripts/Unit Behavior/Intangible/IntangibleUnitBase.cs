@@ -71,6 +71,7 @@ public class IntangibleUnitBase : MonoBehaviour
 
     protected GameObject sparkleParticlesObj;
     protected ParticleSystem sparkleParticles;
+    protected PlayerNumbers playerNumber;
 
     void Start()
     {
@@ -98,9 +99,15 @@ public class IntangibleUnitBase : MonoBehaviour
         }
 
         // Every intangible should have a "sparkle-particles" child object that holds the sparkles particle system
-        sparkleParticlesObj = transform.Find("sparkle-particles").gameObject;
-        sparkleParticles = sparkleParticlesObj.GetComponent<ParticleSystem>();
+        Transform particles = transform.Find("sparkle-particles");
+        // @TODO: add a warning or exception when particles are not attached
+        if (particles)
+        {
+            sparkleParticlesObj = particles.gameObject;
+            sparkleParticles = sparkleParticlesObj.GetComponent<ParticleSystem>();
+        }
 
+        playerNumber = builder.BaseUnit.playerNumber;
         // Add this intangible to the Player context (inventory and all)
         Functions.AddIntangibleToPlayerContext(this);
     }
@@ -121,14 +128,33 @@ public class IntangibleUnitBase : MonoBehaviour
         newUnit.GetComponent<RTSUnit>().Begin(facingDir, rallyPoint, parkToggle, nextCommandAfterParking, sparkleParticlesObj);
 
         // Remove intangible from inventory/player context as well
-        Functions.RemoveIntangibleFromPlayerContext(this);
+        Functions.RemoveIntangibleFromPlayerContext(this, playerNumber);
         Destroy(gameObject);
     }
 
-    protected void CancelIntangible() {
+    public void DetachBuilder()
+    {
+        builder.IsBuilding = false;
+        builder = null;
+        sparkleParticles.Stop();
+        lagRate = -1.0f;
+
+        // @TODO: Builder anim does not seem to change back to normal after queue is cleared and this event is triggered
+        // builder.SetNextQueueReady(true);
+
+        // Reverse the income and drain values while no builder is attached and t > 0 && t < 1
+        // @TODO: rounding is going to create small errors over time, so we might end up with -1 drain instead of 0 b/c of the way the rounding went
+        int drain = Mathf.RoundToInt(drainRate);
+        Functions.UpdateIntangibleManaInPlayerContext(drain, -drain, playerNumber);
+    }
+
+    // @TODO
+    protected void CancelIntangible()
+    {
         // @TODO: Where do particles go to finish if an intangible is cancelled?
+
         // Remove intangible from inventory/player context as well
-        Functions.RemoveIntangibleFromPlayerContext(this);
+        Functions.RemoveIntangibleFromPlayerContext(this, playerNumber, -1);
         Destroy(gameObject);
     }
 
