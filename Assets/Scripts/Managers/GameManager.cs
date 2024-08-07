@@ -75,7 +75,7 @@ public class GameManager : MonoBehaviour
     public AudioSource AudioSource { get; set; }
 
     // Private helper keeping track if player mouse is hovering over any unit
-    private GameObject currentHovering = null;
+    public GameObject currentHovering = null;
 
     private void Awake()
     {
@@ -182,6 +182,7 @@ public class GameManager : MonoBehaviour
     // Set the unit the mouse is currently hovering over
     public void SetHovering(GameObject obj)
     {
+        // @TODO: currentHovering can be an intangible
         currentHovering = obj;
     }
 

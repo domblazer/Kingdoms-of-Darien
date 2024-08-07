@@ -258,20 +258,37 @@ public class Player : MonoBehaviour
             // Did we hit a friendly unit?
             if (hit.collider.gameObject.layer == 9 && hit.collider.CompareTag("Friendly"))
             {
-                // Deselect all units when clicking single other unit, unless holding shift
-                if (!InputManager.HoldingShift())
-                    ClearSelectedUnits();
-
-                BaseUnit activeUnit = hit.collider.gameObject.GetComponent<BaseUnit>();
-                if (activeUnit != null && activeUnit.selectable)
+                // Did we click an friendly IntangibleUnit?
+                if (hit.collider.gameObject.GetComponent<IntangibleUnit>())
                 {
-                    // Play click sound
-                    if (!InputManager.HoldingShift())
-                        GameManager.Instance.AudioSource.PlayOneShot(clickSound);
-                    // Select this unit alone
-                    activeUnit.Select(true);
-                    selectedUnits.Add(activeUnit);
+                    Debug.Log("We clicked an intangible unit.");
+                    foreach (BaseUnit unit in selectedUnits.Cast<BaseUnit>())
+                        if (unit.isBuilder && unit.isKinematic)
+                        {
+                            // @TODO
+                            unit._Builder.QueueBuildOnIntangible(hit.collider.gameObject.GetComponent<IntangibleUnit>(), InputManager.HoldingShift());
+                        }
                 }
+                // We clicked a single friendly RTSUnit
+                else
+                {
+                    // Deselect all units when clicking single other unit, unless holding shift
+                    if (!InputManager.HoldingShift())
+                        ClearSelectedUnits();
+
+                    BaseUnit activeUnit = hit.collider.gameObject.GetComponent<BaseUnit>();
+                    if (activeUnit != null && activeUnit.selectable)
+                    {
+                        // Play click sound
+                        if (!InputManager.HoldingShift())
+                            GameManager.Instance.AudioSource.PlayOneShot(clickSound);
+                        // Select this unit alone
+                        activeUnit.Select(true);
+                        selectedUnits.Add(activeUnit);
+                    }
+
+                }
+
             }
             else if (hit.collider.gameObject.layer == 9 && hit.collider.CompareTag("Enemy"))
             {
@@ -406,6 +423,15 @@ public class Player : MonoBehaviour
         int count = 0;
         foreach (BaseUnit unit in selectedUnits.Cast<BaseUnit>())
             if (unit.canAttack)
+                count++;
+        return count;
+    }
+
+    public int SelectedBuilderUnitsCount()
+    {
+        int count = 0;
+        foreach (BaseUnit unit in selectedUnits.Cast<BaseUnit>())
+            if (unit.isBuilder && unit.isKinematic)
                 count++;
         return count;
     }

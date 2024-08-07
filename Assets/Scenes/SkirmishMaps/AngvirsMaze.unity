@@ -4789,26 +4789,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4697402880649432283, guid: 7979fadd7b02d1d41942fd09ff56cdf5, type: 3}
-      propertyPath: ZoomSpeed
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4697402880649432283, guid: 7979fadd7b02d1d41942fd09ff56cdf5, type: 3}
-      propertyPath: lerpSpeed
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 4697402880649432283, guid: 7979fadd7b02d1d41942fd09ff56cdf5, type: 3}
-      propertyPath: ScrollSpeed
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 4697402880649432283, guid: 7979fadd7b02d1d41942fd09ff56cdf5, type: 3}
-      propertyPath: zoomDistanceMax
-      value: 25
-      objectReference: {fileID: 0}
-    - target: {fileID: 4697402880649432285, guid: 7979fadd7b02d1d41942fd09ff56cdf5, type: 3}
-      propertyPath: m_CullingMask.m_Bits
-      value: 522935
-      objectReference: {fileID: 0}
     - target: {fileID: 4697402880649432287, guid: 7979fadd7b02d1d41942fd09ff56cdf5, type: 3}
       propertyPath: m_Name
       value: RTS Camera
@@ -6487,22 +6467,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: mage-builder
       objectReference: {fileID: 0}
-    - target: {fileID: 7672112253590628149, guid: 49f31a097331c7244a57c643163fe56d, type: 3}
-      propertyPath: manaIncome
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7672112253590628149, guid: 49f31a097331c7244a57c643163fe56d, type: 3}
-      propertyPath: manaStorage
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 7672112254575380417, guid: 49f31a097331c7244a57c643163fe56d, type: 3}
-      propertyPath: InitialModule.startLifetime.scalar
-      value: 16
-      objectReference: {fileID: 0}
-    - target: {fileID: 7672112254575380417, guid: 49f31a097331c7244a57c643163fe56d, type: 3}
-      propertyPath: CollisionModule.collidesWith.m_Bits
-      value: 394551
-      objectReference: {fileID: 0}
     - target: {fileID: 7922509108570044134, guid: 49f31a097331c7244a57c643163fe56d, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -6917,10 +6881,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 527041121}
     - target: {fileID: 2598857554717851823, guid: 3f9a5157eb52fe345af52896cba1079d, type: 3}
-      propertyPath: pauseOnStart
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2598857554717851823, guid: 3f9a5157eb52fe345af52896cba1079d, type: 3}
       propertyPath: battleMenuDefault
       value: 
       objectReference: {fileID: 329852924}
@@ -6945,25 +6905,9 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 329852926}
     - target: {fileID: 4784665177073564799, guid: 3f9a5157eb52fe345af52896cba1079d, type: 3}
-      propertyPath: mapSize.x
-      value: 120
-      objectReference: {fileID: 0}
-    - target: {fileID: 4784665177073564799, guid: 3f9a5157eb52fe345af52896cba1079d, type: 3}
-      propertyPath: mapSize.y
-      value: 117
-      objectReference: {fileID: 0}
-    - target: {fileID: 4784665177073564799, guid: 3f9a5157eb52fe345af52896cba1079d, type: 3}
-      propertyPath: mapCenter.y
-      value: 523
-      objectReference: {fileID: 0}
-    - target: {fileID: 4784665177073564799, guid: 3f9a5157eb52fe345af52896cba1079d, type: 3}
       propertyPath: fogOfWarPlane
       value: 
       objectReference: {fileID: 1381588921}
-    - target: {fileID: 4784665177073564799, guid: 3f9a5157eb52fe345af52896cba1079d, type: 3}
-      propertyPath: enableFogOfWar
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4784665177073564799, guid: 3f9a5157eb52fe345af52896cba1079d, type: 3}
       propertyPath: playerConfigs.Array.data[0].startPosition
       value: 
@@ -8758,10 +8702,6 @@ PrefabInstance:
     - target: {fileID: 2975272088707729345, guid: edc8ee35e4d9d5048a8902714273f059, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2975272088707729346, guid: edc8ee35e4d9d5048a8902714273f059, type: 3}
-      propertyPath: m_CullingMask.m_Bits
-      value: 196996
       objectReference: {fileID: 0}
     - target: {fileID: 2975272088707729347, guid: edc8ee35e4d9d5048a8902714273f059, type: 3}
       propertyPath: mapCollider

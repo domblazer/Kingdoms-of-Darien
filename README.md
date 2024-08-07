@@ -37,11 +37,13 @@ This is the anatomy of a basic scene. Prefabs are bolded. Find these prefabs in 
 | > Environment          |                           |                                                                      |
 | - Terrain              | Terrain; Terrain Collider |                                                                      |
 | - Terrain details?     |                           |                                                                      |
-| - Sky?                 |                           |                                                                      |
 | - (Water)              |                           |                                                                      |
 | - Light                | Directional Light         |                                                                      |
 | - WindZone             | WindZone                  |                                                                      |
 | - MinimapCollider      | BoxCollider               |                                                                      |
+| Map Features           |                           |                                                                      |
+| Existing Units         |                           |                                                                      |
+| **SkyNavMeshPlane**    | NavMeshSurface            | Include Layers: Sky                                                  |
 
 Note the non-prefabbed objects: the start positions and the environment. Obviously prefabbing start positions is not necessary, and the environment cannot be prefabed because every scene (map) is distinct in it's environment setup. So, for example, a new Terrain object is needed for each scene, so as not to write to the same Terrain data from different scenes.
 
@@ -101,6 +103,10 @@ Once construction begins on a Ghost, the unit becomes an "Intangible Mass" as it
 Some units begin at the Intangible state, and therefore do not have a Ghost prefab associated. For example, any unit being conjured by a Factory.
 
 <img src="/Assets/Images/Documentation/Slide3.PNG" height="300">
+
+### Intangible Unit children structure
+- Intangible Unit
+    - sparkle-particles: A holder object for the conjuring particle system.
 
 ## Ghosts
 Units queued from Builders begin in the Ghost state, so the player can place the unit where desired.

@@ -33,7 +33,7 @@ public class Builder : UnitBuilderPlayer
     {
         GameObject ghost = Instantiate(item.prefab, clickPoint, item.prefab.transform.localRotation);
         // @TODO: builder needs to keep track of all these ghosts so they can be deleted later if a single placement happens
-        ghost.GetComponent<GhostUnit>().Bind(this, item);
+        ghost.GetComponent<GhostUnit>().BindBuilder(this, item);
         // The ghost instantiated by any menu click will always become the activeFloatingGhost
         activeFloatingGhost = ghost;
         return ghost;
@@ -66,15 +66,41 @@ public class Builder : UnitBuilderPlayer
         {
             // Builders always keep a queue of GhostUnits
             // Debug.Log("Builder " + gameObject.name + " queue: " + baseUnit.commandQueue.ToString());
-            GhostUnit nextGhost = BaseUnit.currentCommand.conjurerArgs.prefab.GetComponent<GhostUnit>();
-            // @TODO: offset depends on direction, e.g. if walking along x, use x, y, y, and diagonal use mix
-            Vector3 offsetRange = nextGhost.offset;
-            // Move to next ghost in the queue
-            if (nextGhost.IsSet() && !BaseUnit.IsInRangeOf(nextGhost.transform.position, offsetRange.x))
-                BaseUnit.MoveToPosition(nextGhost.transform.position);
-            // When arrived at ghost, start building intangible
-            else
-                StartNextIntangible(nextGhost);
+
+            // @TODO: Need to add the case of intangibles being the targets of Conjure commands
+            // @TODO: Should not be calling GetComponent in an Update loop
+
+            if (BaseUnit.currentCommand.conjurerArgs.prefab.GetComponent<GhostUnit>())
+            {
+                // Conjure command is for GhostUnit
+                GhostUnit nextGhost = BaseUnit.currentCommand.conjurerArgs.prefab.GetComponent<GhostUnit>();
+                // @TODO: offset depends on direction, e.g. if walking along x, use x, y, y, and diagonal use mix
+                Vector3 offsetRange = nextGhost.offset;
+                // Move to next ghost in the queue
+                if (nextGhost.IsSet() && !BaseUnit.IsInRangeOf(nextGhost.transform.position, offsetRange.x))
+                    BaseUnit.MoveToPosition(nextGhost.transform.position);
+                // When arrived at ghost, start building intangible
+                else
+                    StartNextIntangible(nextGhost);
+            }
+            else if (BaseUnit.currentCommand.conjurerArgs.prefab.GetComponent<IntangibleUnit>())
+            {
+                // Conjure command is for IntangibleUnit
+                IntangibleUnit intangible = BaseUnit.currentCommand.conjurerArgs.prefab.GetComponent<IntangibleUnit>();
+                // Move to the Intangible queued
+                // @TODO: if !intangible.isDone else CancelCommand()
+                // @TODO: how to get proper offset from IntangibleUnit?
+                // @TODO: if intangible dies during this routine, stop build
+                if (!BaseUnit.IsInRangeOf(intangible.transform.position, intangible.offset.x))
+                    BaseUnit.MoveToPosition(intangible.transform.position);
+                // When arrived at Intangible, start Conjuring it
+                else
+                {
+                    AppendToIntangible(intangible);
+                    // @TODO: append this Builder to IntangibleUnit.activeBuilders<List> and have it start Conjuring the Intangible
+                }
+            }
+
         }
     }
 
@@ -89,5 +115,15 @@ public class Builder : UnitBuilderPlayer
     public void IntangibleCompleted()
     {
         BaseUnit.commandQueue.Dequeue();
+    }
+
+    public void AppendToIntangible(IntangibleUnit intangible)
+    {
+        currentIntangible = intangible;
+        BaseUnit.MoveToPosition(transform.position);
+        NextQueueReady = false;
+        IsBuilding = true;
+        intangible.BindBuilder(this);
+        // @TODO: Properly adjust the mana drain based on this Builder working on the Intangible
     }
 }

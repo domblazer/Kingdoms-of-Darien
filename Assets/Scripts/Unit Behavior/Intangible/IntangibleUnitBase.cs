@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
@@ -8,16 +8,17 @@ public delegate void IntangibleCompletedCallback();
 public class IntangibleUnitBase : MonoBehaviour
 {
     // Material fade starts with a basic mana color
-    public Color manaColor = new Color(255, 255, 0);
+    public Color manaColor = new(255, 255, 0);
     public GameObject finalUnitPrefab;
     public RTSUnit finalUnit { get { return finalUnitPrefab.GetComponent<RTSUnit>(); } }
     public float buildCost { get { return finalUnit.buildCost; } }
     public float buildTime { get { return finalUnit.buildTime; } }
-    public float drainRate { get { return buildCost / buildTime * 10; } }
+    // drainRate is build cost over time multiplied by the number of builders conjuring this intangible simultaneously, or -1 to reverse drainRate if no builders are attached
+    public float drainRate { get { return buildCost / buildTime * 10 * (builders.Count > 0 ? builders.Count : -1); } }
 
     // Keep track of model materials to create "Intangible Mass" effect
-    private List<Material> materials = new List<Material>();
-    private List<MaterialsMap> materialsMap = new List<MaterialsMap>();
+    private List<Material> materials = new();
+    private List<MaterialsMap> materialsMap = new();
     protected class MaterialsMap
     {
         public Material material;
@@ -52,32 +53,29 @@ public class IntangibleUnitBase : MonoBehaviour
     }
 
     // Reference back to the Builder or Factory that spawned this intangible. Can be either an AI or player
-    // @TODO: If this unit is being spawned by a kinematic builder, multiple builders can be on it, affecting the rate of progress
-    public UnitBuilderBase builder { get; set; }
+    public List<UnitBuilderBase> builders { get; set; } = new List<UnitBuilderBase>();
 
     // Control variables for transparency change
-    // @TODO: change rate based on how much mana you have
     [Range(0.1f, 1.0f)] public float lagRate = 1.0f;
-    protected float t = 0;
+    public float health = 0;
     // Other state variables
     protected Directions facingDir = Directions.Forward;
     protected bool parkToggle;
     protected Vector3 rallyPoint;
     protected CommandQueueItem nextCommandAfterParking;
-
-    // public Vector3 offset { get; set; } = Vector3.zero;
+    public Vector3 offset { get; set; } = Vector3.zero;
 
     protected IntangibleCompletedCallback intangibleCompletedCallback;
 
     protected GameObject sparkleParticlesObj;
     protected ParticleSystem sparkleParticles;
-    protected PlayerNumbers playerNumber;
+    public PlayerNumbers playerNumber;
 
     void Start()
     {
         // Check if finalUnit is assigned
         if (!finalUnitPrefab)
-            throw new System.Exception("Intangible mass needs a final prefab to instantiate on completion.");
+            throw new Exception("Intangible mass needs a final prefab to instantiate on completion.");
 
         // Compile all materials from mesh renderers on this model
         foreach (Transform child in transform)
@@ -93,22 +91,26 @@ public class IntangibleUnitBase : MonoBehaviour
         foreach (Material mat in materials)
         {
             SetMaterialTransparency(mat);
-            MaterialsMap t = new(mat, mat.color);
-            t.CreateGradient(manaColor);
-            materialsMap.Add(t);
+            MaterialsMap matMap = new(mat, mat.color);
+            matMap.CreateGradient(manaColor);
+            materialsMap.Add(matMap);
         }
 
         // Every intangible should have a "sparkle-particles" child object that holds the sparkles particle system
         Transform particles = transform.Find("sparkle-particles");
-        // @TODO: add a warning or exception when particles are not attached
-        if (particles)
+        if (particles && particles.gameObject.GetComponent<ParticleSystem>())
         {
             sparkleParticlesObj = particles.gameObject;
             sparkleParticles = sparkleParticlesObj.GetComponent<ParticleSystem>();
         }
+        else
+        {
+            Debug.LogWarning("IntangibleUnitBase Error: No 'sparkle-particles' gameObject with ParticleSystem component found for " + name + ".");
+        }
 
-        playerNumber = builder.BaseUnit.playerNumber;
-        // Add this intangible to the Player context (inventory and all)
+        playerNumber = builders[0].BaseUnit.playerNumber;
+
+        CalculateOffset();
         Functions.AddIntangibleToPlayerContext(this);
     }
 
@@ -119,7 +121,7 @@ public class IntangibleUnitBase : MonoBehaviour
         intangibleCompletedCallback?.Invoke();
 
         // Every builder gets nextQueueReady = true
-        builder.SetNextQueueReady(true);
+        builders.ForEach(builder => builder.SetNextQueueReady(true));
 
         // Instantiate final new unit
         GameObject newUnit = Instantiate(finalUnitPrefab, transform.position, transform.rotation);
@@ -132,20 +134,22 @@ public class IntangibleUnitBase : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void DetachBuilder()
+    public void DetachBuilder(UnitBuilderBase builder)
     {
         builder.IsBuilding = false;
-        builder = null;
-        sparkleParticles.Stop();
-        lagRate = -1.0f;
+        builders.Remove(builder);
 
-        // @TODO: Builder anim does not seem to change back to normal after queue is cleared and this event is triggered
-        // builder.SetNextQueueReady(true);
+        // If there are no builders on this intangible at this point, reverse the progress
+        if (builders.Count == 0)
+        {
+            sparkleParticles.Stop();
+            lagRate = -1.0f;
 
-        // Reverse the income and drain values while no builder is attached and t > 0 && t < 1
-        // @TODO: rounding is going to create small errors over time, so we might end up with -1 drain instead of 0 b/c of the way the rounding went
-        int drain = Mathf.RoundToInt(drainRate);
-        Functions.UpdateIntangibleManaInPlayerContext(drain, -drain, playerNumber);
+            // @Note: when builders.Count == 0, drainRate will automatically become -drainRate
+            
+            // @TODO: intangible progress should increase for each builder too
+        }
+
     }
 
     // @TODO
@@ -154,7 +158,7 @@ public class IntangibleUnitBase : MonoBehaviour
         // @TODO: Where do particles go to finish if an intangible is cancelled?
 
         // Remove intangible from inventory/player context as well
-        Functions.RemoveIntangibleFromPlayerContext(this, playerNumber, -1);
+        Functions.RemoveIntangibleFromPlayerContext(this, playerNumber);
         Destroy(gameObject);
     }
 
@@ -168,14 +172,29 @@ public class IntangibleUnitBase : MonoBehaviour
     protected void EvalColorGradient()
     {
         foreach (MaterialsMap map in materialsMap)
-            map.material.color = map.gradient.Evaluate(t);
-        t += Time.deltaTime / (buildTime / 10) * lagRate;
+        {
+            map.material.color = map.gradient.Evaluate(health);
+        }
+        health += Time.deltaTime / (buildTime / 10) * lagRate;
     }
 
     protected void SetFacingDir(Directions dir)
     {
         facingDir = dir;
         transform.rotation = Quaternion.Euler(transform.rotation.x, (float)facingDir, transform.rotation.z);
+    }
+
+    private void CalculateOffset()
+    {
+        if (gameObject.GetComponent<BoxCollider>())
+        {
+            offset = gameObject.GetComponent<BoxCollider>().size;
+        }
+        else if (gameObject.GetComponent<CapsuleCollider>())
+        {
+            float r = gameObject.GetComponent<CapsuleCollider>().radius;
+            offset = new Vector3(r, r, r);
+        }
     }
 
     // Set a material to use transparency rendering
@@ -188,6 +207,29 @@ public class IntangibleUnitBase : MonoBehaviour
         mat.DisableKeyword("_ALPHABLEND_ON");
         mat.EnableKeyword("_ALPHAPREMULTIPLY_ON");
         mat.renderQueue = 3000;
+    }
+
+    void OnMouseEnter()
+    {
+        // @TODO: if mainPlayer.nextCommandIsPrimed, this should still change to Select cursor, but when moving back, should go back to the primed command mouse cursor
+        // @TODO: must also check if any selected builders are VALID builders for attaching to conjure this intangible
+        if (!InputManager.IsMouseOverUI() && GameManager.Instance.PlayerMain.player.SelectedBuilderUnitsCount() > 0)
+        {
+            CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Repair);
+            // @TODO: Displaying Intangible details on UI?
+            // UIManager.UnitInfoInstance.Set(super, null);
+        }
+        // Debug.Log("Hovered over intangible...");
+        GameManager.Instance.SetHovering(gameObject);
+    }
+
+    // @TODO: if mouse is over this unit when the unit dies, still need to reset cursor, clear unit ui
+    void OnMouseExit()
+    {
+        if (GameManager.Instance.PlayerMain.player.SelectedBuilderUnitsCount() > 0)
+            CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Normal);
+
+        GameManager.Instance.ClearHovering();
     }
 
     private void OnDestroy()

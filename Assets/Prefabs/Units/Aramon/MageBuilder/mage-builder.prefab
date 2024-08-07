@@ -1783,9 +1783,8 @@ MonoBehaviour:
   bodyType: 1
   maxHealth: 1703
   healthRechargeRate: 3
-  baseMana: 0
-  manaIncome: 0
-  manaStorage: 0
+  manaIncome: 1
+  manaStorage: 100
   buildCost: 643
   buildTime: 175
   isKinematic: 1
@@ -1797,6 +1796,7 @@ MonoBehaviour:
   canFly: 0
   phaseDie: 0
   bloodSystem: {fileID: 7672112254575380417}
+  isStriking: 0
   selectable: 1
   selectRing: {fileID: 7672112254513394519}
   fogOfWarMask: {fileID: 6021291778148488087}
@@ -1855,6 +1855,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47c8f4989f284d448b15570d423f413b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentIntangible: {fileID: 0}
   ghostUnits:
   - {fileID: 0}
   - {fileID: 2371707195242254508, guid: feb9e4dae3f7537479a3ae470a3d15a7, type: 3}
@@ -2628,7 +2629,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 6
+      scalar: 16
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -6303,7 +6304,7 @@ ParticleSystem:
     radiusScale: 1
     collidesWith:
       serializedVersion: 2
-      m_Bits: 1335
+      m_Bits: 394551
     maxCollisionShapes: 1
     quality: 0
     voxelSize: 0.5

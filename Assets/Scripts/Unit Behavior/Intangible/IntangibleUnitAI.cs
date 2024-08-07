@@ -10,12 +10,9 @@ public class IntangibleUnitAI : IntangibleUnitBase
     void Update()
     {
         // TODO: if no builder is attatched to this intangible, the mana flow is reversed, draining from the intangible and adding back to main mana
-        if (t < 1)
+        if (health < 1)
         {
-            // @TODO: The call to get the AIPlayerContext should be from an instance var in this class...
-            
             // If currentMana is empty, all building slows down by half
-            PlayerNumbers playerNumber = builder.BaseUnit.playerNumber;
             if (GameManager.Instance.AIPlayers[playerNumber].inventory.currentMana == 0)
                 lagRate = 0.5f;
             else
@@ -29,11 +26,15 @@ public class IntangibleUnitAI : IntangibleUnitBase
     }
 
     // Bind vars for AI
-    public void Bind(UnitBuilderBase bld, Transform rally, CommandQueueItem nextCmd, bool parkDirToggle = false, Directions dir = Directions.Forward)
+    public void BindBuilder(UnitBuilderBase bld, Transform rally, CommandQueueItem nextCmd, bool parkDirToggle = false, Directions dir = Directions.Forward)
     {
-        builder = bld;
+        bld.currentIntangible = this;
+        // Add this builder to the list and adjust mana drain
+        builders.Add(bld);
         // Restart particles if Builder binds to this intangible
-        sparkleParticles?.Play();
+        if (sparkleParticles && sparkleParticles.isStopped)
+            sparkleParticles?.Play();
+        // Set position vars
         parkToggle = parkDirToggle;
         rallyPoint = rally ? rally.position : Vector3.zero;
         nextCommandAfterParking = nextCmd;

@@ -62,7 +62,7 @@ namespace DarienEngine
         public static void AddIntangibleToPlayerContext(IntangibleUnitBase unit, bool addToHolder = true)
         {
             GameObject _Holder = null;
-            PlayerNumbers playerNumber = unit.builder.BaseUnit.playerNumber;
+            PlayerNumbers playerNumber = unit.playerNumber;
             if (playerNumber == PlayerNumbers.Player1)
             {
                 // Add this unit to the main (human) player context
@@ -82,21 +82,21 @@ namespace DarienEngine
                 unit.transform.parent = _Holder.transform;
         }
 
-        public static void RemoveIntangibleFromPlayerContext(IntangibleUnitBase unit, PlayerNumbers playerNumber, float flip = 1.0f)
+        public static void RemoveIntangibleFromPlayerContext(IntangibleUnitBase unit, PlayerNumbers playerNumber)
         {
             if (playerNumber == PlayerNumbers.Player1)
-                GameManager.Instance.PlayerMain.inventory.RemoveIntangible(unit, flip);
+                GameManager.Instance.PlayerMain.inventory.RemoveIntangible(unit);
             else if (GameManager.Instance.AIPlayers.TryGetValue(playerNumber, out AIPlayerContext aiPlayer))
-                GameManager.Instance.AIPlayers[playerNumber].inventory.RemoveIntangible(unit, flip);
+                aiPlayer.inventory.RemoveIntangible(unit);
         }
 
-        public static void UpdateIntangibleManaInPlayerContext(int newIncome, int newDrain, PlayerNumbers playerNumber)
+        /* public static void UpdateIntangibleManaInPlayerContext(int newIncome, int newDrain, PlayerNumbers playerNumber)
         {
             if (playerNumber == PlayerNumbers.Player1)
                 GameManager.Instance.PlayerMain.inventory.UpdateManaValues(newIncome, newDrain);
             else if (GameManager.Instance.AIPlayers.TryGetValue(playerNumber, out AIPlayerContext aiPlayer))
-                GameManager.Instance.AIPlayers[playerNumber].inventory.UpdateManaValues(newIncome, newDrain);
-        }
+                aiPlayer.inventory.UpdateManaValues(newIncome, newDrain);
+        } */
 
         public static RectTransform FindBuildMenu(RTSUnit unit)
         {

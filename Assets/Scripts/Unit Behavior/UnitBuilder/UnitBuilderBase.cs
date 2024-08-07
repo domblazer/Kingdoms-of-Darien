@@ -20,6 +20,27 @@ public class UnitBuilderBase : MonoBehaviour
         BaseUnit.commandQueue.OnQueueChanged += Interrupt;
     }
 
+    public void QueueBuildOnIntangible(IntangibleUnit intangible, bool addToQueue = false)
+    {
+        Debug.Log("QueueBuildOnIntangible");
+        // Add to queue 
+        if (!addToQueue)
+            BaseUnit.commandQueue.Clear();
+        // @TODO
+        ConjurerArgs conjurerArgs = new()
+        {
+            prefab = intangible.gameObject
+        };
+        // @TODO
+        BaseUnit.commandQueue.Enqueue(new CommandQueueItem
+        {
+            commandType = CommandTypes.Conjure,
+            commandPoint = intangible.transform.position,
+            conjurerArgs = conjurerArgs
+        });
+        SetNextQueueReady(true);
+    }
+
     public void SetNextQueueReady(bool val)
     {
         NextQueueReady = val;
@@ -51,9 +72,10 @@ public class UnitBuilderBase : MonoBehaviour
     }
 
     public void CancelBuild()
-    {   
+    {
         // @TODO: reset builder conjuring animation
         Debug.Log("Cancel current build; disconnect intangible " + currentIntangible.gameObject.name);
-        currentIntangible.DetachBuilder();
+        currentIntangible.DetachBuilder(this);
+        currentIntangible = null;
     }
 }

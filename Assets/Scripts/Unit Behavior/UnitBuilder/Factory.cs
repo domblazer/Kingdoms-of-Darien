@@ -108,7 +108,7 @@ public class Factory : UnitBuilderPlayer
     private void InstantiateNextIntangible(ConjurerArgs item)
     {
         GameObject intangible = Instantiate(item.prefab, spawnPoint.position, spawnPoint.rotation);
-        intangible.GetComponent<IntangibleUnit>().Bind(this, rallyPoint, parkingDirectionToggle);
+        intangible.GetComponent<IntangibleUnit>().BindBuilder(this, rallyPoint, parkingDirectionToggle);
         intangible.GetComponent<IntangibleUnit>().Callback(IntangibleCompleted);
     }
 

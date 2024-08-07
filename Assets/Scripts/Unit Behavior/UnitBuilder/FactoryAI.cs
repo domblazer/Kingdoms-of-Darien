@@ -30,7 +30,7 @@ public class FactoryAI : UnitBuilderAI
     private void InstantiateNextIntangible(GameObject itg)
     {
         GameObject intangible = Instantiate(itg, spawnPoint.position, new Quaternion(0, 180, 0, 1));
-        intangible.GetComponent<IntangibleUnitAI>().Bind(
+        intangible.GetComponent<IntangibleUnitAI>().BindBuilder(
             this,
             rallyPoint,
             new CommandQueueItem { commandType = CommandTypes.Patrol },

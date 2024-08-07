@@ -93,7 +93,7 @@ public class GhostUnit : MonoBehaviour
     public void StartBuild(IntangibleCompletedCallback callback = null)
     {
         GameObject intangible = Instantiate(intangibleUnit, transform.position, intangibleUnit.transform.localRotation);
-        intangible.GetComponent<IntangibleUnit>().Bind(builder, transform);
+        intangible.GetComponent<IntangibleUnit>().BindBuilder(builder, transform);
         if (callback != null)
             intangible.GetComponent<IntangibleUnit>().Callback(callback);
         Destroy(gameObject);
@@ -145,7 +145,8 @@ public class GhostUnit : MonoBehaviour
         // Destroy all ghosts for this builder and remove all it's other conjure commands
         foreach (CommandQueueItem cmd in builder.BaseUnit.commandQueue)
         {
-            if (cmd.commandType == CommandTypes.Conjure)
+            // @TODO: prefab isn't always going to be a GhostUnit; it may be an IntangibleUnit which obv we don't want to destroy
+            if (cmd.commandType == CommandTypes.Conjure && cmd.conjurerArgs.prefab.GetComponent<GhostUnit>())
                 Destroy(cmd.conjurerArgs.prefab);
         }
         builder.BaseUnit.commandQueue.RemoveAll(cmd => cmd.commandType == CommandTypes.Conjure);
@@ -219,7 +220,7 @@ public class GhostUnit : MonoBehaviour
             Destroy(gameObject);
     }
 
-    public void Bind(Builder bld, ConjurerArgs args, Directions dir = Directions.Forward)
+    public void BindBuilder(Builder bld, ConjurerArgs args, Directions dir = Directions.Forward)
     {
         builder = bld;
         // Ghosts need to instantiate new args; they are more independent than intangibles

@@ -38,15 +38,39 @@ public class InventoryBase : MonoBehaviour
 
     private void Start()
     {
-        // @TODO: need to find a way to get the total mana storage at start so we can set currentMana = totalManaStorage in the beginning
+        // @TODO: there should be a better way to register an event once all existing units have been loaded to trigger this function instead of just delaying by some seconds
+        StartCoroutine(SetInitialMana());
     }
 
+    IEnumerator SetInitialMana()
+    {
+        yield return new WaitForSeconds(0.75f);
+        currentMana = totalManaStorage;
+    }
     protected void UpdateMana(bool log = false)
     {
+        // @TODO: To keep track of all Intangibles and their changes in drain based on how many builders are attached, it might be better to keep track in a loop here and re-sum
+        // the totalManaDrainPerSecond += unit.drainRate for each IntangibleUnit. That way, if an intangible was removed from the list, the totalManaDrainPerSecond would just be 
+        // update with what is in the list, removing the need to subtract the drainRate
+        int intangibleIncome = 0;
+        foreach (IntangibleUnitBase intangible in intangibleUnits)
+        {
+            // Debug.Log("intangible drain rate: " + intangible.drainRate);
+            // Debug.Log("intangible builder count " + intangible.builders.Count);
+            // We are re-summing mana drain every frame just to keep up with the changing values of drainRate
+            totalManaDrainPerSecond = 0;
+            totalManaDrainPerSecond += intangible.drainRate;
+
+            // @TODO: if the intangible drainRate is negative, it gets added to income
+            // @TODO: rounding is going to create small errors over time, so we might end up with -1 drain instead of 0 b/c of the way the rounding went
+            if (intangible.drainRate < 0)
+                intangibleIncome += Mathf.RoundToInt(intangible.drainRate);
+        }
+
         if (totalManaIncome > 0 && currentMana <= totalManaStorage && currentMana >= 0)
         {
             // Rate of change is function of income and drain per second
-            rateOfChange = 1 / (totalManaIncome - totalManaDrainPerSecond);
+            rateOfChange = 1 / (totalManaIncome + intangibleIncome - totalManaDrainPerSecond);
             if (rateOfChange < 0)
                 increment = -1;
             else if (rateOfChange > 0)
@@ -78,16 +102,18 @@ public class InventoryBase : MonoBehaviour
 
     public void AddIntangible(IntangibleUnitBase unit)
     {
-        totalManaDrainPerSecond += unit.drainRate;
+        // totalManaDrainPerSecond += unit.drainRate;
         intangibleUnits.Add(unit);
+
     }
 
     public void RemoveIntangible(IntangibleUnitBase unit, float flip = 1.0f)
     {
-        if (flip < 0)
+        // In this case, an intangible was removed because no Builder was on it and its mana was reversing up to this point
+        /* if (flip < 0)
             totalManaIncome -= Mathf.RoundToInt(unit.drainRate);
         else
-            totalManaDrainPerSecond -= unit.drainRate;
+            totalManaDrainPerSecond -= unit.drainRate; */
 
         intangibleUnits.Remove(unit);
     }

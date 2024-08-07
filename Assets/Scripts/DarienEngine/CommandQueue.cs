@@ -138,11 +138,17 @@ namespace DarienEngine
 
     public class ConjurerArgs
     {
+        // menuButton is the actual UI button used by a Player to instantiate a build
         public Button menuButton;
+        // clickHandler registers the click events on the buttons and queues a build on the UI button click
         public ClickableObject clickHandler;
+        // prefab is the GhostUnit prefab
         public GameObject prefab;
+        // unitCategory is only used by UnitBuilderAI/BuilderAI
         public UnitCategories unitCategory;
+        // buildSpot is only used by BuilderAI
         public Vector3 buildSpot;
+        // buildQueueCount is used by Factory to set units queued count over menu button
         public int buildQueueCount = 0;
         public override string ToString()
         {

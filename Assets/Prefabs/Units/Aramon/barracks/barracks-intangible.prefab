@@ -5649,6 +5649,8 @@ MonoBehaviour:
   manaColor: {r: 1, g: 1, b: 0, a: 1}
   finalUnitPrefab: {fileID: 3948407666658627477, guid: c72e64b65a195614e852f838f4dfeaba, type: 3}
   lagRate: 1
+  t: 0
+  playerNumber: 0
 --- !u!1 &6467014913108670048
 GameObject:
   m_ObjectHideFlags: 0
@@ -6085,6 +6087,10 @@ PrefabInstance:
     - target: {fileID: 3269448759375663402, guid: f12c3bd165ce72249b3e2e02b58f1229, type: 3}
       propertyPath: m_Layer
       value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 3269448759375663402, guid: f12c3bd165ce72249b3e2e02b58f1229, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3269448759375663406, guid: f12c3bd165ce72249b3e2e02b58f1229, type: 3}
       propertyPath: m_RootOrder

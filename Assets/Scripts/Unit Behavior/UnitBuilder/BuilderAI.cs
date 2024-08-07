@@ -108,7 +108,7 @@ public class BuilderAI : UnitBuilderAI
     private void InstantiateNextIntangible(GameObject itg, Vector3 spawnPoint)
     {
         GameObject intangible = Instantiate(itg, spawnPoint, new Quaternion(0, 180, 0, 1));
-        intangible.GetComponent<IntangibleUnitAI>().Bind(this, null, new CommandQueueItem { commandType = CommandTypes.Patrol });
+        intangible.GetComponent<IntangibleUnitAI>().BindBuilder(this, null, new CommandQueueItem { commandType = CommandTypes.Patrol });
         intangible.GetComponent<IntangibleUnitAI>().Callback(IntangibleCompleted);
     }
 

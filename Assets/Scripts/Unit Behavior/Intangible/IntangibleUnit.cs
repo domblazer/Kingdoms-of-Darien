@@ -9,11 +9,9 @@ public class IntangibleUnit : IntangibleUnitBase
     // Update "Intangible Mass" color gradient until done
     void Update()
     {
-        if (t < 1 && builder)
+        if (health < 1 && builders.Count > 0)
         {
-            // @TODO: Ideally, the call to get the player context should be to an instance var in this class, but that may require creating a super class
-            // for the MainPlayerContext and AIPlayerContext classes and returning that from the AddToPlayerContext function.
-
+            // Debug.Log("Building. health " + health);
             // If currentMana is empty, all building slows down by half
             if (GameManager.Instance.PlayerMain.inventory.currentMana == 0)
                 lagRate = 0.5f;
@@ -22,49 +20,55 @@ public class IntangibleUnit : IntangibleUnitBase
 
             EvalColorGradient();
         }
-        else if (t > 0 && t < 1 && builder == null)
+        else if (health > 0 && health < 1 && builders.Count == 0)
         {
-            // @TODO: State: Intangible has made progress but has lost its builder
+            Debug.Log("Intangible has lost its builder.");
+            // State: Intangible has made progress but has lost its builder
             // @TODO: builders may be a list if this intangible is spawned by a kinematic builder - in that case, builders.Count == 0 
             // 1) turn off the sparkle particles
             // 2) reverse the change rate and add the drainRate to the rechargeRate
-            Debug.Log("intangible has no builder - t: " + t);
+            // Debug.Log("intangible has no builder - health: " + health);
             lagRate = -1.0f;
             EvalColorGradient();
         }
-        else if (t <= 0 && builder == null)
+        else if (health <= 0 && builders.Count == 0)
         {
-            // @TODO: destroy this intanbile since it has no builder and has gone back to 0 progress
-            // 1) A builder that might have this unit in its buildQueue must handle that it no longer exists: "Failed to conjure..." or something
-            // 2) remove the temp mana recharge
+            // @TODO: A builder that might have this unit in its buildQueue must handle that it no longer exists: "Failed to conjure..." or something
+            Debug.Log("Cancel intangible.");
 
             CancelIntangible();
         }
         // Done
-        else if (t >= 1 && builder)
+        else if (health >= 1 && builders.Count > 0)
         {
+            Debug.Log("Intangible finished");
+
             FinishIntangible();
         }
-
-        // @TODO: If builder is reassigned while t > 0 && t < 1, restart the sparkle particles, reset the mana drain
     }
 
     // Bind vars from referring builder/factory
-    public void Bind(UnitBuilderBase bld, Directions dir = Directions.Forward)
+    public void BindBuilder(UnitBuilderBase bld, Directions dir = Directions.Forward)
     {
-        builder = bld;
+        bld.currentIntangible = this;
+        // Add this builder to the list and adjust mana drain
+        builders.Add(bld);
         // Restart particles if Builder binds to this intangible
-        sparkleParticles?.Play();
+        if (sparkleParticles && sparkleParticles.isStopped)
+            sparkleParticles?.Play();
         rallyPoint = transform.position;
         SetFacingDir(dir);
     }
 
-    public void Bind(UnitBuilderBase bld, Transform rally, bool parkDirToggle = false, Directions dir = Directions.Forward)
+    public void BindBuilder(UnitBuilderBase bld, Transform rally, bool parkDirToggle = false, Directions dir = Directions.Forward)
     {
-        builder = bld;
+        bld.currentIntangible = this;
+        // Add this builder to the list and adjust mana drain
+        builders.Add(bld);
         // Restart particles if Builder binds to this intangible
-        sparkleParticles?.Play();
-        builder.currentIntangible = this;
+        if (sparkleParticles && sparkleParticles.isStopped)
+            sparkleParticles?.Play();
+        // Set position vars
         parkToggle = parkDirToggle;
         rallyPoint = rally.position;
         SetFacingDir(dir);

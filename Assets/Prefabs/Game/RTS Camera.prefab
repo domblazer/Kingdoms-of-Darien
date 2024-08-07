@@ -144,7 +144,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 424631
+    m_Bits: 522935
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -177,17 +177,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Boundary: 25
-  zoomDistanceMax: 45
+  zoomDistanceMax: 25
   zoomDistanceMin: 15
   zoomDistance: 75
-  ScrollSpeed: 30
+  ScrollSpeed: 20
   PanSpeed: 20
-  ZoomSpeed: 2
+  ZoomSpeed: 1
   CurrentZoom: 0
   xOrbitSpeed: 120
   yOrbitSpeed: 120
   views: []
-  lerpSpeed: 50
+  lerpSpeed: 100
 --- !u!114 &4697402880649432281
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -308,7 +308,7 @@ public class UIManager : MonoBehaviour
             }
         }
 
-        public void Set(RTSUnit primaryUnit, RTSUnit secondaryUnit, bool excludeStatus = false)
+        public void Set(RTSUnit primaryUnit, GameObject secondaryUnit, string secondaryType = "rtsunit", bool excludeStatus = false)
         {
             // Sprite icon, string unitName, float health, int mana, string status
             unitInfo.primaryUnit.unitIcon.gameObject.SetActive(true);
@@ -329,11 +329,30 @@ public class UIManager : MonoBehaviour
 
             if (secondaryUnit != null)
             {
-                // secondary unit name
-                unitInfo.secondaryUnit.unitNameText.text = secondaryUnit.unitName;
-                // secondary unit health
-                unitInfo.secondaryUnit.healthBar.gameObject.SetActive(true);
-                unitInfo.secondaryUnit.healthBar.value = secondaryUnit.health;
+                if (secondaryType == "rtsunit")
+                {
+                    RTSUnit secondary = secondaryUnit.GetComponent<RTSUnit>();
+                    // secondary unit name
+                    unitInfo.secondaryUnit.unitNameText.text = secondary.unitName;
+                    // secondary unit health
+                    unitInfo.secondaryUnit.healthBar.gameObject.SetActive(true);
+                    unitInfo.secondaryUnit.healthBar.value = secondary.health;
+                }
+                else if (secondaryType == "intangibleunit")
+                {
+                    IntangibleUnit secondary = secondaryUnit.GetComponent<IntangibleUnit>();
+                    // secondary unit name
+                    unitInfo.secondaryUnit.unitNameText.text = secondary.finalUnit.unitName;
+                    // secondary unit health
+                    unitInfo.secondaryUnit.healthBar.gameObject.SetActive(true);
+                    unitInfo.secondaryUnit.healthBar.value = secondary.health * 100;
+                }
+            }
+            // If secondaryUnit is cleared, clear the UI too
+            else if (secondaryUnit == null & unitInfo.secondaryUnit.healthBar.gameObject.activeInHierarchy)
+            {
+                unitInfo.secondaryUnit.healthBar.gameObject.SetActive(false);
+                unitInfo.secondaryUnit.unitNameText.text = "";
             }
         }
     }
@@ -354,6 +373,7 @@ public class UIManager : MonoBehaviour
         BattleMenuInstance.UpdateManaText(inventory);
 
         // Get index of chrystal ball texture by mana proportion 
+
         float prct = ((float)inventory.currentMana / (float)inventory.totalManaStorage) * 100;
         int textureIndex = Mathf.RoundToInt(prct / (100 / chrystalBallTextureArray.Length));
         if (textureIndex > chrystalBallTextureArray.Length - 1)

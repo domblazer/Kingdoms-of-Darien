@@ -15,7 +15,7 @@ public class BaseUnit : RTSUnit
     public GameObject fogOfWarMask;
     public AttackModes attackMode = AttackModes.Offensive;
     private Directions facingDir = Directions.Forward;
-    private UnitBuilderPlayer _Builder;
+    public UnitBuilderPlayer _Builder;
 
     private LineRenderer lineRenderer;
 
@@ -84,20 +84,24 @@ public class BaseUnit : RTSUnit
             if (selectable && selected)
             {
                 // Update select ring color based on health when selected
-                selectRing.GetComponent<SpriteRenderer>().color = Color.Lerp(Color.red, Color.green, (health / 100));
+                selectRing.GetComponent<SpriteRenderer>().color = Color.Lerp(Color.red, Color.green, health / 100);
                 // Debug.Log(gameObject.name + " commandQueue: " + string.Join<CommandQueueItem>(", ", commandQueue.ToArray()));
 
                 // Update the unit info UI if no other unit has focus from hovering
                 if (!GameManager.Instance.IsHoveringOther(gameObject))
                 {
-                    // @TODO: secondary could be a "Conjuring" secondary
-                    // RTSUnit secondary = _AttackBehavior && _AttackBehavior.attackTarget ? _AttackBehavior.attackTarget.GetComponent<RTSUnit>() : null;
-                    RTSUnit secondary = null;
-                    if (_AttackBehavior && _AttackBehavior.attackTarget)
-                        secondary = _AttackBehavior.attackTarget.GetComponent<RTSUnit>();
-                    /* else if (_Builder && _Builder.currentIntangible)
-                        secondary = _Builder.currentIntangible; */
-                    UIManager.UnitInfoInstance.Set(super, secondary);
+                    GameObject secondary = null;
+                    string secondaryType = "rtsunit";
+                    if (_AttackBehavior && _AttackBehavior.attackTarget && IsAttacking())
+                    {
+                        secondary = _AttackBehavior.attackTarget;
+                    }
+                    else if (_Builder && _Builder.currentIntangible)
+                    {
+                        secondary = _Builder.currentIntangible.gameObject;
+                        secondaryType = "intangibleunit";
+                    }
+                    UIManager.UnitInfoInstance.Set(super, secondary, secondaryType);
                 }
 
                 // Toggle line renderer on shift up/down for mobile units
@@ -232,6 +236,7 @@ public class BaseUnit : RTSUnit
         {
             selected = false;
             selectRing.SetActive(false);
+            ToggleCommandPointsUI(false);
         }
     }
 
