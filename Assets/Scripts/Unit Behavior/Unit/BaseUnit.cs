@@ -82,6 +82,8 @@ public class BaseUnit : RTSUnit
             }
 
             UpdateSecondaryUnit();
+            if (secondary)
+                Debug.Log(name + " secondary " + secondary);
 
             if (selectable && selected)
             {
@@ -152,7 +154,7 @@ public class BaseUnit : RTSUnit
     private void UpdateSecondaryUnit()
     {
         string secondaryType = "rtsunit";
-        if (_AttackBehavior && _AttackBehavior.attackTarget && IsAttacking())
+        if (_AttackBehavior && _AttackBehavior.attackTarget)
         {
             secondary = _AttackBehavior.attackTarget;
         }

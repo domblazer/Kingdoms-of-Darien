@@ -326,6 +326,8 @@ public class UIManager : MonoBehaviour
 
             if (!excludeStatus)
                 unitInfo.primaryUnit.statusText.text = primaryUnit.state.Value;
+            else
+                unitInfo.primaryUnit.statusText.text = "";
 
             if (secondaryUnit != null)
             {
@@ -370,9 +372,12 @@ public class UIManager : MonoBehaviour
             unitInfo.primaryUnit.statusText.text = "Intangible Mass";
 
             // Set secondary unit UI
-            unitInfo.secondaryUnit.unitNameText.text = mainBuilder.BaseUnit.unitName;
-            unitInfo.secondaryUnit.healthBar.gameObject.SetActive(true);
-            unitInfo.secondaryUnit.healthBar.value = mainBuilder.BaseUnit.health;
+            if (mainBuilder)
+            {
+                unitInfo.secondaryUnit.unitNameText.text = mainBuilder.BaseUnit.unitName;
+                unitInfo.secondaryUnit.healthBar.gameObject.SetActive(true);
+                unitInfo.secondaryUnit.healthBar.value = mainBuilder.BaseUnit.health;
+            }
         }
     }
 

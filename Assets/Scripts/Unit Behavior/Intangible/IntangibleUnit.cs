@@ -71,4 +71,37 @@ public class IntangibleUnit : IntangibleUnitBase
         rallyPoint = rally.position;
         SetFacingDir(dir);
     }
+
+    void OnMouseEnter()
+    {
+        // @TODO: if mainPlayer.nextCommandIsPrimed, this should still change to Select cursor, but when moving back, should go back to the primed command mouse cursor
+        // @TODO: must also check if any selected builders are VALID builders for attaching to conjure this intangible
+        if (!InputManager.IsMouseOverUI())
+        {
+            if (GameManager.Instance.PlayerMain.player.SelectedBuilderUnitsCount() > 0)
+                CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Repair);
+        }
+        // Debug.Log("Hovered over intangible...");
+        GameManager.Instance.SetHovering(gameObject);
+    }
+
+    // Update UI with intangible mass details in unit UI
+    private void OnMouseOver()
+    {
+        // Note: O.g. TAK seems to have an inconsistency when hovering over an intangible... The builder name it shows is always the builder who instantiated it, even if that
+        // builder has moved off and is no longer conjuring it. Not sure what would happen if that builder died, but for our purposes, it may just serve to set Builders[0]
+
+        // First check if I am already selected
+        if (!InputManager.IsMouseOverUI())
+            UIManager.UnitInfoInstance.Set(this, builders[0]);
+    }
+
+    // @TODO: if mouse is over this unit when the unit dies, still need to reset cursor, clear unit ui
+    void OnMouseExit()
+    {
+        if (GameManager.Instance.PlayerMain.player.SelectedBuilderUnitsCount() > 0)
+            CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Normal);
+
+        GameManager.Instance.ClearHovering();
+    }
 }

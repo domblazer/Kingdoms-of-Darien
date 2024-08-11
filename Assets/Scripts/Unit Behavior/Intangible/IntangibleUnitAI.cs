@@ -40,4 +40,31 @@ public class IntangibleUnitAI : IntangibleUnitBase
         nextCommandAfterParking = nextCmd;
         SetFacingDir(dir);
     }
+
+    void OnMouseEnter()
+    {
+        if (!InputManager.IsMouseOverUI())
+        {
+            if (gameObject.tag == "Enemy" && GameManager.Instance.PlayerMain.player.SelectedAttackUnitsCount() > 0 && !GameManager.Instance.PlayerMain.player.nextCommandIsPrimed)
+                CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Attack);
+
+            GameManager.Instance.SetHovering(gameObject);
+        }
+    }
+
+    // Update UI with intangible mass details in unit UI
+    private void OnMouseOver()
+    {
+        if (!InputManager.IsMouseOverUI())
+            UIManager.UnitInfoInstance.Set(this, null);
+    }
+
+    // @TODO: if mouse is over this unit when the unit dies, still need to reset cursor, clear unit ui
+    void OnMouseExit()
+    {
+        if (GameManager.Instance.PlayerMain.player.SelectedBuilderUnitsCount() > 0)
+            CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Normal);
+
+        GameManager.Instance.ClearHovering();
+    }
 }
