@@ -16,7 +16,7 @@ public class BaseUnit : RTSUnit
     public AttackModes attackMode = AttackModes.Offensive;
     private Directions facingDir = Directions.Forward;
     public UnitBuilderPlayer _Builder;
-
+    public GameObject secondary;
     private LineRenderer lineRenderer;
 
     // Start is called before the first frame update
@@ -81,6 +81,8 @@ public class BaseUnit : RTSUnit
                     _AttackBehavior.AutoPickAttackTarget();
             }
 
+            UpdateSecondaryUnit();
+
             if (selectable && selected)
             {
                 // Update select ring color based on health when selected
@@ -90,18 +92,7 @@ public class BaseUnit : RTSUnit
                 // Update the unit info UI if no other unit has focus from hovering
                 if (!GameManager.Instance.IsHoveringOther(gameObject))
                 {
-                    GameObject secondary = null;
-                    string secondaryType = "rtsunit";
-                    if (_AttackBehavior && _AttackBehavior.attackTarget && IsAttacking())
-                    {
-                        secondary = _AttackBehavior.attackTarget;
-                    }
-                    else if (_Builder && _Builder.currentIntangible)
-                    {
-                        secondary = _Builder.currentIntangible.gameObject;
-                        secondaryType = "intangibleunit";
-                    }
-                    UIManager.UnitInfoInstance.Set(super, secondary, secondaryType);
+                    UIManager.UnitInfoInstance.Set(super, secondary);
                 }
 
                 // Toggle line renderer on shift up/down for mobile units
@@ -154,6 +145,25 @@ public class BaseUnit : RTSUnit
                 // @TODO: HandleGuardRoutine()
                 // @TODO: attack anyone that attacks the guarding unit
                 break;
+        }
+    }
+
+    // Update the secondaryUnit var to set an attacking unit or conjuring unit
+    private void UpdateSecondaryUnit()
+    {
+        string secondaryType = "rtsunit";
+        if (_AttackBehavior && _AttackBehavior.attackTarget && IsAttacking())
+        {
+            secondary = _AttackBehavior.attackTarget;
+        }
+        else if (_Builder && _Builder.currentIntangible)
+        {
+            secondary = _Builder.currentIntangible.gameObject;
+            secondaryType = "intangibleunit";
+        }
+        else
+        {
+            secondary = null;
         }
     }
 
@@ -295,7 +305,7 @@ public class BaseUnit : RTSUnit
     {
         // First check if I am already selected
         if (!selected)
-            UIManager.UnitInfoInstance.Set(super, null);
+            UIManager.UnitInfoInstance.Set(super, secondary);
     }
 
     public void SetFacingDir(Directions dir)

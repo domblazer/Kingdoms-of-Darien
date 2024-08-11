@@ -308,7 +308,7 @@ public class UIManager : MonoBehaviour
             }
         }
 
-        public void Set(RTSUnit primaryUnit, GameObject secondaryUnit, string secondaryType = "rtsunit", bool excludeStatus = false)
+        public void Set(RTSUnit primaryUnit, GameObject secondaryUnit, bool excludeStatus = false)
         {
             // Sprite icon, string unitName, float health, int mana, string status
             unitInfo.primaryUnit.unitIcon.gameObject.SetActive(true);
@@ -329,7 +329,7 @@ public class UIManager : MonoBehaviour
 
             if (secondaryUnit != null)
             {
-                if (secondaryType == "rtsunit")
+                if (secondaryUnit.GetComponent<RTSUnit>())
                 {
                     RTSUnit secondary = secondaryUnit.GetComponent<RTSUnit>();
                     // secondary unit name
@@ -338,7 +338,7 @@ public class UIManager : MonoBehaviour
                     unitInfo.secondaryUnit.healthBar.gameObject.SetActive(true);
                     unitInfo.secondaryUnit.healthBar.value = secondary.health;
                 }
-                else if (secondaryType == "intangibleunit")
+                else if (secondaryUnit.GetComponent<IntangibleUnit>())
                 {
                     IntangibleUnit secondary = secondaryUnit.GetComponent<IntangibleUnit>();
                     // secondary unit name
@@ -354,6 +354,25 @@ public class UIManager : MonoBehaviour
                 unitInfo.secondaryUnit.healthBar.gameObject.SetActive(false);
                 unitInfo.secondaryUnit.unitNameText.text = "";
             }
+        }
+
+        // Set intangible UI
+        public void Set(IntangibleUnitBase intangibleUnit, UnitBuilderBase mainBuilder)
+        {
+            // Sprite icon, string unitName, float health, int mana, string status
+            unitInfo.primaryUnit.unitIcon.gameObject.SetActive(true);
+            unitInfo.primaryUnit.healthBar.gameObject.SetActive(true);
+
+            // Set main unit UI
+            unitInfo.primaryUnit.unitIcon.sprite = intangibleUnit.finalUnit.unitIcon;
+            unitInfo.primaryUnit.healthBar.value = intangibleUnit.health * 100;
+            unitInfo.primaryUnit.unitNameText.text = intangibleUnit.finalUnit.unitName;
+            unitInfo.primaryUnit.statusText.text = "Intangible Mass";
+
+            // Set secondary unit UI
+            unitInfo.secondaryUnit.unitNameText.text = mainBuilder.BaseUnit.unitName;
+            unitInfo.secondaryUnit.healthBar.gameObject.SetActive(true);
+            unitInfo.secondaryUnit.healthBar.value = mainBuilder.BaseUnit.health;
         }
     }
 

@@ -356,6 +356,6 @@ public class BaseUnitAI : RTSUnit
     private void OnMouseOver()
     {
         if (!InputManager.IsMouseOverUI())
-            UIManager.UnitInfoInstance.Set(super, null, null, true);
+            UIManager.UnitInfoInstance.Set(super, null, true);
     }
 }

@@ -222,7 +222,7 @@ public class IntangibleUnitBase : MonoBehaviour
             // @TODO: if hovering over intangible, set {Intangible unit name} --- Intangible Mass --- {Builders[0].name} 
             // Note: O.g. TAK seems to have an inconsistency when hovering over an intangible... The builder name it shows is always the builder who instantiated it, even if that
             // builder has moved off and is no longer conjuring it. Not sure what would happen if that builder died, but for our purposes, it may just serve to set Builders[0]
-            
+
             // UIManager.UnitInfoInstance.Set(super, null);
 
             if (GameManager.Instance.PlayerMain.player.SelectedBuilderUnitsCount() > 0)
@@ -230,6 +230,14 @@ public class IntangibleUnitBase : MonoBehaviour
         }
         // Debug.Log("Hovered over intangible...");
         GameManager.Instance.SetHovering(gameObject);
+    }
+
+    // Update UI with intangible mass details in unit UI
+    private void OnMouseOver()
+    {
+        // First check if I am already selected
+        if (!InputManager.IsMouseOverUI())
+            UIManager.UnitInfoInstance.Set(this, builders[0]);
     }
 
     // @TODO: if mouse is over this unit when the unit dies, still need to reset cursor, clear unit ui
