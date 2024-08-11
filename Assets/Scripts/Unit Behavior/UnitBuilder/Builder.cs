@@ -69,9 +69,12 @@ public class Builder : UnitBuilderPlayer
 
             // @TODO: Need to add the case of intangibles being the targets of Conjure commands
             // @TODO: Should not be calling GetComponent in an Update loop
+            Debug.Log(name +  " BaseUnit.currentCommand " + BaseUnit.currentCommand);
+            Debug.Log(name + " BaseUnit.commandQueue.Count " + BaseUnit.commandQueue.Count);
 
             if (BaseUnit.currentCommand.conjurerArgs.prefab.GetComponent<GhostUnit>())
             {
+                Debug.Log("current command is ghost");
                 // Conjure command is for GhostUnit
                 GhostUnit nextGhost = BaseUnit.currentCommand.conjurerArgs.prefab.GetComponent<GhostUnit>();
                 // @TODO: offset depends on direction, e.g. if walking along x, use x, y, y, and diagonal use mix
@@ -85,11 +88,11 @@ public class Builder : UnitBuilderPlayer
             }
             else if (BaseUnit.currentCommand.conjurerArgs.prefab.GetComponent<IntangibleUnit>())
             {
+                Debug.Log("current command is intangible");
                 // Conjure command is for IntangibleUnit
                 IntangibleUnit intangible = BaseUnit.currentCommand.conjurerArgs.prefab.GetComponent<IntangibleUnit>();
                 // Move to the Intangible queued
                 // @TODO: if !intangible.isDone else CancelCommand()
-                // @TODO: how to get proper offset from IntangibleUnit?
                 // @TODO: if intangible dies during this routine, stop build
                 if (!BaseUnit.IsInRangeOf(intangible.transform.position, intangible.offset.x))
                     BaseUnit.MoveToPosition(intangible.transform.position);
@@ -97,7 +100,6 @@ public class Builder : UnitBuilderPlayer
                 else
                 {
                     AppendToIntangible(intangible);
-                    // @TODO: append this Builder to IntangibleUnit.activeBuilders<List> and have it start Conjuring the Intangible
                 }
             }
 
@@ -109,12 +111,7 @@ public class Builder : UnitBuilderPlayer
         BaseUnit.MoveToPosition(transform.position);
         NextQueueReady = false;
         IsBuilding = true;
-        ghost.StartBuild(IntangibleCompleted);
-    }
-
-    public void IntangibleCompleted()
-    {
-        BaseUnit.commandQueue.Dequeue();
+        ghost.StartBuild();
     }
 
     public void AppendToIntangible(IntangibleUnit intangible)
@@ -124,6 +121,5 @@ public class Builder : UnitBuilderPlayer
         NextQueueReady = false;
         IsBuilding = true;
         intangible.BindBuilder(this);
-        // @TODO: Properly adjust the mana drain based on this Builder working on the Intangible
     }
 }

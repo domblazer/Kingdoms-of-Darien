@@ -14,7 +14,7 @@ public class IntangibleUnitBase : MonoBehaviour
     public float buildCost { get { return finalUnit.buildCost; } }
     public float buildTime { get { return finalUnit.buildTime; } }
     // drainRate is build cost over time multiplied by the number of builders conjuring this intangible simultaneously, or -1 to reverse drainRate if no builders are attached
-    public float drainRate { get { return buildCost / buildTime * 10 * (builders.Count > 0 ? builders.Count : -1); } }
+    public float drainRate { get { return buildCost / buildTime * 10; } }
 
     // Keep track of model materials to create "Intangible Mass" effect
     private List<Material> materials = new();
@@ -108,23 +108,32 @@ public class IntangibleUnitBase : MonoBehaviour
             Debug.LogWarning("IntangibleUnitBase Error: No 'sparkle-particles' gameObject with ParticleSystem component found for " + name + ".");
         }
 
+        // The player number of this intangible comes from the builder who instantiated it
         playerNumber = builders[0].BaseUnit.playerNumber;
 
+        // Calculate the collider size of this intantible to gets its size "offset"
         CalculateOffset();
+
+        // Add this intangible to the player inventory
         Functions.AddIntangibleToPlayerContext(this);
     }
 
     // Finalize and destroy this intangible when done
     protected void FinishIntangible()
     {
-        // If any callback function was set, call it now
-        intangibleCompletedCallback?.Invoke();
+        // intangibleCompletedCallback?.Invoke();
 
-        // Every builder gets nextQueueReady = true
-        builders.ForEach(builder => builder.SetNextQueueReady(true));
+        // Every builder assigned to this intangible now must queue the conjure command and get ready for the next
+        builders.ForEach(builder =>
+        {
+            CommandQueueItem lastCommand = builder.BaseUnit.commandQueue.Dequeue();
+            lastCommand.conjurerArgs.buildQueueCount--;
+            builder.SetNextQueueReady(true);
+        });
 
         // Instantiate final new unit
         GameObject newUnit = Instantiate(finalUnitPrefab, transform.position, transform.rotation);
+
         // Move the sparkle particles child object over to the RTSUnit for fade out and disposal
         sparkleParticlesObj.transform.parent = newUnit.transform;
         newUnit.GetComponent<RTSUnit>().Begin(facingDir, rallyPoint, parkToggle, nextCommandAfterParking, sparkleParticlesObj);
@@ -144,12 +153,7 @@ public class IntangibleUnitBase : MonoBehaviour
         {
             sparkleParticles.Stop();
             lagRate = -1.0f;
-
-            // @Note: when builders.Count == 0, drainRate will automatically become -drainRate
-            
-            // @TODO: intangible progress should increase for each builder too
         }
-
     }
 
     // @TODO
@@ -172,10 +176,10 @@ public class IntangibleUnitBase : MonoBehaviour
     protected void EvalColorGradient()
     {
         foreach (MaterialsMap map in materialsMap)
-        {
             map.material.color = map.gradient.Evaluate(health);
-        }
-        health += Time.deltaTime / (buildTime / 10) * lagRate;
+        // lagRate is also influenced by the number of builders, i.e., more builders mean conjuring goes faster
+        float lagRateMultiplier = builders.Count > 0 ? builders.Count : 1;
+        health += Time.deltaTime / (buildTime / 10) * lagRateMultiplier;
     }
 
     protected void SetFacingDir(Directions dir)
@@ -213,11 +217,16 @@ public class IntangibleUnitBase : MonoBehaviour
     {
         // @TODO: if mainPlayer.nextCommandIsPrimed, this should still change to Select cursor, but when moving back, should go back to the primed command mouse cursor
         // @TODO: must also check if any selected builders are VALID builders for attaching to conjure this intangible
-        if (!InputManager.IsMouseOverUI() && GameManager.Instance.PlayerMain.player.SelectedBuilderUnitsCount() > 0)
+        if (!InputManager.IsMouseOverUI())
         {
-            CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Repair);
-            // @TODO: Displaying Intangible details on UI?
+            // @TODO: if hovering over intangible, set {Intangible unit name} --- Intangible Mass --- {Builders[0].name} 
+            // Note: O.g. TAK seems to have an inconsistency when hovering over an intangible... The builder name it shows is always the builder who instantiated it, even if that
+            // builder has moved off and is no longer conjuring it. Not sure what would happen if that builder died, but for our purposes, it may just serve to set Builders[0]
+            
             // UIManager.UnitInfoInstance.Set(super, null);
+
+            if (GameManager.Instance.PlayerMain.player.SelectedBuilderUnitsCount() > 0)
+                CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Repair);
         }
         // Debug.Log("Hovered over intangible...");
         GameManager.Instance.SetHovering(gameObject);

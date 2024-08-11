@@ -109,16 +109,17 @@ public class Factory : UnitBuilderPlayer
     {
         GameObject intangible = Instantiate(item.prefab, spawnPoint.position, spawnPoint.rotation);
         intangible.GetComponent<IntangibleUnit>().BindBuilder(this, rallyPoint, parkingDirectionToggle);
-        intangible.GetComponent<IntangibleUnit>().Callback(IntangibleCompleted);
+        // intangible.GetComponent<IntangibleUnit>().Callback(IntangibleCompleted);
     }
 
+    // @TODO: callbacks are deprecated. Factory and Builder should handle the same way
     // Callback when intangible is complete
-    private void IntangibleCompleted()
+    /* private void IntangibleCompleted()
     {
         // Factory dequeue commandQueue and decrement menu item buildQueueCount
         CommandQueueItem lastCommand = BaseUnit.commandQueue.Dequeue();
         lastCommand.conjurerArgs.buildQueueCount--;
-    }
+    } */
 
     public void ToggleRallyPoint(bool value)
     {

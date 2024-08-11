@@ -24,7 +24,6 @@ public class GhostUnit : MonoBehaviour
     private Directions facingDir = Directions.Forward;
     private bool placementValid = true;
     public bool isLodestone = false;
-    private Collider[] hitColliders;
 
     void Start()
     {
@@ -90,19 +89,17 @@ public class GhostUnit : MonoBehaviour
     }
 
     // Instantiate the intangible unit and destroy this ghost
-    public void StartBuild(IntangibleCompletedCallback callback = null)
+    public void StartBuild()
     {
         GameObject intangible = Instantiate(intangibleUnit, transform.position, intangibleUnit.transform.localRotation);
         intangible.GetComponent<IntangibleUnit>().BindBuilder(builder, transform);
-        if (callback != null)
-            intangible.GetComponent<IntangibleUnit>().Callback(callback);
         Destroy(gameObject);
     }
 
     // Place this ghost and make a copy
     private void PlaceAndCopy()
     {
-        // Debug.Log("Placed and copied.");
+        Debug.Log("Placed and copied.");
         isSet = true;
         invalidIcon.SetActive(false);
         // Increase the count of ghosts placed during this shift period

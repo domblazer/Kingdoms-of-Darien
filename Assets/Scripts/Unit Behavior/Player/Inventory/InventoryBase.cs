@@ -7,6 +7,8 @@ using DarienEngine;
 public class InventoryBase : MonoBehaviour
 {
     public int totalManaIncome = 0;
+    public int normalManaIncome = 0;
+    public int intangibleManaIncome = 0;
     public int totalManaStorage = 0;
     public int currentMana = 0;
     public float totalManaDrainPerSecond = 0;
@@ -52,25 +54,33 @@ public class InventoryBase : MonoBehaviour
         // @TODO: To keep track of all Intangibles and their changes in drain based on how many builders are attached, it might be better to keep track in a loop here and re-sum
         // the totalManaDrainPerSecond += unit.drainRate for each IntangibleUnit. That way, if an intangible was removed from the list, the totalManaDrainPerSecond would just be 
         // update with what is in the list, removing the need to subtract the drainRate
-        int intangibleIncome = 0;
+        intangibleManaIncome = 0;
+        totalManaDrainPerSecond = 0;
         foreach (IntangibleUnitBase intangible in intangibleUnits)
         {
             // Debug.Log("intangible drain rate: " + intangible.drainRate);
             // Debug.Log("intangible builder count " + intangible.builders.Count);
             // We are re-summing mana drain every frame just to keep up with the changing values of drainRate
-            totalManaDrainPerSecond = 0;
-            totalManaDrainPerSecond += intangible.drainRate;
-
-            // @TODO: if the intangible drainRate is negative, it gets added to income
-            // @TODO: rounding is going to create small errors over time, so we might end up with -1 drain instead of 0 b/c of the way the rounding went
-            if (intangible.drainRate < 0)
-                intangibleIncome += Mathf.RoundToInt(intangible.drainRate);
+            // We are only adding to the drain rate if there is at least one builder conjuring
+            if (intangible.builders.Count > 0)
+            {
+                // @TODO: if the intangible drainRate is negative, it gets added to income
+                // @TODO: rounding is going to create small errors over time, so we might end up with -1 drain instead of 0 b/c of the way the rounding went
+                totalManaDrainPerSecond += intangible.drainRate * intangible.builders.Count;
+            }
+            else
+            {
+                intangibleManaIncome += Mathf.RoundToInt(intangible.drainRate);
+            }
+            // Debug.Log("intangible income: " + intangibleManaIncome);
+            // Debug.Log("totalManaDrainPerSecond: " + totalManaDrainPerSecond);
         }
+        totalManaIncome = normalManaIncome + intangibleManaIncome;
 
         if (totalManaIncome > 0 && currentMana <= totalManaStorage && currentMana >= 0)
         {
             // Rate of change is function of income and drain per second
-            rateOfChange = 1 / (totalManaIncome + intangibleIncome - totalManaDrainPerSecond);
+            rateOfChange = 1 / (totalManaIncome + intangibleManaIncome - totalManaDrainPerSecond);
             if (rateOfChange < 0)
                 increment = -1;
             else if (rateOfChange > 0)
@@ -118,16 +128,16 @@ public class InventoryBase : MonoBehaviour
         intangibleUnits.Remove(unit);
     }
 
-    public void UpdateManaValues(int newIncome, int newDrain)
+    /* public void UpdateManaValues(int newIncome, int newDrain)
     {
         totalManaDrainPerSecond += newDrain;
-        totalManaIncome += Mathf.RoundToInt(newIncome);
-    }
+        normalManaIncome += Mathf.RoundToInt(newIncome);
+    } */
     public void AddUnit(RTSUnit unit)
     {
         // Sum up mana storage and mana income from all units
         totalManaStorage += unit.manaStorage;
-        totalManaIncome += unit.manaIncome;
+        normalManaIncome += unit.manaIncome;
 
         totalUnits.Add(unit);
         // Try if unitType exists in groupedUnits dictionary
@@ -159,7 +169,7 @@ public class InventoryBase : MonoBehaviour
     {
         // Subtract mana storage and income values from removed units
         totalManaStorage -= unit.manaStorage;
-        totalManaIncome -= unit.manaIncome;
+        normalManaIncome -= unit.manaIncome;
 
         // Remove from totalUnits and groupedUnits
         totalUnits.Remove(unit);

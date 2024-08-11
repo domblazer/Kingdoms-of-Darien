@@ -35,14 +35,12 @@ public class IntangibleUnit : IntangibleUnitBase
         {
             // @TODO: A builder that might have this unit in its buildQueue must handle that it no longer exists: "Failed to conjure..." or something
             Debug.Log("Cancel intangible.");
-
             CancelIntangible();
         }
         // Done
         else if (health >= 1 && builders.Count > 0)
         {
             Debug.Log("Intangible finished");
-
             FinishIntangible();
         }
     }

@@ -266,6 +266,7 @@ public class Player : MonoBehaviour
                         if (unit.isBuilder && unit.isKinematic)
                         {
                             // @TODO
+                            // Debug.Log(unit.name + " queued to intangible");
                             unit._Builder.QueueBuildOnIntangible(hit.collider.gameObject.GetComponent<IntangibleUnit>(), InputManager.HoldingShift());
                         }
                 }
