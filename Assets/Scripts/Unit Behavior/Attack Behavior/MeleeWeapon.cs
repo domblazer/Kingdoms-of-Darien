@@ -33,6 +33,9 @@ public class MeleeWeapon : MonoBehaviour
                 if (col.gameObject.tag == compareTag && !col.isTrigger)
                 {
                     // Debug.Log("_BaseUnit.animStateTime " + _BaseUnit.animStateTime);
+
+                    // @TODO: handle intangibles
+
                     RTSUnit hitUnit = col.gameObject.GetComponent<RTSUnit>();
                     // Play one shot sound
                     _BaseUnit.AudioManager.PlayMeleeHitSound(hitUnit ? hitUnit.bodyType : RTSUnit.BodyTypes.Default);

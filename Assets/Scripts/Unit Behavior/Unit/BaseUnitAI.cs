@@ -118,8 +118,8 @@ public class BaseUnitAI : RTSUnit
             if (_Army != null)
             {
                 tooltipText += "In army. \n";
-                if (canAttack && _AttackBehavior.attackTarget)
-                    tooltipText += "Attack target? " + _AttackBehavior.attackTarget.name;
+                if (canAttack && _AttackBehavior.attackTarget != null)
+                    tooltipText += "Attack target? " + _AttackBehavior.attackTarget.target.name;
             }
             tooltipText += "cluster: " + clusterNum;
             if (_TooltipManager)

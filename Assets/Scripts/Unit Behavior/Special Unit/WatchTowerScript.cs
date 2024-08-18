@@ -30,16 +30,16 @@ public class WatchTowerScript : MonoBehaviour
     {
         if (_BaseUnit.IsAttacking())
         {
-            ArcherLookAt(archerOne, _BaseUnit._AttackBehavior.attackTarget);
-            ArcherLookAt(archerTwo, _BaseUnit._AttackBehavior.attackTarget);
+            ArcherLookAt(archerOne, _BaseUnit._AttackBehavior.attackTarget.target);
+            ArcherLookAt(archerTwo, _BaseUnit._AttackBehavior.attackTarget.target);
         }
         if (_BaseUnit.IsAttacking() && _BaseUnit._AttackBehavior.nextAttackReady)
         {
-            ArcherLookAt(archerOne, _BaseUnit._AttackBehavior.attackTarget);
-            ArcherLookAt(archerTwo, _BaseUnit._AttackBehavior.attackTarget);
+            ArcherLookAt(archerOne, _BaseUnit._AttackBehavior.attackTarget.target);
+            ArcherLookAt(archerTwo, _BaseUnit._AttackBehavior.attackTarget.target);
             archerOneAnimator.SetTrigger("attack_1");
             Debug.Log("Watch Tower archer 1 triggered");
-            StartCoroutine(Shoot(_BaseUnit._AttackBehavior.attackTarget, launchPointOne));
+            StartCoroutine(Shoot(_BaseUnit._AttackBehavior.attackTarget.target, launchPointOne));
             StartCoroutine(TriggerSecond());
         }
         // @TODO: if baseUnit.nextAttackReady, archerOne.animator.setTrigger("attack_01") & [set delay, then] archerTwo.animator.setTrigger(...)
@@ -52,7 +52,7 @@ public class WatchTowerScript : MonoBehaviour
         yield return new WaitForSeconds(0.25f);
         archerTwoAnimator.SetTrigger("attack_1");
         Debug.Log("Watch Tower archer 2 triggered");
-        StartCoroutine(Shoot(_BaseUnit._AttackBehavior.attackTarget, launchPointTwo));
+        StartCoroutine(Shoot(_BaseUnit._AttackBehavior.attackTarget.target, launchPointTwo));
     }
 
     IEnumerator Shoot(GameObject target, Transform launchPoint)

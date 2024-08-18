@@ -29,6 +29,7 @@ public class ProjectileScript : MonoBehaviour
         // Hit enemy unit collider
         if (col.gameObject.tag == "Enemy" && !col.isTrigger)
         {
+            // @TODO: handle intangibles
             RTSUnit hitUnit;
             if (hitUnit = col.gameObject.GetComponent<RTSUnit>())
             {

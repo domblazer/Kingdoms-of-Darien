@@ -30,7 +30,7 @@ public class ArtilleryUnitScript : MonoBehaviour
         if (_BaseUnit._AttackBehavior.engagingTarget && !_BaseUnit.IsAttacking())
         {
             // Determine which direction to rotate towards
-            targetDirection = _BaseUnit._AttackBehavior.attackTarget.transform.position - transform.position;
+            targetDirection = _BaseUnit._AttackBehavior.attackTarget.target.transform.position - transform.position;
             targetDirection.y = 0;
             targetRotation = Quaternion.LookRotation(targetDirection, Vector3.up);
             swivle.transform.rotation = Quaternion.RotateTowards(swivle.transform.rotation, targetRotation, swivleSpeed * Time.deltaTime);

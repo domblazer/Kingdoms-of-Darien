@@ -72,4 +72,9 @@ namespace DarienEngine
         Patrol, 
         Guard
     }
+
+    public enum AttackTargetTypes {
+        Unit,
+        Intangible
+    }
 }

@@ -156,7 +156,6 @@ public class IntangibleUnitBase : MonoBehaviour
         }
     }
 
-    // @TODO
     protected void CancelIntangible()
     {
         // @TODO: Where do particles go to finish if an intangible is cancelled?

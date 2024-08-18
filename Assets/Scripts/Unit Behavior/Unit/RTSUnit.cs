@@ -371,6 +371,7 @@ public class RTSUnit : MonoBehaviour
         // Add collided unit to enemiesInSight
         else if (col.gameObject.tag == compareTag && col.gameObject.layer == LayerMask.NameToLayer("Unit") && !col.isTrigger && canAttack && col.gameObject.GetComponent<RTSUnit>())
         {
+            // @TODO: handle intangibles
             // Set a callback function to go off when the enemy unit dies to remove it from enemiesInSight
             col.gameObject.GetComponent<RTSUnit>().OnDie((enemy) => { _AttackBehavior.enemiesInSight.Remove(enemy); });
             _AttackBehavior.enemiesInSight.Add(col.gameObject);

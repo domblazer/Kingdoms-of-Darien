@@ -50,6 +50,29 @@ Note the non-prefabbed objects: the start positions and the environment. Obvious
 Canvases for different player factions are denoted by a faction prefix to the Canvas name, e.g. "AraCanvas", "TaroCanvas", "VeruCanvas", and "ZhonCanvas".
 The Canvas prefab will also not automatically create an EventSystem object, so you will need to create that manually as well. 
 
+## Setting up a new scene
+- create an empty scene
+- drag all the main prefabs into the editor
+- set RTSCamera to a default start position (500, 18, 500)
+- create a new Terrain object under the Environment game object
+- set the Terrain layer to Terrain and the tag to Terrain
+- Set Height of Terrain to 1.007142 and hit FlattenAll
+- duplicate the Terrain object to a Terrain Details object - change layer to Terrain Details. Enable tree colliders for this one, but not for Terrain.
+	- under Terrain settings, under Basic Terrain, uncheck the "Draw" option for Terrain Details
+- create a Map Sections empty game object and set y = 1.02. All features like towns, paths, and berms, will sit just slightly above Terrain height 1
+- set Environment x and z to 0
+- create new EventSystem object
+- FogOfWarPlane y = 0
+- MapEdgePlane y = -1
+- set MageEdgeRevealMask position to (500, -1, 500)
+- set FogOfWarPlane in _GameManager script
+- set all UI elements in UIManager script on _GameManager
+- create empty game objects for StartPositions (StartPosition01 - StartPosition09), place them, and set them in _GameManager config
+- create an empty object for ExistingUnits, set its position to 0, and add at least one unit per player
+- regenerate the navmesh
+	- this gave me some trouble. I had to bake the navmesh while the Terrain was set to height 0.97 then reset the Terrain height to 1 for the navmesh to be flush with the flat Terrain
+- Note: sacred-stones must be set at y = -0.02 and tagged as SacredSite and layer = Obstacle
+
 # Anatomy of a Unit
 
 E.g. components of Archer prefab:

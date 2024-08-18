@@ -25,16 +25,18 @@ public class ProjectileLauncher : MonoBehaviour
     {
         if (_BaseUnit.IsAttacking() && _BaseUnit._AttackBehavior.nextAttackReady)
         {
-            StartCoroutine(Shoot(_BaseUnit._AttackBehavior.attackTarget));
+            StartCoroutine(Shoot(_BaseUnit._AttackBehavior.attackTarget.target));
         }
     }
 
     IEnumerator Shoot(GameObject target)
     {
         yield return new WaitForSeconds(animDelay);
+        
+        // @TODO: may not be efficient to get RTSUnit component every shoot
+        // @TODO: handle intangibles
 
         // Adjust aiming target since all models have position.y = 1, which is ground level; we want to aim for their center
-        // @TODO: may not be efficient to get RTSUnit component every shoot
         RTSUnit targetUnit = target.GetComponent<RTSUnit>();
         float yAdjust = targetUnit.offset.y;
 
