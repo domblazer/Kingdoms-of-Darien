@@ -18,7 +18,7 @@ public class IntangibleUnitBase : MonoBehaviour
 
     // Keep track of model materials to create "Intangible Mass" effect
     private List<Material> materials = new();
-    private List<MaterialsMap> materialsMap = new();
+    private readonly List<MaterialsMap> materialsMap = new();
     protected class MaterialsMap
     {
         public Material material;
@@ -53,7 +53,7 @@ public class IntangibleUnitBase : MonoBehaviour
     }
 
     // Reference back to the Builder or Factory that spawned this intangible. Can be either an AI or player
-    public List<UnitBuilderBase> builders { get; set; } = new List<UnitBuilderBase>();
+    [HideInInspector] public List<UnitBuilderBase> builders = new List<UnitBuilderBase>();
 
     // Control variables for transparency change
     [Range(0.1f, 1.0f)] public float lagRate = 1.0f;
@@ -63,9 +63,10 @@ public class IntangibleUnitBase : MonoBehaviour
     protected bool parkToggle;
     protected Vector3 rallyPoint;
     protected CommandQueueItem nextCommandAfterParking;
-    public Vector3 offset { get; set; } = Vector3.zero;
+    [HideInInspector] public Vector3 offset = Vector3.zero;
 
     protected IntangibleCompletedCallback intangibleCompletedCallback;
+    public event EventHandler<EventArgs> OnDie;
 
     protected GameObject sparkleParticlesObj;
     protected ParticleSystem sparkleParticles;
@@ -116,11 +117,15 @@ public class IntangibleUnitBase : MonoBehaviour
 
         // Add this intangible to the player inventory
         Functions.AddIntangibleToPlayerContext(this);
+
+        // Call eval gradient once at start to get the intangible going and make the update logic work
+        EvalColorGradient();
     }
 
     // Finalize and destroy this intangible when done
     protected void FinishIntangible()
     {
+        // @TODO: deprecated
         // intangibleCompletedCallback?.Invoke();
 
         // Every builder assigned to this intangible now must queue the conjure command and get ready for the next
@@ -143,10 +148,10 @@ public class IntangibleUnitBase : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void DetachBuilder(UnitBuilderBase builder)
+    public void DetachBuilder(UnitBuilderBase builder, bool deferArray = false)
     {
-        builder.IsBuilding = false;
-        builders.Remove(builder);
+        if (!deferArray)
+            builders.Remove(builder);
 
         // If there are no builders on this intangible at this point, reverse the progress
         if (builders.Count == 0)
@@ -159,10 +164,22 @@ public class IntangibleUnitBase : MonoBehaviour
     protected void CancelIntangible()
     {
         // @TODO: Where do particles go to finish if an intangible is cancelled?
+        
+        // Invoke OnDie to send to any units who has this intangible in its enemiesInSight
+        OnDie?.Invoke(gameObject, new EventArgs { });
 
         // Remove intangible from inventory/player context as well
         Functions.RemoveIntangibleFromPlayerContext(this, playerNumber);
         Destroy(gameObject);
+    }
+
+    public void ReceiveDamage(float amount)
+    {
+        if (health > 0)
+        {
+            // Since health is a value between 0 and 1, the damage taken is the proportion between damage amount and max health
+            health -= amount / finalUnit.maxHealth;
+        }
     }
 
     // Set the completed event callback function
@@ -178,7 +195,7 @@ public class IntangibleUnitBase : MonoBehaviour
             map.material.color = map.gradient.Evaluate(health);
         // lagRate is also influenced by the number of builders, i.e., more builders mean conjuring goes faster
         float lagRateMultiplier = builders.Count > 0 ? builders.Count : 1;
-        health += Time.deltaTime / (buildTime / 10) * lagRateMultiplier;
+        health += Time.deltaTime / (buildTime / 10) * lagRate * lagRateMultiplier;
     }
 
     protected void SetFacingDir(Directions dir)

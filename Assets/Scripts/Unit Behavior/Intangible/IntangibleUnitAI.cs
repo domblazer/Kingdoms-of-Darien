@@ -9,10 +9,9 @@ public class IntangibleUnitAI : IntangibleUnitBase
     // Update "Intangible Mass" color gradient until done
     void Update()
     {
-        // TODO: if no builder is attatched to this intangible, the mana flow is reversed, draining from the intangible and adding back to main mana
-        if (health < 1)
+        if (health > 0 && health < 1 && builders.Count > 0)
         {
-            // If currentMana is empty, all building slows down by half
+             // If currentMana is empty, all building slows down by half
             if (GameManager.Instance.AIPlayers[playerNumber].inventory.currentMana == 0)
                 lagRate = 0.5f;
             else
@@ -20,9 +19,31 @@ public class IntangibleUnitAI : IntangibleUnitBase
 
             EvalColorGradient();
         }
+        else if (health > 0 && health < 1 && builders.Count == 0)
+        {
+            lagRate = -1.0f;
+            EvalColorGradient();
+        }
+        else if (health <= 0 && builders.Count == 0)
+        {
+            // @TODO: A builder that might have this unit in its buildQueue must handle that it no longer exists: "Failed to conjure..." or something
+            CancelIntangible();
+        }
+        // At any point, the intangible could dip down to 0 health and "die"; then cancel any builds
+        else if (health <= 0 && builders.Count > 0)
+        {
+            Debug.Log("IntangibleAI health dipped below 0, should die");
+            // @Note: CancelBuild removes builder from builders which is not allowed in a loop on that list
+            builders.ForEach(bld => bld.CancelBuild(true));
+            builders.Clear();
+
+            CancelIntangible();
+        }
         // Done
-        else
+        else if (health >= 1 && builders.Count > 0)
+        {
             FinishIntangible();
+        }
     }
 
     // Bind vars for AI
@@ -55,6 +76,8 @@ public class IntangibleUnitAI : IntangibleUnitBase
     // Update UI with intangible mass details in unit UI
     private void OnMouseOver()
     {
+        // @TODO: Case: If single friendly unit is selected and hovering over enemy intangible, 
+        // shouldn't that say like "Swordsman -- Attacking -- Cabal"?
         if (!InputManager.IsMouseOverUI())
             UIManager.UnitInfoInstance.Set(this, null);
     }
@@ -62,9 +85,8 @@ public class IntangibleUnitAI : IntangibleUnitBase
     // @TODO: if mouse is over this unit when the unit dies, still need to reset cursor, clear unit ui
     void OnMouseExit()
     {
-        if (GameManager.Instance.PlayerMain.player.SelectedBuilderUnitsCount() > 0)
-            CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Normal);
-
+        // if (GameManager.Instance.PlayerMain.player.SelectedBuilderUnitsCount() > 0)
+        CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Normal);
         GameManager.Instance.ClearHovering();
     }
 }

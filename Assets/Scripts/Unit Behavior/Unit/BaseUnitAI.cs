@@ -171,10 +171,9 @@ public class BaseUnitAI : RTSUnit
 
     public List<PatrolPoint> SetPatrolPoints(Vector3 origin, int pointCount = 3, float range = 25.0f)
     {
-        List<PatrolPoint> patrolPoints = new List<PatrolPoint>();
+        List<PatrolPoint> patrolPoints = new();
         for (int i = 0; i < pointCount; i++)
         {
-            Vector3 radius = Random.insideUnitSphere;
             Vector3 randomPoint = GenerateValidRandomPoint(origin, range);
             patrolPoints.Add(new PatrolPoint { point = randomPoint });
         }
@@ -221,7 +220,7 @@ public class BaseUnitAI : RTSUnit
     public Vector3 GenerateRandomPoint(Vector3 origin, float range)
     {
         Vector3 radius = Random.insideUnitSphere;
-        Vector3 point = (origin + (radius * range));
+        Vector3 point = origin + (radius * range);
         // @TODO: introducing different terrain height levels will complicate this. Will need to raycast to world to get exact y value
         point.y = origin.y;
         return point;
@@ -243,18 +242,15 @@ public class BaseUnitAI : RTSUnit
         // @TODO: buildings can't be lain like half way out of map bounds, need to adjust padding
         bool three = GameManager.Instance.mapInfo.PointInsideBounds(point.x, point.z);
         // Debug.Log("TestBuildPoint results: (" + point + "):\nNavMeshPointValid: " + one + "\nPointCollisionValid: " + two + "\nPointInsideMapBounds: " + three);
-        return one
-            && two
-            && three;
+        return one && two && three;
     }
 
     // Check if a point is on the NavMesh and has reasonable distance disparity
     public bool TestNavMeshPoint(Vector3 point)
     {
         bool navMeshValid = false;
-        NavMeshHit navMeshHit;
         // NavMesh check point is on "Built-in-0": "Walkable" area
-        if (NavMesh.SamplePosition(point, out navMeshHit, 1f, NavMesh.AllAreas))
+        if (NavMesh.SamplePosition(point, out NavMeshHit navMeshHit, 1f, NavMesh.AllAreas))
         {
             NavMeshPath path = new NavMeshPath();
             _Agent.CalculatePath(navMeshHit.position, path);
@@ -318,6 +314,10 @@ public class BaseUnitAI : RTSUnit
     private IEnumerator Die()
     {
         HandleDie();
+
+        // If builder, clear any current build
+        if (isBuilder)
+            _Builder.CancelBuild();
 
         if (_TooltipManager)
         {

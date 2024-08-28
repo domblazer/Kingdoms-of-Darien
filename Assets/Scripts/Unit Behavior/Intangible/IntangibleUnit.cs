@@ -9,9 +9,8 @@ public class IntangibleUnit : IntangibleUnitBase
     // Update "Intangible Mass" color gradient until done
     void Update()
     {
-        if (health < 1 && builders.Count > 0)
+        if (health > 0 && health < 1 && builders.Count > 0)
         {
-            // Debug.Log("Building. health " + health);
             // If currentMana is empty, all building slows down by half
             if (GameManager.Instance.PlayerMain.inventory.currentMana == 0)
                 lagRate = 0.5f;
@@ -22,20 +21,23 @@ public class IntangibleUnit : IntangibleUnitBase
         }
         else if (health > 0 && health < 1 && builders.Count == 0)
         {
-            Debug.Log("Intangible has lost its builder.");
-            // State: Intangible has made progress but has lost its builder
-            // @TODO: builders may be a list if this intangible is spawned by a kinematic builder - in that case, builders.Count == 0 
-            // 1) turn off the sparkle particles
-            // 2) reverse the change rate and add the drainRate to the rechargeRate
-            // Debug.Log("intangible has no builder - health: " + health);
+            Debug.Log("Intangible has made progress but lost all builders. Reverse progress.");
             lagRate = -1.0f;
             EvalColorGradient();
         }
         else if (health <= 0 && builders.Count == 0)
         {
             // @TODO: A builder that might have this unit in its buildQueue must handle that it no longer exists: "Failed to conjure..." or something
-            Debug.Log("Cancel intangible.");
+            Debug.Log("Intangible health has lost all health and has no builders.");
             CancelIntangible();
+        }
+        // At any point, the intangible could dip down to 0 health and "die"; then cancel any builds
+        else if (health <= 0 && builders.Count > 0)
+        {
+            Debug.Log("Intangible died.");
+            // @Note: CancelBuild removes builder from builders which is not allowed in a loop on that list
+            builders.ForEach(bld => bld.CancelBuild(true));
+            builders.Clear();
         }
         // Done
         else if (health >= 1 && builders.Count > 0)

@@ -44,7 +44,7 @@ public class AttackBehavior : MonoBehaviour
         public AttackTargetTypes targetType;
     }
     [HideInInspector] public AttackTarget attackTarget;
-    [HideInInspector] public List<GameObject> enemiesInSight = new List<GameObject>();
+    [HideInInspector] public List<GameObject> enemiesInSight = new();
 
     private void Awake()
     {
@@ -62,8 +62,12 @@ public class AttackBehavior : MonoBehaviour
         }
     }
 
+    /**
+    *  Since this function is called in Update when this Unit has current command type of Attack, we assume the attackTarget is assigned to the current command
+    */
     public void HandleAttackRoutine(bool autoAttackInterrupt = false)
     {
+        attackTarget = baseUnit.currentCommand.attackTarget;
         // If attack target has died at any point during attack routine, clear attack and stop attack routine
         if (TargetHasDied())
         {
@@ -75,35 +79,28 @@ public class AttackBehavior : MonoBehaviour
         // @TODO: if attackTarget becomes null, move back to original location unless there's another unit around to attack
         // @TODO: if isAttacking/taking damage and health is low, AI start a retreat, player units can be set to have an auto retreat or retreat button
 
-        // Handle attacking regular units
-        if (attackTarget.targetType == AttackTargetTypes.Unit)
-        {
-            // State isAttacking when engagingTarget and not still orienting to attack position
-            isAttacking = engagingTarget && (baseUnit.isKinematic ? !isMovingToAttack : !baseUnit.facing);
+        // State isAttacking when engagingTarget and not still orienting to attack position
+        isAttacking = engagingTarget && (baseUnit.isKinematic ? !isMovingToAttack : !baseUnit.facing);
 
-            // Move to attack target
-            MoveToAttack(autoAttackInterrupt);
+        // Move to attack target
+        MoveToAttack(autoAttackInterrupt);
 
-            // Handle attacking behavior once in range
-            Attack();
-        }
-        // @TODO: handle intangibles
-        else if (attackTarget.targetType == AttackTargetTypes.Intangible)
-        {
-
-        }
-
+        // Handle attacking behavior once in range
+        Attack();
     }
 
     private bool TargetHasDied()
     {
         bool hasDied = false;
-        switch (attackTarget.targetType)
+        switch (attackTarget?.targetType)
         {
             case AttackTargetTypes.Unit:
-                hasDied = attackTarget != null && attackTarget.targetType == AttackTargetTypes.Unit && attackTarget.target.GetComponent<RTSUnit>().isDead;
+                hasDied = attackTarget != null && attackTarget.target.GetComponent<RTSUnit>().isDead;
                 break;
             case AttackTargetTypes.Intangible:
+                // @Note: attackTarget object is only nullified in ClearAttack; if target becomes null while attacking, target has been destroyed in another script
+                // @TODO handle intangibles
+                hasDied = (isAttacking || isMovingToAttack) && attackTarget?.target == null;
                 // TODO: how to determine if Intangible has gone away or been completed? Also, if the intangible has been completed, does attackTarget switch to the final unit?
                 break;
         }
@@ -136,9 +133,19 @@ public class AttackBehavior : MonoBehaviour
     private float GetRangeOffset()
     {
         float rangeOffset = activeWeapon.weaponRange;
-        // Melee attackers use a portion of the attackTarget's collider (offset) size
-        if (attackTarget != null)
-            rangeOffset = activeWeapon.weaponType == Weapon.WeaponTypes.Melee ? attackTarget.target.GetComponent<RTSUnit>().offset.x * 0.85f : activeWeapon.weaponRange;
+        // Melee attackers use a portion of the attackTarget's collider (offset) size to determine range
+        if (attackTarget?.target != null && activeWeapon.weaponType == Weapon.WeaponTypes.Melee)
+        {
+            switch (attackTarget.targetType)
+            {
+                case AttackTargetTypes.Unit:
+                    rangeOffset = attackTarget.target.GetComponent<RTSUnit>().offset.x * 0.85f;
+                    break;
+                case AttackTargetTypes.Intangible:
+                    rangeOffset = attackTarget.target.GetComponent<IntangibleUnitBase>().offset.x * 0.85f;
+                    break;
+            }
+        }
         return rangeOffset;
     }
 
@@ -149,10 +156,10 @@ public class AttackBehavior : MonoBehaviour
 
         // While locked on target but not in range, keep moving to attack position
         bool inRange = false;
-        if (attackTarget != null)
+        if (attackTarget?.target != null)
             inRange = baseUnit.IsInRangeOf(attackTarget.target.transform.position, rangeOffset);
 
-        if (attackTarget != null && !inRange)
+        if (attackTarget?.target != null && !inRange)
         {
             isMovingToAttack = true;
             // Melee attackers can swing and move at the same time, if fairly close enough to target
@@ -173,8 +180,8 @@ public class AttackBehavior : MonoBehaviour
                 return;
             }
         }
-        // Once unit is in range, can stop moving
-        else if (isMovingToAttack && attackTarget != null && inRange)
+        // Once unit is in range, stop moving
+        else if (isMovingToAttack && attackTarget?.target != null && inRange)
         {
             baseUnit.MoveToPosition(transform.position);
             baseUnit.TryToggleToObstacle();
@@ -187,8 +194,7 @@ public class AttackBehavior : MonoBehaviour
         // Find closest target
         GameObject target = FindClosestEnemy();
         // If a valid target exists but attackTarget has not yet been assigned, lock onto this target
-        // @TODO: handle Intangible
-        if (target && target.GetComponent<RTSUnit>() && attackTarget == null)
+        if (target && (target.GetComponent<RTSUnit>() || target.GetComponent<IntangibleUnitBase>()) && attackTarget == null)
         {
             if (insertFirst)
                 TryInterruptAttack(target);
@@ -200,16 +206,10 @@ public class AttackBehavior : MonoBehaviour
 
     protected GameObject FindClosestEnemy()
     {
-        // @TODO: enemies can include Intangibles
         GameObject closest = null;
         float distance = Mathf.Infinity;
         Vector3 position = transform.position;
-        if (enemiesInSight.Count > 0)
-        {
-            // @TODO: need to handle intangibles too, i.e. item.GetCompontent<IngangibleUnitBase<T??>() ? isIntangible
-            // @TODO: this is also not efficient to be calling all the time. Need better way to remove nulls/dead
-            enemiesInSight = enemiesInSight.Where(item => item != null && !item.GetComponent<RTSUnit>().isDead).ToList();
-        }
+        // Find the enemy in sight closest to me
         foreach (GameObject go in enemiesInSight)
         {
             Vector3 diff = go.transform.position - position;
@@ -225,41 +225,43 @@ public class AttackBehavior : MonoBehaviour
 
     public void TryAttack(GameObject target, bool addToQueue = false)
     {
-        SetAttackVars(target);
+        SetAttackVars();
+
         // Add to queue 
         if (!addToQueue)
             baseUnit.commandQueue.Clear();
         baseUnit.commandQueue.Enqueue(new CommandQueueItem
         {
             commandType = CommandTypes.Attack,
-            commandPoint = attackTarget.target.transform.position,
-            attackInfo = new AttackInfo { attackTarget = attackTarget.target }
+            commandPoint = target.transform.position,
+            attackTarget = new AttackTarget { target = target, targetType = GetTargetType(target) }
         });
     }
 
     public void TryInterruptAttack(GameObject target)
     {
-        // Debug.Log(gameObject.name + " trying attack interrupt on " + target.name);
-        SetAttackVars(target);
+        SetAttackVars();
+
         // Push priority command, shifting existing to the right
         baseUnit.commandQueue.InsertFirst(new CommandQueueItem
         {
             commandType = CommandTypes.Attack,
-            commandPoint = attackTarget.target.transform.position,
-            attackInfo = new AttackInfo { attackTarget = attackTarget.target }
+            commandPoint = target.transform.position, // @TODO is this unused?
+            attackTarget = new AttackTarget { target = target, targetType = GetTargetType(target) }
         });
     }
 
-    private void SetAttackVars(GameObject target)
+    private AttackTargetTypes GetTargetType(GameObject target)
     {
-        // Debug.Log(gameObject.name + " trying attack on " + target.name);
+        AttackTargetTypes type = AttackTargetTypes.Unit;
+        if (target.GetComponent<IntangibleUnitBase>())
+            type = AttackTargetTypes.Intangible;
+        return type;
+    }
 
-        attackTarget = new AttackTarget
-        {
-            // @TODO: determine proper targetType
-            targetType = AttackTargetTypes.Unit,
-            target = target
-        };
+    private void SetAttackVars()
+    {
+        // Set relevant vars
         engagingTarget = true;
         isMovingToAttack = true;
         baseUnit.TryToggleToAgent();

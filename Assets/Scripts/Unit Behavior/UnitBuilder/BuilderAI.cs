@@ -55,7 +55,7 @@ public class BuilderAI : UnitBuilderAI
     private Vector3 CalculateIntangibleOffset(GameObject gameObj)
     {
         // @TODO: need to separate the collider that determines build size vs the collider that picks up hits
-        Vector3 offset = new Vector3();
+        Vector3 offset = new();
         if (gameObj.GetComponent<BoxCollider>())
             offset = gameObj.GetComponent<BoxCollider>().size;
         else if (gameObj.GetComponent<CapsuleCollider>())
@@ -92,7 +92,7 @@ public class BuilderAI : UnitBuilderAI
             }
         }
         Vector3 p = closestStone.transform.position;
-        Vector3 pos = new Vector3(p.x, p.y + 0.1f, p.z);
+        Vector3 pos = new(p.x, p.y + 0.1f, p.z);
         return pos;
     }
 
@@ -110,6 +110,7 @@ public class BuilderAI : UnitBuilderAI
         GameObject intangible = Instantiate(itg, spawnPoint, new Quaternion(0, 180, 0, 1));
         intangible.GetComponent<IntangibleUnitAI>().BindBuilder(this, null, new CommandQueueItem { commandType = CommandTypes.Patrol });
         intangible.GetComponent<IntangibleUnitAI>().Callback(IntangibleCompleted);
+        currentIntangible = intangible.GetComponent<IntangibleUnitAI>();
     }
 
     // Called back when intangible is complete

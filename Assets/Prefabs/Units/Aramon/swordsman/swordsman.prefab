@@ -5326,7 +5326,6 @@ MonoBehaviour:
   bodyType: 2
   maxHealth: 3000
   healthRechargeRate: 3
-  baseMana: 0
   manaIncome: 0
   manaStorage: 0
   buildCost: 285
@@ -5345,6 +5344,8 @@ MonoBehaviour:
   selectRing: {fileID: 1770128794485609735}
   fogOfWarMask: {fileID: 938548816310989045}
   attackMode: 0
+  _Builder: {fileID: 0}
+  secondary: {fileID: 0}
 --- !u!114 &1926485102892602018
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5370,7 +5371,6 @@ MonoBehaviour:
     - {fileID: 1130106833}
   activeWeaponIndex: 0
   isAttacking: 0
-  attackTarget: {fileID: 0}
   enemiesInSight: []
 --- !u!114 &6321940543030220991
 MonoBehaviour:
@@ -5495,7 +5495,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 1.4
-  m_Speed: 2.7
+  m_Speed: 1.25
   m_Acceleration: 8
   avoidancePriority: 55
   m_AngularSpeed: 200

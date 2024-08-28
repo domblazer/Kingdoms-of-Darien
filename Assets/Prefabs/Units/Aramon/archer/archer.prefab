@@ -7830,8 +7830,7 @@ MonoBehaviour:
   unitName: Archer
   bodyType: 1
   maxHealth: 1100
-  healthRechargeRate: 5.2
-  baseMana: 0
+  healthRechargeRate: 0.5208333
   manaIncome: 0
   manaStorage: 0
   buildCost: 325
@@ -7850,6 +7849,8 @@ MonoBehaviour:
   selectRing: {fileID: 8276149309611925461}
   fogOfWarMask: {fileID: 6997183358627103113}
   attackMode: 0
+  _Builder: {fileID: 0}
+  secondary: {fileID: 0}
 --- !u!114 &8064476513629457340
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7865,7 +7866,7 @@ MonoBehaviour:
   weapons:
   - weaponType: 1
     weaponDamage: 213
-    weaponRange: 12
+    weaponRange: 10
     weaponReloadRate: 3
     weaponSoundClass: 0
     specialAttack: 0
@@ -7874,7 +7875,6 @@ MonoBehaviour:
     meleeWeapons: []
   activeWeaponIndex: 0
   isAttacking: 0
-  attackTarget: {fileID: 0}
   enemiesInSight: []
 --- !u!114 &8276149308997763325
 MonoBehaviour:
@@ -8015,7 +8015,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 1.4
-  m_Speed: 1.25
+  m_Speed: 1.4
   m_Acceleration: 100
   avoidancePriority: 55
   m_AngularSpeed: 200

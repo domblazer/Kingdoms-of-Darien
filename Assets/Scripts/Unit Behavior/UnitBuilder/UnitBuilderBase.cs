@@ -12,7 +12,7 @@ public class UnitBuilderBase : MonoBehaviour
     public bool IsBuilding { get; set; }
     public bool NextQueueReady { get; set; } = false;
     public RTSUnit BaseUnit { get; set; }
-    public IntangibleUnitBase currentIntangible;
+    [HideInInspector] public IntangibleUnitBase currentIntangible;
 
     private void Awake()
     {
@@ -71,11 +71,17 @@ public class UnitBuilderBase : MonoBehaviour
         }
     }
 
-    public void CancelBuild()
+    public void CancelBuild(bool deferArray = false)
     {
-        // @TODO: reset builder conjuring animation
         Debug.Log("Cancel current build; disconnect intangible " + currentIntangible.gameObject.name);
-        currentIntangible.DetachBuilder(this);
+        IsBuilding = false;
+        currentIntangible.DetachBuilder(this, deferArray);
         currentIntangible = null;
+
+        // Ensure builder is ready with next command if current build is canceled
+        CommandQueueItem lastCommand = BaseUnit.commandQueue.Dequeue();
+        lastCommand.conjurerArgs.buildQueueCount--;
+        SetNextQueueReady(true);
+
     }
 }

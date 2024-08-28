@@ -15,8 +15,8 @@ public class BaseUnit : RTSUnit
     public GameObject fogOfWarMask;
     public AttackModes attackMode = AttackModes.Offensive;
     private Directions facingDir = Directions.Forward;
-    public UnitBuilderPlayer _Builder;
-    public GameObject secondary;
+    [HideInInspector] public UnitBuilderPlayer _Builder;
+    [HideInInspector] public GameObject secondary;
     private LineRenderer lineRenderer;
 
     // Start is called before the first frame update
@@ -28,7 +28,7 @@ public class BaseUnit : RTSUnit
         {
             selectRing.SetActive(false);
             // Set an initial green color on select-ring
-            selectRing.GetComponent<SpriteRenderer>().color = Color.Lerp(Color.red, Color.green, (health / 100));
+            selectRing.GetComponent<SpriteRenderer>().color = Color.Lerp(Color.red, Color.green, health / 100);
         }
 
         gameObject.tag = "Friendly"; // @TODO: assign tags for different teams
@@ -94,6 +94,7 @@ public class BaseUnit : RTSUnit
                 // Update the unit info UI if no other unit has focus from hovering
                 if (!GameManager.Instance.IsHoveringOther(gameObject))
                 {
+                    // @TODO: this should only be set if this unit is the singular unit selected, not a group selection
                     UIManager.UnitInfoInstance.Set(super, secondary);
                 }
 
@@ -256,9 +257,15 @@ public class BaseUnit : RTSUnit
     {
         HandleDie();
 
-        // @TODO: If builder, clear any current build
-        // if (isBuilder)
-        //    _Builder.ClearBuild();
+        // If builder, clear any current build
+        if (isBuilder)
+            _Builder.CancelBuild();
+
+        // @TODO: If this unit was selected, clear the UI 
+        // @TODO: Also, need to update UI when hovering over corpse to show corpse name and handle resurrection cursor and behavior
+        UIManager.UnitInfoInstance.Toggle(false);
+        // @TODO: should only reset cursor if no other selected units
+        CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Normal);
 
         DeSelect();
         selectable = false;

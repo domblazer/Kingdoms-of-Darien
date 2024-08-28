@@ -94,7 +94,7 @@ namespace DarienEngine
         // type is Conjurer?: 
         public ConjurerArgs conjurerArgs;
         // type is Attack?: 
-        public AttackInfo attackInfo;
+        public AttackBehavior.AttackTarget attackTarget;
         // type is Patrol?:
         // @Note: entire patrol route is kept within one command item since patrol never dequeues
         public PatrolRoute patrolRoute;
@@ -161,11 +161,11 @@ namespace DarienEngine
 
     public class AttackInfo
     {
-        public GameObject attackTarget;
-        public bool targetBaseUnit { get { return attackTarget.GetComponent<RTSUnit>(); } }
+        public AttackBehavior.AttackTarget attackTarget;
+        public bool targetBaseUnit { get { return attackTarget?.target.GetComponent<RTSUnit>(); } }
         public override string ToString()
         {
-            return "AttackTarget: " + attackTarget.name;
+            return "AttackTarget: " + attackTarget?.target.name;
         }
     }
 

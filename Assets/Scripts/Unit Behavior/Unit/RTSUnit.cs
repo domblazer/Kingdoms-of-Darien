@@ -37,7 +37,7 @@ public class RTSUnit : MonoBehaviour
     public States state { get; set; } = States.Standby;
 
     // Every RTSUnit will need a unique identifier
-    public System.Guid uuid { get; set; } = System.Guid.NewGuid();
+    [HideInInspector] public System.Guid uuid = System.Guid.NewGuid();
 
     // Basic initializing info
     public Factions faction;
@@ -63,7 +63,6 @@ public class RTSUnit : MonoBehaviour
     private float lastHitRechargeDelay = 5.0f;
 
     // Mana
-    // public int baseMana; // @TODO: Commenting this out b/c it's not being used and idk what it is for
     public int mana { get; set; } = 0;
     protected float manaRechargeRate = 0.5f;
     protected float nextManaRecharge;
@@ -109,7 +108,7 @@ public class RTSUnit : MonoBehaviour
         }
     }
 
-    public Vector3 offset { get; set; } = new Vector3(1, 1, 1);
+    [HideInInspector] public Vector3 offset = new Vector3(1, 1, 1);
     protected RTSUnit super;
 
     // Re-use for HandleFacing
@@ -118,11 +117,13 @@ public class RTSUnit : MonoBehaviour
 
     // Misc
     protected int expPoints = 10;
+    // Variables for inflating nav agent avoidance radius
     private float avoidanceRadius;
     private float doubleAvoidanceRadius;
     private static float avoidanceTickerTo = 0.0f;
     private static float avoidanceTickerFrom = 0.0f;
 
+    // Blood particles will play one shot on ReceiveDamage
     public ParticleSystem bloodSystem;
 
     // Components
@@ -133,15 +134,14 @@ public class RTSUnit : MonoBehaviour
     public HumanoidUnitAnimator _HumanoidUnitAnimator { get; set; }
     public UnitAudioManager AudioManager { get; set; }
 
-    protected List<GameObject> whoCanSeeMe = new List<GameObject>();
+    protected List<GameObject> whoCanSeeMe = new();
 
+    public event System.EventHandler<System.EventArgs> OnDie;
     protected float dieTime = 30;
     protected int patrolIndex = 0;
 
-    private DieCallback dieCallback;
-
-    public int clusterNum { get; set; } = -1;
-    public bool isStriking = false;
+    [HideInInspector] public int clusterNum = -1;
+    [HideInInspector] public bool isStriking = false;
 
     // Init called on Start
     protected void Init()
@@ -221,9 +221,15 @@ public class RTSUnit : MonoBehaviour
     {
         if (isKinematic && _Agent.enabled && !commandQueue.IsEmpty())
         {
+            // @TODO: While on the move, have the nav agents expand a bit to give each unit some personal space
+            // InflateAvoidanceRadius();
+
+            // Move until in range
             bool inRange = MoveToPosition(currentCommand.commandPoint);
             if (inRange)
+            {
                 commandQueue.Dequeue();
+            }
 
             // Parking should always be the first state of a new unit, even if it's just parking to transform.position
             if (isParking)
@@ -235,10 +241,12 @@ public class RTSUnit : MonoBehaviour
                     commandQueue.Enqueue(nextCommandAfterParking); // Enqueue new command for next state
             }
             else
+            {
                 state = States.Moving;
+            }
 
-            DebugNavPath();
-            // InflateAvoidanceRadius();
+            // Draw the nav agent path points in the scene view for debugging
+            // DebugNavPath();
         }
     }
 
@@ -259,7 +267,8 @@ public class RTSUnit : MonoBehaviour
         return inRange;
     }
 
-    /* protected void InflateAvoidanceRadius()
+    // This is an optional feature that is supposed to help units maintain space while moving instead of clumping too much, but I'm not sure it works well
+    protected void InflateAvoidanceRadius()
     {
         if (!IsInRangeOf(currentCommand.commandPoint, 4))
         {
@@ -283,7 +292,7 @@ public class RTSUnit : MonoBehaviour
             }
             avoidanceTickerTo = 0;
         }
-    } */
+    }
 
     // Handle patrolling behavior. Roam just means patrol these points at random, not in a loop
     protected void Patrol(bool roam = false)
@@ -338,10 +347,9 @@ public class RTSUnit : MonoBehaviour
                 dir = 0;
 
             // Determine whether the bumped unit should move clockwise or counter clockwise
-            bool CClockwise = false;
             Vector3 a = transform.position;
             Vector3 b = bumpedUnit.transform.position;
-            CClockwise = (dir == 1 && a.z < b.z) || (dir == -1 && a.z > b.z) || (dir == 0 && a.x > b.x) || (dir == 2 && a.x < b.x);
+            bool CClockwise = (dir == 1 && a.z < b.z) || (dir == -1 && a.z > b.z) || (dir == 0 && a.x > b.x) || (dir == 2 && a.x < b.x);
 
             // Move the bumped unit perpendicular to the way I am traveling 
             bumpedUnit.MoveOutOfTheWay(this, CClockwise);
@@ -369,12 +377,20 @@ public class RTSUnit : MonoBehaviour
         if (col.isTrigger && col.gameObject.layer == LayerMask.NameToLayer("Inner Trigger") && col.gameObject.GetComponentInParent<RTSUnit>())
             HandleBumping(col.gameObject.GetComponentInParent<RTSUnit>());
         // Add collided unit to enemiesInSight
-        else if (col.gameObject.tag == compareTag && col.gameObject.layer == LayerMask.NameToLayer("Unit") && !col.isTrigger && canAttack && col.gameObject.GetComponent<RTSUnit>())
+        else if (col.gameObject.tag == compareTag
+            && col.gameObject.layer == LayerMask.NameToLayer("Unit")
+            && !col.isTrigger
+            && canAttack
+            && (col.gameObject.GetComponent<RTSUnit>() || col.gameObject.GetComponent<IntangibleUnitBase>()))
         {
-            // @TODO: handle intangibles
-            // Set a callback function to go off when the enemy unit dies to remove it from enemiesInSight
-            col.gameObject.GetComponent<RTSUnit>().OnDie((enemy) => { _AttackBehavior.enemiesInSight.Remove(enemy); });
+            // Add to this unit's enemy line of sight list
             _AttackBehavior.enemiesInSight.Add(col.gameObject);
+
+            // Subscribe to the enemy's OnDie event to remove it from enemiesInSight when it dies
+            if (col.gameObject.GetComponent<RTSUnit>())
+                col.gameObject.GetComponent<RTSUnit>().OnDie += RemoveEnemyFromSight;
+            else if (col.gameObject.GetComponent<IntangibleUnitBase>())
+                col.gameObject.GetComponent<IntangibleUnitBase>().OnDie += RemoveEnemyFromSight;
         }
         // Update whoCanSeeMe based on "Fog of War" mask layer trigger
         else if (col.gameObject.tag == compareTag && col.gameObject.layer == LayerMask.NameToLayer("Fog of War"))
@@ -390,9 +406,11 @@ public class RTSUnit : MonoBehaviour
             whoCanSeeMe.Remove(col.transform.parent.gameObject);
     }
 
-    public void OnDie(DieCallback callback)
+    private void RemoveEnemyFromSight(object sender, System.EventArgs e)
     {
-        dieCallback = callback;
+        // First check is sender still exists. This unit may have died and been destroyed already by the time the enemy invokes its die function
+        if (sender != null)
+            _AttackBehavior.enemiesInSight.Remove(sender as GameObject);
     }
 
     protected void DebugNavPath()
@@ -416,7 +434,7 @@ public class RTSUnit : MonoBehaviour
             isAttackMove = attackMove
         });
         isParking = false;
-        if (canAttack)
+        if (canAttack && !addToQueue)
             _AttackBehavior.ClearAttack();
         TryToggleToAgent();
     }
@@ -472,8 +490,8 @@ public class RTSUnit : MonoBehaviour
                 // Initial patrol points if clicking single is just the transform.position when the click happened, and the click point
                 patrolPoints = new List<PatrolPoint>()
                 {
-                    new PatrolPoint { point = transform.position },
-                    new PatrolPoint { point = patrolPoint }
+                    new() { point = transform.position },
+                    new() { point = patrolPoint }
                 }
             }
         };
@@ -499,12 +517,15 @@ public class RTSUnit : MonoBehaviour
             }
             // Otherwise, queue a new Patrol route
             else
+            {
                 commandQueue.Enqueue(newCommand);
+            }
         }
     }
 
     public void PlusHealth(int amount)
     {
+        // @TODO: isn't this going to mess with currentHealth?
         health += amount;
     }
 
@@ -539,14 +560,13 @@ public class RTSUnit : MonoBehaviour
         AudioManager.PlayDieSound();
 
         // @TODO: play animation, play the dust particle system, destroy this object, and finally instantiate corpse object
-        // @TODO: some units don't have a die animation, e.g. Factory units like Barracks
-        // also walls don't even have an animator component
+        // @TODO: some units don't have a die animation, e.g. Factory units like Barracks; also walls don't even have an animator component
         if (_Animator)
             _Animator.SetTrigger("die");
 
         // Call the die callback now if it was set
-        if (dieCallback != null)
-            dieCallback(gameObject);
+        // dieCallback?.Invoke(gameObject);
+        OnDie?.Invoke(gameObject, new System.EventArgs { });
 
         // Remove this unit from the player context
         Functions.RemoveUnitFromPlayerContext(this);
@@ -605,7 +625,7 @@ public class RTSUnit : MonoBehaviour
     // Important: called by AnimationEvents set on all melee animations in order to accurately determine when a melee strike should register
     public void SetStriking(int val)
     {
-        isStriking = val == 1 ? true : false;
+        isStriking = val == 1;
     }
 
     public bool IsInRangeOf(Vector3 pos)
@@ -622,6 +642,6 @@ public class RTSUnit : MonoBehaviour
         float rangeToUse = rng;
         if (rng >= 1)
             rangeToUse = Mathf.Pow(rng, 2);
-        return (transform.position - pos).sqrMagnitude < Mathf.Pow(rng, 2);
+        return (transform.position - pos).sqrMagnitude < rangeToUse;
     }
 }

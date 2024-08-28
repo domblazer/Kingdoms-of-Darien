@@ -68,7 +68,6 @@ public class Player : MonoBehaviour
     {
         SelectUnits();
 
-        // @TODO: right click over build menu should dequeue though
         // Clear selection with right-click
         if (Input.GetMouseButtonDown(1) && !InputManager.IsMouseOverUI())
             ClearAll();
@@ -256,27 +255,24 @@ public class Player : MonoBehaviour
         if (goodHit)
         {
             // Did we hit a friendly unit?
-            if (hit.collider.gameObject.layer == 9 && hit.collider.CompareTag("Friendly"))
+            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Unit") && hit.collider.CompareTag("Friendly"))
             {
-                // Did we click an friendly IntangibleUnit?
+                // We clicked a single, friendly IntangibleUnit
                 if (hit.collider.gameObject.GetComponent<IntangibleUnit>())
                 {
-                    Debug.Log("We clicked an intangible unit.");
+                    // If we clicked an intangible unit, send any valid builders in the selection to conjure on it
                     foreach (BaseUnit unit in selectedUnits.Cast<BaseUnit>())
-                        if (unit.isBuilder && unit.isKinematic)
-                        {
-                            // @TODO
-                            // Debug.Log(unit.name + " queued to intangible");
-                            unit._Builder.QueueBuildOnIntangible(hit.collider.gameObject.GetComponent<IntangibleUnit>(), InputManager.HoldingShift());
-                        }
+                        if (unit.isBuilder && unit.isKinematic){
+                            unit._Builder.QueueBuildOnIntangible(hit.collider.gameObject.GetComponent<IntangibleUnit>(), InputManager.HoldingShift());}
                 }
-                // We clicked a single friendly RTSUnit
+                // We clicked a single, friendly RTSUnit
                 else
                 {
                     // Deselect all units when clicking single other unit, unless holding shift
                     if (!InputManager.HoldingShift())
                         ClearSelectedUnits();
 
+                    // Make this lone clicked friendly unit the main active unit
                     BaseUnit activeUnit = hit.collider.gameObject.GetComponent<BaseUnit>();
                     if (activeUnit != null && activeUnit.selectable)
                     {
@@ -287,11 +283,10 @@ public class Player : MonoBehaviour
                         activeUnit.Select(true);
                         selectedUnits.Add(activeUnit);
                     }
-
                 }
-
             }
-            else if (hit.collider.gameObject.layer == 9 && hit.collider.CompareTag("Enemy"))
+            // Did we hit an enemy unit?
+            else if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Unit") && hit.collider.CompareTag("Enemy"))
             {
                 // If we clicked an Enemy unit while at least one canAttack unit is selected, tell those/that unit to attack
                 foreach (BaseUnit unit in selectedUnits.Cast<BaseUnit>())

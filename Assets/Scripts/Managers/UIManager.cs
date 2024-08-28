@@ -340,9 +340,9 @@ public class UIManager : MonoBehaviour
                     unitInfo.secondaryUnit.healthBar.gameObject.SetActive(true);
                     unitInfo.secondaryUnit.healthBar.value = secondary.health;
                 }
-                else if (secondaryUnit.GetComponent<IntangibleUnit>())
+                else if (secondaryUnit.GetComponent<IntangibleUnitBase>())
                 {
-                    IntangibleUnit secondary = secondaryUnit.GetComponent<IntangibleUnit>();
+                    IntangibleUnitBase secondary = secondaryUnit.GetComponent<IntangibleUnitBase>();
                     // secondary unit name
                     unitInfo.secondaryUnit.unitNameText.text = secondary.finalUnit.unitName;
                     // secondary unit health
@@ -369,14 +369,19 @@ public class UIManager : MonoBehaviour
             unitInfo.primaryUnit.unitIcon.sprite = intangibleUnit.finalUnit.unitIcon;
             unitInfo.primaryUnit.healthBar.value = intangibleUnit.health * 100;
             unitInfo.primaryUnit.unitNameText.text = intangibleUnit.finalUnit.unitName;
-            unitInfo.primaryUnit.statusText.text = "Intangible Mass";
 
             // Set secondary unit UI
             if (mainBuilder)
             {
+                unitInfo.primaryUnit.statusText.text = "Intangible Mass";
                 unitInfo.secondaryUnit.unitNameText.text = mainBuilder.BaseUnit.unitName;
                 unitInfo.secondaryUnit.healthBar.gameObject.SetActive(true);
                 unitInfo.secondaryUnit.healthBar.value = mainBuilder.BaseUnit.health;
+            }
+            else
+            {
+                unitInfo.secondaryUnit.healthBar.gameObject.SetActive(false);
+                unitInfo.secondaryUnit.unitNameText.text = "";
             }
         }
     }

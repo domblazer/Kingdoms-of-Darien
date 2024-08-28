@@ -51,20 +51,15 @@ public class InventoryBase : MonoBehaviour
     }
     protected void UpdateMana(bool log = false)
     {
-        // @TODO: To keep track of all Intangibles and their changes in drain based on how many builders are attached, it might be better to keep track in a loop here and re-sum
-        // the totalManaDrainPerSecond += unit.drainRate for each IntangibleUnit. That way, if an intangible was removed from the list, the totalManaDrainPerSecond would just be 
-        // update with what is in the list, removing the need to subtract the drainRate
+        // Mana is influenced by the list of intangibleUnits read at each frame
         intangibleManaIncome = 0;
         totalManaDrainPerSecond = 0;
         foreach (IntangibleUnitBase intangible in intangibleUnits)
         {
-            // Debug.Log("intangible drain rate: " + intangible.drainRate);
-            // Debug.Log("intangible builder count " + intangible.builders.Count);
             // We are re-summing mana drain every frame just to keep up with the changing values of drainRate
             // We are only adding to the drain rate if there is at least one builder conjuring
             if (intangible.builders.Count > 0)
             {
-                // @TODO: if the intangible drainRate is negative, it gets added to income
                 // @TODO: rounding is going to create small errors over time, so we might end up with -1 drain instead of 0 b/c of the way the rounding went
                 totalManaDrainPerSecond += intangible.drainRate * intangible.builders.Count;
             }
@@ -72,8 +67,6 @@ public class InventoryBase : MonoBehaviour
             {
                 intangibleManaIncome += Mathf.RoundToInt(intangible.drainRate);
             }
-            // Debug.Log("intangible income: " + intangibleManaIncome);
-            // Debug.Log("totalManaDrainPerSecond: " + totalManaDrainPerSecond);
         }
         totalManaIncome = normalManaIncome + intangibleManaIncome;
 
@@ -112,27 +105,14 @@ public class InventoryBase : MonoBehaviour
 
     public void AddIntangible(IntangibleUnitBase unit)
     {
-        // totalManaDrainPerSecond += unit.drainRate;
         intangibleUnits.Add(unit);
-
     }
 
-    public void RemoveIntangible(IntangibleUnitBase unit, float flip = 1.0f)
+    public void RemoveIntangible(IntangibleUnitBase unit)
     {
-        // In this case, an intangible was removed because no Builder was on it and its mana was reversing up to this point
-        /* if (flip < 0)
-            totalManaIncome -= Mathf.RoundToInt(unit.drainRate);
-        else
-            totalManaDrainPerSecond -= unit.drainRate; */
-
         intangibleUnits.Remove(unit);
     }
 
-    /* public void UpdateManaValues(int newIncome, int newDrain)
-    {
-        totalManaDrainPerSecond += newDrain;
-        normalManaIncome += Mathf.RoundToInt(newIncome);
-    } */
     public void AddUnit(RTSUnit unit)
     {
         // Sum up mana storage and mana income from all units

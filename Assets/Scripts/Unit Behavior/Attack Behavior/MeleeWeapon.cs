@@ -29,37 +29,34 @@ public class MeleeWeapon : MonoBehaviour
             // Only send damage when the collider makes contact while the unit is mid-strike
             if (_BaseUnit.IsAttacking() && _BaseUnit.isStriking)
             {
+                // @TODO: handle friendly fire (on friendly not in player1)
                 string compareTag = gameObject.tag == "Enemy" ? "Friendly" : "Enemy";
                 if (col.gameObject.tag == compareTag && !col.isTrigger)
                 {
-                    // Debug.Log("_BaseUnit.animStateTime " + _BaseUnit.animStateTime);
-
-                    // @TODO: handle intangibles
-
-                    RTSUnit hitUnit = col.gameObject.GetComponent<RTSUnit>();
-                    // Play one shot sound
-                    _BaseUnit.AudioManager.PlayMeleeHitSound(hitUnit ? hitUnit.bodyType : RTSUnit.BodyTypes.Default);
-
-                    // @TODO: friendly fire
+                    RTSUnit.BodyTypes bodyType = RTSUnit.BodyTypes.Default;
+                    // Hit a regular unit
                     if (col.gameObject.GetComponent<RTSUnit>())
                     {
-                        // Debug.Log("I, " + _BaseUnit.unitName + ", meleed " + col.gameObject.name);
-                        col.gameObject.GetComponent<RTSUnit>().ReceiveDamage(damage);
+                        RTSUnit hitUnit = col.gameObject.GetComponent<RTSUnit>();
+                        bodyType = hitUnit.bodyType;
+                        hitUnit.ReceiveDamage(damage);
+                    }
+                    // Hit an intangible unit
+                    else if (col.gameObject.GetComponent<IntangibleUnitBase>())
+                    {
+                        IntangibleUnitBase hitUnit = col.gameObject.GetComponent<IntangibleUnitBase>();
+                        bodyType = hitUnit.finalUnit.bodyType;
+                        hitUnit.ReceiveDamage(damage);
                     }
                     else
                     {
                         Debug.Log("problem sending damage");
                     }
+
+                    // Play one shot hit sound
+                    _BaseUnit.AudioManager.PlayMeleeHitSound(bodyType);
                 }
             }
         }
     }
-
-    /* private void OnTriggerExit(Collider col)
-    {
-        if (gameObject.tag == "Friendly")
-        {
-            Debug.Log("weapon collider exit");
-        }
-    } */
 }

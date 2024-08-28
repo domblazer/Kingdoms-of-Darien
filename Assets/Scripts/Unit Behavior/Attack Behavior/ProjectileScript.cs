@@ -29,19 +29,32 @@ public class ProjectileScript : MonoBehaviour
         // Hit enemy unit collider
         if (col.gameObject.tag == "Enemy" && !col.isTrigger)
         {
-            // @TODO: handle intangibles
-            RTSUnit hitUnit;
-            if (hitUnit = col.gameObject.GetComponent<RTSUnit>())
+            RTSUnit.BodyTypes bodyType = RTSUnit.BodyTypes.Default;
+            // Hit a regular unit
+            if (col.gameObject.GetComponent<RTSUnit>())
             {
-                // Projectile hit clip plays sound based on weapon of firer and at point
-                AudioClip[] clips = SoundHitClasses.GetHitSounds(whoFired._AttackBehavior.activeWeapon.weaponSoundClass, hitUnit.bodyType);
-                whoFired.AudioManager.PlayHitAtPoint(transform.position, clips[Random.Range(0, clips.Length - 1)]);
+                RTSUnit hitUnit = col.gameObject.GetComponent<RTSUnit>();
+                bodyType = hitUnit.bodyType;
+                hitUnit.ReceiveDamage(damage);
+            }
+            // Hit an intangible unit
+            else if (col.gameObject.GetComponent<IntangibleUnitBase>())
+            {
+                Debug.Log("projectile hit an intangible");
+                IntangibleUnitBase hitUnit = col.gameObject.GetComponent<IntangibleUnitBase>();
+                bodyType = hitUnit.finalUnit.bodyType;
                 hitUnit.ReceiveDamage(damage);
             }
             else
             {
-                Debug.LogWarning("problem sending damage");
+                Debug.Log("problem sending damage");
             }
+
+            // Projectile hit clip plays sound based on weapon of firer and at point
+            AudioClip[] clips = SoundHitClasses.GetHitSounds(whoFired._AttackBehavior.activeWeapon.weaponSoundClass, bodyType);
+            whoFired.AudioManager.PlayHitAtPoint(transform.position, clips[Random.Range(0, clips.Length - 1)]);
+
+            // Destroy this projectile after it hits
             Destroy(gameObject);
         }
         // Hit ground or obstacle
