@@ -110,7 +110,7 @@ public class IntangibleUnitBase : MonoBehaviour
         }
 
         // The player number of this intangible comes from the builder who instantiated it
-        playerNumber = builders[0].BaseUnit.playerNumber;
+        playerNumber = builders[0].baseUnit.playerNumber;
 
         // Calculate the collider size of this intantible to gets its size "offset"
         CalculateOffset();
@@ -125,16 +125,22 @@ public class IntangibleUnitBase : MonoBehaviour
     // Finalize and destroy this intangible when done
     protected void FinishIntangible()
     {
-        // @TODO: deprecated
-        // intangibleCompletedCallback?.Invoke();
-
-        // Every builder assigned to this intangible now must queue the conjure command and get ready for the next
-        builders.ForEach(builder =>
+        // @TODO: this is still used by AI.
+        // This is not a good long term solution... The AI has some specific things that need to be done here that cannot be generalized.
+        if (intangibleCompletedCallback != null)
         {
-            CommandQueueItem lastCommand = builder.BaseUnit.commandQueue.Dequeue();
-            lastCommand.conjurerArgs.buildQueueCount--;
-            builder.SetNextQueueReady(true);
-        });
+            intangibleCompletedCallback.Invoke();
+        }
+        else
+        {
+            // Every builder assigned to this intangible now must dequeue the conjure command and get ready for the next
+            builders.ForEach(builder =>
+            {
+                CommandQueueItem lastCommand = builder.baseUnit.commandQueue.Dequeue();
+                lastCommand.conjurerArgs.buildQueueCount--;
+                builder.SetNextQueueReady(true);
+            });
+        }
 
         // Instantiate final new unit
         GameObject newUnit = Instantiate(finalUnitPrefab, transform.position, transform.rotation);
@@ -164,7 +170,7 @@ public class IntangibleUnitBase : MonoBehaviour
     protected void CancelIntangible()
     {
         // @TODO: Where do particles go to finish if an intangible is cancelled?
-        
+
         // Invoke OnDie to send to any units who has this intangible in its enemiesInSight
         OnDie?.Invoke(gameObject, new EventArgs { });
 

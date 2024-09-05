@@ -5298,7 +5298,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 6, y: 4.2, z: 3.74}
+  m_Size: {x: 6.5, y: 4.2, z: 4.2}
   m_Center: {x: 0, y: 2, z: 0}
 --- !u!54 &6564195543960170901
 Rigidbody:
@@ -5448,10 +5448,9 @@ MonoBehaviour:
   unitName: Barracks
   bodyType: 3
   maxHealth: 17162
-  healthRechargeRate: 3
-  baseMana: 0
-  manaIncome: 0
-  manaStorage: 0
+  healthRechargeRate: 1.25
+  manaIncome: 1
+  manaStorage: 100
   buildCost: 1955
   buildTime: 600
   isKinematic: 0
@@ -5461,12 +5460,17 @@ MonoBehaviour:
   canGuard: 0
   canPatrol: 0
   canFly: 0
-  phaseDie: 0
+  phaseDie: 1
+  offset: {x: 1, y: 1, z: 1}
   bloodSystem: {fileID: 0}
+  clusterNum: -1
+  isStriking: 0
   selectable: 1
   selectRing: {fileID: 1232558660183014775}
   fogOfWarMask: {fileID: 7902845148774254051}
   attackMode: 2
+  _Builder: {fileID: 0}
+  secondary: {fileID: 0}
 --- !u!114 &3349236662228571096
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5479,6 +5483,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55f2aa8d4cf01b242a7e85b133b57221, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentIntangible: {fileID: 0}
   spawnPoint: {fileID: 2365161121348688814}
   rallyPoint: {fileID: 531293406980321841}
   intangibleUnits:

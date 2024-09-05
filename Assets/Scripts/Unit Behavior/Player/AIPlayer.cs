@@ -49,7 +49,7 @@ public class AIPlayer : MonoBehaviour
         {
             BuilderAI builderAI = builder.gameObject.GetComponent<BuilderAI>();
             // Only queue builders who are not in a roaming interval, and not in a build routine with at least 1 unit in the queue
-            if (!builderAI.isInRoamInterval && !builderAI.IsBuilding && !builderAI.BaseUnit.isParking && builderAI.BaseUnit.commandQueue.Count < 1)
+            if (!builderAI.isInRoamInterval && !builderAI.IsBuilding && !builderAI.baseUnit.isParking && builderAI.baseUnit.commandQueue.Count < 1)
             {
                 // Only want to queue types of units that are in most need
                 BuildUnit[] validUnits = builderAI.buildUnitPrefabs.Where(x => x.unitCategory == needInfo.builderNeed).ToArray();
@@ -94,7 +94,7 @@ public class AIPlayer : MonoBehaviour
             UnitCategories.StalwartTier1,
             UnitCategories.StalwartTier2
         );
-        List<RTSUnit> armyUnits = new List<RTSUnit>();
+        List<RTSUnit> armyUnits = new();
         foreach (Army army in _Armies)
             armyUnits.AddRange(army.units);
 

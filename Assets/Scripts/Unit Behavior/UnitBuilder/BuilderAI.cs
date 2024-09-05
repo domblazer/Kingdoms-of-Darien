@@ -26,7 +26,7 @@ public class BuilderAI : UnitBuilderAI
             {
                 isInRoamInterval = false;
                 // When roam interval is done, dequeue the patrol command, this will satisfy the next build condition in AIPlayer
-                BaseUnit.commandQueue.Dequeue();
+                (baseUnit as BaseUnitAI).commandQueue.Dequeue();
             }
         }
     }
@@ -35,7 +35,7 @@ public class BuilderAI : UnitBuilderAI
     {
         if (NextQueueReady && !isInRoamInterval)
         {
-            ConjurerArgs buildArgs = BaseUnit.currentCommand.conjurerArgs;
+            ConjurerArgs buildArgs = (baseUnit as BaseUnitAI).currentCommand.conjurerArgs;
             // Calculate the intangible's offset once every new queue. @Note. can't ref IntangibleUnitBase b/c it hasn't been instantiated
             if (nextIntangibleOffset == Vector3.zero)
                 nextIntangibleOffset = CalculateIntangibleOffset(buildArgs.prefab);
@@ -45,8 +45,8 @@ public class BuilderAI : UnitBuilderAI
             if (buildArgs.buildSpot == Vector3.zero)
                 buildArgs.buildSpot = FindBuildSpot(transform.position, isLodestone);
             // @TODO: calculate mix of x and y offset
-            if (!BaseUnit.IsInRangeOf(buildArgs.buildSpot, nextIntangibleOffset.x))
-                BaseUnit.MoveToPosition(buildArgs.buildSpot);
+            if (!baseUnit.IsInRangeOf(buildArgs.buildSpot, nextIntangibleOffset.x))
+                baseUnit.MoveToPosition(buildArgs.buildSpot);
             else
                 StartNextIntangible(buildArgs);
         }
@@ -69,7 +69,7 @@ public class BuilderAI : UnitBuilderAI
     // Called once upon arrival at next build position
     private void StartNextIntangible(ConjurerArgs buildArgs)
     {
-        BaseUnit.MoveToPosition(transform.position);
+        baseUnit.MoveToPosition(transform.position);
         NextQueueReady = false;
         IsBuilding = true;
         InstantiateNextIntangible(buildArgs.prefab, buildArgs.buildSpot);
@@ -84,13 +84,17 @@ public class BuilderAI : UnitBuilderAI
         GameObject closestStone = null;
         foreach (GameObject stone in sacredStones)
         {
-            float distance = (transform.position - stone.transform.position).sqrMagnitude;
-            if (distance < closestDistance)
+            if ((baseUnit as BaseUnitAI).TestPointCollision(stone.transform.position))
             {
-                closestDistance = distance;
-                closestStone = stone;
+                float distance = (transform.position - stone.transform.position).sqrMagnitude;
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closestStone = stone;
+                }
             }
         }
+        // @TODO: handle when no sacredsite is left available
         Vector3 p = closestStone.transform.position;
         Vector3 pos = new(p.x, p.y + 0.1f, p.z);
         return pos;
@@ -102,7 +106,7 @@ public class BuilderAI : UnitBuilderAI
         // 3. @TODO: builders must build factories in relatively central groupings
         // 4. @TODO: an improvement that could be made is also not testing points around the failed areas again
         return forLodestone ? FindClosestSacredSite() :
-            (BaseUnit as BaseUnitAI).GenerateValidBuildPoint(origin, searchBuildRange, nextIntangibleOffset);
+            (baseUnit as BaseUnitAI).GenerateValidBuildPoint(origin, searchBuildRange, nextIntangibleOffset);
     }
 
     private void InstantiateNextIntangible(GameObject itg, Vector3 spawnPoint)
@@ -116,12 +120,13 @@ public class BuilderAI : UnitBuilderAI
     // Called back when intangible is complete
     private void IntangibleCompleted()
     {
+        IsBuilding = false;
         // Builder should go into roam routine after intangible is done
         isInRoamInterval = true;
         nextIntangibleOffset = Vector3.zero;
         // Reset timer for roaming interval
         timeRemaining = roamIntervalTime;
         // Clear queue and set current new patrol (roam) command. @Note: a new route will be set automatically in BaseUnitAI
-        BaseUnit.currentCommand = new CommandQueueItem { commandType = CommandTypes.Patrol };
+        (baseUnit as BaseUnitAI).currentCommand = new CommandQueueItem { commandType = CommandTypes.Patrol };
     }
 }

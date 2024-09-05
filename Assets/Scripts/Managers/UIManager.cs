@@ -374,9 +374,9 @@ public class UIManager : MonoBehaviour
             if (mainBuilder)
             {
                 unitInfo.primaryUnit.statusText.text = "Intangible Mass";
-                unitInfo.secondaryUnit.unitNameText.text = mainBuilder.BaseUnit.unitName;
+                unitInfo.secondaryUnit.unitNameText.text = mainBuilder.baseUnit.unitName;
                 unitInfo.secondaryUnit.healthBar.gameObject.SetActive(true);
-                unitInfo.secondaryUnit.healthBar.value = mainBuilder.BaseUnit.health;
+                unitInfo.secondaryUnit.healthBar.value = mainBuilder.baseUnit.health;
             }
             else
             {

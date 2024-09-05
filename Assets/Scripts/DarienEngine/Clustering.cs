@@ -43,7 +43,7 @@ namespace DarienEngine.Clustering
             float deg360 = 0;
             float counter = 0;
             int countOffset = selectedUnits.Count;
-            List<Vector3> positions = new List<Vector3>();
+            List<Vector3> positions = new();
             
             for (int i = 0; i < selectedUnits.Count; i++)
             {

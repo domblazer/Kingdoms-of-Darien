@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     // Static instance of the GameManager to provide static scope
     public static GameManager Instance { get; private set; }
 
-    [System.Serializable]
+    [Serializable]
     // Represents the setup for a player
     public class PlayerConfig
     {

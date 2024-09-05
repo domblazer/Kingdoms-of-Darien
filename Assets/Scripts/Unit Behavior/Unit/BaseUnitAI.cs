@@ -266,7 +266,7 @@ public class BaseUnitAI : RTSUnit
     public bool TestPointCollision(Vector3 point)
     {
         // @TODO: leaving out Obstacle layer check b/c units should be able to move onto berms, for example
-        return Physics.OverlapSphere(point, 1.5f, (1 << 9)).Length == 0;
+        return Physics.OverlapSphere(point, 1.5f, 1 << 9).Length == 0;
     }
 
     // Test a box area around point for collisions with Unit or Obstacle layers
@@ -316,7 +316,7 @@ public class BaseUnitAI : RTSUnit
         HandleDie();
 
         // If builder, clear any current build
-        if (isBuilder)
+        if (isBuilder && _Builder.IsBuilding)
             _Builder.CancelBuild();
 
         if (_TooltipManager)

@@ -61,6 +61,11 @@ namespace DarienEngine
             }
         }
 
+        public void TriggerCancelBuild()
+        {
+            OnQueueChanged?.Invoke(this, new CommandQueueChangedEventArgs { changeType = "CancelBuild", command = null });
+        }
+
         new public void Clear()
         {
             if (!isAI)

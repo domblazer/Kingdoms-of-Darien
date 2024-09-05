@@ -99,6 +99,7 @@ public class Player : MonoBehaviour
             HandleMouseRelease(hitsMap);
         }
 
+        // @TODO: If holding down for more than like 3 seconds, cursor turns to default and unit(s) are deselected on mouse release
         // Holding down the mouse button
         if (Input.GetMouseButton(0) && !InputManager.IsMouseOverUI())
             if (Time.time - clickTime > clickHoldDelay)
@@ -143,7 +144,7 @@ public class Player : MonoBehaviour
             // Select the units
             HandleUnitsUnderSquare();
         }
-        else if (goodHit && !hitsMap.unitWasHit && !hitsMap.uiWasHit)
+        else if (goodHit && !hitsMap.unitWasHit && !InputManager.IsMouseOverUI())
         {
             // Handle click-to-action commands here
             if (nextCommandIsPrimed)
@@ -164,7 +165,7 @@ public class Player : MonoBehaviour
         if (selectedUnits.Count == 0)
         {
             UIManager.BattleMenuInstance.Toggle(false);
-            if (!hitsMap.uiWasHit)
+            if (!InputManager.IsMouseOverUI())
                 CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Normal);
         }
         else if (selectedUnits.Count > 0)
@@ -213,9 +214,9 @@ public class Player : MonoBehaviour
         {
             // Just move the single selected unit directly to click point
             RTSUnit unit = selectedUnits[0];
-            // @TODO: this isn't always just SetMove, e.g. for Builder, if activeGhost is placed, that's a QueueBuild command on that guy
-            // so need a better way to handle such exceptions, where commands are being queued outside the main player script here
-            if (unit.isKinematic && !(currentActiveBuilder && currentActiveBuilder.IsBuilder() && (currentActiveBuilder as Builder).activeFloatingGhost))
+            // If we have a single builder selected who we just queued to put down a ghost, do not tell that builder to move b/c Builder needs to handle conjure routine
+            if (unit.isKinematic && !(currentActiveBuilder && currentActiveBuilder.IsBuilder()
+                && (currentActiveBuilder as Builder).isClickInProgress))
             {
                 RaycastHit pointToUse = groundHit;
                 if (unit.canFly)
@@ -262,8 +263,10 @@ public class Player : MonoBehaviour
                 {
                     // If we clicked an intangible unit, send any valid builders in the selection to conjure on it
                     foreach (BaseUnit unit in selectedUnits.Cast<BaseUnit>())
-                        if (unit.isBuilder && unit.isKinematic){
-                            unit._Builder.QueueBuildOnIntangible(hit.collider.gameObject.GetComponent<IntangibleUnit>(), InputManager.HoldingShift());}
+                        if (unit.isBuilder && unit.isKinematic)
+                        {
+                            unit._Builder.QueueBuildOnIntangible(hit.collider.gameObject.GetComponent<IntangibleUnit>(), InputManager.HoldingShift());
+                        }
                 }
                 // We clicked a single, friendly RTSUnit
                 else
@@ -345,6 +348,7 @@ public class Player : MonoBehaviour
             }
             else if (currentHit.collider.gameObject.layer == LayerMask.NameToLayer("UI"))
             {
+                // @TODO: Don't seem to be getting collisions on this layer after creating new scene, fell back to use InputManager.IsMouseOverUI
                 hitsMap.uiWasHit = true;
             }
         }
@@ -361,7 +365,7 @@ public class Player : MonoBehaviour
     public void StopAllSelectedUnits()
     {
         Debug.Log("Issue bespoke stop command to selected units");
-        foreach (BaseUnit unit in selectedUnits)
+        foreach (BaseUnit unit in selectedUnits.Cast<BaseUnit>())
         {
             unit.commandQueue.Clear();
             if (unit.canAttack)

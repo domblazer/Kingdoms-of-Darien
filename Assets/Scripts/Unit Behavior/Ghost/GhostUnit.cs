@@ -18,8 +18,8 @@ public class GhostUnit : MonoBehaviour
     // Just a reference to the virtualMenu item that instantiated this ghost
     protected ConjurerArgs conjurerArgs;
 
-    private List<Material> materials = new List<Material>();
-    private List<Renderer> renderers = new List<Renderer>();
+    private List<Material> materials = new();
+    private List<Renderer> renderers = new();
 
     private Directions facingDir = Directions.Forward;
     private bool placementValid = true;
@@ -56,9 +56,20 @@ public class GhostUnit : MonoBehaviour
 
         // Click to place
         if (Input.GetMouseButtonDown(0) && InputManager.HoldingShift() && !isSet && placementValid)
+        {
+            builder.isClickInProgress = true;
             PlaceAndCopy();
+        }
         else if (Input.GetMouseButtonDown(0) && !InputManager.HoldingShift() && !isSet && placementValid)
+        {
+            builder.isClickInProgress = true;
             PlaceSingle();
+        }
+
+        if (Input.GetMouseButtonUp(0) && builder.isClickInProgress)
+        {
+            builder.isClickInProgress = false;
+        }
 
         // Rotate 90 deg clock-wise on mouse wheel click
         if (Input.GetMouseButtonDown(2) && !isSet)
@@ -66,6 +77,8 @@ public class GhostUnit : MonoBehaviour
 
         // Handle if shift-released, right-mouse-click, etc.
         HandleInputChanges();
+
+        // @TODO: if a builder gets interrupted, all the ghosts attached to it at that time need to get destroyed
 
         // @TODO: when I have an active ghost, shouldn't be able to select other units, and mouse over doesn't focus them
         // @TODO: if placed over another ghost, the other ghost gets removed
@@ -107,9 +120,9 @@ public class GhostUnit : MonoBehaviour
         // Add the activeFloatingGhost (this) to the player args and enqueue it to the commandQueue
         // Debug.Log("builder.activeFloatingGhost " + builder.activeFloatingGhost);
         conjurerArgs.prefab = builder.activeFloatingGhost;
-        bool wasEmpty = builder.BaseUnit.commandQueue.IsEmpty();
+        bool wasEmpty = builder.baseUnit.commandQueue.IsEmpty();
         // conjurerArgs
-        builder.BaseUnit.commandQueue.Enqueue(new CommandQueueItem
+        builder.baseUnit.commandQueue.Enqueue(new CommandQueueItem
         {
             commandType = CommandTypes.Conjure,
             commandPoint = hitPos,
@@ -140,22 +153,22 @@ public class GhostUnit : MonoBehaviour
         conjurerArgs.prefab = gameObject;
 
         // Destroy all ghosts for this builder and remove all it's other conjure commands
-        foreach (CommandQueueItem cmd in builder.BaseUnit.commandQueue)
+        foreach (CommandQueueItem cmd in builder.baseUnit.commandQueue)
         {
-            // @TODO: prefab isn't always going to be a GhostUnit; it may be an IntangibleUnit which obv we don't want to destroy
-            if (cmd.commandType == CommandTypes.Conjure && cmd.conjurerArgs.prefab.GetComponent<GhostUnit>())
+            if (cmd.commandType == CommandTypes.Conjure && cmd.conjurerArgs.prefab != null && cmd.conjurerArgs.prefab.GetComponent<GhostUnit>())
                 Destroy(cmd.conjurerArgs.prefab);
         }
-        builder.BaseUnit.commandQueue.RemoveAll(cmd => cmd.commandType == CommandTypes.Conjure);
+        builder.baseUnit.commandQueue.RemoveAll(cmd => cmd.commandType == CommandTypes.Conjure);
 
         // Set the current command to building this ghost
-        builder.BaseUnit.currentCommand = new CommandQueueItem
+        builder.baseUnit.currentCommand = new CommandQueueItem
         {
             commandType = CommandTypes.Conjure,
             commandPoint = hitPos,
             conjurerArgs = conjurerArgs
         };
         builder.SetNextQueueReady(true);
+        builder.activeFloatingGhost = null;
 
         // Hide immediately
         Toggle(false);
@@ -214,7 +227,9 @@ public class GhostUnit : MonoBehaviour
         }
         // Destroy active ghost on right-click
         if (!isSet && Input.GetMouseButtonDown(1))
+        {
             Destroy(gameObject);
+        }
     }
 
     public void BindBuilder(Builder bld, ConjurerArgs args, Directions dir = Directions.Forward)

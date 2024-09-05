@@ -15,13 +15,13 @@ public class FactoryAI : UnitBuilderAI
     public void HandleConjureRoutine()
     {
         // Keep track of master queue to know when building
-        IsBuilding = !BaseUnit.commandQueue.IsEmpty();
+        IsBuilding = !baseUnit.commandQueue.IsEmpty();
         // Debug.Log("FactoryAI: isBuilding: " + isBuilding + " nextQueueReady: " + nextQueueReady);
         // While masterQueue is not empty, continue queueing up intangible prefabs
         if (NextQueueReady)
         {
             // @TODO: also need to check that the spawn point is clear before moving on to next unit
-            GameObject nextItg = BaseUnit.currentCommand.conjurerArgs.prefab;
+            GameObject nextItg = baseUnit.currentCommand.conjurerArgs.prefab;
             InstantiateNextIntangible(nextItg);
             NextQueueReady = false;
         }
@@ -43,7 +43,7 @@ public class FactoryAI : UnitBuilderAI
     private void IntangibleCompleted()
     {
         // Factory just needs to dequeue on intangible complete
-        BaseUnit.commandQueue.Dequeue();
+        baseUnit.commandQueue.Dequeue();
         IsBuilding = false;
     }
 }

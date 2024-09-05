@@ -96,19 +96,27 @@ public class RTSUnit : MonoBehaviour
     protected CommandQueueItem nextCommandAfterParking;
 
     // CommandQueue designed to hold queue of any type of commands, e.g. move, build, attack, etc.
-    public CommandQueue commandQueue = new CommandQueue();
+    public CommandQueue commandQueue = new();
     public CommandQueueItem currentCommand
     {
         get { return !commandQueue.IsEmpty() ? commandQueue.Peek() : null; }
         set
         {
+            // Only clear attack if the current command we are inserting is not already the Attack command we would cancel
+            if (canAttack && value.commandType != CommandTypes.Attack) {
+                _AttackBehavior.ClearAttack();
+            }
+            // Only clear build if the command we are inserting is not the Conjure command we would otherwise cancel immediately
+            if (isBuilder && value.commandType != CommandTypes.Conjure) {
+                commandQueue.TriggerCancelBuild();
+            }
             // Setting current command means resetting queue
             commandQueue.Clear();
             commandQueue.Enqueue(value);
         }
     }
 
-    [HideInInspector] public Vector3 offset = new Vector3(1, 1, 1);
+    [HideInInspector] public Vector3 offset = new(1, 1, 1);
     protected RTSUnit super;
 
     // Re-use for HandleFacing
@@ -427,12 +435,12 @@ public class RTSUnit : MonoBehaviour
         // If not holding shift on this move, clear the moveto queue and make this position first in queue
         if (!addToQueue)
             commandQueue.Clear();
-        commandQueue.Enqueue(new CommandQueueItem
+        currentCommand = new CommandQueueItem
         {
             commandType = CommandTypes.Move,
             commandPoint = position,
             isAttackMove = attackMove
-        });
+        };
         isParking = false;
         if (canAttack && !addToQueue)
             _AttackBehavior.ClearAttack();
@@ -565,7 +573,6 @@ public class RTSUnit : MonoBehaviour
             _Animator.SetTrigger("die");
 
         // Call the die callback now if it was set
-        // dieCallback?.Invoke(gameObject);
         OnDie?.Invoke(gameObject, new System.EventArgs { });
 
         // Remove this unit from the player context

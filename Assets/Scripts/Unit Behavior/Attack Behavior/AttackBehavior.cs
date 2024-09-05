@@ -95,7 +95,7 @@ public class AttackBehavior : MonoBehaviour
         switch (attackTarget?.targetType)
         {
             case AttackTargetTypes.Unit:
-                hasDied = attackTarget != null && attackTarget.target.GetComponent<RTSUnit>().isDead;
+                hasDied = attackTarget != null && attackTarget.target && attackTarget.target.GetComponent<RTSUnit>().isDead;
                 break;
             case AttackTargetTypes.Intangible:
                 // @Note: attackTarget object is only nullified in ClearAttack; if target becomes null while attacking, target has been destroyed in another script
@@ -139,10 +139,10 @@ public class AttackBehavior : MonoBehaviour
             switch (attackTarget.targetType)
             {
                 case AttackTargetTypes.Unit:
-                    rangeOffset = attackTarget.target.GetComponent<RTSUnit>().offset.x * 0.85f;
+                    rangeOffset = attackTarget.target.GetComponent<RTSUnit>().offset.x * 0.7f;
                     break;
                 case AttackTargetTypes.Intangible:
-                    rangeOffset = attackTarget.target.GetComponent<IntangibleUnitBase>().offset.x * 0.85f;
+                    rangeOffset = attackTarget.target.GetComponent<IntangibleUnitBase>().offset.x * 0.7f;
                     break;
             }
         }
@@ -209,17 +209,28 @@ public class AttackBehavior : MonoBehaviour
         GameObject closest = null;
         float distance = Mathf.Infinity;
         Vector3 position = transform.position;
+        List<GameObject> removeList = new();
         // Find the enemy in sight closest to me
         foreach (GameObject go in enemiesInSight)
         {
-            Vector3 diff = go.transform.position - position;
-            float curDistance = diff.sqrMagnitude;
-            if (curDistance < distance)
+            if (go != null)
             {
-                closest = go;
-                distance = curDistance;
+                Vector3 diff = go.transform.position - position;
+                float curDistance = diff.sqrMagnitude;
+                if (curDistance < distance)
+                {
+                    closest = go;
+                    distance = curDistance;
+                }
+            }
+            else
+            {
+                removeList.Add(go);
             }
         }
+        // Prune any straggling nulls in the enemiesInSight list
+        enemiesInSight = enemiesInSight.Except(removeList).ToList();
+        // Return closest object
         return closest;
     }
 

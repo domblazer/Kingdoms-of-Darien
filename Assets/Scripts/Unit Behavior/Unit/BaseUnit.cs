@@ -258,7 +258,7 @@ public class BaseUnit : RTSUnit
         HandleDie();
 
         // If builder, clear any current build
-        if (isBuilder)
+        if (isBuilder && _Builder.IsBuilding)
             _Builder.CancelBuild();
 
         // @TODO: If this unit was selected, clear the UI 
@@ -273,8 +273,7 @@ public class BaseUnit : RTSUnit
 
         // Units loose line-of-sight when dead
         // @TODO: fogOfWarMask should probably eventually be applied to AIs as well so allied AIs can reveal line-of-sight
-        if (fogOfWarMask != null)
-            fogOfWarMask.SetActive(false);
+        fogOfWarMask?.SetActive(false);
 
         yield return new WaitForSeconds(dieTime);
         Destroy(gameObject);

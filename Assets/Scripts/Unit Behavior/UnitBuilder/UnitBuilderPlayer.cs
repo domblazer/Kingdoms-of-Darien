@@ -25,7 +25,7 @@ public class UnitBuilderPlayer : UnitBuilderBase
     {
         // If menuRoot is unset on Start(), try to find it in the canvas
         if (!menuRoot)
-            menuRoot = Functions.FindBuildMenu(BaseUnit);
+            menuRoot = Functions.FindBuildMenu(baseUnit);
         if (!menuRoot)
             throw new System.Exception("Builder could not initialize virtual menu. Menu root not found.");
         // Get all the buttons in the build menu

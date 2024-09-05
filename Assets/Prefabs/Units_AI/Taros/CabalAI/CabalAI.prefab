@@ -967,7 +967,6 @@ MonoBehaviour:
   bodyType: 0
   maxHealth: 16558
   healthRechargeRate: 3
-  baseMana: 0
   manaIncome: 1
   manaStorage: 200
   buildCost: 1688
@@ -979,8 +978,11 @@ MonoBehaviour:
   canGuard: 0
   canPatrol: 0
   canFly: 0
-  phaseDie: 0
+  phaseDie: 1
+  offset: {x: 1, y: 1, z: 1}
   bloodSystem: {fileID: 0}
+  clusterNum: -1
+  isStriking: 0
   patrolRange: 25
   startState: 0
 --- !u!114 &7236970855960351567
@@ -1007,6 +1009,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d7fa2528cd67e348bf0f5a27804f2b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentIntangible: {fileID: 0}
   buildUnitPrefabs:
   - unitCategory: 5
     intangiblePrefab: {fileID: 1667658460211728225, guid: 3ff6ea5407396854caa5bd58e774b708, type: 3}

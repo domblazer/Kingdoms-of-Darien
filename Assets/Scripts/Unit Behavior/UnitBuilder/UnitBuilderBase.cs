@@ -11,13 +11,13 @@ public class UnitBuilderBase : MonoBehaviour
 {
     public bool IsBuilding { get; set; }
     public bool NextQueueReady { get; set; } = false;
-    public RTSUnit BaseUnit { get; set; }
+    public RTSUnit baseUnit { get; set; }
     [HideInInspector] public IntangibleUnitBase currentIntangible;
 
     private void Awake()
     {
-        BaseUnit = GetComponent<RTSUnit>();
-        BaseUnit.commandQueue.OnQueueChanged += Interrupt;
+        baseUnit = GetComponent<RTSUnit>();
+        baseUnit.commandQueue.OnQueueChanged += Interrupt;
     }
 
     public void QueueBuildOnIntangible(IntangibleUnit intangible, bool addToQueue = false)
@@ -25,14 +25,14 @@ public class UnitBuilderBase : MonoBehaviour
         Debug.Log("QueueBuildOnIntangible");
         // Add to queue 
         if (!addToQueue)
-            BaseUnit.commandQueue.Clear();
+            baseUnit.commandQueue.Clear();
         // @TODO
         ConjurerArgs conjurerArgs = new()
         {
             prefab = intangible.gameObject
         };
         // @TODO
-        BaseUnit.commandQueue.Enqueue(new CommandQueueItem
+        baseUnit.commandQueue.Enqueue(new CommandQueueItem
         {
             commandType = CommandTypes.Conjure,
             commandPoint = intangible.transform.position,
@@ -51,37 +51,49 @@ public class UnitBuilderBase : MonoBehaviour
 
     public bool IsFactory()
     {
-        return !BaseUnit.isKinematic;
+        return !baseUnit.isKinematic;
     }
 
     public bool IsBuilder()
     {
-        return BaseUnit.isKinematic;
+        return baseUnit.isKinematic;
     }
 
     public void Interrupt(object sender, CommandQueue.CommandQueueChangedEventArgs changeEvent)
     {
-        Debug.Log("Builder commandQueue was changed.");
-        if (changeEvent.changeType == "Clear")
+        Debug.Log("Builder interrupted.");
+        // @TODO: This is a really dirty solution and is not going to work long term. 
+        //
+        // The reason for this in the first place is so that if a Builder gets another command
+        // while conjuring an intangible, it cancels that action so it can go do the command just queued. 
+        // 
+        // The problem is that commandQueue.Clear() is called on currentCommand set, which does not always mean a conjure routine should be cancelled.
+        // The AI in particular uses the currentCommand setter in the intangible completed callback to queue a patrol routine after finishing an intangible. 
+        if (changeEvent.changeType == "CancelBuild")
         {
-            Debug.Log("Builder queue was cleared.");
+            Debug.Log("CancelBuild event fired.");
             // @TODO: Would probably like to detect also that the previous current command of the Builder was a Conjure task
-            if (currentIntangible)
-                CancelBuild();
+            // if (IsBuilding)
+            CancelBuild();
         }
     }
 
     public void CancelBuild(bool deferArray = false)
     {
-        Debug.Log("Cancel current build; disconnect intangible " + currentIntangible.gameObject.name);
+        Debug.Log("Cancel current build; disconnect intangible " + currentIntangible?.gameObject?.name);
         IsBuilding = false;
-        currentIntangible.DetachBuilder(this, deferArray);
+        if (currentIntangible)
+            currentIntangible.DetachBuilder(this, deferArray);
         currentIntangible = null;
 
-        // Ensure builder is ready with next command if current build is canceled
-        CommandQueueItem lastCommand = BaseUnit.commandQueue.Dequeue();
-        lastCommand.conjurerArgs.buildQueueCount--;
-        SetNextQueueReady(true);
+        Debug.Log("IsBuilding " + IsBuilding);
 
+        // Ensure builder is ready with next command if current build is canceled
+        if (IsBuilding)
+        {
+            CommandQueueItem lastCommand = baseUnit.commandQueue.Dequeue();
+            lastCommand.conjurerArgs.buildQueueCount--;
+        }
+        SetNextQueueReady(true);
     }
 }
