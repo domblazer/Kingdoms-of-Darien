@@ -228,16 +228,24 @@ public class BaseUnit : RTSUnit
             selected = true;
             selectRing.SetActive(true);
 
+            Debug.Log("select unit");
+            Debug.Log("selected count " + mainPlayer.SelectedUnitsCount());
             if (alone)
             {
                 // If the unit is a builder, show the build menu when selected
                 if (isBuilder)
+                {
+                    Debug.Log("selected is builder");
                     mainPlayer.SetActiveBuilder(_Builder);
+                }
                 // Else if lone unit selected was not a builder, try clear current active builder
                 else
+                {
                     mainPlayer.ReleaseActiveBuilder();
+                }
                 // Show the unit action menu
                 UIManager.BattleMenuInstance.Set(isKinematic, canAttack, isBuilder, _AttackBehavior?.weapons);
+                // @TODO: This shouldn't be here. Select can be called many times when selecting a number of units under the square
                 AudioManager.PlaySelectSound();
             }
         }

@@ -94,6 +94,7 @@ public class IntangibleUnit : IntangibleUnitBase
         // builder has moved off and is no longer conjuring it. Not sure what would happen if that builder died, but for our purposes, it may just serve to set Builders[0]
 
         // First check if I am already selected
+        // @TODO: intangible could have lost its builder, making builders[0] out of range
         if (!InputManager.IsMouseOverUI())
             UIManager.UnitInfoInstance.Set(this, builders[0]);
     }
@@ -103,7 +104,7 @@ public class IntangibleUnit : IntangibleUnitBase
     {
         if (GameManager.Instance.PlayerMain.player.SelectedBuilderUnitsCount() > 0)
             CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Normal);
-
+        UIManager.UnitInfoInstance.Toggle(false);
         GameManager.Instance.ClearHovering();
     }
 }

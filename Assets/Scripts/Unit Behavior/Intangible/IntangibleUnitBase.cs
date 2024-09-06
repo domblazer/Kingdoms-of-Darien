@@ -151,6 +151,10 @@ public class IntangibleUnitBase : MonoBehaviour
 
         // Remove intangible from inventory/player context as well
         Functions.RemoveIntangibleFromPlayerContext(this, playerNumber);
+
+        // Invoke OnDie to make sure any registered units can remove this intangible from their context
+        OnDie?.Invoke(gameObject, new EventArgs { });
+
         Destroy(gameObject);
     }
 

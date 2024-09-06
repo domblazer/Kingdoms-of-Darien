@@ -46,9 +46,15 @@ public class BuilderAI : UnitBuilderAI
                 buildArgs.buildSpot = FindBuildSpot(transform.position, isLodestone);
             // @TODO: calculate mix of x and y offset
             if (!baseUnit.IsInRangeOf(buildArgs.buildSpot, nextIntangibleOffset.x))
+            {
+                isMovingToNextConjure = true;
                 baseUnit.MoveToPosition(buildArgs.buildSpot);
+            }
             else
+            {
+                isMovingToNextConjure = false;
                 StartNextIntangible(buildArgs);
+            }
         }
     }
 

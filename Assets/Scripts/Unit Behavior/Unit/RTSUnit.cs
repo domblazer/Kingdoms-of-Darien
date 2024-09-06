@@ -102,14 +102,11 @@ public class RTSUnit : MonoBehaviour
         get { return !commandQueue.IsEmpty() ? commandQueue.Peek() : null; }
         set
         {
-            // Only clear attack if the current command we are inserting is not already the Attack command we would cancel
-            if (canAttack && value.commandType != CommandTypes.Attack) {
+            // Clear any existing attack and conjure routines. @Note: _AttackBehavior may not be set at the time of instantiation, so check if it is null
+            if (canAttack && _AttackBehavior)
                 _AttackBehavior.ClearAttack();
-            }
-            // Only clear build if the command we are inserting is not the Conjure command we would otherwise cancel immediately
-            if (isBuilder && value.commandType != CommandTypes.Conjure) {
+            if (isBuilder)
                 commandQueue.TriggerCancelBuild();
-            }
             // Setting current command means resetting queue
             commandQueue.Clear();
             commandQueue.Enqueue(value);
@@ -432,18 +429,28 @@ public class RTSUnit : MonoBehaviour
 
     public void SetMove(Vector3 position, bool addToQueue = false, bool attackMove = false)
     {
-        // If not holding shift on this move, clear the moveto queue and make this position first in queue
+        // If not holding shift on this move, clear the queue and make this position first in queue
         if (!addToQueue)
+        {
+            // @NOTE: Important that the build is cleared before queue is cleared so any ghosts can get cleaned up
+            if (isBuilder && !addToQueue)
+            {
+                commandQueue.TriggerCancelBuild();
+            }
             commandQueue.Clear();
-        currentCommand = new CommandQueueItem
+        }
+        commandQueue.Enqueue(new CommandQueueItem
         {
             commandType = CommandTypes.Move,
             commandPoint = position,
             isAttackMove = attackMove
-        };
+        });
         isParking = false;
+
+        // Clear attack and build if any
         if (canAttack && !addToQueue)
             _AttackBehavior.ClearAttack();
+
         TryToggleToAgent();
     }
 
@@ -572,7 +579,7 @@ public class RTSUnit : MonoBehaviour
         if (_Animator)
             _Animator.SetTrigger("die");
 
-        // Call the die callback now if it was set
+        // Fire the OnDie event so any registered observers can execute a function, e.g., to remove from enemiesInSight
         OnDie?.Invoke(gameObject, new System.EventArgs { });
 
         // Remove this unit from the player context

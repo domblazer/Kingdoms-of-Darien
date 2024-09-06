@@ -14,7 +14,7 @@ public class Builder : UnitBuilderPlayer
     public int placedSinceLastShift { get; set; } = 0;
     [HideInInspector]
     public GameObject activeFloatingGhost;
-    
+
     [HideInInspector] public bool isClickInProgress = false;
 
     void Start()
@@ -66,33 +66,39 @@ public class Builder : UnitBuilderPlayer
     {
         if (NextQueueReady)
         {
-            Debug.Log("baseUnit.currentCommand.conjurerArgs.prefab " + baseUnit.currentCommand.conjurerArgs.prefab);
-            if (baseUnit.currentCommand.conjurerArgs.prefab.GetComponent<GhostUnit>())
+            if (baseUnit.currentCommand?.conjurerArgs?.prefab?.GetComponent<GhostUnit>())
             {
                 // Conjure command is for GhostUnit
                 GhostUnit nextGhost = baseUnit.currentCommand.conjurerArgs.prefab.GetComponent<GhostUnit>();
                 // @TODO: offset depends on direction, e.g. if walking along x, use x, y, y, and diagonal use mix
-                Debug.Log("nextGhost: " + nextGhost);
                 Vector3 offsetRange = nextGhost.offset;
                 // Move to next ghost in the queue
                 if (nextGhost.IsSet() && !baseUnit.IsInRangeOf(nextGhost.transform.position, offsetRange.x))
+                {
+                    isMovingToNextConjure = true;
                     baseUnit.MoveToPosition(nextGhost.transform.position);
+                }
                 // When arrived at ghost, start building intangible
                 else
+                {
+                    isMovingToNextConjure = false;
                     StartNextIntangible(nextGhost);
+                }
             }
-            else if (baseUnit.currentCommand.conjurerArgs.prefab.GetComponent<IntangibleUnit>())
+            else if (baseUnit.currentCommand?.conjurerArgs?.prefab?.GetComponent<IntangibleUnit>())
             {
                 // Conjure command is for IntangibleUnit
                 IntangibleUnit intangible = baseUnit.currentCommand.conjurerArgs.prefab.GetComponent<IntangibleUnit>();
                 // Move to the Intangible queued
-                // @TODO: if !intangible.isDone else CancelCommand()
-                // @TODO: if intangible dies during this routine, stop build
                 if (!baseUnit.IsInRangeOf(intangible.transform.position, intangible.offset.x))
+                {
+                    isMovingToNextConjure = true;
                     baseUnit.MoveToPosition(intangible.transform.position);
+                }
                 // When arrived at Intangible, start Conjuring it
                 else
                 {
+                    isMovingToNextConjure = false;
                     AppendToIntangible(intangible);
                 }
             }

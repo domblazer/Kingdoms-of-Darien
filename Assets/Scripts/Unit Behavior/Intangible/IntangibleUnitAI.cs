@@ -11,7 +11,7 @@ public class IntangibleUnitAI : IntangibleUnitBase
     {
         if (health > 0 && health < 1 && builders.Count > 0)
         {
-             // If currentMana is empty, all building slows down by half
+            // If currentMana is empty, all building slows down by half
             if (GameManager.Instance.AIPlayers[playerNumber].inventory.currentMana == 0)
                 lagRate = 0.5f;
             else
@@ -85,8 +85,8 @@ public class IntangibleUnitAI : IntangibleUnitBase
     // @TODO: if mouse is over this unit when the unit dies, still need to reset cursor, clear unit ui
     void OnMouseExit()
     {
-        // if (GameManager.Instance.PlayerMain.player.SelectedBuilderUnitsCount() > 0)
         CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Normal);
+        UIManager.UnitInfoInstance.Toggle(false);
         GameManager.Instance.ClearHovering();
     }
 }

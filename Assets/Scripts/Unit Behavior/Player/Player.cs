@@ -179,7 +179,7 @@ public class Player : MonoBehaviour
     // Select units under square
     public void HandleUnitsUnderSquare(bool highlightOnly = false)
     {
-        foreach (BaseUnit currentUnit in inventory.totalUnits)
+        foreach (BaseUnit currentUnit in inventory.totalUnits.Cast<BaseUnit>())
         {
             // Is this unit within the square
             // @TODO: separate handling for sky units
@@ -195,7 +195,14 @@ public class Player : MonoBehaviour
         }
         // Release any active builder if we just selected more than 1 unit
         if (!highlightOnly && selectedUnits.Count > 1)
+        {
             ReleaseActiveBuilder();
+        }
+        // Otherwise, if only selected 1 unit under the square and that was a builder, emulate selecting him alone
+        else if (selectedUnits.Count == 1 && selectedUnits[0].isBuilder)
+        {
+            (selectedUnits[0] as BaseUnit).Select(true);
+        }
     }
 
     // Handle click-to-move command for selected, kinematic units
@@ -263,10 +270,12 @@ public class Player : MonoBehaviour
                 {
                     // If we clicked an intangible unit, send any valid builders in the selection to conjure on it
                     foreach (BaseUnit unit in selectedUnits.Cast<BaseUnit>())
+                    {
                         if (unit.isBuilder && unit.isKinematic)
                         {
                             unit._Builder.QueueBuildOnIntangible(hit.collider.gameObject.GetComponent<IntangibleUnit>(), InputManager.HoldingShift());
                         }
+                    }
                 }
                 // We clicked a single, friendly RTSUnit
                 else

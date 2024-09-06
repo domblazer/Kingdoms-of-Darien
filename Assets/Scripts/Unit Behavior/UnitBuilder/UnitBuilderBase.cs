@@ -13,6 +13,7 @@ public class UnitBuilderBase : MonoBehaviour
     public bool NextQueueReady { get; set; } = false;
     public RTSUnit baseUnit { get; set; }
     [HideInInspector] public IntangibleUnitBase currentIntangible;
+    [HideInInspector] public bool isMovingToNextConjure = false;
 
     private void Awake()
     {
@@ -25,19 +26,19 @@ public class UnitBuilderBase : MonoBehaviour
         Debug.Log("QueueBuildOnIntangible");
         // Add to queue 
         if (!addToQueue)
-            baseUnit.commandQueue.Clear();
-        // @TODO
-        ConjurerArgs conjurerArgs = new()
         {
-            prefab = intangible.gameObject
-        };
-        // @TODO
+            // @NOTE: Important that the build is cleared before queue is cleared so any ghosts can get cleaned up, intangibles detached, etc.
+            baseUnit.commandQueue.TriggerCancelBuild();
+            baseUnit.commandQueue.Clear();
+        }
         baseUnit.commandQueue.Enqueue(new CommandQueueItem
         {
             commandType = CommandTypes.Conjure,
             commandPoint = intangible.transform.position,
-            conjurerArgs = conjurerArgs
+            conjurerArgs = new() { prefab = intangible.gameObject }
         });
+        // Register to the intangible's OnDie function to cancel it if the intangible dies or completes before builder gets there
+        intangible.OnDie += CancelMovingToIntangibleRoutine;
         SetNextQueueReady(true);
     }
 
@@ -59,41 +60,58 @@ public class UnitBuilderBase : MonoBehaviour
         return baseUnit.isKinematic;
     }
 
+    private void CancelMovingToIntangibleRoutine(object sender, System.EventArgs e)
+    {
+        if (sender != null && isMovingToNextConjure)
+        {
+            // If a registered Intangible died or was completed while builder was moving to it, builder should remove it from their routine
+            baseUnit.commandQueue.Dequeue();
+            SetNextQueueReady(true);
+        }
+    }
+
+    /**
+    * This function is registered to the OnCommandQueueChanged event handler, so fires when the Builder's parent Unit commandQueue is changed.
+    * The idea is to fire a "CancelBuild" event in the currentCommand setter which clears all commands and inserts a priority command at the top of the queue.
+    */
     public void Interrupt(object sender, CommandQueue.CommandQueueChangedEventArgs changeEvent)
     {
-        Debug.Log("Builder interrupted.");
-        // @TODO: This is a really dirty solution and is not going to work long term. 
-        //
-        // The reason for this in the first place is so that if a Builder gets another command
-        // while conjuring an intangible, it cancels that action so it can go do the command just queued. 
-        // 
-        // The problem is that commandQueue.Clear() is called on currentCommand set, which does not always mean a conjure routine should be cancelled.
-        // The AI in particular uses the currentCommand setter in the intangible completed callback to queue a patrol routine after finishing an intangible. 
+        // Debug.Log("Builder interrupted.");
         if (changeEvent.changeType == "CancelBuild")
         {
             Debug.Log("CancelBuild event fired.");
-            // @TODO: Would probably like to detect also that the previous current command of the Builder was a Conjure task
-            // if (IsBuilding)
             CancelBuild();
         }
     }
 
     public void CancelBuild(bool deferArray = false)
     {
-        Debug.Log("Cancel current build; disconnect intangible " + currentIntangible?.gameObject?.name);
         IsBuilding = false;
         if (currentIntangible)
+        {
+            Debug.Log("Cancel current build; disconnect intangible " + currentIntangible?.gameObject?.name);
             currentIntangible.DetachBuilder(this, deferArray);
+        }
         currentIntangible = null;
 
-        Debug.Log("IsBuilding " + IsBuilding);
+        // Destroy all ghosts for this builder and remove all it's other conjure commands
+        if (IsBuilder())
+        {
+            Debug.Log("Clear builder ghosts " + baseUnit.commandQueue);
+            foreach (CommandQueueItem cmd in baseUnit.commandQueue)
+            {
+                if (cmd.commandType == CommandTypes.Conjure && cmd.conjurerArgs.prefab != null && cmd.conjurerArgs.prefab.GetComponent<GhostUnit>())
+                    Destroy(cmd.conjurerArgs.prefab);
+            }
+            baseUnit.commandQueue.RemoveAll(cmd => cmd.commandType == CommandTypes.Conjure);
+        }
 
-        // Ensure builder is ready with next command if current build is canceled
         if (IsBuilding)
         {
             CommandQueueItem lastCommand = baseUnit.commandQueue.Dequeue();
             lastCommand.conjurerArgs.buildQueueCount--;
         }
+        // Ensure builder is ready with next command if current build is canceled
         SetNextQueueReady(true);
     }
 }
