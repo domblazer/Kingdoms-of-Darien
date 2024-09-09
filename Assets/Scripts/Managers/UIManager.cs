@@ -33,7 +33,7 @@ public class UIManager : MonoBehaviour
     private string canvasRootPath;
     public Canvas canvasRoot { get; set; }
 
-    public bool tooltipActive = false;
+    [HideInInspector] public bool tooltipActive = false;
 
     private void Awake()
     {
@@ -65,9 +65,10 @@ public class UIManager : MonoBehaviour
 
     private void Update()
     {
-        // Capture menu toggle input events
+        // F2 toggles the pause game screen
         if (Input.GetKeyDown(KeyCode.F2))
             ToggleF2InfoMenu(!f2Menu.gameObject.activeInHierarchy);
+        // F4 toggles the team rank list
         if (Input.GetKeyDown(KeyCode.F4))
             ToggleF4Menu(!f4Menu.gameObject.activeInHierarchy);
 
@@ -75,10 +76,23 @@ public class UIManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F5))
             ToggleDebugMenu(!debugMenu.gameObject.activeInHierarchy);
 
+        // Esc key to exit game
+        if (Input.GetKeyDown("escape"))
+        {
+            Debug.Log("Application exit on escape.");
+            Application.Quit();
+        }
+
+        // F6 to toggle the Fog of War in-game
+        // @TODO: not ideal this input is captured both here and in BaseUnitAI
+        if (Input.GetKeyDown(KeyCode.F6))
+            GameManager.Instance.fogOfWarPlane.SetActive(!GameManager.Instance.fogOfWarPlane.gameObject.activeInHierarchy);
+
         // @TODO: Tilda key is usually used to toggle the health bars, for now toggling the army debug panels
         // @TODO: it's also not ideal this input is captured both here and in BaseUnitAI
-        if (Input.GetKeyDown(KeyCode.BackQuote))
-            UIManager.Instance.tooltipActive = !UIManager.Instance.tooltipActive;
+        // @NOTE: disabled for demo
+        /* if (Input.GetKeyDown(KeyCode.BackQuote))
+            Instance.tooltipActive = !Instance.tooltipActive; */
     }
 
     public void ToggleF4Menu(bool value)
@@ -182,9 +196,10 @@ public class UIManager : MonoBehaviour
             battleMenuButtons.moveBtn.gameObject.SetActive(value);
             battleMenuButtons.patrolBtn.gameObject.SetActive(value);
             battleMenuButtons.attackBtn.gameObject.SetActive(value);
-            battleMenuButtons.guardBtn.gameObject.SetActive(value);
-            battleMenuButtons.repairBtn.gameObject.SetActive(value);
-            battleMenuButtons.cleanBtn.gameObject.SetActive(value);
+            // @NOTE: Disabled for demo
+            // battleMenuButtons.guardBtn.gameObject.SetActive(value);
+            // battleMenuButtons.repairBtn.gameObject.SetActive(value);
+            // battleMenuButtons.cleanBtn.gameObject.SetActive(value);
             battleMenuButtons.stopBtn.gameObject.SetActive(value);
             battleMenuButtons.specialAttackOneBtn.gameObject.SetActive(value);
             battleMenuButtons.specialAttackTwoBtn.gameObject.SetActive(value);
@@ -205,12 +220,14 @@ public class UIManager : MonoBehaviour
             if (canAttack)
             {
                 battleMenuButtons.attackBtn.gameObject.SetActive(true);
-                battleMenuButtons.guardBtn.gameObject.SetActive(true);
+                // @NOTE: Disabled for demo
+                // battleMenuButtons.guardBtn.gameObject.SetActive(true);
             }
             if (canBuild)
             {
-                battleMenuButtons.repairBtn.gameObject.SetActive(true);
-                battleMenuButtons.cleanBtn.gameObject.SetActive(true);
+                // @NOTE: Disabled for demo
+                // battleMenuButtons.repairBtn.gameObject.SetActive(true);
+                // battleMenuButtons.cleanBtn.gameObject.SetActive(true);
             }
             battleMenuButtons.stopBtn.gameObject.SetActive(true);
             battleMenuButtons.offensiveBtn.gameObject.SetActive(true);

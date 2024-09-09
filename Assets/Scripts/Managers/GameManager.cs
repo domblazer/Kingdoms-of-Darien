@@ -75,7 +75,7 @@ public class GameManager : MonoBehaviour
     public AudioSource AudioSource { get; set; }
 
     // Private helper keeping track if player mouse is hovering over any unit
-    public GameObject currentHovering = null;
+    [HideInInspector] public GameObject currentHovering = null;
 
     private void Awake()
     {
@@ -119,6 +119,7 @@ public class GameManager : MonoBehaviour
 
         // Set initial player vars
         newInventory.unitLimit = unitLimit;
+        newInventory.playerNumber = playerConf.playerNumber;
         newPlayer.Init(newInventory);
         newPlayer.playerNumber = playerConf.playerNumber;
         newPlayer.teamNumber = playerConf.team;
@@ -126,7 +127,7 @@ public class GameManager : MonoBehaviour
         newPlayer.playerStartPosition = playerConf.startPosition;
 
         // Instantiate new AI player context and add it to AIPlayers dictionary
-        AIPlayerContext newAI = new AIPlayerContext
+        AIPlayerContext newAI = new()
         {
             holder = _Holder,
             player = newPlayer,
@@ -152,6 +153,7 @@ public class GameManager : MonoBehaviour
         Player newPlayer = _Holder.AddComponent<Player>();
 
         // Set initial vars
+        newInventory.playerNumber = playerConf.playerNumber;
         newPlayer.teamNumber = playerConf.team;
         newPlayer.playerStartPosition = playerConf.startPosition;
         newPlayer.playerFaction = playerConf.faction;

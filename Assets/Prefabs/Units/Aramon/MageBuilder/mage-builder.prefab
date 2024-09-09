@@ -1795,12 +1795,16 @@ MonoBehaviour:
   canPatrol: 0
   canFly: 0
   phaseDie: 0
+  offset: {x: 1, y: 1, z: 1}
   bloodSystem: {fileID: 7672112254575380417}
+  clusterNum: -1
   isStriking: 0
   selectable: 1
   selectRing: {fileID: 7672112254513394519}
   fogOfWarMask: {fileID: 6021291778148488087}
   attackMode: 0
+  _Builder: {fileID: 0}
+  secondary: {fileID: 0}
 --- !u!114 &6362126238051098600
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1825,7 +1829,6 @@ MonoBehaviour:
     meleeWeapons: []
   activeWeaponIndex: 0
   isAttacking: 0
-  attackTarget: {fileID: 0}
   enemiesInSight: []
 --- !u!114 &7672112253590628148
 MonoBehaviour:
@@ -1856,9 +1859,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentIntangible: {fileID: 0}
+  isMovingToNextConjure: 0
   ghostUnits:
-  - {fileID: 0}
   - {fileID: 2371707195242254508, guid: feb9e4dae3f7537479a3ae470a3d15a7, type: 3}
+  - {fileID: 8284541907566071018, guid: f6d500b00ef9f5a449f3d55fa8b6f42b, type: 3}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -1866,6 +1870,7 @@ MonoBehaviour:
   - {fileID: 8284541907566071018, guid: f6d500b00ef9f5a449f3d55fa8b6f42b, type: 3}
   - {fileID: 6976156353839939563, guid: 62fa0d702a83c7045b79d737244605e7, type: 3}
   activeFloatingGhost: {fileID: 0}
+  isClickInProgress: 0
 --- !u!114 &7672112253590628151
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -138,7 +138,7 @@ public class RTSCamera : MonoBehaviour
         // Zoom bounding
         if (transform.position.y > zoomDistanceMax || transform.position.y < zoomDistanceMin)
         {
-            Debug.Log("zoom out of bounds");
+            // Debug.Log("zoom out of bounds");
             resetPos = new Vector3(transform.position.x, zoomDistanceMax, transform.position.z);
             resetRot = Quaternion.Euler(50f, 0, 0);
             transform.position = Vector3.Lerp(transform.position, resetPos, Time.deltaTime);

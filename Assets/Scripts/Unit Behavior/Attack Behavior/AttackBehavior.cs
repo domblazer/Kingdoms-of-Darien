@@ -9,7 +9,7 @@ using System;
 public class AttackBehavior : MonoBehaviour
 {
     public RTSUnit baseUnit { get; set; }
-    [System.Serializable]
+    [Serializable]
     public class Weapon
     {
         // @Note: o.g. TA:K calls Projectile, "Ballistic"
@@ -139,7 +139,7 @@ public class AttackBehavior : MonoBehaviour
             switch (attackTarget.targetType)
             {
                 case AttackTargetTypes.Unit:
-                    rangeOffset = attackTarget.target.GetComponent<RTSUnit>().offset.x * 0.7f;
+                    rangeOffset = attackTarget.target.GetComponent<RTSUnit>().offset.x * 0.75f;
                     break;
                 case AttackTargetTypes.Intangible:
                     rangeOffset = attackTarget.target.GetComponent<IntangibleUnitBase>().offset.x * 0.7f;

@@ -9,5 +9,6 @@ public class InventoryAI : InventoryBase
     private void Update()
     {
         UpdateMana();
+        CheckWinLoseState();
     }
 }

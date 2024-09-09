@@ -389,25 +389,48 @@ public class RTSUnit : MonoBehaviour
             && (col.gameObject.GetComponent<RTSUnit>() || col.gameObject.GetComponent<IntangibleUnitBase>()))
         {
             // Add to this unit's enemy line of sight list
-            _AttackBehavior.enemiesInSight.Add(col.gameObject);
+            // @TODO: this if is a quick and dirty solution for duplicate trigger collisions
+            // @cont: I think there is a trigger event from both the Radar Trigger and Fog Of War mask here, causing duplicates.
+            // @cont: The only good solution I can think of rn is to make Radar Trigger and Fog Of War mask the same collider...
+            if (!_AttackBehavior.enemiesInSight.Contains(col.gameObject))
+            {
+                _AttackBehavior.enemiesInSight.Add(col.gameObject);
+                
+                Debug.Log(gameObject.name + " Add collided unit to enemiesInSight " + col.gameObject.name + "\n" + "col.gameObject.layer " + col.gameObject.layer);
 
-            // Subscribe to the enemy's OnDie event to remove it from enemiesInSight when it dies
-            if (col.gameObject.GetComponent<RTSUnit>())
-                col.gameObject.GetComponent<RTSUnit>().OnDie += RemoveEnemyFromSight;
-            else if (col.gameObject.GetComponent<IntangibleUnitBase>())
-                col.gameObject.GetComponent<IntangibleUnitBase>().OnDie += RemoveEnemyFromSight;
+                // Subscribe to the enemy's OnDie event to remove it from enemiesInSight when it dies
+                if (col.gameObject.GetComponent<RTSUnit>())
+                    col.gameObject.GetComponent<RTSUnit>().OnDie += RemoveEnemyFromSight;
+                else if (col.gameObject.GetComponent<IntangibleUnitBase>())
+                    col.gameObject.GetComponent<IntangibleUnitBase>().OnDie += RemoveEnemyFromSight;
+            }
         }
         // Update whoCanSeeMe based on "Fog of War" mask layer trigger
-        else if (col.gameObject.tag == compareTag && col.gameObject.layer == LayerMask.NameToLayer("Fog of War"))
+        else if (col.gameObject.tag == compareTag && col.gameObject.layer == LayerMask.NameToLayer("Fog Of War"))
+        {
+            // @Note: Think of this trigger event coming from the AI. An AI unit collides with a Unit's Fog Of War mask and triggers this event
             whoCanSeeMe.Add(col.transform.parent.gameObject);
+        }
     }
 
     private void OnTriggerExit(Collider col)
     {
         string compareTag = gameObject.tag == "Enemy" ? "Friendly" : "Enemy";
         if (col.gameObject.tag == compareTag && col.gameObject.layer == LayerMask.NameToLayer("Unit") && !col.isTrigger && canAttack)
-            _AttackBehavior.enemiesInSight.Remove(col.gameObject);
-        else if (col.gameObject.tag == compareTag && col.gameObject.layer == LayerMask.NameToLayer("Fog of War"))
+        {
+            if (!_AttackBehavior.enemiesInSight.Contains(col.gameObject))
+            {
+                Debug.Log(gameObject.name + " Remove collided unit to enemiesInSight " + col.gameObject.name + "\n" + "col.gameObject.layer " + col.gameObject.layer);
+                _AttackBehavior.enemiesInSight.Remove(col.gameObject);
+
+                // Unsubscribe to the enemy's OnDie event to remove it from enemiesInSight when it dies
+                if (col.gameObject.GetComponent<RTSUnit>())
+                    col.gameObject.GetComponent<RTSUnit>().OnDie -= RemoveEnemyFromSight;
+                else if (col.gameObject.GetComponent<IntangibleUnitBase>())
+                    col.gameObject.GetComponent<IntangibleUnitBase>().OnDie -= RemoveEnemyFromSight;
+            }
+        }
+        else if (col.gameObject.tag == compareTag && col.gameObject.layer == LayerMask.NameToLayer("Fog Of War"))
             whoCanSeeMe.Remove(col.transform.parent.gameObject);
     }
 
@@ -415,7 +438,10 @@ public class RTSUnit : MonoBehaviour
     {
         // First check is sender still exists. This unit may have died and been destroyed already by the time the enemy invokes its die function
         if (sender != null)
+        {
+            Debug.Log(gameObject.name + " received OnDie event from " + (sender as GameObject).name);
             _AttackBehavior.enemiesInSight.Remove(sender as GameObject);
+        }
     }
 
     protected void DebugNavPath()
@@ -496,7 +522,7 @@ public class RTSUnit : MonoBehaviour
     public void SetPatrol(Vector3 patrolPoint, bool addToQueue = false)
     {
         // Patrol commands maintain all patrol points within one command
-        CommandQueueItem newCommand = new CommandQueueItem
+        CommandQueueItem newCommand = new()
         {
             commandType = CommandTypes.Patrol,
             commandPoint = patrolPoint,

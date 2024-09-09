@@ -5232,7 +5232,6 @@ GameObject:
   - component: {fileID: 1656285747282822967}
   - component: {fileID: 6564195543960170901}
   - component: {fileID: 9088258194875738893}
-  - component: {fileID: 3542663881585946245}
   - component: {fileID: 6223796146804627696}
   - component: {fileID: 3349236662228571096}
   - component: {fileID: 7447587387788347373}
@@ -5412,23 +5411,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &3542663881585946245
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3948407666658627477}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 69a232441f881fd4a9c3a577868aa4a9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  attackSounds: []
-  dieSound: {fileID: 0}
-  moveSound: {fileID: 0}
-  selectSound: {fileID: 0}
-  unitPlaysAttackSounds: 1
 --- !u!114 &6223796146804627696
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5484,12 +5466,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentIntangible: {fileID: 0}
+  isMovingToNextConjure: 0
   spawnPoint: {fileID: 2365161121348688814}
   rallyPoint: {fileID: 531293406980321841}
   intangibleUnits:
-  - {fileID: 0}
   - {fileID: 6141550388823117654, guid: 5dfe7e5b47c7ed244ace31d36869c058, type: 3}
   - {fileID: 854424073394294190, guid: a2cba2178d9060f46a4279cbc4341aea, type: 3}
+  - {fileID: 1764529667959358378, guid: 7b4d49c530282474d83cfa13f51ec73e, type: 3}
   - {fileID: 8599506329157801840, guid: 6300043c965bdab48ad72dad7b4c746f, type: 3}
   - {fileID: 0}
   - {fileID: 1764529667959358378, guid: 7b4d49c530282474d83cfa13f51ec73e, type: 3}

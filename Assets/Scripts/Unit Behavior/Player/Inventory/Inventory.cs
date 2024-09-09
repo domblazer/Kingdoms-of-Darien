@@ -10,6 +10,8 @@ public class Inventory : InventoryBase
     {
         UpdateMana();
 
+        CheckWinLoseState();
+
         // @TODO: only update ui if there is a non-zero mana changeRate
         UIManager.Instance.SetManaUI(this);
     }

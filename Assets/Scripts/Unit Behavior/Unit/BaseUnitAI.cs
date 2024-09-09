@@ -15,11 +15,11 @@ public class BaseUnitAI : RTSUnit
 {
     private bool enableFogOfWar;
 
-    private List<Renderer> renderers = new List<Renderer>();
+    private readonly List<Renderer> renderers = new();
     private bool alreadyHidden = false;
     private bool alreadyShown = false;
     private float nextSightCheck = 5.0f;
-    private float sightCheckRate = 5.0f;
+    private readonly float sightCheckRate = 5.0f;
     public float patrolRange = 15.0f;
 
     public enum StartStates
@@ -87,9 +87,18 @@ public class BaseUnitAI : RTSUnit
     private void Update()
     {
         // @TODO: Tilda key is usually used to toggle the health bars, for now toggling the army debug panels
-        if (Input.GetKeyDown(KeyCode.BackQuote) && _TooltipManager != null)
+        // @NOTE: disabled for demo
+        /* if (Input.GetKeyDown(KeyCode.BackQuote) && _TooltipManager != null)
+            _TooltipManager.ToggleTooltip(); */
+
+        // @TODO: F6 is arbitrary key for this command; toggles FogOfWar in-game
+        if (Input.GetKeyDown(KeyCode.F6))
         {
-            _TooltipManager.ToggleTooltip();
+            enableFogOfWar = !enableFogOfWar;
+            if (enableFogOfWar)
+                TriggerHide();
+            else
+                TriggerShow();
         }
 
         // Update health
@@ -279,11 +288,13 @@ public class BaseUnitAI : RTSUnit
 
     void UpdateFogOfWar()
     {
+        // Debug.Log("whoCanSeeMe count " + whoCanSeeMe.Count);
         if (whoCanSeeMe.Count == 0)
             TriggerHide();
         else
         {
             // Periodically clear dead or destroyed units from whoCanSeeMe
+            // @TODO: this isn't exactly efficient, maybe can register to the RTSUnit.OnDie to remove from whoCanSeeMe
             if (Time.time > nextSightCheck)
             {
                 nextSightCheck = Time.time + sightCheckRate;

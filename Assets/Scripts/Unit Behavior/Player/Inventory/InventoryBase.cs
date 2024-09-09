@@ -37,6 +37,7 @@ public class InventoryBase : MonoBehaviour
     private float rateOfChange = 0;
     private int increment = 1;
     private float nextManaChange = 0;
+    public PlayerNumbers playerNumber;
 
     private void Start()
     {
@@ -49,6 +50,7 @@ public class InventoryBase : MonoBehaviour
         yield return new WaitForSeconds(0.75f);
         currentMana = totalManaStorage;
     }
+
     protected void UpdateMana(bool log = false)
     {
         // Mana is influenced by the list of intangibleUnits read at each frame
@@ -100,6 +102,15 @@ public class InventoryBase : MonoBehaviour
                 currentMana = totalManaStorage;
             else if (currentMana <= 0)
                 currentMana = 0;
+        }
+    }
+
+    public void CheckWinLoseState()
+    {
+        // @TODO: intangible count should be included here. Technically, an intangible with no builder still counts towards your victory condition
+        // Debug.Log("Player " + playerNumber + " totalUnit count: " + totalUnits.Count);
+        if (totalUnits.Count == 0) {
+            Debug.Log("Player " + playerNumber + " lost condition met.");
         }
     }
 

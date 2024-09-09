@@ -66,6 +66,10 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (inventory.totalUnits.Count == 0) {
+            Debug.Log("Player defeat condition.");
+        }
+
         SelectUnits();
 
         // Clear selection with right-click
@@ -153,7 +157,10 @@ public class Player : MonoBehaviour
                     HandleMoveCommand(hitsMap.groundMeshHit, hitsMap.skyMeshHit);
                 // @TODO: handle commands on skyHit
                 else if (primedCommand == CommandTypes.Patrol)
+                {
+                    Debug.Log("Patrol command primed and fired.");
                     HandlePatrolCommand(hitsMap.groundMeshHit);
+                }
             }
             else
             {
