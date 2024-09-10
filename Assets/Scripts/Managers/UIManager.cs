@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DarienEngine;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -33,6 +35,9 @@ public class UIManager : MonoBehaviour
     private string canvasRootPath;
     public Canvas canvasRoot { get; set; }
 
+    public TMP_Text victoryText;
+    public TMP_Text defeatText;
+
     [HideInInspector] public bool tooltipActive = false;
 
     private void Awake()
@@ -61,6 +66,10 @@ public class UIManager : MonoBehaviour
         UnitInfoInstance.Toggle(false);
         foreach (RectTransform buildMenu in buildMenus)
             buildMenu.gameObject.SetActive(false);
+
+        // Disable victory and defeat text by default
+        victoryText.gameObject.SetActive(false);
+        defeatText.gameObject.SetActive(false);
     }
 
     private void Update()
@@ -69,28 +78,30 @@ public class UIManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F2))
             ToggleF2InfoMenu(!f2Menu.gameObject.activeInHierarchy);
         // F4 toggles the team rank list
-        if (Input.GetKeyDown(KeyCode.F4))
-            ToggleF4Menu(!f4Menu.gameObject.activeInHierarchy);
+        // @TODO: disabled for demo
+        /* if (Input.GetKeyDown(KeyCode.F4))
+            ToggleF4Menu(!f4Menu.gameObject.activeInHierarchy); */
 
-        // @TODO: remove later: Use F5 to trigger debug menu for now. 
-        if (Input.GetKeyDown(KeyCode.F5))
-            ToggleDebugMenu(!debugMenu.gameObject.activeInHierarchy);
+        // @TODO: remove later: Use F5 to trigger debug menu for now.
+        // @TODO: disabled for demo
+        /* if (Input.GetKeyDown(KeyCode.F5))
+            ToggleDebugMenu(!debugMenu.gameObject.activeInHierarchy); */
 
-        // Esc key to exit game
+        // Esc key to return to start
         if (Input.GetKeyDown("escape"))
         {
-            Debug.Log("Application exit on escape.");
-            Application.Quit();
+            SceneManager.LoadScene("StartScene");
         }
 
         // F6 to toggle the Fog of War in-game
         // @TODO: not ideal this input is captured both here and in BaseUnitAI
-        if (Input.GetKeyDown(KeyCode.F6))
-            GameManager.Instance.fogOfWarPlane.SetActive(!GameManager.Instance.fogOfWarPlane.gameObject.activeInHierarchy);
+        // @TODO: Implement this Fog Of War toggle later...
+        /* if (Input.GetKeyDown(KeyCode.F6))
+            GameManager.Instance.fogOfWarPlane.SetActive(!GameManager.Instance.fogOfWarPlane.gameObject.activeInHierarchy); */
 
         // @TODO: Tilda key is usually used to toggle the health bars, for now toggling the army debug panels
         // @TODO: it's also not ideal this input is captured both here and in BaseUnitAI
-        // @NOTE: disabled for demo
+        // @TODO: disabled for demo
         /* if (Input.GetKeyDown(KeyCode.BackQuote))
             Instance.tooltipActive = !Instance.tooltipActive; */
     }
@@ -112,6 +123,16 @@ public class UIManager : MonoBehaviour
     public void ToggleDebugMenu(bool value)
     {
         debugMenu.gameObject.SetActive(value);
+    }
+
+    public void ToggleVictoryText(bool value)
+    {
+        victoryText.gameObject.SetActive(value);
+    }
+
+    public void ToggleDefeatText(bool value)
+    {
+        defeatText.gameObject.SetActive(value);
     }
 
     /// <summary>Class <c>BattleMenu</c> is a virtual representation of the right-side game menu.</summary>
@@ -171,7 +192,8 @@ public class UIManager : MonoBehaviour
             battleMenuButtons = new BattleMenuButtons(canvasRootPath);
 
             battleMenuButtons.moveBtn.onClick.AddListener(delegate { PrimeCommand(CommandTypes.Move); });
-            battleMenuButtons.patrolBtn.onClick.AddListener(delegate { PrimeCommand(CommandTypes.Patrol); });
+            // @TODO: Disabled for demo
+            // battleMenuButtons.patrolBtn.onClick.AddListener(delegate { PrimeCommand(CommandTypes.Patrol); });
             battleMenuButtons.attackBtn.onClick.AddListener(delegate { PrimeCommand(CommandTypes.Attack); });
             battleMenuButtons.guardBtn.onClick.AddListener(delegate { PrimeCommand(CommandTypes.Guard); });
 
@@ -194,9 +216,10 @@ public class UIManager : MonoBehaviour
         {
             battleMenuDefault.gameObject.SetActive(!value);
             battleMenuButtons.moveBtn.gameObject.SetActive(value);
-            battleMenuButtons.patrolBtn.gameObject.SetActive(value);
+            // @TODO: Disabled for demo
+            // battleMenuButtons.patrolBtn.gameObject.SetActive(value);
             battleMenuButtons.attackBtn.gameObject.SetActive(value);
-            // @NOTE: Disabled for demo
+            // @TODO: Disabled for demo
             // battleMenuButtons.guardBtn.gameObject.SetActive(value);
             // battleMenuButtons.repairBtn.gameObject.SetActive(value);
             // battleMenuButtons.cleanBtn.gameObject.SetActive(value);
@@ -215,17 +238,18 @@ public class UIManager : MonoBehaviour
             if (canMove)
             {
                 battleMenuButtons.moveBtn.gameObject.SetActive(true);
-                battleMenuButtons.patrolBtn.gameObject.SetActive(true);
+                // @TODO: Disabled for demo
+                // battleMenuButtons.patrolBtn.gameObject.SetActive(true);
             }
             if (canAttack)
             {
                 battleMenuButtons.attackBtn.gameObject.SetActive(true);
-                // @NOTE: Disabled for demo
+                // @TODO: Disabled for demo
                 // battleMenuButtons.guardBtn.gameObject.SetActive(true);
             }
             if (canBuild)
             {
-                // @NOTE: Disabled for demo
+                // @TODO: Disabled for demo
                 // battleMenuButtons.repairBtn.gameObject.SetActive(true);
                 // battleMenuButtons.cleanBtn.gameObject.SetActive(true);
             }

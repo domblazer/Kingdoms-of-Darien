@@ -87,19 +87,23 @@ public class BaseUnitAI : RTSUnit
     private void Update()
     {
         // @TODO: Tilda key is usually used to toggle the health bars, for now toggling the army debug panels
-        // @NOTE: disabled for demo
+        // @TODO: disabled for demo
         /* if (Input.GetKeyDown(KeyCode.BackQuote) && _TooltipManager != null)
             _TooltipManager.ToggleTooltip(); */
 
         // @TODO: F6 is arbitrary key for this command; toggles FogOfWar in-game
-        if (Input.GetKeyDown(KeyCode.F6))
+        // @TODO: Implement this later. Toggle for Fog of War may be useful for debugging/general game feature.
+        /* if (Input.GetKeyDown(KeyCode.F6))
         {
             enableFogOfWar = !enableFogOfWar;
             if (enableFogOfWar)
+            {
+                Debug.Log("fogofwar hide triggered");
                 TriggerHide();
+            }
             else
                 TriggerShow();
-        }
+        } */
 
         // Update health
         if (!isDead && UpdateHealth() <= 0)

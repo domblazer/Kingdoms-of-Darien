@@ -108,6 +108,7 @@ public class InventoryBase : MonoBehaviour
         }
     }
 
+    // @TODO: This logic should be in GameManager
     public void CheckWinLoseState()
     {
         bool victory = true;
@@ -120,7 +121,7 @@ public class InventoryBase : MonoBehaviour
             if (playerNumber == PlayerNumbers.Player1)
             {
                 Debug.Log("Defeat.");
-                // @TODO: start coroutine - display defeated text and load start screen; any cleaning to do?
+                StartCoroutine(HandleEndGame(false));
                 return;
             }
             else if (GameManager.Instance.AIPlayers.TryGetValue(playerNumber, out AIPlayerContext aiPlayer))
@@ -143,18 +144,23 @@ public class InventoryBase : MonoBehaviour
             if (victory)
             {
                 Debug.Log("Victory.");
-                // @TODO: startcoroutine display victory message and return to start screen
-
-                StartCoroutine(HandleVictory());
+                StartCoroutine(HandleEndGame(true));
             }
         }
     }
 
-    public IEnumerator HandleVictory()
+    public IEnumerator HandleEndGame(bool victory)
     {
-        // UIManager.Instance.DisplayVictoryText();
+        if (victory)
+            UIManager.Instance.ToggleVictoryText(true);
+        else
+            UIManager.Instance.ToggleDefeatText(true);
+
         // @TODO: disable any more click/keyboard events?
+
+        // Pause briefly before exiting
         yield return new WaitForSeconds(5.0f);
+
         // @TODO: eventually work in intermediate score screen
         SceneManager.LoadScene("StartScene");
     }
