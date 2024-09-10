@@ -10,9 +10,7 @@ public class LodestoneScript : MonoBehaviour
     public MeshRenderer outerStoneRenderer;
     public int outerStoneMaterialIndex = 0;
     private float alpha = 0.5f;
-
     private RTSUnit _Unit;
-
     private float manaIncome;
     private float manaStorage;
 
@@ -32,9 +30,9 @@ public class LodestoneScript : MonoBehaviour
     {
         // Create a pulsating effect with light range and intensity
         float prevRange = pulseLight.range;
-        pulseLight.range = Mathf.PingPong((Time.time * glowSpeedDamp), 2) + 1;
+        pulseLight.range = Mathf.PingPong(Time.time * glowSpeedDamp, 2) + 1;
 
-        alpha = Mathf.PingPong((Time.time * glowSpeedDamp * 0.25f), 0.5f);
+        alpha = Mathf.PingPong(Time.time * glowSpeedDamp * 0.25f, 0.5f);
         Color temp = outerStoneRenderer.materials[outerStoneMaterialIndex].color;
         temp.a = alpha;
         outerStoneRenderer.materials[outerStoneMaterialIndex].color = temp;

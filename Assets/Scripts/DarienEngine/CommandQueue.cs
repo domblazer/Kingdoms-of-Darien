@@ -148,7 +148,9 @@ namespace DarienEngine
         // clickHandler registers the click events on the buttons and queues a build on the UI button click
         public ClickableObject clickHandler;
         // prefab is the GhostUnit prefab
+        // @TODO: this needs to be clarified, b/c prefab can also be an intangibleunitbase, the actual prefab, not an instantiation too
         public GameObject prefab;
+        public GameObject instantiatedPrefab;
         // unitCategory is only used by UnitBuilderAI/BuilderAI
         public UnitCategories unitCategory;
         // buildSpot is only used by BuilderAI

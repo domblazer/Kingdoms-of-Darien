@@ -3406,7 +3406,7 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
   NoiseModule:
-    enabled: 1
+    enabled: 0
     strength:
       serializedVersion: 2
       minMaxState: 0
@@ -11449,7 +11449,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   manaColor: {r: 1, g: 0, b: 0, a: 1}
   finalUnitPrefab: {fileID: 8045250445228978974, guid: d61d8a7c2c35ac947929b0464be7aeab, type: 3}
+  builders: []
   lagRate: 1
+  health: 0
+  offset: {x: 0, y: 0, z: 0}
+  playerNumber: 0
 --- !u!1 &7926737165264063370
 GameObject:
   m_ObjectHideFlags: 0

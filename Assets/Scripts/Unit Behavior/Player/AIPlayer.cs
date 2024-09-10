@@ -16,10 +16,10 @@ public class AIPlayer : MonoBehaviour
     public Factions playerFaction;
     public InventoryAI inventory;
     public NeedInfo needInfo;
-    // limit 3 armies at a time
-    public List<Army> _Armies = new List<Army>();
+    public List<Army> _Armies = new();
     public float timeSinceLastArmyOrders = 0;
     public float armyOrdersDelay = 100.0f;
+    public bool defeated = false;
 
     public void Init(InventoryAI inv)
     {

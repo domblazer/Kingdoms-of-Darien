@@ -39,7 +39,7 @@ public class UnitBuilderBase : MonoBehaviour
         });
         // Register to the intangible's OnDie function to cancel it if the intangible dies or completes before builder gets there
         intangible.OnDie += CancelMovingToIntangibleRoutine;
-        SetNextQueueReady(true);
+        //SetNextQueueReady(true);
     }
 
     public void SetNextQueueReady(bool val)
@@ -97,7 +97,6 @@ public class UnitBuilderBase : MonoBehaviour
         // Destroy all ghosts for this builder and remove all it's other conjure commands
         if (IsBuilder())
         {
-            Debug.Log("Clear builder ghosts " + baseUnit.commandQueue);
             foreach (CommandQueueItem cmd in baseUnit.commandQueue)
             {
                 if (cmd.commandType == CommandTypes.Conjure && cmd.conjurerArgs.prefab != null && cmd.conjurerArgs.prefab.GetComponent<GhostUnit>())

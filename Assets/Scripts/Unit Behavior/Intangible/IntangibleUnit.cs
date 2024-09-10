@@ -21,20 +21,20 @@ public class IntangibleUnit : IntangibleUnitBase
         }
         else if (health > 0 && health < 1 && builders.Count == 0)
         {
-            Debug.Log("Intangible has made progress but lost all builders. Reverse progress.");
+            // Debug.Log("Intangible has made progress but lost all builders. Reverse progress.");
             lagRate = -1.0f;
             EvalColorGradient();
         }
         else if (health <= 0 && builders.Count == 0)
         {
             // @TODO: A builder that might have this unit in its buildQueue must handle that it no longer exists: "Failed to conjure..." or something
-            Debug.Log("Intangible health has lost all health and has no builders.");
+            // Debug.Log("Intangible health has lost all health and has no builders.");
             CancelIntangible();
         }
         // At any point, the intangible could dip down to 0 health and "die"; then cancel any builds
         else if (health <= 0 && builders.Count > 0)
         {
-            Debug.Log("Intangible died.");
+            // Debug.Log("Intangible died.");
             // @Note: CancelBuild removes builder from builders which is not allowed in a loop on that list
             builders.ForEach(bld => bld.CancelBuild(true));
             builders.Clear();
@@ -42,7 +42,7 @@ public class IntangibleUnit : IntangibleUnitBase
         // Done
         else if (health >= 1 && builders.Count > 0)
         {
-            Debug.Log("Intangible finished");
+            // Debug.Log("Intangible finished");
             FinishIntangible();
         }
     }

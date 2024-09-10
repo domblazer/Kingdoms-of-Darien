@@ -66,7 +66,8 @@ public class Builder : UnitBuilderPlayer
     {
         if (NextQueueReady)
         {
-            if (baseUnit.currentCommand?.conjurerArgs?.prefab?.GetComponent<GhostUnit>())
+            Debug.Log("baseUnit.commandQueue: " + baseUnit.commandQueue);
+            if (baseUnit.currentCommand.conjurerArgs.prefab && baseUnit.currentCommand.conjurerArgs.prefab.GetComponent<GhostUnit>())
             {
                 // Conjure command is for GhostUnit
                 GhostUnit nextGhost = baseUnit.currentCommand.conjurerArgs.prefab.GetComponent<GhostUnit>();
@@ -85,7 +86,7 @@ public class Builder : UnitBuilderPlayer
                     StartNextIntangible(nextGhost);
                 }
             }
-            else if (baseUnit.currentCommand?.conjurerArgs?.prefab?.GetComponent<IntangibleUnit>())
+            else if (baseUnit.currentCommand.conjurerArgs.prefab && baseUnit.currentCommand?.conjurerArgs?.prefab.GetComponent<IntangibleUnit>())
             {
                 // Conjure command is for IntangibleUnit
                 IntangibleUnit intangible = baseUnit.currentCommand.conjurerArgs.prefab.GetComponent<IntangibleUnit>();
@@ -101,6 +102,13 @@ public class Builder : UnitBuilderPlayer
                     isMovingToNextConjure = false;
                     AppendToIntangible(intangible);
                 }
+            }
+            else
+            {
+                Debug.LogWarning("Prefab is missing. This builder may have a command in its queue that should have been removed.\n"
+                    + "Command: " + baseUnit.currentCommand);
+                Debug.LogWarning("Attempting to prune loose command in Builder script now.");
+                baseUnit.commandQueue.Dequeue();
             }
         }
     }

@@ -143,7 +143,7 @@ public class GameManager : MonoBehaviour
         // Get the Player1 conf for main (human) player
         PlayerConfig playerConf = Array.Find(playerConfigs, p => p.playerNumber == PlayerNumbers.Player1);
         if (playerConf == null)
-            throw new System.Exception("Error: Could not find Player1 in startup config. Cannot start.");
+            throw new Exception("Error: Could not find Player1 in startup config. Cannot start.");
 
         // Create the game object that represents Player1
         GameObject _Holder = Functions.GetOrCreatePlayerHolder(PlayerNumbers.Player1);

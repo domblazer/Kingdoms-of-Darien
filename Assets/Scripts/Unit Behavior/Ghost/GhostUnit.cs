@@ -27,8 +27,8 @@ public class GhostUnit : MonoBehaviour
 
     void Start()
     {
-        // Start off with valid placement
-        SetPlacementValid(true);
+        // All ghosts except lodestones should start off with valid placement
+        SetPlacementValid(!isLodestone);
 
         // Compile all renderers and materials on this model
         foreach (Transform child in transform)
@@ -184,7 +184,7 @@ public class GhostUnit : MonoBehaviour
             hitPos = hit.point;
             // Debug.Log("hit.collider.tag: " + hit.collider.tag);
             // Round hitPos to nearest ints to snap
-            Vector3 finalPos = new Vector3(Mathf.Round(hitPos.x), Mathf.Round(hitPos.y), Mathf.Round(hitPos.z));
+            Vector3 finalPos = new(Mathf.Round(hitPos.x), Mathf.Round(hitPos.y), Mathf.Round(hitPos.z));
             transform.position = finalPos;
         }
     }

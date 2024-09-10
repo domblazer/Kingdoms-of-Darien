@@ -43,7 +43,7 @@ namespace DarienEngine
             {
                 // Add this unit to the AI player context
                 _Holder = aiPlayer.holder;
-                GameManager.Instance.AIPlayers[unit.playerNumber].inventory.AddUnit(unit);
+                aiPlayer.inventory.AddUnit(unit);
             }
             else
                 Debug.LogWarning("PlayerContextError: No player " + unit.playerNumber + " found for " + unit.unitName);
@@ -56,7 +56,7 @@ namespace DarienEngine
             if (unit.playerNumber == PlayerNumbers.Player1)
                 GameManager.Instance.PlayerMain.inventory.RemoveUnit(unit);
             else if (GameManager.Instance.AIPlayers.TryGetValue(unit.playerNumber, out AIPlayerContext aiPlayer))
-                GameManager.Instance.AIPlayers[unit.playerNumber].inventory.RemoveUnit(unit);
+                aiPlayer.inventory.RemoveUnit(unit);
         }
 
         public static void AddIntangibleToPlayerContext(IntangibleUnitBase unit, bool addToHolder = true)
@@ -74,7 +74,7 @@ namespace DarienEngine
             {
                 // Add this unit to the AI player context
                 _Holder = aiPlayer.holder;
-                GameManager.Instance.AIPlayers[playerNumber].inventory.AddIntangible(unit);
+                aiPlayer.inventory.AddIntangible(unit);
             }
             else
                 Debug.LogWarning("PlayerContextError: No player " + playerNumber + " found for " + unit.name);
@@ -89,14 +89,6 @@ namespace DarienEngine
             else if (GameManager.Instance.AIPlayers.TryGetValue(playerNumber, out AIPlayerContext aiPlayer))
                 aiPlayer.inventory.RemoveIntangible(unit);
         }
-
-        /* public static void UpdateIntangibleManaInPlayerContext(int newIncome, int newDrain, PlayerNumbers playerNumber)
-        {
-            if (playerNumber == PlayerNumbers.Player1)
-                GameManager.Instance.PlayerMain.inventory.UpdateManaValues(newIncome, newDrain);
-            else if (GameManager.Instance.AIPlayers.TryGetValue(playerNumber, out AIPlayerContext aiPlayer))
-                aiPlayer.inventory.UpdateManaValues(newIncome, newDrain);
-        } */
 
         public static RectTransform FindBuildMenu(RTSUnit unit)
         {
@@ -133,10 +125,10 @@ namespace DarienEngine
         public bool Equals(RTSUnit x, RTSUnit y)
         {
             // Check whether the compared objects reference the same data.
-            if (Object.ReferenceEquals(x, y)) return true;
+            if (ReferenceEquals(x, y)) return true;
 
             // Check whether any of the compared objects is null.
-            if (Object.ReferenceEquals(x, null) || Object.ReferenceEquals(y, null))
+            if (ReferenceEquals(x, null) || ReferenceEquals(y, null))
                 return false;
 
             // Check whether the products' properties are equal.
@@ -146,7 +138,7 @@ namespace DarienEngine
         public int GetHashCode(RTSUnit unit)
         {
             // Check whether the object is null
-            if (Object.ReferenceEquals(unit, null)) return 0;
+            if (ReferenceEquals(unit, null)) return 0;
 
             // Calculate the hash code for the unique field
             return unit.uuid.GetHashCode();

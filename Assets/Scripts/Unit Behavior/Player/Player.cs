@@ -229,8 +229,8 @@ public class Player : MonoBehaviour
             // Just move the single selected unit directly to click point
             RTSUnit unit = selectedUnits[0];
             // If we have a single builder selected who we just queued to put down a ghost, do not tell that builder to move b/c Builder needs to handle conjure routine
-            if (unit.isKinematic && !(currentActiveBuilder && currentActiveBuilder.IsBuilder()
-                && (currentActiveBuilder as Builder).isClickInProgress))
+            // @TODO: If a builder has current ghost as lodestone with invalid placement, do not queue this move
+            if (unit.isKinematic && !(currentActiveBuilder && currentActiveBuilder.IsBuilder() && (currentActiveBuilder as Builder).isClickInProgress || (currentActiveBuilder as Builder).activeFloatingGhost != null))
             {
                 RaycastHit pointToUse = groundHit;
                 if (unit.canFly)

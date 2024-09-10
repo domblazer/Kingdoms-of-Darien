@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DarienEngine;
+using DarienEngine.AI;
+using UnityEngine.SceneManagement;
+using UnityEngine.XR;
 
 public class InventoryBase : MonoBehaviour
 {
@@ -107,11 +110,53 @@ public class InventoryBase : MonoBehaviour
 
     public void CheckWinLoseState()
     {
+        bool victory = true;
+
         // @TODO: intangible count should be included here. Technically, an intangible with no builder still counts towards your victory condition
-        // Debug.Log("Player " + playerNumber + " totalUnit count: " + totalUnits.Count);
-        if (totalUnits.Count == 0) {
-            Debug.Log("Player " + playerNumber + " lost condition met.");
+        // @TODO: do intangibles count toward unit count?
+
+        if (totalUnits.Count == 0)
+        {
+            if (playerNumber == PlayerNumbers.Player1)
+            {
+                Debug.Log("Defeat.");
+                // @TODO: start coroutine - display defeated text and load start screen; any cleaning to do?
+                return;
+            }
+            else if (GameManager.Instance.AIPlayers.TryGetValue(playerNumber, out AIPlayerContext aiPlayer))
+            {
+                aiPlayer.player.defeated = true;
+            }
+
+            // If any AI player is yet undefeated, victory has not been achieved
+            foreach (KeyValuePair<PlayerNumbers, AIPlayerContext> player in GameManager.Instance.AIPlayers)
+            {
+                // @TODO: work in teams logic
+                if (!player.Value.player.defeated)
+                {
+                    victory = false;
+                    return;
+                }
+            }
+
+            // If victory stays true until this point, we have victory
+            if (victory)
+            {
+                Debug.Log("Victory.");
+                // @TODO: startcoroutine display victory message and return to start screen
+
+                StartCoroutine(HandleVictory());
+            }
         }
+    }
+
+    public IEnumerator HandleVictory()
+    {
+        // UIManager.Instance.DisplayVictoryText();
+        // @TODO: disable any more click/keyboard events?
+        yield return new WaitForSeconds(5.0f);
+        // @TODO: eventually work in intermediate score screen
+        SceneManager.LoadScene("StartScene");
     }
 
     public void AddIntangible(IntangibleUnitBase unit)

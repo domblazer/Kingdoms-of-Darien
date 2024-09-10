@@ -32,7 +32,7 @@ public class IntangibleUnitAI : IntangibleUnitBase
         // At any point, the intangible could dip down to 0 health and "die"; then cancel any builds
         else if (health <= 0 && builders.Count > 0)
         {
-            Debug.Log("IntangibleAI health dipped below 0, should die");
+            // Debug.Log("IntangibleAI health dipped below 0, should die");
             // @Note: CancelBuild removes builder from builders which is not allowed in a loop on that list
             builders.ForEach(bld => bld.CancelBuild(true));
             builders.Clear();

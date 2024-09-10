@@ -1,18 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class StartManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public void StartDemoScene()
     {
-        
+        // Use a coroutine to load the Scene in the background
+        StartCoroutine(LoadSceneAsync("Demo"));
     }
 
-    // Update is called once per frame
-    void Update()
+    public IEnumerator LoadSceneAsync(string sceneName)
     {
-        
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+
+        // Wait until the asynchronous scene fully loads
+        while (!asyncLoad.isDone)
+        {
+            Debug.Log("Scene loading. Here is where loadings creen logic should go.");
+            yield return null;
+        }
+    }
+
+    public void ExitApplication()
+    {
+        Application.Quit();
     }
 }

@@ -60,15 +60,12 @@ public class Factory : UnitBuilderPlayer
         ProtectDoubleClick();
 
         // Capture different queue modes
-        bool plusFive = false;
-        if (InputManager.HoldingShift())
-            plusFive = true;
 
         // @TODO: infinite mode
         // else if (InputManager.HoldingCtrl())
         //     mode = "infinite";
 
-        if (plusFive)
+        if (InputManager.HoldingShift())
         {
             for (int i = 0; i < 5; i++)
                 QueueUnit(item);
@@ -95,21 +92,67 @@ public class Factory : UnitBuilderPlayer
             conjurerArgs = item
         });
     }
-
-    private void RemoveBuild(ConjurerArgs item)
+    public class ListToRemove
     {
-        // @TODO: holding shift should dequeue 5 at a time, ctrl clear all
-        item.buildQueueCount--;
-        // splice from commandQueue
-        baseUnit.commandQueue.RemoveAt(baseUnit.commandQueue.FindIndex(x => x.conjurerArgs == item));
-        // @TODO: if removing a command whose build is still in progress, that intangible needs to be destroyed 
+        public CommandQueueItem commandQueueItem;
+        public int queueIndex;
+    }
+    private void RemoveBuild(ConjurerArgs itemToRemove)
+    {
+        // If holding shift, remove last 5 units of same type from the queue
+        if (InputManager.HoldingShift())
+        {
+            int count = 5;
+            List<ListToRemove> listToRemove = new();
+            // Compile up to the last five commands of the queue
+            for (int i = baseUnit.commandQueue.Count - 1; i >= 0 && count > 0; i--)
+            {
+                // Find the last 5 commands in the queue of the same unit type
+                CommandQueueItem command = baseUnit.commandQueue[i];
+                string commandUnitName = command?.conjurerArgs?.prefab.GetComponent<IntangibleUnitBase>().finalUnit.unitName;
+                string itemUnitName = itemToRemove?.prefab.GetComponent<IntangibleUnitBase>().finalUnit.unitName;
+                // If the command in the queue is the same type of unit, remove it up to 5
+                if (command.commandType == CommandTypes.Conjure && commandUnitName == itemUnitName)
+                {
+                    command.conjurerArgs.buildQueueCount--;
+                    listToRemove.Add(new ListToRemove { commandQueueItem = command, queueIndex = i });
+                    count--;
+                }
+            }
+            // Remove the found commands from the queue
+            listToRemove.ForEach(toRemove =>
+            {
+                // Basically, if you zero out a unit type with -5 and the last one is the one being conjured at the moment, cancel it
+                if (toRemove.commandQueueItem.conjurerArgs.buildQueueCount == 0 && toRemove.commandQueueItem.conjurerArgs.instantiatedPrefab)
+                {
+                    toRemove.commandQueueItem.conjurerArgs.instantiatedPrefab.GetComponent<IntangibleUnitBase>().CancelIntangible();
+                    SetNextQueueReady(true);
+                }
+                // Splice the intangible from this Factory's queue
+                baseUnit.commandQueue.RemoveAt(toRemove.queueIndex);
+            });
+        }
+        else
+        {
+            itemToRemove.buildQueueCount--;
+            int itemIndex = baseUnit.commandQueue.FindIndex(x => x.conjurerArgs == itemToRemove);
+            // Basically, if you zero out a unit type with -5 and the last one is the one being conjured at the moment, cancel it
+            if (itemToRemove.buildQueueCount == 0 && itemToRemove.instantiatedPrefab)
+            {
+                baseUnit.commandQueue[itemIndex].conjurerArgs.instantiatedPrefab.GetComponent<IntangibleUnitBase>().CancelIntangible();
+                SetNextQueueReady(true);
+            }
+            // Splice the intangible from this Factory's queue
+            baseUnit.commandQueue.RemoveAt(itemIndex);
+        }
     }
 
     private void InstantiateNextIntangible(ConjurerArgs item)
     {
         GameObject intangible = Instantiate(item.prefab, spawnPoint.position, spawnPoint.rotation);
+        item.instantiatedPrefab = intangible;
         intangible.GetComponent<IntangibleUnit>().BindBuilder(this, rallyPoint, parkingDirectionToggle);
-        // intangible.GetComponent<IntangibleUnit>().Callback(IntangibleCompleted);
+        // @TODO: deprecated: intangible.GetComponent<IntangibleUnit>().Callback(IntangibleCompleted);
     }
 
     // @TODO: callbacks are deprecated. Factory and Builder should handle the same way
