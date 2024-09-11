@@ -5244,7 +5244,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4431646997856752943
 Transform:
   m_ObjectHideFlags: 0
@@ -5426,7 +5426,7 @@ MonoBehaviour:
   faction: 0
   playerNumber: 1
   unitType: 3
-  unitIcon: {fileID: 21300000, guid: c2e931f3a0364c3428d5c8cb008cea1f, type: 3}
+  unitIcon: {fileID: 21300000, guid: f69d5480bb29037439ba3208a6dc3f95, type: 3}
   unitName: Barracks
   bodyType: 3
   maxHealth: 17162
