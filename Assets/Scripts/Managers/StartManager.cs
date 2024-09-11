@@ -1,6 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
-using Microsoft.Unity.VisualStudio.Editor;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,6 +7,12 @@ public class StartManager : MonoBehaviour
 {
     public GameObject loadingScreen;
     public UnityEngine.UI.Image loadingBarFill;
+    public TMP_Text buttonHoverText;
+
+    public void Start()
+    {
+        buttonHoverText.text = "";
+    }
 
     public void StartDemoScene()
     {
@@ -33,5 +38,15 @@ public class StartManager : MonoBehaviour
     public void ExitApplication()
     {
         Application.Quit();
+    }
+
+    public void OnHoverButtonEnter(string text)
+    {
+        buttonHoverText.text = text;
+    }
+
+    public void OnHoverButtonExit()
+    {
+        buttonHoverText.text = "";
     }
 }
