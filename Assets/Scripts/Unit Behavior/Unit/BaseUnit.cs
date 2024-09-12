@@ -298,8 +298,15 @@ public class BaseUnit : RTSUnit
         // go back to the primed command mouse cursor
         if (!InputManager.IsMouseOverUI() && selectable)
         {
-            CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Select);
-            UIManager.UnitInfoInstance.Set(super, null);
+            if (!isDead)
+            {
+                CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Select);
+                UIManager.UnitInfoInstance.Set(super, null);
+            }
+            else
+            {
+                // @TODO: Set UI to display "Corpse"
+            }
         }
         GameManager.Instance.SetHovering(gameObject);
     }
@@ -322,6 +329,8 @@ public class BaseUnit : RTSUnit
         // First check if I am already selected
         if (!selected)
             UIManager.UnitInfoInstance.Set(super, secondary);
+
+        // @TODO: Set UI to display "Corpse"
     }
 
     public void SetFacingDir(Directions dir)

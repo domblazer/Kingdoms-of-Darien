@@ -71,6 +71,8 @@ public class AttackBehavior : MonoBehaviour
         // If attack target has died at any point during attack routine, clear attack and stop attack routine
         if (TargetHasDied())
         {
+            Debug.Log(gameObject.name + "'s target has died.");
+            Debug.Log(gameObject.name + " commandQueue: " + baseUnit.commandQueue);
             ClearAttack();
             baseUnit.commandQueue.Dequeue();
             return;
@@ -139,10 +141,10 @@ public class AttackBehavior : MonoBehaviour
             switch (attackTarget.targetType)
             {
                 case AttackTargetTypes.Unit:
-                    rangeOffset = attackTarget.target.GetComponent<RTSUnit>().offset.x * 0.75f;
+                    rangeOffset = attackTarget.target.GetComponent<RTSUnit>().offset.x * 0.85f;
                     break;
                 case AttackTargetTypes.Intangible:
-                    rangeOffset = attackTarget.target.GetComponent<IntangibleUnitBase>().offset.x * 0.7f;
+                    rangeOffset = attackTarget.target.GetComponent<IntangibleUnitBase>().offset.x * 0.85f;
                     break;
             }
         }
@@ -191,6 +193,10 @@ public class AttackBehavior : MonoBehaviour
 
     public GameObject AutoPickAttackTarget(bool insertFirst = false)
     {
+        // string debug = "";
+        // enemiesInSight.ForEach(x => debug += x.gameObject.name + "\n");
+        // Debug.Log(gameObject.name + " is trying to auto pick an attack target. Enemies in sight: " + debug);
+
         // Find closest target
         GameObject target = FindClosestEnemy();
         // If a valid target exists but attackTarget has not yet been assigned, lock onto this target
@@ -207,30 +213,33 @@ public class AttackBehavior : MonoBehaviour
     protected GameObject FindClosestEnemy()
     {
         GameObject closest = null;
-        float distance = Mathf.Infinity;
-        Vector3 position = transform.position;
-        List<GameObject> removeList = new();
-        // Find the enemy in sight closest to me
-        foreach (GameObject go in enemiesInSight)
+        if (enemiesInSight.Count > 0)
         {
-            if (go != null)
+            float distance = Mathf.Infinity;
+            Vector3 position = transform.position;
+            List<GameObject> removeList = new();
+            // Find the enemy in sight closest to me
+            foreach (GameObject go in enemiesInSight)
             {
-                Vector3 diff = go.transform.position - position;
-                float curDistance = diff.sqrMagnitude;
-                if (curDistance < distance)
+                if (go == null || go.GetComponent<RTSUnit>() && go.GetComponent<RTSUnit>().isDead)
                 {
-                    closest = go;
-                    distance = curDistance;
+                    removeList.Add(go);
+                }
+                else
+                {
+                    Vector3 diff = go.transform.position - position;
+                    float curDistance = diff.sqrMagnitude;
+                    if (curDistance < distance)
+                    {
+                        closest = go;
+                        distance = curDistance;
+                    }
                 }
             }
-            else
-            {
-                removeList.Add(go);
-            }
+            // Prune any straggling nulls or dead units in the enemiesInSight list
+            enemiesInSight = enemiesInSight.Except(removeList).ToList();
         }
-        // Prune any straggling nulls in the enemiesInSight list
-        enemiesInSight = enemiesInSight.Except(removeList).ToList();
-        // Return closest object
+        // Return closest object or null is none found
         return closest;
     }
 
@@ -280,6 +289,7 @@ public class AttackBehavior : MonoBehaviour
 
     public void ClearAttack()
     {
+        Debug.Log(gameObject.name + " cleared attack on " + attackTarget?.target?.name);
         nextAttackReady = false;
         isAttacking = false;
         engagingTarget = false;

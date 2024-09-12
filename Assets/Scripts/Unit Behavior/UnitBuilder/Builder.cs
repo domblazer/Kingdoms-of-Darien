@@ -66,7 +66,7 @@ public class Builder : UnitBuilderPlayer
     {
         if (NextQueueReady)
         {
-            Debug.Log("baseUnit.commandQueue: " + baseUnit.commandQueue);
+            // Debug.Log("baseUnit.commandQueue: " + baseUnit.commandQueue);
             if (baseUnit.currentCommand.conjurerArgs.prefab && baseUnit.currentCommand.conjurerArgs.prefab.GetComponent<GhostUnit>())
             {
                 // Conjure command is for GhostUnit

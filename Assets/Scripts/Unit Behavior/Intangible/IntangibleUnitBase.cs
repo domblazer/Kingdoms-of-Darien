@@ -81,7 +81,7 @@ public class IntangibleUnitBase : MonoBehaviour
         // Compile all materials from mesh renderers on this model
         foreach (Transform child in transform)
         {
-            if (child.GetComponent<Renderer>())
+            if (child.GetComponent<Renderer>() && child.gameObject.name != "sparkle-particles")
             {
                 List<Material> temp = child.GetComponent<Renderer>().materials.ToList();
                 materials = materials.Concat(temp).ToList();

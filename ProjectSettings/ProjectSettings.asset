@@ -707,11 +707,11 @@ PlayerSettings:
     m_VersionName: 
   apiCompatibilityLevel: 6
   activeInputHandler: 0
-  cloudProjectId: 
+  cloudProjectId: 5c5270c8-bfef-4a7d-abac-b5c8d1802476
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: 
-  organizationId: 
+  projectName: Kingdoms of Darien
+  organizationId: balbed
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   playerDataPath: 

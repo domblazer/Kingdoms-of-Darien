@@ -133,7 +133,7 @@ namespace DarienEngine.AI
                         // should probably only do k-means every so often and store the cluster info as a static var
                         RTSUnit target = FindTarget(unit.transform.position);
                         if (target)
-                            unit._AttackBehavior.TryAttack(target.gameObject);
+                            unit._AttackBehavior.TryInterruptAttack(target.gameObject);
                     }
                 }
             }
@@ -236,7 +236,7 @@ namespace DarienEngine.AI
                 {
                     sumVelocity += armyUnit.maxSpeed;
                     // @Note: doing an attack ensures the enemy will follow a target
-                    armyUnit._AttackBehavior.TryAttack(attackTarget.gameObject);
+                    armyUnit._AttackBehavior.TryInterruptAttack(attackTarget.gameObject);
                 }
                 avgVelocity = sumVelocity / units.Count;
                 // Normalize the move speed of this army based on average

@@ -66,7 +66,8 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (inventory.totalUnits.Count == 0) {
+        if (inventory.totalUnits.Count == 0)
+        {
             Debug.Log("Player defeat condition.");
         }
 
@@ -228,9 +229,15 @@ public class Player : MonoBehaviour
         {
             // Just move the single selected unit directly to click point
             RTSUnit unit = selectedUnits[0];
-            // If we have a single builder selected who we just queued to put down a ghost, do not tell that builder to move b/c Builder needs to handle conjure routine
-            // @TODO: If a builder has current ghost as lodestone with invalid placement, do not queue this move
-            if (unit.isKinematic && !(currentActiveBuilder && currentActiveBuilder.IsBuilder() && (currentActiveBuilder as Builder).isClickInProgress || (currentActiveBuilder as Builder).activeFloatingGhost != null))
+            // If single unit is builder that was just queued to conjure or has an activeFloatingGhost, do not queue a move b/c conjure routine will handle
+            bool builderMoveConditionsMet = true;
+            if (unit.isBuilder && unit.GetComponent<Builder>())
+            {
+                Builder builder = unit.GetComponent<Builder>();
+                builderMoveConditionsMet = !(builder.activeFloatingGhost != null || builder.isClickInProgress);
+            }
+            // If unit is kinematic and is not a builder trying to queue a conjure command or has an active floating ghost
+            if (unit.isKinematic && builderMoveConditionsMet)
             {
                 RaycastHit pointToUse = groundHit;
                 if (unit.canFly)

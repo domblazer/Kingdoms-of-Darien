@@ -42,7 +42,7 @@ public class IntangibleUnit : IntangibleUnitBase
         // Done
         else if (health >= 1 && builders.Count > 0)
         {
-            // Debug.Log("Intangible finished");
+            Debug.Log("Intangible finished");
             FinishIntangible();
         }
     }

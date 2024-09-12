@@ -47,9 +47,9 @@ public class BaseUnitAI : RTSUnit
         // Set fog-of-war based on game manager
         enableFogOfWar = GameManager.Instance.enableFogOfWar;
 
-        // Grab all of this unit's mesh renderers
+        // Grab all of this unit's mesh renderers except for the sparkle particle system leftover from intangible
         foreach (Transform child in transform)
-            if (child.GetComponent<Renderer>())
+            if (child.GetComponent<Renderer>() && child.gameObject.name != "sparkle-particles")
                 renderers.Add(child.GetComponent<Renderer>());
 
         // @TODO: if AI is on the same team as player, assign "Friendly-AI" tag
@@ -88,8 +88,8 @@ public class BaseUnitAI : RTSUnit
     {
         // @TODO: Tilda key is usually used to toggle the health bars, for now toggling the army debug panels
         // @TODO: disabled for demo
-        /* if (Input.GetKeyDown(KeyCode.BackQuote) && _TooltipManager != null)
-            _TooltipManager.ToggleTooltip(); */
+        if (Input.GetKeyDown(KeyCode.BackQuote) && _TooltipManager != null)
+            _TooltipManager.ToggleTooltip();
 
         // @TODO: F6 is arbitrary key for this command; toggles FogOfWar in-game
         // @TODO: Implement this later. Toggle for Fog of War may be useful for debugging/general game feature.
@@ -131,10 +131,11 @@ public class BaseUnitAI : RTSUnit
             if (_Army != null)
             {
                 tooltipText += "In army. \n";
-                if (canAttack && _AttackBehavior.attackTarget != null)
-                    tooltipText += "Attack target? " + _AttackBehavior.attackTarget.target.name;
             }
+            if (canAttack && _AttackBehavior.attackTarget != null)
+                tooltipText += "Attack target? " + _AttackBehavior.attackTarget.target.name + "\n";
             tooltipText += "cluster: " + clusterNum;
+            tooltipText += "\nisDead: " + isDead;
             if (_TooltipManager)
                 _TooltipManager.SetTooltipText(tooltipText);
         }

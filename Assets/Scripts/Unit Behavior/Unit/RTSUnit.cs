@@ -399,10 +399,10 @@ public class RTSUnit : MonoBehaviour
                 Debug.Log(gameObject.name + " Add collided unit to enemiesInSight " + col.gameObject.name + "\n" + "col.gameObject.layer " + col.gameObject.layer);
 
                 // Subscribe to the enemy's OnDie event to remove it from enemiesInSight when it dies
-                if (col.gameObject.GetComponent<RTSUnit>())
+                /* if (col.gameObject.GetComponent<RTSUnit>())
                     col.gameObject.GetComponent<RTSUnit>().OnDie += RemoveEnemyFromSight;
                 else if (col.gameObject.GetComponent<IntangibleUnitBase>())
-                    col.gameObject.GetComponent<IntangibleUnitBase>().OnDie += RemoveEnemyFromSight;
+                    col.gameObject.GetComponent<IntangibleUnitBase>().OnDie += RemoveEnemyFromSight; */
             }
         }
         // Update whoCanSeeMe based on "Fog of War" mask layer trigger
@@ -424,10 +424,10 @@ public class RTSUnit : MonoBehaviour
                 _AttackBehavior.enemiesInSight.Remove(col.gameObject);
 
                 // Unsubscribe to the enemy's OnDie event to remove it from enemiesInSight when it dies
-                if (col.gameObject.GetComponent<RTSUnit>())
+                /* if (col.gameObject.GetComponent<RTSUnit>())
                     col.gameObject.GetComponent<RTSUnit>().OnDie -= RemoveEnemyFromSight;
                 else if (col.gameObject.GetComponent<IntangibleUnitBase>())
-                    col.gameObject.GetComponent<IntangibleUnitBase>().OnDie -= RemoveEnemyFromSight;
+                    col.gameObject.GetComponent<IntangibleUnitBase>().OnDie -= RemoveEnemyFromSight; */
             }
         }
         else if (col.gameObject.tag == compareTag && col.gameObject.layer == LayerMask.NameToLayer("Fog Of War"))
@@ -588,9 +588,12 @@ public class RTSUnit : MonoBehaviour
 
     protected void HandleDie()
     {
+        Debug.Log(gameObject.name + " died.");
         isDead = true;
         if (canAttack)
             _AttackBehavior.ClearAttack();
+
+        commandQueue.Clear();
 
         if (_Agent)
             _Agent.enabled = false;
