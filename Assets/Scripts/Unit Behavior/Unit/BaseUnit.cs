@@ -327,7 +327,7 @@ public class BaseUnit : RTSUnit
     private void OnMouseOver()
     {
         // First check if I am already selected
-        if (!selected)
+        if (!selected && !isDead)
             UIManager.UnitInfoInstance.Set(super, secondary);
 
         // @TODO: Set UI to display "Corpse"

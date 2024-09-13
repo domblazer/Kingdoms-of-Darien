@@ -84,8 +84,8 @@ public class UIManager : MonoBehaviour
 
         // @TODO: remove later: Use F5 to trigger debug menu for now.
         // @TODO: disabled for demo
-        if (Input.GetKeyDown(KeyCode.F5))
-            ToggleDebugMenu(!debugMenu.gameObject.activeInHierarchy);
+        /* if (Input.GetKeyDown(KeyCode.F5))
+            ToggleDebugMenu(!debugMenu.gameObject.activeInHierarchy); */
 
         // Esc key to return to start
         if (Input.GetKeyDown("escape"))
@@ -102,8 +102,8 @@ public class UIManager : MonoBehaviour
         // @TODO: Tilda key is usually used to toggle the health bars, for now toggling the army debug panels
         // @TODO: it's also not ideal this input is captured both here and in BaseUnitAI
         // @TODO: disabled for demo
-        if (Input.GetKeyDown(KeyCode.BackQuote))
-            Instance.tooltipActive = !Instance.tooltipActive;
+        /* if (Input.GetKeyDown(KeyCode.BackQuote))
+            Instance.tooltipActive = !Instance.tooltipActive; */
     }
 
     public void ToggleF4Menu(bool value)

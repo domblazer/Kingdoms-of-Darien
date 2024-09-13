@@ -37,7 +37,7 @@ public class GhostUnit : MonoBehaviour
             {
                 renderers.Add(child.GetComponent<Renderer>());
                 List<Material> temp = child.GetComponent<Renderer>().materials.ToList();
-                materials = materials.Concat<Material>(temp).ToList();
+                materials = materials.Concat(temp).ToList();
             }
         }
 

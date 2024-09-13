@@ -224,6 +224,8 @@ public class Player : MonoBehaviour
         if (selectedUnits.Count > 1)
         {
             Clusters.MoveGroup(selectedUnits, groundHit.point, skyHit.point, addToMoveQueue, doAttackMove);
+
+            GameManager.Instance.AudioSource.PlayOneShot(clickSound);
         }
         else if (selectedUnits.Count == 1)
         {
@@ -247,11 +249,11 @@ public class Player : MonoBehaviour
                     unit._FlyingUnit.lastCorrespondingGroundPoint = groundHit.point;
                 }
                 unit.SetMove(pointToUse.point, addToMoveQueue, doAttackMove);
+                unit.AudioManager.PlayMoveSound();
+                GameManager.Instance.AudioSource.PlayOneShot(clickSound);
             }
-            unit.AudioManager.PlayMoveSound();
         }
         // TODO: conflict with unit.PlayMoveSound()?
-        GameManager.Instance.AudioSource.PlayOneShot(clickSound);
     }
 
     private void HandlePatrolCommand(RaycastHit hit)

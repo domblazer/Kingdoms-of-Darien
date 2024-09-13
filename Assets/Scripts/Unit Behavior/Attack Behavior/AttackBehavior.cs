@@ -71,8 +71,6 @@ public class AttackBehavior : MonoBehaviour
         // If attack target has died at any point during attack routine, clear attack and stop attack routine
         if (TargetHasDied())
         {
-            Debug.Log(gameObject.name + "'s target has died.");
-            Debug.Log(gameObject.name + " commandQueue: " + baseUnit.commandQueue);
             ClearAttack();
             baseUnit.commandQueue.Dequeue();
             return;
@@ -141,10 +139,11 @@ public class AttackBehavior : MonoBehaviour
             switch (attackTarget.targetType)
             {
                 case AttackTargetTypes.Unit:
-                    rangeOffset = attackTarget.target.GetComponent<RTSUnit>().offset.x * 0.85f;
+                    // @TODO: dirty fix: enemies have trouble attacking stationary units like the Barracks
+                    rangeOffset = attackTarget.target.GetComponent<RTSUnit>().offset.x * (attackTarget.target.GetComponent<RTSUnit>().isKinematic ? 0.9f : 0.6f);
                     break;
                 case AttackTargetTypes.Intangible:
-                    rangeOffset = attackTarget.target.GetComponent<IntangibleUnitBase>().offset.x * 0.85f;
+                    rangeOffset = attackTarget.target.GetComponent<IntangibleUnitBase>().offset.x * (attackTarget.target.GetComponent<IntangibleUnitBase>().finalUnit.isKinematic ? 0.9f : 0.6f);
                     break;
             }
         }
@@ -193,12 +192,13 @@ public class AttackBehavior : MonoBehaviour
 
     public GameObject AutoPickAttackTarget(bool insertFirst = false)
     {
-        // string debug = "";
-        // enemiesInSight.ForEach(x => debug += x.gameObject.name + "\n");
-        // Debug.Log(gameObject.name + " is trying to auto pick an attack target. Enemies in sight: " + debug);
-
         // Find closest target
         GameObject target = FindClosestEnemy();
+
+        string debug = "";
+        enemiesInSight.ForEach(x => debug += x.gameObject.name + "\n");
+        Debug.Log(gameObject.name + " is trying to auto pick an attack target. Enemies in sight: " + debug);
+
         // If a valid target exists but attackTarget has not yet been assigned, lock onto this target
         if (target && (target.GetComponent<RTSUnit>() || target.GetComponent<IntangibleUnitBase>()) && attackTarget == null)
         {
@@ -289,7 +289,6 @@ public class AttackBehavior : MonoBehaviour
 
     public void ClearAttack()
     {
-        Debug.Log(gameObject.name + " cleared attack on " + attackTarget?.target?.name);
         nextAttackReady = false;
         isAttacking = false;
         engagingTarget = false;

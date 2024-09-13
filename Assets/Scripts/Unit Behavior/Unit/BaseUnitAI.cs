@@ -88,8 +88,8 @@ public class BaseUnitAI : RTSUnit
     {
         // @TODO: Tilda key is usually used to toggle the health bars, for now toggling the army debug panels
         // @TODO: disabled for demo
-        if (Input.GetKeyDown(KeyCode.BackQuote) && _TooltipManager != null)
-            _TooltipManager.ToggleTooltip();
+        /* if (Input.GetKeyDown(KeyCode.BackQuote) && _TooltipManager != null)
+            _TooltipManager.ToggleTooltip(); */
 
         // @TODO: F6 is arbitrary key for this command; toggles FogOfWar in-game
         // @TODO: Implement this later. Toggle for Fog of War may be useful for debugging/general game feature.
@@ -349,7 +349,7 @@ public class BaseUnitAI : RTSUnit
     void OnMouseEnter()
     {
         // Change to Attack cursor if hovering enemy AND at least one friendly unit who canAttack is selected
-        if (!InputManager.IsMouseOverUI())
+        if (!InputManager.IsMouseOverUI() && !isDead)
         {
             if (gameObject.tag == "Enemy" && mainPlayer.SelectedAttackUnitsCount() > 0 && !mainPlayer.nextCommandIsPrimed)
                 CursorManager.Instance.SetActiveCursorType(CursorManager.CursorType.Attack);
@@ -371,7 +371,7 @@ public class BaseUnitAI : RTSUnit
 
     private void OnMouseOver()
     {
-        if (!InputManager.IsMouseOverUI())
+        if (!InputManager.IsMouseOverUI() && !isDead)
             UIManager.UnitInfoInstance.Set(super, null, true);
     }
 }
