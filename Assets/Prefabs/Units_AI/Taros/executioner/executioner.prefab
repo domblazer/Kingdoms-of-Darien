@@ -6735,8 +6735,7 @@ MonoBehaviour:
   unitName: Executioner
   bodyType: 2
   maxHealth: 2611
-  healthRechargeRate: 3
-  baseMana: 0
+  healthRechargeRate: 0.4375
   manaIncome: 0
   manaStorage: 0
   buildCost: 326
@@ -6749,7 +6748,9 @@ MonoBehaviour:
   canPatrol: 0
   canFly: 0
   phaseDie: 0
+  offset: {x: 1, y: 1, z: 1}
   bloodSystem: {fileID: 7162712931574828126}
+  clusterNum: -1
   isStriking: 0
   patrolRange: 15
   startState: 0
@@ -6778,7 +6779,6 @@ MonoBehaviour:
     - {fileID: 7162712932485172817}
   activeWeaponIndex: 0
   isAttacking: 0
-  attackTarget: {fileID: 0}
   enemiesInSight: []
 --- !u!114 &7162712932485172821
 MonoBehaviour:

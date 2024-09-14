@@ -70,7 +70,7 @@ public class IntangibleUnitBase : MonoBehaviour
 
     protected GameObject sparkleParticlesObj;
     protected ParticleSystem sparkleParticles;
-    public PlayerNumbers playerNumber;
+    [HideInInspector] public PlayerNumbers playerNumber;
 
     void Start()
     {

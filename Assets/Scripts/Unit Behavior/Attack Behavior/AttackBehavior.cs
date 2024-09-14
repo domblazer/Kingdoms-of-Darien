@@ -110,7 +110,7 @@ public class AttackBehavior : MonoBehaviour
     private void Attack()
     {
         // Handle attacking behavior
-        if (isAttacking && attackTarget != null)
+        if (isAttacking && attackTarget != null && attackTarget.target != null)
         {
             // Kinematic units do facing; @Note: stationary attack units do their own facing routine (e.g. Stronghold)
             if (baseUnit.isKinematic && !baseUnit.IsMoving())
@@ -195,9 +195,9 @@ public class AttackBehavior : MonoBehaviour
         // Find closest target
         GameObject target = FindClosestEnemy();
 
-        string debug = "";
+        /* string debug = "";
         enemiesInSight.ForEach(x => debug += x.gameObject.name + "\n");
-        Debug.Log(gameObject.name + " is trying to auto pick an attack target. Enemies in sight: " + debug);
+        Debug.Log(gameObject.name + " is trying to auto pick an attack target. Enemies in sight: " + debug); */
 
         // If a valid target exists but attackTarget has not yet been assigned, lock onto this target
         if (target && (target.GetComponent<RTSUnit>() || target.GetComponent<IntangibleUnitBase>()) && attackTarget == null)

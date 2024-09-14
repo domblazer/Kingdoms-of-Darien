@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: 1626359666}
   - component: {fileID: 4632063194076061191}
   - component: {fileID: -6257898824797544614}
+  - component: {fileID: 1496636973}
   m_Layer: 9
   m_Name: horseman
   m_TagString: Friendly
@@ -221,7 +222,7 @@ NavMeshAgent:
   m_AutoBraking: 0
   m_AutoRepath: 1
   m_Height: 2
-  m_BaseOffset: 0
+  m_BaseOffset: -0.08
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 3
 --- !u!114 &930185125694765391
@@ -255,8 +256,7 @@ MonoBehaviour:
   unitName: Horseman
   bodyType: 2
   maxHealth: 4050
-  healthRechargeRate: 3
-  baseMana: 0
+  healthRechargeRate: 0.78333336
   manaIncome: 0
   manaStorage: 0
   buildCost: 765
@@ -269,12 +269,16 @@ MonoBehaviour:
   canPatrol: 0
   canFly: 0
   phaseDie: 0
+  offset: {x: 1, y: 1, z: 1}
   bloodSystem: {fileID: 930185126259309868}
+  clusterNum: -1
   isStriking: 0
   selectable: 1
   selectRing: {fileID: 930185125958572863}
   fogOfWarMask: {fileID: 4589014739474092530}
   attackMode: 0
+  _Builder: {fileID: 0}
+  secondary: {fileID: 0}
 --- !u!208 &1626359666
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -304,9 +308,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackSounds: []
-  dieSound: {fileID: 0}
-  moveSound: {fileID: 0}
-  selectSound: {fileID: 0}
+  dieSound: {fileID: 8300000, guid: 1d9c66919fa1aec4eb27e340bc219abb, type: 3}
+  moveSound: {fileID: 8300000, guid: eae26c1e9a75dcb479e52b5a9d523229, type: 3}
+  selectSound: {fileID: 8300000, guid: e0d5f4af9d901874a94894c2c7a80dc5, type: 3}
   unitPlaysAttackSounds: 1
 --- !u!120 &-6257898824797544614
 LineRenderer:
@@ -407,6 +411,32 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
+--- !u!114 &1496636973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 11759965872997376}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 632c9caf7de6afa4fb2fddd933ce5641, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weapons:
+  - weaponType: 0
+    weaponDamage: 435
+    weaponRange: 1
+    weaponReloadRate: 2
+    weaponSoundClass: 4
+    specialAttack: 0
+    specialAttackIcon: {fileID: 0}
+    specialAttackName: 
+    meleeWeapons:
+    - {fileID: 6744936189374835309}
+  activeWeaponIndex: 0
+  isAttacking: 0
+  enemiesInSight: []
 --- !u!1 &41784093922689573
 GameObject:
   m_ObjectHideFlags: 0
@@ -8303,13 +8333,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc2b6bac21f00d546a1f85c79a8a34a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animationClipRange:
-  - start: 0
-    end: 1
-  - start: 0
-    end: 1
-  - start: 0
-    end: 1
 --- !u!1 &5968674282944824079
 GameObject:
   m_ObjectHideFlags: 0

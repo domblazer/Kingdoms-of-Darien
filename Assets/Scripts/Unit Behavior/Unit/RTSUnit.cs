@@ -411,20 +411,14 @@ public class RTSUnit : MonoBehaviour
 
     private void OnTriggerExit(Collider col)
     {
-        if (!isDead)
+        string compareTag = gameObject.tag == "Enemy" ? "Friendly" : "Enemy";
+        if (col.gameObject.tag == compareTag && col.gameObject.layer == LayerMask.NameToLayer("Unit") && !col.isTrigger && canAttack)
         {
-            string compareTag = gameObject.tag == "Enemy" ? "Friendly" : "Enemy";
-            if (col.gameObject.tag == compareTag && col.gameObject.layer == LayerMask.NameToLayer("Unit") && !col.isTrigger && canAttack)
-            {
-                if (!_AttackBehavior.enemiesInSight.Contains(col.gameObject))
-                {
-                    // Debug.Log(gameObject.name + " Remove collided unit to enemiesInSight " + col.gameObject.name + "\n" + "col.gameObject.layer " + col.gameObject.layer);
-                    _AttackBehavior.enemiesInSight.Remove(col.gameObject);
-                }
-            }
-            else if (col.gameObject.tag == compareTag && col.gameObject.layer == LayerMask.NameToLayer("Fog Of War"))
-                whoCanSeeMe.Remove(col.transform.parent.gameObject);
+            // Debug.Log(gameObject.name + " Remove collided unit to enemiesInSight " + col.gameObject.name + "\n" + "col.gameObject.layer " + col.gameObject.layer);
+            _AttackBehavior.enemiesInSight.Remove(col.gameObject);
         }
+        else if (col.gameObject.tag == compareTag && col.gameObject.layer == LayerMask.NameToLayer("Fog Of War"))
+            whoCanSeeMe.Remove(col.transform.parent.gameObject);
     }
 
     protected void DebugNavPath()

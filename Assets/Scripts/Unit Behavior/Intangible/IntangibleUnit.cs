@@ -96,7 +96,7 @@ public class IntangibleUnit : IntangibleUnitBase
         // First check if I am already selected
         // @TODO: intangible could have lost its builder, making builders[0] out of range
         if (!InputManager.IsMouseOverUI())
-            UIManager.UnitInfoInstance.Set(this, builders[0]);
+            UIManager.UnitInfoInstance.Set(this, builders.Count > 0 ? builders[0] : null);
     }
 
     // @TODO: if mouse is over this unit when the unit dies, still need to reset cursor, clear unit ui

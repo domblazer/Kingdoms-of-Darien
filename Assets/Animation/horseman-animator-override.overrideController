@@ -9,12 +9,6 @@ AnimatorOverrideController:
   m_Name: horseman-animator-override
   m_Controller: {fileID: 9100000, guid: 70a96d84c6e79d240b1ea158bd79c03e, type: 2}
   m_Clips:
-  - m_OriginalClip: {fileID: 297581478455914248, guid: e9ef3520237c940468a8f40368609a62, type: 3}
-    m_OverrideClip: {fileID: -8603193852693543894, guid: d005a5595f5deb94b9f72413a034d020, type: 3}
-  - m_OriginalClip: {fileID: -5297689657612824425, guid: e9ef3520237c940468a8f40368609a62, type: 3}
-    m_OverrideClip: {fileID: -8603193852693543894, guid: d005a5595f5deb94b9f72413a034d020, type: 3}
-  - m_OriginalClip: {fileID: -508642561913968957, guid: e9ef3520237c940468a8f40368609a62, type: 3}
-    m_OverrideClip: {fileID: -8603193852693543894, guid: d005a5595f5deb94b9f72413a034d020, type: 3}
   - m_OriginalClip: {fileID: -341010069335778699, guid: e9ef3520237c940468a8f40368609a62, type: 3}
     m_OverrideClip: {fileID: -4240307045475584461, guid: d005a5595f5deb94b9f72413a034d020, type: 3}
   - m_OriginalClip: {fileID: 1264242932248749314, guid: e9ef3520237c940468a8f40368609a62, type: 3}
@@ -25,3 +19,9 @@ AnimatorOverrideController:
     m_OverrideClip: {fileID: 5325491801873920874, guid: d005a5595f5deb94b9f72413a034d020, type: 3}
   - m_OriginalClip: {fileID: -3568871459448589476, guid: e9ef3520237c940468a8f40368609a62, type: 3}
     m_OverrideClip: {fileID: 3484599301347050537, guid: d005a5595f5deb94b9f72413a034d020, type: 3}
+  - m_OriginalClip: {fileID: 7400000, guid: 71b836b359500fd42a03823b59e846a4, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: f1013f0e16b4ef541b316a8d383f581a, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: f2a2013b743233f428e0b7b03d6ad14f, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: f1013f0e16b4ef541b316a8d383f581a, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: e77f1a5d8a77f7f448eebba891359108, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: f1013f0e16b4ef541b316a8d383f581a, type: 2}
