@@ -148,6 +148,57 @@ public class RTSUnit : MonoBehaviour
     [HideInInspector] public int clusterNum = -1;
     [HideInInspector] public bool isStriking = false;
 
+    public class VirtualBoundaries
+    {
+        public Vector3 center;
+        public Vector3 size;
+
+        Vector3 TL;
+        Vector3 TR;
+        Vector3 BL;
+        Vector3 BR;
+
+        public VirtualBoundaries(Vector3 center, Vector3 size)
+        {
+            // Create virtual 2d square representing dimensions of this unit
+            // @TODO: We are assuming this is sitting at height 1, but that might not be valid when terrain height changes are introduced
+            TL = new(center.x - size.x / 2f, 1f, center.z + size.z / 2f);
+            TR = new(center.x + size.x / 2f, 1f, center.z + size.z / 2f);
+            BL = new(center.x - size.x / 2f, 1f, center.z - size.z / 2f);
+            BR = new(center.x + size.x / 2f, 1f, center.z - size.z / 2f);
+        }
+
+        public bool Intersects(out Vector3 intersection, Vector3 linePointOrigin, Vector3 linePointEnd)
+        {
+            // @TODO
+            Vector3 topEdge = TR - TL;
+            Vector3 rightEdge = TR - BR;
+            Vector3 bottomEdge = BR - BL;
+            Vector3 leftEdge = TL - BL;
+
+            Vector3 lineDiff = linePointEnd - linePointOrigin;
+
+            Vector3.Cross(topEdge, lineDiff);
+            
+
+            intersection = Vector3.zero;
+
+            return true;
+        }
+
+        public override string ToString()
+        {
+            string str = "Center: " + center + "\n";
+            str += "TL: " + TL + "\n";
+            str += "TR: " + TR + "\n";
+            str += "BL: " + BL + "\n";
+            str += "BR: " + BR + "\n";
+            return str;
+        }
+    }
+
+    [HideInInspector] public VirtualBoundaries virtualBoundaries;
+
     // Init called on Start
     protected void Init()
     {
@@ -176,11 +227,17 @@ public class RTSUnit : MonoBehaviour
         if (gameObject.GetComponent<BoxCollider>())
         {
             offset = gameObject.GetComponent<BoxCollider>().size;
+            BoxCollider boxCollider = gameObject.GetComponent<BoxCollider>();
+
+            virtualBoundaries = new VirtualBoundaries(boxCollider.center, boxCollider.size);
         }
         else if (gameObject.GetComponent<CapsuleCollider>())
         {
-            float r = gameObject.GetComponent<CapsuleCollider>().radius;
+            CapsuleCollider capsuleCollider = gameObject.GetComponent<CapsuleCollider>();
+            float r = capsuleCollider.radius;
             offset = new Vector3(r, r, r);
+
+            virtualBoundaries = new VirtualBoundaries(capsuleCollider.center, offset);
         }
 
         // Unit selection behavior is attached to MainCamera

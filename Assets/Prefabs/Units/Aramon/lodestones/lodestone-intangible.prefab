@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1241472694207460525}
   - component: {fileID: 8900149466206631669}
   - component: {fileID: 1196049501412410957}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: sparkle-particles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4999,7 +4999,7 @@ GameObject:
   - component: {fileID: 680294255711120004}
   - component: {fileID: 4519046103692869965}
   - component: {fileID: 3925176927116807078}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: inner-stone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5082,7 +5082,7 @@ GameObject:
   - component: {fileID: 6982510523170118393}
   - component: {fileID: 356283593020274074}
   - component: {fileID: 334468066766933935}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5165,7 +5165,7 @@ GameObject:
   - component: {fileID: 7239581945874717587}
   - component: {fileID: 3567528319469821923}
   - component: {fileID: 7701217845302181976}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: outer-stone
   m_TagString: Untagged
   m_Icon: {fileID: 0}

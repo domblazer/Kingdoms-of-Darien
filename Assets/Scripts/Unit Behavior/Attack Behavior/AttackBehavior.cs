@@ -134,6 +134,10 @@ public class AttackBehavior : MonoBehaviour
     {
         float rangeOffset = activeWeapon.weaponRange;
         // Melee attackers use a portion of the attackTarget's collider (offset) size to determine range
+
+        // @TODO: What we need to do here is take the intersection point between this Unit's vector of movement and a virtual box representing the 
+        // dimensions of the attack target's collider
+
         if (attackTarget?.target != null && activeWeapon.weaponType == Weapon.WeaponTypes.Melee)
         {
             switch (attackTarget.targetType)

@@ -28,6 +28,10 @@ public class WatchTowerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        archerOneAnimator.SetBool("moving", false);
+        archerTwoAnimator.SetBool("moving", false);
+        archerOneAnimator.SetBool("attacking", _BaseUnit.IsAttacking());
+        archerTwoAnimator.SetBool("attacking", _BaseUnit.IsAttacking());
         if (_BaseUnit.IsAttacking())
         {
             ArcherLookAt(archerOne, _BaseUnit._AttackBehavior.attackTarget.target);
@@ -50,7 +54,7 @@ public class WatchTowerScript : MonoBehaviour
     IEnumerator TriggerSecond()
     {
         yield return new WaitForSeconds(0.25f);
-        archerTwoAnimator.SetTrigger("attack_1");
+        archerTwoAnimator.SetTrigger("attack_2");
         Debug.Log("Watch Tower archer 2 triggered");
         StartCoroutine(Shoot(_BaseUnit._AttackBehavior.attackTarget.target, launchPointTwo));
     }
@@ -63,7 +67,7 @@ public class WatchTowerScript : MonoBehaviour
         // Adjust aiming target since all models have position.y = 1, which is ground level; we want to aim for their center
         Vector3 adjustedTargetPos = new Vector3(target.transform.position.x, target.transform.position.y + 2, target.transform.position.z);
 
-        Rigidbody projectile = Instantiate(projectilePrefab, launchPoint.position, launchPoint.rotation) as Rigidbody;
+        Rigidbody projectile = Instantiate(projectilePrefab, launchPoint.position, launchPoint.rotation);
         projectile.GetComponent<ProjectileScript>().SetWhoFired(_BaseUnit);
         projectile.GetComponent<ProjectileScript>().SetDamage(_BaseUnit._AttackBehavior.activeWeapon.weaponDamage);
         projectile.velocity = (adjustedTargetPos - launchPoint.position).normalized * projectileVelocity;
